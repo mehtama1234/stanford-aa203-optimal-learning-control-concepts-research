@@ -700,7 +700,17 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
                 f"<p>{'transcript captured' if rec.get('transcript_available') else 'missing transcript'} · {rec.get('word_count', 0):,} words</p><p><code>{esc(rec.get('clean_text', 'not downloaded'))}</code></p>",
             )
         )
-    write(SITE / "transcripts.html", page("Transcripts", f"<h1>Transcript Index</h1><section class=\"grid\">{''.join(transcript_cards)}</section>", "transcripts"))
+    transcript_intro = f"""
+<h1>Transcript Index</h1>
+<p class="lede">The transcript layer is the source floor. It keeps the course companion from becoming free-floating explanation.</p>
+<div class="essay">
+  <p>There are {transcript_index.get('available_transcripts', 0)} local transcripts for {transcript_index.get('videos', 0)} playlist videos, totaling {transcript_index.get('total_transcript_words', 0):,} words. Raw VTT captions stay separate from cleaned text so evidence can be traced back to timestamped source material.</p>
+  <p>The site does not treat transcripts as finished teaching. A transcript window can support a claim that a lecture introduced reachability, Bellman recursion, MPC, imitation learning, or policy optimization. The explanation page then has to say what it is synthesizing beyond that window.</p>
+  <p>Use this page when auditing source coverage: every lecture should show a captured transcript, a local clean-text path, and a word count large enough to support real review.</p>
+  <p>If a lecture has no transcript, no concept page should pretend to quote it or build evidence from memory.</p>
+</div>
+"""
+    write(SITE / "transcripts.html", page("Transcripts", f"{transcript_intro}<section class=\"grid\">{''.join(transcript_cards)}</section>", "transcripts"))
 
     family_sections = []
     for family in families:
@@ -711,7 +721,16 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
         card(c["name"], f"<p>{esc(c['plain_language_definition'])}</p><p><span class=\"tag\">{esc(c['family'])}</span></p><p>{concept_link(c)}</p>")
         for c in concepts
     )
-    write(SITE / "concepts.html", page("Concepts", f"<h1>Concept Atlas</h1><p class=\"lede\">The full minimum concept list from <code>GOAL.md</code>, now rendered as individual first-principles pages.</p><section class=\"grid\">{concept_cards}</section>", "concepts"))
+    concept_intro = """
+<h1>Concept Atlas</h1>
+<p class="lede">The concept atlas is the learner's map from ordinary control pressure to mathematical objects.</p>
+<div class="essay">
+  <p>Do not read these as vocabulary flashcards. Each concept page has to answer a practical question: what real system is being controlled, what simple approach breaks, what object carries the burden, what operation is performed, and what visible failure appears outside the assumptions.</p>
+  <p>The cards below are only doors. The real work is inside each concept page: one concrete run, a math block one level deeper, transcript evidence, and a boundary test.</p>
+  <p>A good review path samples one concept from each family before trusting the atlas as complete, balanced, and usable.</p>
+</div>
+"""
+    write(SITE / "concepts.html", page("Concepts", f"{concept_intro}<section class=\"grid\">{concept_cards}</section>", "concepts"))
 
     for concept in concepts:
         ev_cards = "".join(evidence_card(ev_by_id[eid], depth=1) for eid in concept.get("course_evidence_ids", []) if eid in ev_by_id)
@@ -968,7 +987,16 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
     write(SITE / "misconceptions.html", page("Misconceptions", f"<h1>Misconceptions And Weak-Claim Repairs</h1><section class=\"grid\">{''.join(misconception_cards)}</section>", "review"))
 
     evidence_html = "".join(evidence_card(row) for row in evidence)
-    write(SITE / "evidence.html", page("Evidence", f"<h1>Evidence Ledger</h1><p class=\"lede\">Each record points to a local transcript window, timestamp URL, and manual statement of what the transcript supports versus what the site synthesizes beyond it.</p><section class=\"stack\">{evidence_html}</section>", "evidence"))
+    evidence_intro = """
+<h1>Evidence Ledger</h1>
+<p class="lede">Evidence is the guardrail between lecture source and teaching synthesis.</p>
+<div class="essay">
+  <p>Each record points to a lecture, video id, timestamp URL, local transcript window, and raw VTT source. The important fields are not just the timestamp. The record must say what the transcript directly supports and what the site adds beyond the transcript.</p>
+  <p>Use this page to check honesty. A keyword match is not evidence by itself. A good evidence record names the lecture argument: for example, that Lecture 11 discusses reachability through reachable sets, or that Lecture 7 frames dynamic programming as state-indexed recursion.</p>
+  <p>If a concept page makes a stronger teaching claim, the evidence record should make the boundary visible rather than hiding that synthesis.</p>
+</div>
+"""
+    write(SITE / "evidence.html", page("Evidence", f"{evidence_intro}<section class=\"stack\">{evidence_html}</section>", "evidence"))
 
     review = [
         (
@@ -1078,7 +1106,16 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
     audit_table = "<table><tr><th>Requirement</th><th>Status</th><th>Evidence</th></tr>" + "".join(
         f"<tr><td>{esc(a)}</td><td>{esc(b)}</td><td>{esc(c)}</td></tr>" for a, b, c in audit_rows
     ) + "</table>"
-    write(SITE / "completion-audit.html", page("Completion Audit", f"<h1>Completion Audit</h1>{audit_table}", "review"))
+    completion_intro = """
+<h1>Completion Audit</h1>
+<p class="lede">This page is the local proof that the package can be rebuilt and reviewed.</p>
+<div class="essay">
+  <p>The audit is deliberately mechanical about files, counts, transcript coverage, evidence review, and generated pages. That mechanical check does not replace editorial judgment, but it prevents a different failure: polished prose with missing transcripts, broken links, absent evidence, or stale generated output.</p>
+  <p>Read this together with the quality rubric. The audit proves the source layer is present and the site is coherent; the rubric asks whether the writing reaches the first-principles standard.</p>
+  <p>A reviewer should be able to rerun the build, reopen the same pages, and see the same transcript-backed route through the course, without hidden manual edits.</p>
+</div>
+"""
+    write(SITE / "completion-audit.html", page("Completion Audit", f"{completion_intro}{audit_table}", "review"))
 
     write(
         SITE / "provenance.html",
@@ -1086,10 +1123,16 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
             "Provenance",
             f"""
 <h1>Provenance</h1>
-<p>The canonical source is <a href="{esc(manifest['playlist_url'])}">{esc(manifest['playlist_url'])}</a>.</p>
-<p>Playlist metadata is stored in <code>raw-material/youtube/playlist.json</code>. Caption files are stored under <code>raw-material/youtube/transcripts/raw-vtt/</code>, cleaned text under <code>raw-material/youtube/transcripts/clean/</code>, and availability in <code>raw-material/youtube/transcript-index.json</code>.</p>
-<p>Analysis artifacts live in <code>analysis/concepts/</code>, <code>analysis/evidence/</code>, and <code>analysis/throughlines/</code>.</p>
-<p>Run <code>python3 scripts/build_first_principles_atlas.py</code>, then <code>python3 scripts/build_teaching_artifacts.py</code>, then <code>python3 scripts/audit_course_quality.py</code>, then <code>python3 scripts/build_site.py</code>, then <code>python3 scripts/validate_all.py</code>.</p>
+<p class="lede">Provenance explains where the course material came from and how the site is rebuilt from local artifacts.</p>
+<div class="essay">
+  <p>The canonical source is <a href="{esc(manifest['playlist_url'])}">{esc(manifest['playlist_url'])}</a>. The repo keeps this source layer separate from synthesis so a reviewer can inspect the raw material before trusting the teaching pages.</p>
+  <p>Playlist metadata is stored in <code>raw-material/youtube/playlist.json</code>. Caption files are stored under <code>raw-material/youtube/transcripts/raw-vtt/</code>, cleaned text under <code>raw-material/youtube/transcripts/clean/</code>, and availability in <code>raw-material/youtube/transcript-index.json</code>.</p>
+  <p>Analysis artifacts live in <code>analysis/concepts/</code>, <code>analysis/evidence/</code>, <code>analysis/throughlines/</code>, and <code>analysis/teaching/</code>. The site under <code>site/</code> is generated output, not the only source of truth.</p>
+  <p>The build path is: download or refresh transcripts, build the first-principles atlas and evidence ledger, build teaching artifacts, run the quality audit, render the static site, then validate links, evidence references, and richness gates.</p>
+  <p>This separation matters because the writing can improve without losing the source trail. A richer explanation should still point back to the same transcript window and declare what is synthesis.</p>
+  <p>That is the difference between a course companion and an unsupported essay or summary.</p>
+  <p>Run <code>python3 scripts/build_first_principles_atlas.py</code>, then <code>python3 scripts/build_teaching_artifacts.py</code>, then <code>python3 scripts/audit_course_quality.py</code>, then <code>python3 scripts/build_site.py</code>, then <code>python3 scripts/validate_all.py</code>.</p>
+</div>
 """,
             "provenance",
         ),

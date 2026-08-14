@@ -195,6 +195,11 @@ def main() -> int:
         "index.html": ["How To Read This Site", "The course then changes tools", "evidence record"],
         "review-guide.html": ["Reference comparison", "Concrete operation", "richness gates"],
         "quality.html": ["No filler", "Concrete math", "This rubric is an editorial test"],
+        "transcripts.html": ["source floor", "Raw VTT captions stay separate", "auditing source coverage"],
+        "concepts.html": ["not read these as vocabulary flashcards", "one concrete run", "boundary test"],
+        "evidence.html": ["guardrail between lecture source and teaching synthesis", "keyword match is not evidence", "lecture argument"],
+        "completion-audit.html": ["local proof", "mechanical check does not replace editorial judgment", "source layer is present"],
+        "provenance.html": ["source layer separate from synthesis", "build path", "generated output"],
     }
     for filename, needles in rendered_checks.items():
         path = SITE / filename
@@ -225,6 +230,11 @@ def main() -> int:
         "formula-reader.html": 750,
         "review-guide.html": 260,
         "quality.html": 300,
+        "transcripts.html": 520,
+        "concepts.html": 950,
+        "evidence.html": 6600,
+        "completion-audit.html": 220,
+        "provenance.html": 240,
     }
     for filename, minimum in minimum_page_words.items():
         path = SITE / filename

@@ -24,10 +24,16 @@
   </header>
   <main>
 <h1>Provenance</h1>
-<p>The canonical source is <a href="https://www.youtube.com/playlist?list=PLa9dmHsLK9dg">https://www.youtube.com/playlist?list=PLa9dmHsLK9dg</a>.</p>
-<p>Playlist metadata is stored in <code>raw-material/youtube/playlist.json</code>. Caption files are stored under <code>raw-material/youtube/transcripts/raw-vtt/</code>, cleaned text under <code>raw-material/youtube/transcripts/clean/</code>, and availability in <code>raw-material/youtube/transcript-index.json</code>.</p>
-<p>Analysis artifacts live in <code>analysis/concepts/</code>, <code>analysis/evidence/</code>, and <code>analysis/throughlines/</code>.</p>
-<p>Run <code>python3 scripts/build_first_principles_atlas.py</code>, then <code>python3 scripts/build_teaching_artifacts.py</code>, then <code>python3 scripts/audit_course_quality.py</code>, then <code>python3 scripts/build_site.py</code>, then <code>python3 scripts/validate_all.py</code>.</p>
+<p class="lede">Provenance explains where the course material came from and how the site is rebuilt from local artifacts.</p>
+<div class="essay">
+  <p>The canonical source is <a href="https://www.youtube.com/playlist?list=PLa9dmHsLK9dg">https://www.youtube.com/playlist?list=PLa9dmHsLK9dg</a>. The repo keeps this source layer separate from synthesis so a reviewer can inspect the raw material before trusting the teaching pages.</p>
+  <p>Playlist metadata is stored in <code>raw-material/youtube/playlist.json</code>. Caption files are stored under <code>raw-material/youtube/transcripts/raw-vtt/</code>, cleaned text under <code>raw-material/youtube/transcripts/clean/</code>, and availability in <code>raw-material/youtube/transcript-index.json</code>.</p>
+  <p>Analysis artifacts live in <code>analysis/concepts/</code>, <code>analysis/evidence/</code>, <code>analysis/throughlines/</code>, and <code>analysis/teaching/</code>. The site under <code>site/</code> is generated output, not the only source of truth.</p>
+  <p>The build path is: download or refresh transcripts, build the first-principles atlas and evidence ledger, build teaching artifacts, run the quality audit, render the static site, then validate links, evidence references, and richness gates.</p>
+  <p>This separation matters because the writing can improve without losing the source trail. A richer explanation should still point back to the same transcript window and declare what is synthesis.</p>
+  <p>That is the difference between a course companion and an unsupported essay or summary.</p>
+  <p>Run <code>python3 scripts/build_first_principles_atlas.py</code>, then <code>python3 scripts/build_teaching_artifacts.py</code>, then <code>python3 scripts/audit_course_quality.py</code>, then <code>python3 scripts/build_site.py</code>, then <code>python3 scripts/validate_all.py</code>.</p>
+</div>
 </main>
 </body>
 </html>

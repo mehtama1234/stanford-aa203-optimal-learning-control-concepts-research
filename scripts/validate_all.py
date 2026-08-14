@@ -287,6 +287,12 @@ def main() -> int:
                     errors.append(f"action concept page missing command-vs-outcome marker: {marker}")
             if len(words) < 720:
                 errors.append(f"action concept page below core richness floor: {len(words)} < 720")
+        if concept.get("id") == "dynamics":
+            for marker in ["20 m/s", "0.2 seconds", "p_next = p + dt * v", "yaw_rate(x,u,grip)", "dry-road plan can fail on ice"]:
+                if marker not in text:
+                    errors.append(f"dynamics concept page missing state-update marker: {marker}")
+            if len(words) < 720:
+                errors.append(f"dynamics concept page below core richness floor: {len(words)} < 720")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

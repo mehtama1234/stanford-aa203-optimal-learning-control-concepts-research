@@ -407,6 +407,12 @@ def main() -> int:
                     errors.append(f"imitation learning concept page missing demonstration-loop marker: {marker}")
             if len(words) < 900:
                 errors.append(f"imitation learning concept page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "behavioral-cloning":
+            for marker in ["1,000 centered-lane frames", "steering angle -12 degrees", "steering angle +12 degrees", "average label is 0 degrees", "L(theta)=sum_i ||pi_theta(x_i)-u_i^expert||^2", "50*(a - (-12))^2 + 50*(a - 12)^2", "squared-error optimum is a = 0 degrees", "no built-in exploration or reward signal"]:
+                if marker not in text:
+                    errors.append(f"behavioral cloning concept page missing supervised-action marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"behavioral cloning concept page below core richness floor: {len(words)} < 900")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

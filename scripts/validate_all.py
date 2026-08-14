@@ -312,11 +312,11 @@ def main() -> int:
             if len(words) < 720:
                 errors.append(f"horizon concept page below core richness floor: {len(words)} < 720")
         if concept.get("id") == "constraints":
-            for marker in ["4 centimeters from the shelf", "12 newton-meters", "g(x,u) &lt;= 0", "0.04 - distance_to_shelf(x_k) &lt;= 0", "low cost cannot buy permission"]:
+            for marker in ["4 centimeters from the shelf", "12 newton-meters", "t = 0.4 seconds", "3 centimeters from the shelf", "t = 0.6 seconds", "15 newton-meters", "5 centimeters", "11 newton-meters", "3 &lt; 4 and 15 &gt; 12", "g(x,u) &lt;= 0", "g_clear,k = 0.04 - distance_to_shelf(x_k) &lt;= 0", "distance_to_shelf = 0.03", "g_clear = 0.04 - 0.03 = 0.01 &gt; 0", "g_tau,k = abs(tau_k) - 12 &lt;= 0", "g_tau = 15 - 12 = 3 &gt; 0", "g_clear = -0.01", "g_tau = -1", "defect_k = x_{k+1} - f(x_k,u_k) = 0", "shelf flex, cable snag, heat, or human clearance"]:
                 if marker not in text:
                     errors.append(f"constraints concept page missing hard-limit marker: {marker}")
-            if len(words) < 720:
-                errors.append(f"constraints concept page below core richness floor: {len(words)} < 720")
+            if len(words) < 900:
+                errors.append(f"constraints concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "feasibility":
             for marker in ["18 meters behind a stopped truck", "22 m/s", "v^2/(2a)", "F(x_0) is empty", "correct output is infeasibility"]:
                 if marker not in text:

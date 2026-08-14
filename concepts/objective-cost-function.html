@@ -54,8 +54,8 @@
 <section class="fp">
   <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A car that reaches a parking spot fastest may scrape the wall. A car that never moves is safe but useless. The cost is the scoreboard that says which future is better: time, distance from the goal, steering effort, comfort, and collision risk all get counted in one place.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>A typical objective adds stage costs along the path and a terminal cost at the end. The weights are not decoration; they state the tradeoff the controller will actually obey.</p></div></details>
+  <div class="explain-box"><p>A parking controller compares two futures. Path A reaches the spot in 8 seconds but passes 6 centimeters from the wall and uses hard steering. Path B takes 12 seconds, stays 35 centimeters from the wall, and turns gently. If the cost counts only time, Path A wins. If the cost adds wall clearance, steering effort, and final alignment, Path B may win. The objective is the written scoreboard; the optimizer does not know the human meaning of safe, smooth, or rude unless those penalties are in the score or constraints. The chosen path reveals what the score truly valued on pavement.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>A typical objective adds stage costs along the path and a terminal cost at the end: J = sum_k stage_cost(x_k,u_k) + terminal_cost(x_N). A parking stage cost might include 1.0*time_step + 0.2*steering_effort + 5.0*wall_risk. The weights are not decoration; they decide whether saving four seconds is worth scraping the car. If damage is absent from J and not forbidden by a constraint, the controller is free to choose damage.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">05 · boundary</div>

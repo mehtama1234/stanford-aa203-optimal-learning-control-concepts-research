@@ -371,6 +371,12 @@ def main() -> int:
                     errors.append(f"LQR concept page missing feedback-gain marker: {marker}")
             if len(words) < 780:
                 errors.append(f"LQR concept page below core richness floor: {len(words)} < 780")
+        if concept.get("id") == "local-quadratic-approximation":
+            for marker in ["6 centimeters too far left", "delta u = -0.02 meters", "delta u = 0.02 meters", "q(delta u) = c + g*delta u + 0.5*H*delta u^2", "delta u* = -g/H = 0.028 meters", "trust region"]:
+                if marker not in text:
+                    errors.append(f"local quadratic approximation concept page missing fitted-bowl marker: {marker}")
+            if len(words) < 780:
+                errors.append(f"local quadratic approximation concept page below core richness floor: {len(words)} < 780")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

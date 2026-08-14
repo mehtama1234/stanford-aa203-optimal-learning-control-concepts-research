@@ -341,6 +341,12 @@ def main() -> int:
                     errors.append(f"dynamic programming concept page missing backward-update marker: {marker}")
             if len(words) < 740:
                 errors.append(f"dynamic programming concept page below core richness floor: {len(words)} < 740")
+        if concept.get("id") == "trajectory-optimization":
+            for marker in ["1.2 seconds", "t = 0.0, 0.3, 0.6, 0.9, and 1.2 seconds", "40 newton-meters", "x_0...x_N and u_0...u_{N-1}", "every neighboring pair physically connected"]:
+                if marker not in text:
+                    errors.append(f"trajectory optimization concept page missing path-history marker: {marker}")
+            if len(words) < 740:
+                errors.append(f"trajectory optimization concept page below core richness floor: {len(words)} < 740")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

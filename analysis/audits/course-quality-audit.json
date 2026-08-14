@@ -13,13 +13,13 @@
   "evidence": {
     "count": 38,
     "confidence_status_counts": {
-      "manual_deepened": 12,
-      "needs_review": 26
+      "manual_deepened": 37,
+      "needs_review": 1
     },
     "short_windows": [],
     "missing_transcripts": [],
     "missing_timestamps": [],
-    "manual_review_remaining": 26
+    "manual_review_remaining": 1
   },
   "teaching": {
     "derivations": 6,

@@ -58,6 +58,130 @@
     "confidence_status": "manual_deepened",
     "what_transcript_supports": "Lecture 19 closes the course roadmap by moving from model-free policy optimization to model-based RL. The timestamp supports the site's placement of model-based RL as the final learning-based-control family.",
     "synthesis_beyond_transcript": "The page expands the roadmap transition into the method idea that learned or known models can support planning and reduce real trial-and-error."
+  },
+  "ev-action-control-input-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 1 introduces AA203 as optimal and learning-based control and situates the instructor's work in robot autonomy. This supports using control input/action as part of the course's basic control vocabulary, though the timestamp is introductory rather than a detailed actuator example.",
+    "synthesis_beyond_transcript": "The concept page supplies the more precise first-principles distinction between a desired outcome and the command a controller can actually issue."
+  },
+  "ev-horizon-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 1 introduces final time of operation in a double-integrator example. This supports the horizon concept as the time span over which the control problem is defined.",
+    "synthesis_beyond_transcript": "The page generalizes final time into the learner-facing question of how far ahead the controller must reason before delayed consequences matter."
+  },
+  "ev-constraints-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 2 distinguishes an open set from constraints and gives a bounded interval as an example with lower and upper bounds. This supports the constraint page's claim that constraints restrict the feasible decision set.",
+    "synthesis_beyond_transcript": "The page translates finite-dimensional constraint language into control settings where physical, safety, and actuator limits bound the trajectory."
+  },
+  "ev-feasibility-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 12 states that the MPC loop should have a feasible solution at each point in time. This directly supports the feasibility page and overlaps with recursive feasibility in the MPC block.",
+    "synthesis_beyond_transcript": "The page makes explicit the diagnostic order: before asking what is optimal, a controller must know whether any legal trajectory remains."
+  },
+  "ev-static-optimization-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 2 says the class will review key concepts behind classical nonlinear optimization over finitely many decision variables because those insights support optimal and learning-based control. This supports static optimization as a foundational component rather than the whole course.",
+    "synthesis_beyond_transcript": "The page draws the boundary between snapshot optimization and time-coupled control problems."
+  },
+  "ev-gradient-first-order-condition-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 2 explains differentiability through a first-order approximation using the gradient and a small displacement. This supports the concept page's local-improvement interpretation of gradients and first-order conditions.",
+    "synthesis_beyond_transcript": "The page connects the local calculus statement to the control learner's practical question: which tiny decision change improves the objective?"
+  },
+  "ev-calculus-of-variations-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 3 states the optimal-control problem as finding an admissible control that causes a differential-equation system to follow an admissible trajectory minimizing a functional. This directly supports the calculus-of-variations page.",
+    "synthesis_beyond_transcript": "The page expands the lecture's formal statement into the idea that the unknown is a whole path, not an isolated scalar decision."
+  },
+  "ev-costate-adjoint-variable-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 4 connects constrained finite-dimensional optimization, Lagrange multipliers, and the move of adding constraints to the objective. This supports the costate page's analogy between multipliers and trajectory-level shadow prices.",
+    "synthesis_beyond_transcript": "The page uses that analogy to explain costates as backward prices on state deviations through future dynamics."
+  },
+  "ev-hamiltonian-optimal-control-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 4 defines the Hamiltonian as augmenting the cost with the constraint through costate variables and uses it to state optimality conditions. This directly supports the Hamiltonian concept page.",
+    "synthesis_beyond_transcript": "The page turns the formal optimality condition into the plain-language role of pricing immediate cost together with future state sensitivity."
+  },
+  "ev-indirect-methods-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 4 locates indirect methods in the open-loop optimal-control roadmap and contrasts the upcoming move to direct methods. This supports the method-family boundary between deriving optimality conditions and transcribing the problem directly.",
+    "synthesis_beyond_transcript": "The page explains the operational meaning of indirect methods: derive necessary equations first, then solve the resulting boundary-value structure."
+  },
+  "ev-direct-transcription-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 6 announces the shift from indirect methods to direct methods as another class of open-loop control strategies. This supports the direct-methods entry point, though the timestamp itself is introductory.",
+    "synthesis_beyond_transcript": "The direct-transcription page supplies the detailed discretization interpretation and should eventually be paired with a later timestamp that names transcription more explicitly."
+  },
+  "ev-shooting-methods-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 6 explains that control parameterization methods are also known as shooting and that they discretize time while parameterizing controls. This directly supports the shooting-methods page.",
+    "synthesis_beyond_transcript": "The page adds the learner-facing picture of guessing controls, simulating forward, and adjusting the guess until endpoint and cost conditions are acceptable."
+  },
+  "ev-collocation-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 6 distinguishes state-and-control parameterization methods, also known as collocation methods, from control-parameterization/shooting methods. This supports the collocation page's method classification.",
+    "synthesis_beyond_transcript": "The page explains the implication of that classification: the path and dynamics are enforced at selected grid or collocation points."
+  },
+  "ev-trajectory-optimization-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 6 discusses deploying a nominal path with a closed-loop module that tracks the plan and steers back toward it when reality deviates. This supports the site distinction between planned trajectory and feedback tracking.",
+    "synthesis_beyond_transcript": "The page generalizes the discussion into trajectory optimization as choosing the planned path under dynamics and constraints before execution."
+  },
+  "ev-dynamic-programming-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 7 introduces dynamic programming as a procedural way to solve for optimal closed-loop control policies and immediately notes its computational intensity. This directly supports the dynamic-programming page.",
+    "synthesis_beyond_transcript": "The page turns that course framing into the concept of solving state-indexed future-cost subproblems rather than enumerating full action sequences."
+  },
+  "ev-stochastic-dynamic-programming-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 9 introduces disturbances modeled as random variables with an assumed probability distribution. This supports stochastic dynamic programming as dynamic programming under uncertain next-state outcomes.",
+    "synthesis_beyond_transcript": "The page adds the Bellman interpretation: expected future value replaces a single deterministic next-state value."
+  },
+  "ev-lqr-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 8 presents LQR as an example that applies dynamic-programming recursion and is also a control problem of interest in its own right. This directly supports the LQR concept page.",
+    "synthesis_beyond_transcript": "The page expands the timestamp into why LQR is useful: local linear and quadratic structure gives tractable feedback for small deviations."
+  },
+  "ev-local-quadratic-approximation-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 8 states the assumption of a quadratic cost with terminal, state, and control penalties. This supports the local-quadratic-approximation page's claim that quadratic structure is a useful local simplification.",
+    "synthesis_beyond_transcript": "The page adds the boundary condition that local quadratic reasoning is credible only near the operating region where the approximation remains accurate."
+  },
+  "ev-stability-under-replanning-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 12 says the MPC discussion will move from persistent feasibility to stability, and frames both as properties to imbue in the MPC control pipeline. This supports the stability-under-replanning page.",
+    "synthesis_beyond_transcript": "The page explains why repeated feasible optimization is not enough: replanning also needs a condition that creates long-run progress rather than cycling or drift."
+  },
+  "ev-behavioral-cloning-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 15 describes behavior cloning as supervised learning of behavior and connects it to learning a parametric mapping from inputs to outputs. This directly supports the behavioral-cloning page.",
+    "synthesis_beyond_transcript": "The page adds the control-specific closed-loop caveat: supervised action accuracy does not by itself guarantee robust execution."
+  },
+  "ev-distribution-shift-imitation-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 15 describes learning a parameterized policy that represents a distribution over controls given states from demonstrations. This supports the page's discussion of the demonstration distribution and learned-policy behavior.",
+    "synthesis_beyond_transcript": "The page makes explicit the distribution-shift failure mode: a learned policy can visit states that the expert demonstrations did not cover."
+  },
+  "ev-reward-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 16 contrasts directly learning a policy with learning the underlying objective or reward function optimized by the expert. This supports the reward page's role for reward as a behavioral objective signal.",
+    "synthesis_beyond_transcript": "The page adds the reward-hacking boundary: a scalar reward may omit safety or task values and therefore incentivize unintended behavior."
+  },
+  "ev-policy-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 16 says behavioral cloning can directly learn a policy that represents, mimics, and approximates expert behavior. This supports the policy page's definition of a policy as the action-selection rule.",
+    "synthesis_beyond_transcript": "The page generalizes from imitation to all control settings where a policy maps available state or observation information into actions."
+  },
+  "ev-value-based-rl-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 17 introduces value-based methods as a category of model-free reinforcement-learning algorithms. This directly supports the value-based RL page.",
+    "synthesis_beyond_transcript": "The page explains the first-principles method role: learn future-return values and choose actions through those estimates."
+  },
+  "ev-exploration-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 16 says the policy must explore the state and action space well enough for reinforcement-learning tools to be effective. This directly supports the exploration page.",
+    "synthesis_beyond_transcript": "The page adds the control boundary that exploration must be balanced against safety, hardware limits, and data-collection cost."
   }
 }
-

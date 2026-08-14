@@ -4,6 +4,51 @@ Build Stanford AA203 Optimal and Learning-Based Control into a transcript-backed
 
 The finished site should not be a playlist mirror, transcript dump, or lecture summary. It should help a serious learner understand optimal and learning-based control as one connected way of thinking: choose actions over time, respect dynamics and constraints, account for future cost, replan under uncertainty, and use learning only where model-based reasoning is incomplete or too expensive.
 
+## Reference Richness Target
+
+The quality bar is not "all pages exist." The quality bar is the richer explainer style shown by local reference pages such as:
+
+- `http://127.0.0.1:8050/vt-explained.html`
+- `http://127.0.0.1:8050/the-machine.html`
+
+Those pages work because they teach from first principles in plain everyday language. They do not start with vocabulary. They start with a real failure in the world, show why the simple idea breaks, introduce the mathematical object only after the need is felt, show the operation on that object, give a concrete run, and then expose the math one level deeper.
+
+AA203 must reach that standard. A reviewer should feel that each page was written by someone trying to teach the idea to a serious learner at a whiteboard, not by someone filling a template.
+
+Every major page should have:
+
+- A short, forceful thesis in ordinary words.
+- A concrete physical or decision problem before any formal name.
+- A "what breaks" paragraph that makes the naive approach visibly fail.
+- A named mathematical object introduced as the thing that carries the burden.
+- A plain-language operation: what gets updated, minimized, propagated, priced, constrained, sampled, or replanned.
+- A worked run with concrete quantities, time steps, states, actions, constraints, or failure signals.
+- A collapsible or separated "actual math, one level deeper" explanation for readers ready for symbols.
+- A failure boundary that tells the learner where the method should not be trusted.
+- Links into transcript evidence without pretending the transcript proves synthesis it does not prove.
+
+The site should avoid cliche, vague praise, and decorative jargon. Do not write:
+
+- "This is important."
+- "This is useful."
+- "This improves performance."
+- "This captures the objective."
+- "This method optimizes the system."
+- "This is a powerful framework."
+- "This enables better control."
+
+Write instead:
+
+- Which state changes.
+- Which action is available.
+- Which future consequence is being priced.
+- Which rule moves the state forward.
+- Which constraint can be violated.
+- Which approximation makes the computation small enough.
+- Which real failure the learner would see if the assumption is false.
+
+Use course vocabulary only after the everyday problem is already clear. Words such as value function, Hamiltonian, costate, collocation, recursive feasibility, policy gradient, and model-based RL should arrive as names for objects the learner already needs, not as labels dropped first.
+
 ## Source Backbone
 
 Preserve the full AA203 source layer before deep synthesis.
@@ -106,12 +151,42 @@ Each concept page must include:
 - The naive approach and why it fails.
 - The mathematical object introduced.
 - The operation performed on that object.
-- A small worked example or concrete scenario.
+- A concrete worked run, preferably with numbers, time steps, state/action values, constraints, or a visible failure.
+- A one-level-deeper math block that explains the symbols as operations.
 - The assumption boundary.
 - A failure mode.
 - Transcript-backed evidence.
 - A "recognize this in a new problem" diagnostic.
 - Links to prerequisite and downstream concepts.
+
+Core concept pages should not be short cards. They should read as compact essays with the same progression as the reference pages:
+
+1. The physical or decision problem.
+2. The tempting shortcut.
+3. Why that shortcut fails.
+4. The mathematical object.
+5. The operation.
+6. One concrete run.
+7. The actual math, one level deeper.
+8. Where it fails.
+9. Transcript evidence.
+
+At minimum, these pages must receive especially rich treatment:
+
+- `concepts/optimal-control-problem.html`
+- `concepts/state.html`
+- `concepts/action-control-input.html`
+- `concepts/dynamics.html`
+- `concepts/objective-cost-function.html`
+- `concepts/value-function.html`
+- `concepts/bellman-recursion.html`
+- `concepts/direct-transcription.html`
+- `concepts/lqr.html`
+- `concepts/reachability.html`
+- `concepts/model-predictive-control.html`
+- `concepts/imitation-learning.html`
+- `concepts/reinforcement-learning.html`
+- `concepts/model-based-rl.html`
 
 ## Evidence Standard
 
@@ -169,6 +244,22 @@ Include drills that ask the learner to:
 
 Every drill should have a full solution that names the wrong turns, not just the final answer.
 
+## Page-Level Richness Standard
+
+The required HTML surfaces should not be shallow indexes.
+
+- `index.html` should introduce the course as one live problem: how to choose actions whose consequences arrive later.
+- `course-spine.html` should read like a guided essay through the course, with each move tied to a concrete example.
+- `lectures.html` should explain what problem each lecture adds to the course, not only list video metadata.
+- `families.html` should compare method families by what pressure forced them to exist: path choice, future pricing, local feedback, replanning, demonstration, reward, or model learning.
+- `primitives.html` should teach state, action, dynamics, cost, constraint, value, policy, uncertainty, and feasibility as reusable objects in everyday control stories.
+- `formula-reader.html` should make every formula readable as an operation on a state, action, future cost, or constraint.
+- `derivations.html` should be slow enough that a learner can see why the equation appears.
+- `worked-examples.html` should include concrete quantities or at least precise state/action/cost/constraint choices.
+- `drills.html` and `solutions.html` should train transfer. Solutions must explain the wrong answer, not only provide the right one.
+- `misconceptions.html` should repair weak sentences into first-principles explanations.
+- `evidence.html` should keep transcript evidence honest and useful.
+
 ## Audit And Validation
 
 The repo should have scripts that prove the site is structurally coherent.
@@ -183,6 +274,9 @@ Validation should check:
 - Every lecture appears in the lecture index.
 - Every transcript-backed claim declares its evidence basis.
 - The completion audit matches local artifact counts.
+- Richness gates for core pages: minimum prose depth, required explainer sections, worked-run blocks, math-deeper blocks, and failure-boundary blocks.
+- Forbidden vague phrases and cliches do not appear in generated pages.
+- Core concept pages contain concrete nouns from the domain, such as car, drone, rocket, robot arm, rover, shelf, wall, traffic, fuel, thrust, torque, velocity, battery, disturbance, or reward, rather than only abstract control words.
 
 The final handoff should include:
 
@@ -198,3 +292,5 @@ The final handoff should include:
 ## Completion Definition
 
 This goal is complete when a reviewer can open `site/index.html`, follow a coherent route through the course, inspect transcript evidence, study concepts from first principles, practice with drills, check solutions, and verify through audit pages that the package is locally reproducible.
+
+It is not complete merely because the validator passes. It is complete only when the main pages feel comparable in richness and clarity to `vt-explained.html` and `the-machine.html`: first-principles, concrete, simple, non-cliche, low-jargon, and deep enough that a learner can transfer the ideas to a new control problem.

@@ -20,6 +20,13 @@ Completed locally:
 - Generated 57 HTML pages, including individual concept pages plus course spine, families, primitives, formula reader, derivations, worked examples, drills, solutions, misconceptions, evidence, review guide, quality rubric, and completion audit.
 - Added validation for manifest shape, transcript file references, concept fields, evidence fields, evidence-to-transcript links, teaching artifacts, generated pages, concept pages, evidence anchors, teaching-page markers, and local links.
 
+Important editorial correction:
+
+- The repo is structurally complete, but the writing is not yet at the richness standard of the strongest local explainers.
+- `GOAL.md` now names the stricter target: pages should feel comparable to `http://127.0.0.1:8050/vt-explained.html` and `http://127.0.0.1:8050/the-machine.html`.
+- Passing validation is not enough. The next pass must make the main pages first-principles, concrete, everyday, non-cliche, and low-jargon.
+- The current concept-page reshape is only a first serious pass. It still needs more page-specific worked runs, more concrete quantities, richer formula explanations, and stronger non-core concept pages.
+
 ## Rebuild
 
 All 19 lecture transcripts are present locally. Rebuild the generated artifacts with:
@@ -38,6 +45,8 @@ python3 scripts/validate_all.py
 The next phase should follow the stronger course repos:
 
 - Use `GOAL.md` as the acceptance target.
-- Continue editorial expansion where desired, using the current derivations, worked examples, drills, solutions, and weak-claim repairs as the teaching-grade baseline.
-- Add richer drill solutions and weak-claim repair cases.
-- Add a stricter editorial audit for concept word depth, forbidden filler, evidence coverage, and page completeness.
+- Treat `vt-explained.html` and `the-machine.html` as the writing reference.
+- Upgrade the core concept pages into compact first-principles essays with concrete worked runs and one-level-deeper math blocks.
+- Upgrade non-core concept pages so they are not generic template expansions.
+- Add richer drill solutions and weak-claim repair cases that explain why the wrong answer fails.
+- Add stricter editorial audits for concept depth, worked-run presence, math-deeper blocks, forbidden filler, concrete nouns, evidence coverage, and page completeness.

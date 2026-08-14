@@ -348,11 +348,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"dynamic programming concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "trajectory-optimization":
-            for marker in ["1.2 seconds", "t = 0.0, 0.3, 0.6, 0.9, and 1.2 seconds", "40 newton-meters", "x_0...x_N and u_0...u_{N-1}", "every neighboring pair physically connected"]:
+            for marker in ["1.2 seconds", "t = 0.0, 0.3, 0.6, 0.9, and 1.2 seconds", "foot height samples are 0.04, 0.18, 0.22, 0.12, and 0.00 meters", "box top is 0.16 meters", "torso lean is 17 degrees", "support limit is 12 degrees", "46 newton-meters", "40 newton-meters", "whole state-action history", "feedback tracker", "x_0...x_N and u_0...u_{N-1}", "J = sum_k [10*foot_error_k^2 + 0.01*torque_k^2]", "x_{k+1}=f(x_k,u_k)", "defect_k = x_{k+1} - f(x_k,u_k)", "defect_k = 0", "torso_lean_2 = 17 degrees", "torso_lean &lt;= 12 degrees", "torque_3 = 46", "torque &lt;= 40", "grid skips the instant", "contact model lies about foot slip"]:
                 if marker not in text:
                     errors.append(f"trajectory optimization concept page missing path-history marker: {marker}")
-            if len(words) < 740:
-                errors.append(f"trajectory optimization concept page below core richness floor: {len(words)} < 740")
+            if len(words) < 900:
+                errors.append(f"trajectory optimization concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "direct-transcription":
             for marker in ["0.0 rad to 1.2 rad", "t = 0.0, 0.2, 0.4, and 0.6 seconds", "defect is 0.3 rad", "defect_k = x_{k+1} - step(x_k,u_k)", "defect_k = 0"]:
                 if marker not in text:

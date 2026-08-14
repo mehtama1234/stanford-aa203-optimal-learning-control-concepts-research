@@ -353,6 +353,12 @@ def main() -> int:
                     errors.append(f"direct transcription concept page missing defect marker: {marker}")
             if len(words) < 760:
                 errors.append(f"direct transcription concept page below core richness floor: {len(words)} < 760")
+        if concept.get("id") == "collocation":
+            for marker in ["t = 0.2 seconds", "x = 0.10 meters", "x = 0.08 to 0.12 meters", "defect_mid = path_derivative_mid - f(x_mid,u_mid)", "Driving defect_mid to 0"]:
+                if marker not in text:
+                    errors.append(f"collocation concept page missing midpoint marker: {marker}")
+            if len(words) < 740:
+                errors.append(f"collocation concept page below core richness floor: {len(words)} < 740")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

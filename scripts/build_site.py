@@ -126,8 +126,8 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "math": "A state is the smallest present-tense record that lets the model predict the next state from the next action. If two histories give the same state, the controller is claiming their future options are the same.",
     },
     "action-control-input": {
-        "run": "A drone pilot may want the drone to be two meters higher. The controller cannot choose height directly. It can change rotor thrust; thrust changes acceleration, acceleration changes velocity, and velocity changes height. Calling height the action would make the plan ask for magic.",
-        "math": "The action u is the command passed into the dynamics. The next state is not chosen directly; it is produced by x_next = f(x, u).",
+        "run": "A drone pilot may want the drone to be two meters higher, but height is not the command. Suppose the drone is at 10 meters, moving upward at 0.2 m/s, and the controller raises average rotor thrust from hover thrust to 48 percent above hover for the next 0.1 seconds. That command changes vertical acceleration first. Only after acceleration changes does velocity change, and only after velocity changes does height change. If the plan writes 'go to 12 meters' as the action, it has skipped the actuator and asked the optimizer for an outcome the drone cannot directly issue.",
+        "math": "The action u is the command passed into the dynamics. A simple vertical model might update velocity by v_next = v + dt * a(u) and height by h_next = h + dt * v_next. With dt = 0.1, the thrust command changes acceleration during that tenth of a second; it does not set h_next to the desired height. The next state is produced by x_next = f(x, u), so action limits are limits on u, not on wishes about x_next.",
     },
     "dynamics": {
         "run": "If a car is moving fast on ice, the same steering angle produces a different next state than it would on dry asphalt. Dynamics are the rule that carries a command through the body and the world. Without that rule, planning is only drawing wishes on a map.",

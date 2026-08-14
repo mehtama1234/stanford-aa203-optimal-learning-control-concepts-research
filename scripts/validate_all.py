@@ -281,6 +281,12 @@ def main() -> int:
             for marker in ["data inside the loop", "What the learner changes next", "What states did the data actually cover", "warehouse drawer"]:
                 if marker not in text:
                     errors.append(f"learning concept page missing control-loop marker: {path.relative_to(ROOT)} -> {marker}")
+        if concept.get("id") == "action-control-input":
+            for marker in ["48 percent above hover", "v_next = v + dt * a(u)", "action limits are limits on u"]:
+                if marker not in text:
+                    errors.append(f"action concept page missing command-vs-outcome marker: {marker}")
+            if len(words) < 720:
+                errors.append(f"action concept page below core richness floor: {len(words)} < 720")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

@@ -438,11 +438,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"reward concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "policy":
-            for marker in ["distance_to_wall = 0.45 meters", "battery = 38 percent", "distance_to_wall &lt; 0.50 meters", "steering = -18 degrees", "pi(slow-left|x) = 0.8", "pi(hard-left|x) = 0.2", "u = pi(x)", "pi(u|x)", "x_{t+1}=f(x_t,u_t)", "omits a needed state variable"]:
+            for marker in ["distance_to_wall = 0.45 meters", "battery = 38 percent", "distance_to_wall &lt; 0.50 meters", "steering = -18 degrees", "pi(slow-left|x) = 0.8", "pi(hard-left|x) = 0.2", "fixed two-command script", "first slow-left, then slow-left again", "0.62 meters from the wall", "drift to 0.90 meters", "if distance_to_wall &gt; 0.60 meters", "steer = +10 degrees", "second command is different because the measured state is different", "u = pi(x)", "pi(u|x)", "x_{t+1}=f(x_t,u_t)", "x_0=(0.45, 0.8, 38)", "u_0=(-18 degrees, 0.4 m/s)", "x_1=(0.62, 0.35, 37)", "u_1=(-18 degrees, 0.4 m/s) again", "u_1=pi(x_1)=(+10 degrees, 0.5 m/s)", "difference between a list of actions and a rule", "omits a needed state variable"]:
                 if marker not in text:
                     errors.append(f"policy concept page missing closed-loop-rule marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"policy concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 1160:
+                errors.append(f"policy concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "state":
             for marker in ["y = 0.20 meters", "v_y = 0.00 m/s", "psi = 0 degrees", "v_y = -1.50 m/s", "psi = -8 degrees", "u = +5 degrees", "dt = 0.2 seconds", "y_next = y + dt*v_y", "0.20 + 0.2*0.00 = 0.20 meters", "0.20 + 0.2*(-1.50) = -0.10 meters", "single camera frame", "y was 0.50 meters left 0.2 seconds ago", "v_y_est = (0.20 - 0.50)/0.2 = -1.50 m/s", "battery_temp = 32 C", "battery_temp = 46 C", "48 C heat limit", "future constraint almost active", "battery heat", "x_{t+1}=f(x_t,u_t)", "same action distribution over next states", "x=[y]", "x=[y,v_y,psi]", "observation o_t", "camera_frame_t", "x_t = [y_t, (y_t-y_{t-1})/dt, psi_t]", "(0.20 - 0.50)/0.2 = -1.50", "sliding Car B from steady Car A", "x=[position,velocity]", "better state includes battery_temp", "battery_temp_next = battery_temp + heat_gain(u)", "heat_gain(climb)=3 C", "32 C to 35 C", "46 C to 49 C", "violates the heat constraint", "hidden battery temperature, tire grip, load mass"]:
                 if marker not in text:

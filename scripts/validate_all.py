@@ -312,11 +312,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"horizon concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "constraints":
-            for marker in ["4 centimeters from the shelf", "12 newton-meters", "t = 0.4 seconds", "3 centimeters from the shelf", "t = 0.6 seconds", "15 newton-meters", "5 centimeters", "11 newton-meters", "3 &lt; 4 and 15 &gt; 12", "g(x,u) &lt;= 0", "g_clear,k = 0.04 - distance_to_shelf(x_k) &lt;= 0", "distance_to_shelf = 0.03", "g_clear = 0.04 - 0.03 = 0.01 &gt; 0", "g_tau,k = abs(tau_k) - 12 &lt;= 0", "g_tau = 15 - 12 = 3 &gt; 0", "g_clear = -0.01", "g_tau = -1", "defect_k = x_{k+1} - f(x_k,u_k) = 0", "shelf flex, cable snag, heat, or human clearance"]:
+            for marker in ["4 centimeters from the shelf", "12 newton-meters", "t = 0.4 seconds", "3 centimeters from the shelf", "t = 0.6 seconds", "15 newton-meters", "5 centimeters", "11 newton-meters", "3 &lt; 4 and 15 &gt; 12", "2 points per missing centimeter", "Candidate C uses only 4 energy points", "2 centimeters from the shelf", "4 + 2*(4 - 2) = 8", "8 &lt; 11", "Candidate C must still be rejected", "g(x,u) &lt;= 0", "g_clear,k = 0.04 - distance_to_shelf(x_k) &lt;= 0", "distance_to_shelf = 0.03", "g_clear = 0.04 - 0.03 = 0.01 &gt; 0", "g_tau,k = abs(tau_k) - 12 &lt;= 0", "g_tau = 15 - 12 = 3 &gt; 0", "g_clear = -0.01", "g_tau = -1", "Candidate C has distance 0.02", "g_clear = 0.04 - 0.02 = 0.02 &gt; 0", "rho*max(0,g_clear)", "100*0.02 = 2", "not the same statement as g_clear &lt;= 0", "defect_k = x_{k+1} - f(x_k,u_k) = 0", "shelf flex, cable snag, heat, or human clearance"]:
                 if marker not in text:
                     errors.append(f"constraints concept page missing hard-limit marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"constraints concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 980:
+                errors.append(f"constraints concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "feasibility":
             for marker in ["18 meters behind a stopped truck", "22 m/s", "wet-road braking limit of 6 m/s^2", "v^2/(2a) = 22^2/(2*6) = 40.3 meters", "0.5 meters of side clearance", "safety rule requires 1.5 meters", "concrete barrier is 0.8 meters away", "cheap collision path is not a plan with a high cost", "x_{k+1}=f(x_k,u_k)", "stop_distance &lt;= 18", "40.3 &lt;= 18 is false", "clearance_left &gt;= 1.5", "0.5 &gt;= 1.5 is false", "clearance_right &gt;= 1.5", "0.8 &gt;= 1.5 is false", "F(x_0) = empty set", "correct output is infeasibility", "J = 10,000", "illegal plan with J = 1", "model honesty and horizon length", "forgot a shoulder lane"]:
                 if marker not in text:

@@ -432,11 +432,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"reinforcement learning concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "reward":
-            for marker in ["10 - 6 = 4", "35 newtons", "10 - 1 = 9", "-0.5 per newton above 8", "-20 if the cup is damaged", "r(x,u,x_next)", "G_0 = sum_t gamma^t r_t", "10 - 1 - 0.5*(35 - 8) - 20 = -24.5", "optimized the written measuring stick"]:
+            for marker in ["10 - 6 = 4", "35 newtons", "10 - 1 = 9", "-0.5 per newton above 8", "-20 if the cup is damaged", "delayed reward", "rewards 0, 0, +10", "get +4 now", "receive -6 next", "gentle return is 10", "yank return is -2", "gamma = 0.5", "0 + 0.5*0 + 0.5^2*10 = 2.5", "4 + 0.5*(-6) = 1", "how much patience the learner can afford", "r(x,u,x_next)", "G_0 = sum_t gamma^t r_t", "10 - 1 - 0.5*(35 - 8) - 20 = -24.5", "rewards [0,0,10]", "G_0(gentle; gamma=1)=10", "G_0(gentle; gamma=0.5)=0+0.5*0+0.25*10=2.5", "rewards [4,-6]", "G_0(yank; gamma=1)=-2", "G_0(yank; gamma=0.5)=4+0.5*(-6)=1", "later rewards count less", "optimized the written measuring stick", "patience"]:
                 if marker not in text:
                     errors.append(f"reward concept page missing scalar-loophole marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"reward concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 1160:
+                errors.append(f"reward concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "policy":
             for marker in ["distance_to_wall = 0.45 meters", "battery = 38 percent", "distance_to_wall &lt; 0.50 meters", "steering = -18 degrees", "pi(slow-left|x) = 0.8", "pi(hard-left|x) = 0.2", "fixed two-command script", "first slow-left, then slow-left again", "0.62 meters from the wall", "drift to 0.90 meters", "if distance_to_wall &gt; 0.60 meters", "steer = +10 degrees", "second command is different because the measured state is different", "u = pi(x)", "pi(u|x)", "x_{t+1}=f(x_t,u_t)", "x_0=(0.45, 0.8, 38)", "u_0=(-18 degrees, 0.4 m/s)", "x_1=(0.62, 0.35, 37)", "u_1=(-18 degrees, 0.4 m/s) again", "u_1=pi(x_1)=(+10 degrees, 0.5 m/s)", "difference between a list of actions and a rule", "omits a needed state variable"]:
                 if marker not in text:

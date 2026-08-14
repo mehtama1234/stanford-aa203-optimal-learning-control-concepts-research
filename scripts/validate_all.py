@@ -431,6 +431,12 @@ def main() -> int:
                     errors.append(f"reward concept page missing scalar-loophole marker: {marker}")
             if len(words) < 900:
                 errors.append(f"reward concept page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "policy":
+            for marker in ["distance_to_wall = 0.45 meters", "battery = 38 percent", "distance_to_wall &lt; 0.50 meters", "steering = -18 degrees", "pi(slow-left|x) = 0.8", "pi(hard-left|x) = 0.2", "u = pi(x)", "pi(u|x)", "x_{t+1}=f(x_t,u_t)", "omits a needed state variable"]:
+                if marker not in text:
+                    errors.append(f"policy concept page missing closed-loop-rule marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"policy concept page below core richness floor: {len(words)} < 900")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

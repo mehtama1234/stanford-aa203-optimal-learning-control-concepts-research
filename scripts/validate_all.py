@@ -360,11 +360,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"direct transcription concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "shooting-methods":
-            for marker in ["x = 0 meters", "u_0 = 4 m/s^2", "x_2 = 7 meters", "only u_0 and u_1 are decision variables", "residual r = [x_2 - 10, v_2 - 0]", "gap_1 = x_join - step(x_0,u_0)"]:
+            for marker in ["x = 0 meters", "u_0 = 4 m/s^2", "u_1 = -1 m/s^2", "x_2 = 7 meters", "3 meters short and still moving", "u_0 = 6 m/s^2", "u_1 = -2 m/s^2", "v_1 = 6", "x_1 = 6", "v_2 = 4", "x_2 = 10", "fails the stop condition", "both position and speed", "only u_0 and u_1 are decision variables", "v_{k+1}=v_k + dt*u_k", "x_{k+1}=x_k + dt*v_{k+1}", "residual r = [x_2 - 10, v_2 - 0]", "r = [7 - 10, 3 - 0] = [-3, 3]", "r = [10 - 10, 4 - 0] = [0, 4]", "reduce the final speed", "stronger braking later", "gap_1 = x_join - step(x_0,u_0)"]:
                 if marker not in text:
                     errors.append(f"shooting methods concept page missing forward-shot marker: {marker}")
-            if len(words) < 760:
-                errors.append(f"shooting methods concept page below core richness floor: {len(words)} < 760")
+            if len(words) < 980:
+                errors.append(f"shooting methods concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "collocation":
             for marker in ["x = 0.02 meters", "x = 0.18 meters", "t = 0.2 seconds", "x = 0.10 meters", "x = 0.08 to 0.12 meters", "path_derivative_mid = 0.9 m/s", "f(x_mid,u_mid)=0.4 m/s", "local direction does not match the dynamics", "selected interior points to be physically honest", "defect_mid = path_derivative_mid - f(x_mid,u_mid)", "defect_mid = 0.9 - 0.4 = 0.5 m/s", "Driving defect_mid to 0", "clearance_mid &gt;= 0", "x_mid = 0.10 meters", "clearance_mid is negative", "t = 0.1, 0.2, and 0.3 seconds", "sampling and representation", "unmodeled flex, backlash, or contact event"]:
                 if marker not in text:

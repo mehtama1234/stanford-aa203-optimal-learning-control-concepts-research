@@ -336,11 +336,11 @@ def main() -> int:
             if len(words) < 1000:
                 errors.append(f"bellman concept page below core richness floor: {len(words)} < 1000")
         if concept.get("id") == "stochastic-dynamic-programming":
-            for marker in ["disturbance W", "probability 0.6", "W = straight", "probability 0.3", "W = slip-left", "probability 0.1", "W = slip-right", "probabilities must add to 1.0", "0.6*5 + 0.3*12 + 0.1*20 = 8.6", "1 + 8.6 = 9.6", "4 + 0.9*4 + 0.1*9 = 8.5", "broken axle with repair cost 200", "1 + 0.6*5 + 0.3*12 + 0.1*200 = 27.6", "V(x) = min_u [cost(x,u) + E_W V(f(x,u,W))]", "P(x_next|x,u) V(x_next)", "P(straight|x,gravel)=0.6", "P(slip-left|x,gravel)=0.3", "P(slip-right|x,gravel)=0.1", "P(straight|x,gravel)+P(slip-left|x,gravel)+P(slip-right|x,gravel)=1.0", "0.1*20 = 2", "0.1*200 = 20", "rare catastrophic outcomes", "hard safety constraint or a risk measure"]:
+            for marker in ["disturbance W", "probability 0.6", "W = straight", "probability 0.3", "W = slip-left", "probability 0.1", "W = slip-right", "probabilities must add to 1.0", "0.6*5 + 0.3*12 + 0.1*20 = 8.6", "1 + 8.6 = 9.6", "4 + 0.9*4 + 0.1*9 = 8.5", "slip-right is serious but not enormous, say value 60", "1 + 0.6*5 + 0.3*12 + 0.1*60 = 13.6", "broken axle with repair cost 200", "1 + 0.6*5 + 0.3*12 + 0.1*200 = 27.6", "V(x) = min_u [cost(x,u) + E_W V(f(x,u,W))]", "P(x_next|x,u) V(x_next)", "P(straight|x,gravel)=0.6", "P(slip-left|x,gravel)=0.3", "P(slip-right|x,gravel)=0.1", "P(straight|x,gravel)+P(slip-left|x,gravel)+P(slip-right|x,gravel)=1.0", "0.1*20 = 2", "0.1*60 = 6", "0.1*200 = 20", "rare catastrophic outcomes", "With slip-right value 60, expectation ranks gravel at 13.6 minutes", "P(broken_axle) &lt;= 0", "reject gravel regardless of its average", "hard safety constraint or a risk measure"]:
                 if marker not in text:
                     errors.append(f"stochastic DP concept page missing expectation marker: {marker}")
-            if len(words) < 980:
-                errors.append(f"stochastic DP concept page below core richness floor: {len(words)} < 980")
+            if len(words) < 1050:
+                errors.append(f"stochastic DP concept page below core richness floor: {len(words)} < 1050")
         if concept.get("id") == "dynamic-programming":
             for marker in ["V(G)=0", "V(A)=1", "V(R)=6", "1 + V(A) = 2", "3 + V(R) = 9", "V(M)=2", "2 + V(M) = 4", "1 + V(R) = 7", "V(S)=4", "S-east-M-right-A-goal", "S-south-R-slow-goal", "does not reopen M", "feedback table", "V(s) = min_a [c(s,a) + V(next(s,a))]", "pi(M)=right", "pi(S)=east", "closed-loop policies", "100*5*4 = 2,000 state entries", "100*5*4*20*10 = 400,000 entries", "every entry may need an action comparison", "omits mud depth or battery health", "honest and small enough to cover"]:
                 if marker not in text:

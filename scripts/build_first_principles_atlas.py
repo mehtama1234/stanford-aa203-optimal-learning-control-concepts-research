@@ -571,8 +571,8 @@ CONCEPTS: list[dict[str, Any]] = [
     {
         "id": "reachability",
         "name": "Reachability",
-        "lecture": 10,
-        "keywords": ["reachability", "reachable", "reach"],
+        "lecture": 11,
+        "keywords": ["reachability theory", "reachable sets", "backward reachable set", "reachable set"],
         "family": "safety and feasibility",
         "plain_language_definition": "The set of states a system can get to, or must avoid, under allowed actions and disturbances.",
         "ordinary_problem": "Before optimizing a path, the controller must know which futures are even possible or unsafe.",

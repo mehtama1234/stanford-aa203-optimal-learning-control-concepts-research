@@ -481,23 +481,23 @@
   },
   {
     "id": "ev-reachability-01",
-    "lecture": 10,
-    "lecture_title": "Reachability Analysis",
-    "video_id": "Fl5EjGhQjgs",
-    "url": "https://www.youtube.com/watch?v=Fl5EjGhQjgs",
-    "timestamp_url": "https://www.youtube.com/watch?v=Fl5EjGhQjgs&t=1226s",
-    "timestamp_start": "00:20:26.400",
-    "timestamp_end": "00:20:33.350",
-    "timestamp_seconds": 1226,
-    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-10-Fl5EjGhQjgs.txt",
-    "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-10-Fl5EjGhQjgs.en-orig.vtt",
-    "local_transcript_window": "respect to all the different states since you know that at every step of this algorithm you are always going to strictly improve the value of a given policy There are so many times that you can improve the value until you reach the optimal value So indeed policy iteration converges a finite number of steps in the setting of uh fixed number of I mean um finite number of states and finite number of controls Of course what you should prove and again",
+    "lecture": 11,
+    "lecture_title": "Introduction to MPC",
+    "video_id": "3_gxaB_Pp3k",
+    "url": "https://www.youtube.com/watch?v=3_gxaB_Pp3k",
+    "timestamp_url": "https://www.youtube.com/watch?v=3_gxaB_Pp3k&t=23s",
+    "timestamp_start": "00:00:23.840",
+    "timestamp_end": "00:00:33.430",
+    "timestamp_seconds": 23,
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-11-3_gxaB_Pp3k.txt",
+    "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-11-3_gxaB_Pp3k.en-orig.vtt",
+    "local_transcript_window": "and then we move on to the next topic which is that of model predictive control So as you remember from last time we discussed how a particularly useful application of uh continuous time closed loop optimal control is represented by uh reachability theory that essentially involves computing reachable sets through the lens of the habakobi is equation So we discussed last time what reachable sets are and what they represent Depending on the interpretation for the target set we have two main instanc",
     "supports_concepts": [
       "reachability"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses Reachability or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 11 opens by continuing the reachability discussion and states that reachability theory computes reachable sets through the Hamilton-Jacobi-Isaacs equation. It distinguishes avoidance sets and reach sets using target sets, disturbances, controls, and safety objectives.",
+    "synthesis_beyond_transcript": "The page turns that transcript passage into the learner-facing rule that reachability is set-valued reasoning about which states can still satisfy or avoid a target under the allowed dynamics, controls, and disturbances.",
+    "confidence_status": "manual_deepened"
   },
   {
     "id": "ev-model-predictive-control-01",

@@ -591,11 +591,12 @@
   {
     "id": "reachability",
     "name": "Reachability",
-    "lecture": 10,
+    "lecture": 11,
     "keywords": [
-      "reachability",
-      "reachable",
-      "reach"
+      "reachability theory",
+      "reachable sets",
+      "backward reachable set",
+      "reachable set"
     ],
     "family": "safety and feasibility",
     "plain_language_definition": "The set of states a system can get to, or must avoid, under allowed actions and disturbances.",

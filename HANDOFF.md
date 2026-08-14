@@ -13,7 +13,7 @@ Completed locally:
 - Captured 207,618 transcript words.
 - Built a first-pass concept atlas with 38 required concepts.
 - Built a first-pass evidence ledger with 38 timestamped local transcript-window records.
-- Manually deepened 37 evidence records; 1 evidence record, `ev-reachability-01`, still needs a better timestamp-level anchor before manual deepening.
+- Manually deepened all 38 evidence records with timestamp-level anchors.
 - Built method-family and primitive throughline artifacts.
 - Built structured teaching artifacts for derivations, worked examples, drills, solutions, and weak-claim repairs.
 - Built quality audit artifacts under `analysis/audits/`.
@@ -38,7 +38,6 @@ python3 scripts/validate_all.py
 The next phase should follow the stronger course repos:
 
 - Use `GOAL.md` as the acceptance target.
-- Repair the anchor for `ev-reachability-01`, which currently lands on a weak Lecture 10 window about reaching an optimal value rather than a reachability concept.
 - Expand derivation walkthroughs and worked examples from compact first-pass entries into full teaching-grade pages.
 - Add richer drill solutions and weak-claim repair cases.
 - Add a stricter editorial audit for concept word depth, forbidden filler, evidence coverage, and page completeness.

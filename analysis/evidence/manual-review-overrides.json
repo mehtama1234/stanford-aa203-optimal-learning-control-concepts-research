@@ -183,5 +183,10 @@
     "confidence_status": "manual_deepened",
     "what_transcript_supports": "Lecture 16 says the policy must explore the state and action space well enough for reinforcement-learning tools to be effective. This directly supports the exploration page.",
     "synthesis_beyond_transcript": "The page adds the control boundary that exploration must be balanced against safety, hardware limits, and data-collection cost."
+  },
+  "ev-reachability-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 11 opens by continuing the reachability discussion and states that reachability theory computes reachable sets through the Hamilton-Jacobi-Isaacs equation. It distinguishes avoidance sets and reach sets using target sets, disturbances, controls, and safety objectives.",
+    "synthesis_beyond_transcript": "The page turns that transcript passage into the learner-facing rule that reachability is set-valued reasoning about which states can still satisfy or avoid a target under the allowed dynamics, controls, and disturbances."
   }
 }

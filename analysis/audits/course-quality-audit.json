@@ -13,13 +13,12 @@
   "evidence": {
     "count": 38,
     "confidence_status_counts": {
-      "manual_deepened": 37,
-      "needs_review": 1
+      "manual_deepened": 38
     },
     "short_windows": [],
     "missing_transcripts": [],
     "missing_timestamps": [],
-    "manual_review_remaining": 1
+    "manual_review_remaining": 0
   },
   "teaching": {
     "derivations": 6,
@@ -29,9 +28,7 @@
   },
   "completion_readiness": {
     "locally_reproducible": true,
-    "teaching_grade_complete": false,
-    "remaining_blockers": [
-      "manual timestamp-level evidence review"
-    ]
+    "teaching_grade_complete": true,
+    "remaining_blockers": []
   }
 }

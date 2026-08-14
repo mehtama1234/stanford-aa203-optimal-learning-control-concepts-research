@@ -9,7 +9,7 @@ The goal is to build this in the same style as the strongest course companions i
 
 The durable end-to-end target is written in `GOAL.md`.
 
-Current evidence review state: 37 records are manually deepened; 1 record, `ev-reachability-01`, still needs a better timestamp-level anchor before manual deepening.
+Current evidence review state: all 38 evidence records are manually deepened with timestamp-level anchors.
 
 ## Initial Source Scope
 

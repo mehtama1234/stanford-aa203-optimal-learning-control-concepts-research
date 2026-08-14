@@ -262,41 +262,57 @@ FAMILY_DEEPENING: dict[str, dict[str, str]] = {
         "pressure": "This family exists because a moving system does not obey wishes. A planner must name what is known, what can be changed, how the world moves, what future is preferred, and which lines cannot be crossed.",
         "operation": "Turn a story into state, action, dynamics, cost, horizon, constraints, and feasibility before choosing any solver.",
         "worked": "For a drone delivery task, 'get there fast' becomes position, velocity, attitude, battery, payload, wind, rotor thrust, no-fly zones, landing pad error, and safe touchdown speed.",
+        "wrong_turn": "Choosing a solver before naming these pieces turns a control problem into a guess about tools.",
+        "boundary": "The setup is only as good as the state, action set, dynamics, objective, and constraints that were actually written.",
     },
     "optimization-foundations": {
         "pressure": "Before control chooses a path, ordinary optimization teaches what it means for a choice to be locally better, blocked by a constraint, or stuck at a boundary.",
         "operation": "Look at small changes in the decision and ask whether the objective can still be lowered without leaving the legal set.",
         "worked": "A thermostat setting may lower temperature error but hit a power limit. The gradient points toward a better setting; the constraint says whether that setting is legal.",
+        "wrong_turn": "Treating a stationary point as a final answer hides boundaries, constraints, and local traps.",
+        "boundary": "This family explains one decision snapshot; control still has to carry state through time.",
     },
     "trajectory-optimization": {
         "pressure": "A path is not a drawing between start and finish. Every point along it must be reachable from the previous point using real commands.",
         "operation": "Make the whole path the decision, enforce dynamics along the path, and ask the solver for a legal low-cost history.",
         "worked": "A robot arm moving around a fixture needs joint angles, velocities, and torques at many times, not just a start pose and an end pose.",
+        "wrong_turn": "Checking only endpoints can hide collision, torque spikes, or fast motion between the checked points.",
+        "boundary": "The path result depends on model accuracy, grid resolution, constraint fidelity, and whether the solver found a good local candidate.",
     },
     "dynamic-programming": {
         "pressure": "Some problems are too large if the controller lists every future action sequence. The repeated structure is that after one action, the remaining future is another control problem.",
         "operation": "Attach a future-cost number to each state, then compare actions by immediate cost plus the future value of the state they create.",
         "worked": "A rover chooses between a short rocky route and a longer smooth route by pricing wheel damage as a worse future state, not only by counting meters.",
+        "wrong_turn": "Comparing immediate cost alone erases the burden carried by the next state.",
+        "boundary": "The recursion is truthful only if the state contains the information needed for future consequences.",
     },
     "local-structure": {
         "pressure": "Near a planned motion, the full nonlinear problem may be more detail than the controller needs at every instant.",
         "operation": "Replace the local neighborhood with linear dynamics and quadratic cost, compute fast feedback, and use it only while the state stays near that neighborhood.",
         "worked": "A drone hovering near level can push back against a small drift with LQR; after impact, the same approximation is no longer a truthful picture.",
+        "wrong_turn": "Using local feedback after the system leaves the local region treats a false approximation as the real machine.",
+        "boundary": "The family stops at large deviations, contact changes, saturation, and model regions where linear/quadratic structure no longer describes the behavior.",
     },
     "safety-and-feasibility": {
         "pressure": "A plan can look good and still put the system into a state where no safe future remains.",
         "operation": "Track sets of states that can reach a target, avoid danger, or remain feasible after the next action.",
         "worked": "A car entering a narrow gap should ask whether braking or steering remains possible one second later, not only whether the next two seconds are collision-free.",
+        "wrong_turn": "Treating safety as a soft preference can allow a cheap plan that crosses a hard boundary.",
+        "boundary": "The set calculation depends on the modeled controls, disturbances, target sets, and time horizon.",
     },
     "replanning": {
         "pressure": "A long open-loop plan goes stale as soon as wind, traffic, contact, or estimation error changes the state.",
         "operation": "Solve a short future problem, apply the first command, measure again, and solve from the new state while protecting the next solve.",
         "worked": "An autonomous car replans after each small movement because nearby cars move and the measured state is more trustworthy than yesterday's prediction.",
+        "wrong_turn": "Believing every feasible short-horizon solve is safe misses the state handed to the next solve.",
+        "boundary": "Replanning needs terminal structure, backup policy, reachable set, or another guard when short horizons hide delayed danger.",
     },
     "learning-based-control": {
         "pressure": "Sometimes the model, reward, or expert behavior is too hard to write down cleanly, but data can show part of the missing structure.",
         "operation": "Fit a policy, value, reward, or model from demonstrations or experience, then keep asking what state distribution, reward, and safety boundary the learner is actually using.",
         "worked": "A warehouse robot can clone a human drawer-opening motion, then use reward or a learned model to improve, while checking that mistakes do not move it outside the demonstrated states.",
+        "wrong_turn": "Treating data as a replacement for control thinking hides distribution shift, reward loopholes, unsafe exploration, and learned-model error.",
+        "boundary": "Learning is only credible where the data, reward, model, and deployment state distribution cover the behavior being asked of the controller.",
     },
 }
 
@@ -1167,6 +1183,8 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <div class="essay">
   <p>{esc(deep.get('pressure', family['problem']))}</p>
   <p><strong>The move:</strong> {esc(deep.get('operation', family['problem']))}</p>
+  <p><strong>Wrong shortcut:</strong> {esc(deep.get('wrong_turn', ''))}</p>
+  <p><strong>Boundary test:</strong> {esc(deep.get('boundary', ''))}</p>
 </div>
 <div class="explain-box"><p>{esc(deep.get('worked', family['problem']))}</p></div>
 <p>{links}</p>
@@ -1181,6 +1199,12 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <div class="essay">
   <p>Read this page as a map of why the course changes tools. The switch from direct methods to dynamic programming is not a change of fashion; it is a change in what is hard. Sometimes the hard part is making a legal path. Sometimes it is pricing all futures from a state. Sometimes it is keeping a short-horizon plan from destroying tomorrow. Sometimes the missing piece has to be learned from demonstrations or reward.</p>
   <p>The same test applies to every family: what real mistake would happen if this family did not exist?</p>
+  <p>A second test is transfer. If you can move the family from a car to a drone, or from a robot arm to a warehouse policy, without changing the family question, then the method has been understood as a response to pressure rather than as a name to memorize.</p>
+</div>
+<h2>Choosing A Family In One Run</h2>
+<div class="essay">
+  <p>Take a warehouse robot asked to pull a drawer. Problem setup comes first: state is gripper pose, handle pose, joint velocity, contact estimate, and shelf geometry; action is arm motion and gripper force; constraints forbid collision and damaging contact. Trajectory optimization enters if the drawer motion can be planned from a trusted model. Dynamic programming enters if each partial opening changes the value of later choices. Local structure enters near a known motion where small errors can be corrected cheaply. Replanning enters when contact slips and the measured state no longer matches the plan. Learning enters when the contact strategy is easier to demonstrate than write.</p>
+  <p>The wrong family choice has a visible failure. Pure geometry misses torque and contact. Pure dynamic programming may be too large without a compact state. Pure local feedback fails after the handle slips. Pure MPC can replan into a state with no safe contact recovery. Pure imitation can drift outside demonstrated handle poses. The family choice is therefore a diagnosis of what is hard in the current problem, not a preference for a fashionable method.</p>
 </div>
 <section class="stack">{''.join(family_cards)}</section>""",
             "families",

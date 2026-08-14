@@ -443,6 +443,12 @@ def main() -> int:
                     errors.append(f"value-based RL concept page missing value-update marker: {marker}")
             if len(words) < 900:
                 errors.append(f"value-based RL concept page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "policy-optimization":
+            for marker in ["body leaning forward 6 degrees", "right knee bent 20 degrees", "pi_theta(long_step|x) = 0.30", "pi_theta(short_step|x) = 0.70", "return G = 12", "return G = 2", "pi_theta_new(long_step|x) = 0.38", "J(theta)=E_{tau~pi_theta}[G(tau)]", "grad_theta log pi_theta(u_t|x_t) * A_t", "theta_new = theta + eta*g", "surrogate objective", "Noisy returns"]:
+                if marker not in text:
+                    errors.append(f"policy optimization concept page missing direct-policy-update marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"policy optimization concept page below core richness floor: {len(words)} < 900")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

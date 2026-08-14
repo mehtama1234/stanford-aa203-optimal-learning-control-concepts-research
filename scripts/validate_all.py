@@ -378,11 +378,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"LQR concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "local-quadratic-approximation":
-            for marker in ["6 centimeters too far left", "delta u = -0.02 meters", "delta u = 0.02 meters", "q(delta u) = c + g*delta u + 0.5*H*delta u^2", "delta u* = -g/H = 0.028 meters", "trust region"]:
+            for marker in ["6 centimeters too far left", "delta u = -0.02 meters", "delta u = 0.02 meters", "jump 12 centimeters right", "2.8 centimeter suggested step", "slightly outside the tested band", "clip the first move to delta u = 0.02 meters", "q(delta u) = c + g*delta u + 0.5*H*delta u^2", "delta u* = -g/H = 0.028 meters", "q(0.028)=4.0 - 70*0.028 + 0.5*2500*0.028^2 = 3.02", "-0.02 &lt;= delta u &lt;= 0.02", "trust region with radius 0.02", "delta u_clipped = 0.02", "q(0.02)=4.0 - 1.4 + 0.5 = 3.1", "remeasure and refit", "linearize the dynamics", "quadratize the cost or Q function", "trust region"]:
                 if marker not in text:
                     errors.append(f"local quadratic approximation concept page missing fitted-bowl marker: {marker}")
-            if len(words) < 780:
-                errors.append(f"local quadratic approximation concept page below core richness floor: {len(words)} < 780")
+            if len(words) < 980:
+                errors.append(f"local quadratic approximation concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "reachability":
             for marker in ["5 meters apart", "0.6 meters per second", "0.4 meters per second", "T_bad = {gap &lt;= 0.3 meters}", "next_gap &lt;= 0.5 + 0.4 - 0.6 = 0.3", "backward avoidance set A_1", "for all disturbances, there must exist a control"]:
                 if marker not in text:

@@ -294,11 +294,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"action concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "dynamics":
-            for marker in ["speed 20 m/s", "theta = 0 degrees", "u = 5 degrees", "dt = 0.2 seconds", "yaw_rate = 0.30 rad/s", "theta_next = 0 + 0.2*0.30 = 0.06 rad", "yaw_rate = 0.05 rad/s", "v_y = -1.0 m/s", "theta_next = 0 + 0.2*0.05 = 0.01 rad", "y_next = y + 0.2*(-1.0)", "x_next = f(x,u)", "dx/dt = f(x,u)", "x=[y,theta,v_y,speed]", "f_dry", "f_ice", "model fidelity"]:
+            for marker in ["speed 20 m/s", "theta = 0 degrees", "u = 5 degrees", "dt = 0.2 seconds", "yaw_rate = 0.30 rad/s", "theta_next = 0 + 0.2*0.30 = 0.06 rad", "yaw_rate = 0.05 rad/s", "v_y = -1.0 m/s", "theta_next = 0 + 0.2*0.05 = 0.01 rad", "y_next = y + 0.2*(-1.0)", "three ticks", "theta = 0.18 rad after 0.6 seconds", "theta = 0.03 rad", "y = -0.6 meters", "x_next = f(x,u)", "dx/dt = f(x,u)", "x=[y,theta,v_y,speed]", "f_dry", "f_ice", "theta_3 = 3*0.2*0.30 = 0.18 rad", "theta_3 = 3*0.2*0.05 = 0.03 rad", "y_3 = 3*0.2*(-1.0) = -0.6 meters", "model fidelity"]:
                 if marker not in text:
                     errors.append(f"dynamics concept page missing state-update marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"dynamics concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 980:
+                errors.append(f"dynamics concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "objective-cost-function":
             for marker in ["Path A reaches the spot in 8 seconds", "Path B takes 12 seconds", "8 is smaller than 12", "steering effort 10", "wall penalty 30", "steering effort 3", "Path A: 8 + 0.5*10 + 30 = 43", "Path B: 12 + 0.5*3 + 0 = 13.5", "written measurement of what counts as better", "J = sum_k stage_cost(x_k,u_k) + terminal_cost(x_N)", "5.0*wall_risk", "stage_0 + stage_1 + stage_2", "0.5*steering_effort", "written score drops from 43 to 8 + 0.5*10 = 13", "problem statement said scraping was free", "free to choose damage", "proxy honesty", "matching a reference signal"]:
                 if marker not in text:

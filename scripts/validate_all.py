@@ -330,11 +330,11 @@ def main() -> int:
             if len(words) < 740:
                 errors.append(f"value-function concept page below core richness floor: {len(words)} < 740")
         if concept.get("id") == "bellman-recursion":
-            for marker in ["A: 2 + 9 = 11", "B: 5 + 3 = 8", "stores 8 as the value", "V(x) = min_u [cost(x,u) + V(f(x,u))]", "expected next value"]:
+            for marker in ["state x = J", "V(C)=9", "V(L)=3", "2 + V(C) = 2 + 9 = 11", "5 + V(L) = 5 + 3 = 8", "V(J)=8", "pi(J)=B", "Bellman recursion is the one-step accounting identity", "V(x) = min_u [c(x,u) + V(f(x,u))]", "pi(x) = argmin_u [c(x,u) + V(f(x,u))]", "Q(J,A)=2+V(C)=11", "Q(J,B)=5+V(L)=8", "V(J)=min(11,8)=8", "sum_{x_next} P(x_next|x,u)V(x_next)", "stale map"]:
                 if marker not in text:
                     errors.append(f"bellman concept page missing recursion marker: {marker}")
-            if len(words) < 740:
-                errors.append(f"bellman concept page below core richness floor: {len(words)} < 740")
+            if len(words) < 900:
+                errors.append(f"bellman concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "stochastic-dynamic-programming":
             for marker in ["disturbance W", "probability 0.6", "W = straight", "probability 0.3", "W = slip-left", "probability 0.1", "W = slip-right", "0.6*5 + 0.3*12 + 0.1*20 = 8.6", "1 + 8.6 = 9.6", "4 + 0.9*4 + 0.1*9 = 8.5", "V(x) = min_u [cost(x,u) + E_W V(f(x,u,W))]", "P(x_next|x,u) V(x_next)", "P(straight|x,gravel)=0.6", "P(slip-left|x,gravel)=0.3", "P(slip-right|x,gravel)=0.1", "0.1*20 = 2", "rare catastrophic outcomes"]:
                 if marker not in text:

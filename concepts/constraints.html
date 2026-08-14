@@ -54,8 +54,8 @@
 <section class="fp">
   <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A robot arm may find a low-energy path by swinging through a shelf. The cost likes it; the world does not. Constraints are the hard walls in the problem: joint limits, torque limits, collision surfaces, battery reserve, and safe speed.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>A constraint is an equation or inequality such as g(x,u) &lt;= 0. A candidate path is not admissible unless every required constraint is satisfied at the relevant time.</p></div></details>
+  <div class="explain-box"><p>A robot arm moving a camera around a shelf can save energy by cutting through the shelf corner. Suppose the gripper must stay at least 4 centimeters from the shelf and each joint motor is limited to 12 newton-meters of torque. A path that clears the shelf by -1 centimeter or asks for 15 newton-meters may have a lower written cost, but it is not a candidate path. Constraints remove that future from the legal set before the optimizer compares scores.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>A constraint is an equation or inequality such as g(x,u) &lt;= 0. A clearance constraint might be 0.04 - distance_to_shelf(x_k) &lt;= 0 at every grid point, and a torque bound might be abs(tau_k) &lt;= 12. A candidate path is admissible only when every required constraint is satisfied at the relevant time; low cost cannot buy permission to cross a hard physical limit.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">05 · boundary</div>

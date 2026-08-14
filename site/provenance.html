@@ -40,6 +40,18 @@
   <p>The teaching sentence is allowed to be clearer than the transcript, but it is not allowed to pretend the transcript proved every part of the synthesis. A reviewer should be able to move from rendered page to evidence id to local transcript window to raw VTT timestamp without guessing.</p>
   <p>Do the same check for one learning page. For behavioral cloning, the transcript supports supervised learning from demonstrated state-action behavior. The page adds the closed-loop warning: the learned policy can create states the expert did not label. That extra warning is allowed because the provenance trail names it as synthesis rather than transcript quotation.</p>
 </div>
+<h2>One Claim From Source To Teaching</h2>
+<div class="essay">
+  <p>Take the sentence: after today's MPC action, tomorrow's optimization problem must still have a legal solution. The raw caption layer should locate the lecture moment where MPC feasibility, terminal structure, or stability is discussed. The cleaned transcript makes that moment searchable. The evidence record states the narrow support: the lecture discusses recursive feasibility as a condition on repeated MPC solves.</p>
+  <p>The concept page may then turn that into the traffic-gap example. A car can fit between two vehicles for the next two seconds and still be in a bad state if the first acceleration leaves no braking or steering move for the next solve. That car story is not copied from the transcript. It is the page's teaching move, and provenance is what keeps that move honest.</p>
+  <p>A reviewer should be able to ask four questions. What exact transcript window supports the course term? What does the evidence record say the window supports? What did the concept page add to make the idea teachable? What boundary tells the reader where the claim stops? If any answer is missing, the page may still be readable, but it is not yet source-disciplined.</p>
+</div>
+<h2>What A Rebuild Protects</h2>
+<div class="essay">
+  <p>A rebuild protects against quiet drift. If a concept is deepened only in rendered HTML, the next generated site can erase it. If the concept data is changed without rebuilding, the visible page can lie about the current source. If the validator is not run, broken evidence anchors and missing transcript files can hide under polished writing.</p>
+  <p>The durable route is simple: source material, analysis artifact, generator, rendered page, validator. Each step has a job. Source material keeps the course tied to the playlist. Analysis artifacts organize concepts and evidence. The generator turns those records into pages. The validator checks that required markers, links, word floors, evidence ids, and anti-filler rules still hold.</p>
+  <p>This does not make the prose automatically rich. It makes the prose reviewable. The human review still has to compare pages with the reference explainers and ask whether the writing starts with ordinary pressure, names the object, runs the operation, opens the math one level deeper, and shows where the idea breaks.</p>
+</div>
 <h2>Do Not Trust The Page If</h2>
 <div class="essay">
   <p>Do not trust a page if the source path is missing, the evidence record only repeats a keyword, the synthesis boundary is blank, the rendered page has no evidence anchor, the concept page skips the concrete run, or the validator was not run after generation.</p>

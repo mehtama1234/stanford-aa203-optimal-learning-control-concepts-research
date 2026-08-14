@@ -437,6 +437,12 @@ def main() -> int:
                     errors.append(f"policy concept page missing closed-loop-rule marker: {marker}")
             if len(words) < 900:
                 errors.append(f"policy concept page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "state":
+            for marker in ["y = 0.20 meters", "v_y = 0.00 m/s", "psi = 0 degrees", "v_y = -1.50 m/s", "psi = -8 degrees", "u = +5 degrees", "dt = 0.2 seconds", "y_next = y + dt*v_y", "0.20 + 0.2*0.00 = 0.20 meters", "0.20 + 0.2*(-1.50) = -0.10 meters", "x_{t+1}=f(x_t,u_t)", "same action distribution over next states", "x=[y]", "x=[y,v_y,psi]", "hidden battery temperature, tire grip, load mass"]:
+                if marker not in text:
+                    errors.append(f"state concept page missing predictive-memory marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"state concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "static-optimization":
             for marker in ["one charging power z", "6 kilowatts", "4 kilowatts", "J(z) = (z - 6)^2", "0 &lt;= z &lt;= 4", "J(4) = (4 - 6)^2 = 4", "J(3) = 9", "J(0) = 36", "minimize_z J(z)", "g_i(z) &lt;= 0", "h_j(z) = 0", "dJ/dz = 2*(z - 6) = 0", "active outlet boundary z = 4", "temperature_next = f(temperature,z)"]:
                 if marker not in text:

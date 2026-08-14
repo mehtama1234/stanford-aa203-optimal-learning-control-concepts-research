@@ -43,13 +43,22 @@
   </div>
 </section>
 <section class="fp">
-  <div class="kick">03 · one concrete run</div>
+  <div class="kick">03 · read it with your hands</div>
+  <h2>What to inspect first</h2>
+  <div class="essay">
+    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a reward function and return. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Now apply one command or one update. Accumulate reward over time and update behavior toward higher expected return. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>The world check is the example: Rewarding a robot only for reaching an object can make it slam into the table unless impact is also penalized. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
   <div class="explain-box"><p>A robot rewarded only for moving an object to a target quickly may slap the object across the table and break it. The reward was not wrong by syntax; it was missing the real task values: gentle contact, no damage, and controlled motion.</p></div>
   <details class="math"><summary>the actual math, one level deeper</summary><div><p>Reward is the scalar feedback used to compute return. The learned behavior follows the written reward signal, including its omissions and loopholes.</p></div></details>
 </section>
 <section class="fp">
-  <div class="kick">04 · boundary</div>
+  <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>The reward must align with the real task and safety constraints.</p>

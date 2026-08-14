@@ -43,13 +43,22 @@
   </div>
 </section>
 <section class="fp">
-  <div class="kick">03 · one concrete run</div>
+  <div class="kick">03 · read it with your hands</div>
+  <h2>What to inspect first</h2>
+  <div class="essay">
+    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a value function over states and time. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Now apply one command or one update. Work backward or iterate: combine immediate cost with the best future value after each action. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>The world check is the example: A grid-world robot chooses a move by adding the step cost to the value of the cell it will reach. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
   <div class="explain-box"><p>A grid rover can solve a maze backward from the goal. Each cell stores the best remaining cost from there. Once those numbers are known, choosing a move is local: step cost plus value of the cell reached.</p></div>
   <details class="math"><summary>the actual math, one level deeper</summary><div><p>Dynamic programming solves coupled subproblems indexed by state. The update writes each state&#x27;s value from neighboring future values until the recursion is solved.</p></div></details>
 </section>
 <section class="fp">
-  <div class="kick">04 · boundary</div>
+  <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>The state must summarize the future-relevant information and the transition model must be usable.</p>

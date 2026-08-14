@@ -43,13 +43,22 @@
   </div>
 </section>
 <section class="fp">
-  <div class="kick">03 · one concrete run</div>
+  <div class="kick">03 · read it with your hands</div>
+  <h2>What to inspect first</h2>
+  <div class="essay">
+    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a receding-horizon optimization problem. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Now apply one command or one update. Optimize over a horizon, apply the first control, shift the horizon, and replan. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>The world check is the example: An autonomous car plans a few seconds ahead, drives the first fraction, then replans after seeing traffic move. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
   <div class="explain-box"><p>An autonomous car plans five seconds ahead, but only drives the first tenth of a second. Then it looks again. The old plan was not wrong; it was temporary. Traffic moved, the measured state changed, and the next optimization should start from the real state, not the predicted one.</p></div>
   <details class="math"><summary>the actual math, one level deeper</summary><div><p>MPC repeatedly solves a finite-horizon problem, applies the first control, shifts the horizon, and solves again. Recursive feasibility asks whether that first control leaves tomorrow&#x27;s problem solvable.</p></div></details>
 </section>
 <section class="fp">
-  <div class="kick">04 · boundary</div>
+  <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>The optimizer must solve fast enough and the horizon/terminal conditions must protect future feasibility.</p>

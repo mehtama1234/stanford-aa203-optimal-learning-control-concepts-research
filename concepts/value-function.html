@@ -43,13 +43,22 @@
   </div>
 </section>
 <section class="fp">
-  <div class="kick">03 · one concrete run</div>
+  <div class="kick">03 · read it with your hands</div>
+  <h2>What to inspect first</h2>
+  <div class="essay">
+    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a value function v or j. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Now apply one command or one update. Store or approximate the best future cost from each state. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>The world check is the example: In navigation, a cell near the goal has low value; a cell near a trap has high future cost even if it is nearby. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
   <div class="explain-box"><p>A rover at the edge of a rocky slope should not ask only whether the next meter is easy. It should ask what the world looks like after that meter. The value of a state is the price tag on standing there with all future choices still ahead.</p></div>
   <details class="math"><summary>the actual math, one level deeper</summary><div><p>V(x) stores the best future cost from state x. Once V is known, a current action can be judged by immediate cost plus the value of the next state it creates.</p></div></details>
 </section>
 <section class="fp">
-  <div class="kick">04 · boundary</div>
+  <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>The value is meaningful only for the state, dynamics, objective, and policy assumptions used to compute it.</p>

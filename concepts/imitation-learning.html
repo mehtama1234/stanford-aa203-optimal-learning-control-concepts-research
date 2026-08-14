@@ -43,13 +43,22 @@
   </div>
 </section>
 <section class="fp">
-  <div class="kick">03 · one concrete run</div>
+  <div class="kick">03 · read it with your hands</div>
+  <h2>What to inspect first</h2>
+  <div class="essay">
+    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a dataset of state-action demonstrations and a learned policy. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Now apply one command or one update. Fit a policy that maps observations or states to demonstrated actions. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>The world check is the example: A robot learns drawer opening from human teleoperation traces instead of a hand-written contact model. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
   <div class="explain-box"><p>A person can show a robot how to pull a drawer without writing a reward for every contact force and handle angle. Imitation learning turns demonstrations into an action rule. The danger is closed-loop drift: one small mistake puts the robot in a state the teacher never showed.</p></div>
   <details class="math"><summary>the actual math, one level deeper</summary><div><p>The data are state-action pairs from an expert. The learned policy maps observations to actions. Training loss measures action mismatch on the demonstrated states, not on every state the learned policy may later visit.</p></div></details>
 </section>
 <section class="fp">
-  <div class="kick">04 · boundary</div>
+  <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>The demonstration distribution must cover states the learned policy will visit.</p>

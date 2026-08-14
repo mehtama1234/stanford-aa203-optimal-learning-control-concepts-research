@@ -383,6 +383,12 @@ def main() -> int:
                     errors.append(f"reachability concept page missing set-propagation marker: {marker}")
             if len(words) < 800:
                 errors.append(f"reachability concept page below core richness floor: {len(words)} < 800")
+        if concept.get("id") == "model-predictive-control":
+            for marker in ["3.0 meters from a loading mark", "10:00:00", "-0.8 m/s^2", "position 3.40 meters and velocity 0.50 m/s", "shifted horizon", "pi_MPC(x_measured(k)) = u_0^*", "x_0 = x_measured(k+1)", "no feasible continuation"]:
+                if marker not in text:
+                    errors.append(f"MPC concept page missing receding-horizon marker: {marker}")
+            if len(words) < 820:
+                errors.append(f"MPC concept page below core richness floor: {len(words)} < 820")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

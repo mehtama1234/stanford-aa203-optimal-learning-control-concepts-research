@@ -306,11 +306,11 @@ def main() -> int:
             if len(words) < 740:
                 errors.append(f"objective concept page below core richness floor: {len(words)} < 740")
         if concept.get("id") == "horizon":
-            for marker in ["60 meters from the pad", "18 percent battery", "dt = 0.5 seconds", "N = 60", "delayed costs such as low battery"]:
+            for marker in ["60 meters from the pad", "18 percent battery", "full-speed flight uses 2 percent battery", "slow flight uses 1 percent battery", "A three-second horizon sees only the next 24 meters", "crosswind band from 25 meters to 40 meters", "at least 14 percent battery", "distance_3 = 3*8 = 24 meters", "battery_3 = 18 - 3*2 = 12 percent", "distance_3 = 3*4 = 12 meters", "battery_3 = 18 - 3*1 = 15 percent", "battery_at_wind &gt;= 14 percent", "dt = 0.5 seconds", "N = 60", "Too short is blind; too long can be expensive or misleading", "first consequence time"]:
                 if marker not in text:
                     errors.append(f"horizon concept page missing delayed-consequence marker: {marker}")
-            if len(words) < 720:
-                errors.append(f"horizon concept page below core richness floor: {len(words)} < 720")
+            if len(words) < 900:
+                errors.append(f"horizon concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "constraints":
             for marker in ["4 centimeters from the shelf", "12 newton-meters", "t = 0.4 seconds", "3 centimeters from the shelf", "t = 0.6 seconds", "15 newton-meters", "5 centimeters", "11 newton-meters", "3 &lt; 4 and 15 &gt; 12", "g(x,u) &lt;= 0", "g_clear,k = 0.04 - distance_to_shelf(x_k) &lt;= 0", "distance_to_shelf = 0.03", "g_clear = 0.04 - 0.03 = 0.01 &gt; 0", "g_tau,k = abs(tau_k) - 12 &lt;= 0", "g_tau = 15 - 12 = 3 &gt; 0", "g_clear = -0.01", "g_tau = -1", "defect_k = x_{k+1} - f(x_k,u_k) = 0", "shelf flex, cable snag, heat, or human clearance"]:
                 if marker not in text:

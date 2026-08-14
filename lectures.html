@@ -22,81 +22,220 @@
 <a class="" href="evidence.html">Evidence</a>
 <a class="" href="review-guide.html">Review</a></nav>
   </header>
-  <main><h1>Lectures</h1><section class="lecture-list"><div class="lecture-row">
+  <main>
+<h1>Lectures</h1>
+<p class="lede">Read the playlist as one route through a problem, not as nineteen isolated videos. Each lecture adds one pressure: name the moving system, choose a path, price the future, replan safely, or learn the missing structure from data.</p>
+<div class="essay">
+  <p>The lecture list below keeps transcript counts and source links, but the main job is different: it tells you what new control problem each lecture makes visible and what mathematical move the lecture adds.</p>
+</div>
+<section class="lecture-list"><div class="lecture-row">
   <strong>Lecture 01</strong>
-  <div><h3>Course Overview</h3><p class="muted">transcript captured · 11,184 words · <a href="https://www.youtube.com/watch?v=Au2stLALZew">Au2stLALZew</a></p><p><span class="pill"><a href="concepts/optimal-control-problem.html">Optimal Control Problem</a></span> <span class="pill"><a href="concepts/state.html">State</a></span> <span class="pill"><a href="concepts/action-control-input.html">Action / Control Input</a></span> <span class="pill"><a href="concepts/dynamics.html">Dynamics</a></span> <span class="pill"><a href="concepts/objective-cost-function.html">Objective / Cost Function</a></span> <span class="pill"><a href="concepts/horizon.html">Horizon</a></span></p></div>
+  <div>
+    <h3>Course Overview</h3>
+    <p class="muted">transcript captured · 11,184 words · <a href="https://www.youtube.com/watch?v=Au2stLALZew">Au2stLALZew</a></p>
+    <p><strong>The problem:</strong> The course first has to make control visible in ordinary systems: a car, drone, thermostat, or robot changes because commands push state through time.</p>
+    <p><strong>The move:</strong> Name the basic pieces before choosing methods: state, action, dynamics, objective, horizon, and constraints.</p>
+    <div class="explain-box"><p>A drone delivery problem becomes concrete only after height, velocity, attitude, battery, thrust, wind, landing error, and no-fly zones are named.</p></div>
+    <p><span class="pill"><a href="concepts/optimal-control-problem.html">Optimal Control Problem</a></span> <span class="pill"><a href="concepts/state.html">State</a></span> <span class="pill"><a href="concepts/action-control-input.html">Action / Control Input</a></span> <span class="pill"><a href="concepts/dynamics.html">Dynamics</a></span> <span class="pill"><a href="concepts/objective-cost-function.html">Objective / Cost Function</a></span> <span class="pill"><a href="concepts/horizon.html">Horizon</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 02</strong>
-  <div><h3>Optimization Theory</h3><p class="muted">transcript captured · 10,515 words · <a href="https://www.youtube.com/watch?v=FbkNYklySak">FbkNYklySak</a></p><p><span class="pill"><a href="concepts/constraints.html">Constraints</a></span> <span class="pill"><a href="concepts/static-optimization.html">Static Optimization</a></span> <span class="pill"><a href="concepts/gradient-first-order-condition.html">Gradient and First-Order Condition</a></span></p></div>
+  <div>
+    <h3>Optimization Theory</h3>
+    <p class="muted">transcript captured · 10,515 words · <a href="https://www.youtube.com/watch?v=FbkNYklySak">FbkNYklySak</a></p>
+    <p><strong>The problem:</strong> Before a controller can choose a path, it needs the grammar of a single constrained decision: what can move, what is legal, and what local change lowers cost.</p>
+    <p><strong>The move:</strong> Use finite-dimensional optimization, gradients, open sets, and constraints as the small-scale version of later control problems.</p>
+    <div class="explain-box"><p>A heater setting that lowers temperature error may violate a power limit; the gradient points downhill, but the constraint says whether that move is allowed.</p></div>
+    <p><span class="pill"><a href="concepts/constraints.html">Constraints</a></span> <span class="pill"><a href="concepts/static-optimization.html">Static Optimization</a></span> <span class="pill"><a href="concepts/gradient-first-order-condition.html">Gradient and First-Order Condition</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 03</strong>
-  <div><h3>Calculus of Variations</h3><p class="muted">transcript captured · 11,051 words · <a href="https://www.youtube.com/watch?v=duZJ2_ajLso">duZJ2_ajLso</a></p><p><span class="pill"><a href="concepts/calculus-of-variations.html">Calculus of Variations</a></span></p></div>
+  <div>
+    <h3>Calculus of Variations</h3>
+    <p class="muted">transcript captured · 11,051 words · <a href="https://www.youtube.com/watch?v=duZJ2_ajLso">duZJ2_ajLso</a></p>
+    <p><strong>The problem:</strong> A path cannot be judged by one point. The whole curve has cost, endpoints, and legal motion along the way.</p>
+    <p><strong>The move:</strong> Shift from choosing numbers to choosing functions or trajectories, then ask how total cost changes when the whole path is nudged.</p>
+    <div class="explain-box"><p>A rocket arc that starts and ends correctly can still waste fuel in the middle; calculus of variations asks what path-wide nudge would lower the total cost.</p></div>
+    <p><span class="pill"><a href="concepts/calculus-of-variations.html">Calculus of Variations</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 04</strong>
-  <div><h3>Indirect Methods</h3><p class="muted">transcript captured · 11,713 words · <a href="https://www.youtube.com/watch?v=7rejaoMWviw">7rejaoMWviw</a></p><p><span class="pill"><a href="concepts/costate-adjoint-variable.html">Costate / Adjoint Variable</a></span> <span class="pill"><a href="concepts/hamiltonian-optimal-control.html">Hamiltonian for Optimal Control</a></span> <span class="pill"><a href="concepts/indirect-methods.html">Indirect Methods</a></span></p></div>
+  <div>
+    <h3>Indirect Methods</h3>
+    <p class="muted">transcript captured · 11,713 words · <a href="https://www.youtube.com/watch?v=7rejaoMWviw">7rejaoMWviw</a></p>
+    <p><strong>The problem:</strong> A small state error now can change fuel, velocity, and endpoint error later, so present controls need a price for downstream state changes.</p>
+    <p><strong>The move:</strong> Introduce costates and the Hamiltonian as local bookkeeping for immediate cost plus future state sensitivity.</p>
+    <div class="explain-box"><p>More rocket thrust costs fuel now, but it may reduce a costly terminal velocity error. The costate prices that later benefit.</p></div>
+    <p><span class="pill"><a href="concepts/costate-adjoint-variable.html">Costate / Adjoint Variable</a></span> <span class="pill"><a href="concepts/hamiltonian-optimal-control.html">Hamiltonian for Optimal Control</a></span> <span class="pill"><a href="concepts/indirect-methods.html">Indirect Methods</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 05</strong>
-  <div><h3>Computational Methods</h3><p class="muted">transcript captured · 10,121 words · <a href="https://www.youtube.com/watch?v=R4_fHzTo0IM">R4_fHzTo0IM</a></p><p><span class="muted">No primary concept assigned yet.</span></p></div>
+  <div>
+    <h3>Computational Methods</h3>
+    <p class="muted">transcript captured · 10,121 words · <a href="https://www.youtube.com/watch?v=R4_fHzTo0IM">R4_fHzTo0IM</a></p>
+    <p><strong>The problem:</strong> Necessary equations are not enough if the actual path still has to be computed on a machine.</p>
+    <p><strong>The move:</strong> Connect optimality conditions to computational methods and the practical burden of solving trajectory problems.</p>
+    <div class="explain-box"><p>A boundary-value condition may describe the landing path, but a solver still needs variables, guesses, tolerances, and checks that the result obeys the dynamics.</p></div>
+    <p><span class="muted">No primary concept assigned yet.</span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 06</strong>
-  <div><h3>Direct Methods</h3><p class="muted">transcript captured · 11,566 words · <a href="https://www.youtube.com/watch?v=zX8raxUa2DE">zX8raxUa2DE</a></p><p><span class="pill"><a href="concepts/direct-transcription.html">Direct Transcription</a></span> <span class="pill"><a href="concepts/shooting-methods.html">Shooting Methods</a></span> <span class="pill"><a href="concepts/collocation.html">Collocation</a></span> <span class="pill"><a href="concepts/trajectory-optimization.html">Trajectory Optimization</a></span></p></div>
+  <div>
+    <h3>Direct Methods</h3>
+    <p class="muted">transcript captured · 11,566 words · <a href="https://www.youtube.com/watch?v=zX8raxUa2DE">zX8raxUa2DE</a></p>
+    <p><strong>The problem:</strong> A computer cannot optimize over every point of a continuous path directly.</p>
+    <p><strong>The move:</strong> Use direct methods: shooting, collocation, and transcription turn a path problem into finite variables and constraints.</p>
+    <div class="explain-box"><p>A robot arm path becomes joint states and torques on a grid; defect constraints stop the optimizer from inventing motion between grid points.</p></div>
+    <p><span class="pill"><a href="concepts/direct-transcription.html">Direct Transcription</a></span> <span class="pill"><a href="concepts/shooting-methods.html">Shooting Methods</a></span> <span class="pill"><a href="concepts/collocation.html">Collocation</a></span> <span class="pill"><a href="concepts/trajectory-optimization.html">Trajectory Optimization</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 07</strong>
-  <div><h3>Dynamic Programming</h3><p class="muted">transcript captured · 10,288 words · <a href="https://www.youtube.com/watch?v=hy-e9g4nugE">hy-e9g4nugE</a></p><p><span class="pill"><a href="concepts/dynamic-programming.html">Dynamic Programming</a></span> <span class="pill"><a href="concepts/bellman-recursion.html">Bellman Recursion</a></span></p></div>
+  <div>
+    <h3>Dynamic Programming</h3>
+    <p class="muted">transcript captured · 10,288 words · <a href="https://www.youtube.com/watch?v=hy-e9g4nugE">hy-e9g4nugE</a></p>
+    <p><strong>The problem:</strong> Listing every future action sequence becomes impossible when every action creates a new state with later choices.</p>
+    <p><strong>The move:</strong> Use dynamic programming: store future cost at states and solve the problem by now-plus-future recursion.</p>
+    <div class="explain-box"><p>A rover cell near sharp rocks gets a high future price because entering it damages later mobility, even if the next step is short.</p></div>
+    <p><span class="pill"><a href="concepts/dynamic-programming.html">Dynamic Programming</a></span> <span class="pill"><a href="concepts/bellman-recursion.html">Bellman Recursion</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 08</strong>
-  <div><h3>LQR-Style Algorithms</h3><p class="muted">transcript captured · 10,114 words · <a href="https://www.youtube.com/watch?v=1YdgSwEtf_s">1YdgSwEtf_s</a></p><p><span class="pill"><a href="concepts/lqr.html">LQR</a></span> <span class="pill"><a href="concepts/local-quadratic-approximation.html">Local Quadratic Approximation</a></span></p></div>
+  <div>
+    <h3>LQR-Style Algorithms</h3>
+    <p class="muted">transcript captured · 10,114 words · <a href="https://www.youtube.com/watch?v=1YdgSwEtf_s">1YdgSwEtf_s</a></p>
+    <p><strong>The problem:</strong> A full nonlinear solve is too much for small deviations near a planned motion.</p>
+    <p><strong>The move:</strong> Exploit linear dynamics and quadratic cost so local feedback can be computed from value curvature.</p>
+    <div class="explain-box"><p>A hovering drone pushed two centimeters sideways can use a local feedback gain instead of replanning the whole flight.</p></div>
+    <p><span class="pill"><a href="concepts/lqr.html">LQR</a></span> <span class="pill"><a href="concepts/local-quadratic-approximation.html">Local Quadratic Approximation</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 09</strong>
-  <div><h3>Stochastic Dynamic Programming</h3><p class="muted">transcript captured · 10,462 words · <a href="https://www.youtube.com/watch?v=C9mLpI8Td9g">C9mLpI8Td9g</a></p><p><span class="pill"><a href="concepts/stochastic-dynamic-programming.html">Stochastic Dynamic Programming</a></span></p></div>
+  <div>
+    <h3>Stochastic Dynamic Programming</h3>
+    <p class="muted">transcript captured · 10,462 words · <a href="https://www.youtube.com/watch?v=C9mLpI8Td9g">C9mLpI8Td9g</a></p>
+    <p><strong>The problem:</strong> The next state may be a distribution, not a promise, when wind, gravel, or sensor noise changes the outcome.</p>
+    <p><strong>The move:</strong> Extend dynamic programming so future value is averaged over possible next states.</p>
+    <div class="explain-box"><p>A rover crossing gravel prices a move by the chance of slipping left, slipping right, or moving as intended.</p></div>
+    <p><span class="pill"><a href="concepts/stochastic-dynamic-programming.html">Stochastic Dynamic Programming</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 10</strong>
-  <div><h3>Reachability Analysis</h3><p class="muted">transcript captured · 11,102 words · <a href="https://www.youtube.com/watch?v=Fl5EjGhQjgs">Fl5EjGhQjgs</a></p><p><span class="pill"><a href="concepts/value-function.html">Value Function</a></span></p></div>
+  <div>
+    <h3>Reachability Analysis</h3>
+    <p class="muted">transcript captured · 11,102 words · <a href="https://www.youtube.com/watch?v=Fl5EjGhQjgs">Fl5EjGhQjgs</a></p>
+    <p><strong>The problem:</strong> A controller needs to know which states can still reach a target or avoid danger before optimizing a preferred path.</p>
+    <p><strong>The move:</strong> Use reachability to reason about sets of states under controls, disturbances, and targets.</p>
+    <div class="explain-box"><p>A car near a wall may look safe by distance, but reachability asks whether any legal steering and braking sequence can still avoid collision.</p></div>
+    <p><span class="pill"><a href="concepts/value-function.html">Value Function</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 11</strong>
-  <div><h3>Introduction to MPC</h3><p class="muted">transcript captured · 10,288 words · <a href="https://www.youtube.com/watch?v=3_gxaB_Pp3k">3_gxaB_Pp3k</a></p><p><span class="pill"><a href="concepts/reachability.html">Reachability</a></span> <span class="pill"><a href="concepts/model-predictive-control.html">Model Predictive Control</a></span></p></div>
+  <div>
+    <h3>Introduction to MPC</h3>
+    <p class="muted">transcript captured · 10,288 words · <a href="https://www.youtube.com/watch?v=3_gxaB_Pp3k">3_gxaB_Pp3k</a></p>
+    <p><strong>The problem:</strong> A plan made at the old state goes stale as soon as the world moves or the model is wrong.</p>
+    <p><strong>The move:</strong> Introduce MPC: solve a finite-horizon problem, apply the first action, observe, and solve again.</p>
+    <div class="explain-box"><p>A car plans five seconds of steering but executes only a small slice before measuring traffic again.</p></div>
+    <p><span class="pill"><a href="concepts/reachability.html">Reachability</a></span> <span class="pill"><a href="concepts/model-predictive-control.html">Model Predictive Control</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 12</strong>
-  <div><h3>Feasibility of MPC</h3><p class="muted">transcript captured · 10,124 words · <a href="https://www.youtube.com/watch?v=8Elrw30y0tg">8Elrw30y0tg</a></p><p><span class="pill"><a href="concepts/feasibility.html">Feasibility</a></span> <span class="pill"><a href="concepts/recursive-feasibility.html">Recursive Feasibility</a></span> <span class="pill"><a href="concepts/stability-under-replanning.html">Stability Under Replanning</a></span></p></div>
+  <div>
+    <h3>Feasibility of MPC</h3>
+    <p class="muted">transcript captured · 10,124 words · <a href="https://www.youtube.com/watch?v=8Elrw30y0tg">8Elrw30y0tg</a></p>
+    <p><strong>The problem:</strong> Repeated planning can make legal moves that leave the next optimization with no legal solution.</p>
+    <p><strong>The move:</strong> Study feasibility, recursive feasibility, and stability conditions for MPC.</p>
+    <div class="explain-box"><p>A car entering a narrow gap may be collision-free now but have no braking option one second later; recursive feasibility rejects that handoff.</p></div>
+    <p><span class="pill"><a href="concepts/feasibility.html">Feasibility</a></span> <span class="pill"><a href="concepts/recursive-feasibility.html">Recursive Feasibility</a></span> <span class="pill"><a href="concepts/stability-under-replanning.html">Stability Under Replanning</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 13</strong>
-  <div><h3>Intro to Learning</h3><p class="muted">transcript captured · 10,360 words · <a href="https://www.youtube.com/watch?v=RtJSHiqOdgQ">RtJSHiqOdgQ</a></p><p><span class="muted">No primary concept assigned yet.</span></p></div>
+  <div>
+    <h3>Intro to Learning</h3>
+    <p class="muted">transcript captured · 10,360 words · <a href="https://www.youtube.com/watch?v=RtJSHiqOdgQ">RtJSHiqOdgQ</a></p>
+    <p><strong>The problem:</strong> Learning enters only after the course has named what written models and objectives can and cannot supply.</p>
+    <p><strong>The move:</strong> Bridge model-based control to data-driven control: what can be learned, from what signal, and with what new failure modes.</p>
+    <div class="explain-box"><p>A robot may know its arm physics but not the right contact strategy for a drawer handle; demonstrations or reward can fill that missing piece.</p></div>
+    <p><span class="muted">No primary concept assigned yet.</span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 14</strong>
-  <div><h3>Intro to IL and RL</h3><p class="muted">transcript captured · 11,319 words · <a href="https://www.youtube.com/watch?v=7YdOx-ih0II">7YdOx-ih0II</a></p><p><span class="muted">No primary concept assigned yet.</span></p></div>
+  <div>
+    <h3>Intro to IL and RL</h3>
+    <p class="muted">transcript captured · 11,319 words · <a href="https://www.youtube.com/watch?v=7YdOx-ih0II">7YdOx-ih0II</a></p>
+    <p><strong>The problem:</strong> Imitation and reinforcement learning answer different missing-information problems.</p>
+    <p><strong>The move:</strong> Separate learning from demonstrations from learning through reward and interaction.</p>
+    <div class="explain-box"><p>If an expert can show good grasps, imitation is natural; if success can only be scored after trial, reinforcement learning becomes the tool.</p></div>
+    <p><span class="muted">No primary concept assigned yet.</span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 15</strong>
-  <div><h3>Imitation Learning</h3><p class="muted">transcript captured · 11,860 words · <a href="https://www.youtube.com/watch?v=udHX5Auj7ik">udHX5Auj7ik</a></p><p><span class="pill"><a href="concepts/imitation-learning.html">Imitation Learning</a></span> <span class="pill"><a href="concepts/behavioral-cloning.html">Behavioral Cloning</a></span> <span class="pill"><a href="concepts/distribution-shift-imitation.html">Distribution Shift in Imitation</a></span></p></div>
+  <div>
+    <h3>Imitation Learning</h3>
+    <p class="muted">transcript captured · 11,860 words · <a href="https://www.youtube.com/watch?v=udHX5Auj7ik">udHX5Auj7ik</a></p>
+    <p><strong>The problem:</strong> Copying expert actions is not the same as building a robust closed-loop controller.</p>
+    <p><strong>The move:</strong> Study imitation learning and behavioral cloning as supervised policy learning with distribution-shift risk.</p>
+    <div class="explain-box"><p>A cloned driving policy trained near lane center may drift right, then face states the expert almost never visited.</p></div>
+    <p><span class="pill"><a href="concepts/imitation-learning.html">Imitation Learning</a></span> <span class="pill"><a href="concepts/behavioral-cloning.html">Behavioral Cloning</a></span> <span class="pill"><a href="concepts/distribution-shift-imitation.html">Distribution Shift in Imitation</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 16</strong>
-  <div><h3>Fundamentals of RL</h3><p class="muted">transcript captured · 10,702 words · <a href="https://www.youtube.com/watch?v=cqPbt3OfRK4">cqPbt3OfRK4</a></p><p><span class="pill"><a href="concepts/reinforcement-learning.html">Reinforcement Learning</a></span> <span class="pill"><a href="concepts/reward.html">Reward</a></span> <span class="pill"><a href="concepts/policy.html">Policy</a></span> <span class="pill"><a href="concepts/exploration.html">Exploration</a></span></p></div>
+  <div>
+    <h3>Fundamentals of RL</h3>
+    <p class="muted">transcript captured · 10,702 words · <a href="https://www.youtube.com/watch?v=cqPbt3OfRK4">cqPbt3OfRK4</a></p>
+    <p><strong>The problem:</strong> A reward signal can teach behavior without action labels, but delayed credit and unsafe exploration make the learning problem hard.</p>
+    <p><strong>The move:</strong> Introduce reinforcement learning through policy, reward, return, exploration, and objective learning.</p>
+    <div class="explain-box"><p>A grasp that succeeds after a wrist correction must credit earlier actions, not only the final lift.</p></div>
+    <p><span class="pill"><a href="concepts/reinforcement-learning.html">Reinforcement Learning</a></span> <span class="pill"><a href="concepts/reward.html">Reward</a></span> <span class="pill"><a href="concepts/policy.html">Policy</a></span> <span class="pill"><a href="concepts/exploration.html">Exploration</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 17</strong>
-  <div><h3>RL Value-Based Methods</h3><p class="muted">transcript captured · 11,181 words · <a href="https://www.youtube.com/watch?v=zanXSI7zSws">zanXSI7zSws</a></p><p><span class="pill"><a href="concepts/value-based-rl.html">Value-Based RL</a></span></p></div>
+  <div>
+    <h3>RL Value-Based Methods</h3>
+    <p class="muted">transcript captured · 11,181 words · <a href="https://www.youtube.com/watch?v=zanXSI7zSws">zanXSI7zSws</a></p>
+    <p><strong>The problem:</strong> The learner may not know the best action, but it can learn which states or state-action pairs lead to better future return.</p>
+    <p><strong>The move:</strong> Use value-based RL to learn future-return estimates from sampled transitions.</p>
+    <div class="explain-box"><p>A game agent chooses a move by comparing the learned values of the board positions those moves create.</p></div>
+    <p><span class="pill"><a href="concepts/value-based-rl.html">Value-Based RL</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 18</strong>
-  <div><h3>RL Policy Optimization</h3><p class="muted">transcript captured · 11,656 words · <a href="https://www.youtube.com/watch?v=a1g9U_5zO54">a1g9U_5zO54</a></p><p><span class="pill"><a href="concepts/policy-optimization.html">Policy Optimization</a></span></p></div>
+  <div>
+    <h3>RL Policy Optimization</h3>
+    <p class="muted">transcript captured · 11,656 words · <a href="https://www.youtube.com/watch?v=a1g9U_5zO54">a1g9U_5zO54</a></p>
+    <p><strong>The problem:</strong> Large continuous action policies may be easier to improve directly than through a table of values.</p>
+    <p><strong>The move:</strong> Use policy optimization to update the action rule from rollout returns.</p>
+    <div class="explain-box"><p>A walking robot changes neural policy weights so steps that led to longer stable walking become more likely.</p></div>
+    <p><span class="pill"><a href="concepts/policy-optimization.html">Policy Optimization</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div><div class="lecture-row">
   <strong>Lecture 19</strong>
-  <div><h3>Model-Based RL</h3><p class="muted">transcript captured · 12,012 words · <a href="https://www.youtube.com/watch?v=ZXMThMHFD_w">ZXMThMHFD_w</a></p><p><span class="pill"><a href="concepts/model-based-rl.html">Model-Based RL</a></span></p></div>
+  <div>
+    <h3>Model-Based RL</h3>
+    <p class="muted">transcript captured · 12,012 words · <a href="https://www.youtube.com/watch?v=ZXMThMHFD_w">ZXMThMHFD_w</a></p>
+    <p><strong>The problem:</strong> Real trial-and-error is expensive when hardware can break or data collection is slow.</p>
+    <p><strong>The move:</strong> Use model-based RL to learn or use a predictive model, rehearse futures, and spend real trials carefully.</p>
+    <div class="explain-box"><p>A warehouse robot can test shelf-collision futures inside a learned model before risking the real arm.</p></div>
+    <p><span class="pill"><a href="concepts/model-based-rl.html">Model-Based RL</a></span></p>
+  </div>
   <span class="tag">ready</span>
 </div></section></main>
 </body>

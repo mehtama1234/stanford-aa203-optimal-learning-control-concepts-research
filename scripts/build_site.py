@@ -388,6 +388,9 @@ FORMULA_EXPLAINERS: list[dict[str, str]] = [
         "operation": "Feed in the state and action, then propagate the consequence one step forward.",
         "worked": "If a drone has upward velocity 1 m/s and the controller cuts thrust, the next height may still rise for a moment while velocity falls. Dynamics explain that delay.",
         "failure": "If the model ignores wind, ice, contact, or actuator lag, the controller prices a future that the real system will not follow.",
+        "input": "present state and command",
+        "output": "next state or state derivative",
+        "wrong_read": "Reading f as a label instead of the physical rule that turns commands into motion.",
     },
     {
         "name": "Objective",
@@ -397,6 +400,9 @@ FORMULA_EXPLAINERS: list[dict[str, str]] = [
         "operation": "Add the cost paid along the path and the cost left at the end.",
         "worked": "A rocket landing score can add fuel burn every second, then add a large final penalty for height error and touchdown speed.",
         "failure": "If the written cost omits damage or risk, the optimizer can choose a future that is cheap on paper and bad in the world.",
+        "input": "a candidate state-action history",
+        "output": "one score for comparing that history with another",
+        "wrong_read": "Treating the cost as intention instead of the written scoreboard the optimizer will obey.",
     },
     {
         "name": "Bellman Recursion",
@@ -406,6 +412,9 @@ FORMULA_EXPLAINERS: list[dict[str, str]] = [
         "operation": "For each action, add immediate cost to the value of the next state, then choose the best sum.",
         "worked": "A rover may pay one extra minute to avoid sharp rocks because the next state after the rocky shortcut has damaged wheels and worse future value.",
         "failure": "If the state is missing hidden information, the value table attaches the wrong future price to that state.",
+        "input": "current state, candidate action, one-step cost, and next-state value",
+        "output": "the best future cost attached to the current state",
+        "wrong_read": "Reading the recursion as algebra only, without asking what next state each action creates.",
     },
     {
         "name": "Hamiltonian",
@@ -415,6 +424,9 @@ FORMULA_EXPLAINERS: list[dict[str, str]] = [
         "operation": "Price a control change by adding what it costs now to what its state change costs later.",
         "worked": "For a rocket, more thrust burns fuel now but changes future velocity. The costate says how valuable that velocity change is later near touchdown.",
         "failure": "Hamiltonian conditions are necessary conditions; they can identify a candidate path without proving it is the best global path.",
+        "input": "state, control, current cost, dynamics, and costate price",
+        "output": "a local stationarity test for a candidate optimal control",
+        "wrong_read": "Treating the Hamiltonian as energy here instead of a cost-and-dynamics bookkeeping device.",
     },
     {
         "name": "MPC",
@@ -424,6 +436,9 @@ FORMULA_EXPLAINERS: list[dict[str, str]] = [
         "operation": "Solve, use only the first command, shift the horizon, and solve again.",
         "worked": "A car plans five seconds ahead but executes only 0.1 seconds of steering and throttle before traffic is measured again.",
         "failure": "A short horizon without terminal protection can make a legal first move that leaves no legal move next time.",
+        "input": "measured state, model, horizon, cost, and constraints",
+        "output": "the first command of a newly solved short plan",
+        "wrong_read": "Thinking MPC trusts the whole plan instead of deliberately throwing most of it away after measuring again.",
     },
     {
         "name": "Policy Gradient",
@@ -433,6 +448,9 @@ FORMULA_EXPLAINERS: list[dict[str, str]] = [
         "operation": "Use rollout returns to nudge the policy toward actions that led to higher long-run reward.",
         "worked": "A grasping robot tries many wrist angles; successful lifts increase the probability of similar actions in similar poses.",
         "failure": "Sparse reward, unsafe exploration, or random lucky rollouts can push the policy in the wrong direction.",
+        "input": "rollouts, rewards, and current policy parameters",
+        "output": "a parameter update direction for the policy",
+        "wrong_read": "Treating a successful rollout as proof every action in it deserves credit.",
     },
 ]
 
@@ -1258,6 +1276,9 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <p>{esc(item['problem'])}</p>
   <p><strong>The object:</strong> {esc(item['object'])}</p>
   <p><strong>The operation:</strong> {esc(item['operation'])}</p>
+  <p><strong>Input:</strong> {esc(item.get('input', ''))}</p>
+  <p><strong>Output:</strong> {esc(item.get('output', ''))}</p>
+  <p><strong>Wrong read:</strong> {esc(item.get('wrong_read', ''))}</p>
 </div>
 <div class="explain-box"><p>{esc(item['worked'])}</p></div>
 <details class="math"><summary>where it fails</summary><div><p>{esc(item['failure'])}</p></div></details>
@@ -1272,6 +1293,17 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <div class="essay">
   <p>The symbols in AA203 are easy to misread as decoration. They are not. Each formula is a small machine: put in a state, an action, a cost, a model, or a rollout; get out a next state, a price on the future, a constraint check, or a policy update.</p>
   <p>The reading order is always the same. First ask what real situation forced the formula to exist. Then identify the object it stores. Then name the operation it performs. Only after that should the symbols matter.</p>
+</div>
+<h2>One Reading Run</h2>
+<div class="essay">
+  <p>Use a landing rocket. Dynamics read height, velocity, fuel, and thrust, then return the next height, velocity, and fuel. The objective reads the whole candidate landing history and returns a score built from fuel use, touchdown speed, and final height error. Bellman recursion reads one thrust choice, the next state it creates, and the stored future value of that next state. The Hamiltonian reads immediate fuel cost and the costate price of changing velocity. MPC reads the measured rocket state, solves a short landing problem, applies the first thrust command, then measures again. A policy-gradient formula would read rollout returns from attempted landings and adjust a policy only if the credit signal is credible.</p>
+  <p>This is how to reject a shallow formula reading. If the formula does not say what enters, what leaves, what future is priced, and where the reading fails, the symbols have not been explained yet.</p>
+</div>
+<h2>Three Checks For Any Formula</h2>
+<div class="essay">
+  <p>First, ask what would go wrong in the world if the formula did not exist. Dynamics exist because commands are not teleportation. Value exists because the next state carries later burden. MPC exists because yesterday's plan goes stale after measurement.</p>
+  <p>Second, ask what object the formula carries. A transition rule carries motion, a cost carries preference, a value function carries future burden, a costate carries sensitivity, and a policy update carries evidence from rollouts.</p>
+  <p>Third, ask what false reading would hurt a real system. A cost can omit damage. A value can price the wrong state. A local condition can miss the global path. A short MPC horizon can leave no future move. A policy update can reward noise.</p>
 </div>
 <section class="stack">{''.join(formula_cards)}</section>""",
             "formulas",

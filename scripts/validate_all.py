@@ -372,11 +372,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"collocation concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "lqr":
-            for marker in ["20 centimeters left", "e_next = e + u", "u = -0.190 meters", "x_{k+1}=A_k x_k + B_k u_k", "J(u)=u^2 + 20*(0.20 + u)^2", "K = 20/21", "actuator saturates"]:
+            for marker in ["20 centimeters left", "e_next = e + u", "u = -0.190 meters", "e = 0.05", "u = -(20/21)*0.05 = -0.0476 meters", "e = -0.20", "u = +0.190 meters", "measure the deviation, multiply by a gain", "x_{k+1}=A_k x_k + B_k u_k", "J(u)=u^2 + 20*(0.20 + u)^2", "2u + 40*(e + u)=0", "u = -(20/21)*e", "K = 20/21", "|u| &lt;= 0.10 meters", "plain LQR asks for u = -0.190", "actuator can only deliver u = -0.10", "e_next = 0.10", "not the predicted 0.010", "actuator saturates"]:
                 if marker not in text:
                     errors.append(f"LQR concept page missing feedback-gain marker: {marker}")
-            if len(words) < 780:
-                errors.append(f"LQR concept page below core richness floor: {len(words)} < 780")
+            if len(words) < 900:
+                errors.append(f"LQR concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "local-quadratic-approximation":
             for marker in ["6 centimeters too far left", "delta u = -0.02 meters", "delta u = 0.02 meters", "q(delta u) = c + g*delta u + 0.5*H*delta u^2", "delta u* = -g/H = 0.028 meters", "trust region"]:
                 if marker not in text:

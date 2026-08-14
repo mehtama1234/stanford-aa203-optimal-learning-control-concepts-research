@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A walking robot can locally linearize around a planned footstep, but not around a fall. Start from the ordinary pressure: Nonlinear control can be too hard globally, but near a candidate trajectory its local shape may be usable. The shortcut is to trust the local approximation everywhere. That fails because a local bowl only describes nearby behavior; far away the real dynamics and cost may bend differently. So the page introduces a taylor approximation, linearized dynamics, or quadratic cost model. and uses it to approximate locally, solve the easier problem, and update around a new point.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a taylor approximation, linearized dynamics, or quadratic cost model. The operation is: Approximate locally, solve the easier problem, and update around a new point. The boundary is: The update must stay within the region where the approximation is credible.</p></div></details>
+  <div class="explain-box"><p>Near the bottom of a smooth bowl, the shape looks quadratic even if the larger landscape is complicated. A control solver uses the same trick near a planned motion: approximate local cost and dynamics enough to compute a useful correction.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>A Taylor expansion keeps linear terms for dynamics and quadratic terms for cost around a nominal state-action path. The approximation is trusted only nearby.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

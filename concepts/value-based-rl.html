@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A maze agent learns that moving away from the goal now can be valuable if it avoids a dead end. Start from the ordinary pressure: Instead of directly learning the action rule, the agent can learn a future-return scoreboard. The shortcut is to estimate immediate reward only. That fails because the best action may have low immediate reward but lead to high future return. So the page introduces a state-value or action-value function. and uses it to update value estimates from experience and act greedily or near-greedily with respect to them.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a state-value or action-value function. The operation is: Update value estimates from experience and act greedily or near-greedily with respect to them. The boundary is: The value representation must generalize correctly across the visited state-action space.</p></div></details>
+  <div class="explain-box"><p>A game-playing agent may not know the best move directly, but it can learn which board states tend to lead to higher future return. It then picks actions by looking at the values of the states those actions create.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>Value-based RL learns V(x) or Q(x,u) from sampled rewards and transitions. The policy is obtained by choosing actions with high estimated value.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

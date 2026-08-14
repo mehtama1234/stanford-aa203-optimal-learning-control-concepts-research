@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A car must not enter a narrow lane unless it can still brake or steer safely in the next planning step. Start from the ordinary pressure: Replanning is only useful if today&#x27;s legal move does not leave the controller with no legal move next time. The shortcut is to check only that the current mpc problem has a solution. That fails because the first action of a feasible plan can lead to a state where the next problem is infeasible. So the page introduces a recursively feasible set or terminal condition. and uses it to design the mpc problem so feasibility propagates from one solve to the next.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a recursively feasible set or terminal condition. The operation is: Design the MPC problem so feasibility propagates from one solve to the next. The boundary is: The guarantee depends on model accuracy, constraints, and terminal set design.</p></div></details>
+  <div class="explain-box"><p>A car can choose a legal steering command that fits through a narrow gap now but leaves no legal braking option one second later. Recursive feasibility rejects that move because today&#x27;s feasible plan must hand tomorrow another feasible problem.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>If x_k is feasible and the MPC applies u_k, recursive feasibility requires the resulting x_{k+1} to remain inside a set from which a feasible horizon plan exists.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

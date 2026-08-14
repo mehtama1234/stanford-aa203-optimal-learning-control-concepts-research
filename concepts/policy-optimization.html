@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A robot gait policy is adjusted so parameter changes that increase forward progress become more likely. Start from the ordinary pressure: Sometimes it is more practical to tune the decision rule itself than to build a complete value table. The shortcut is to change policy parameters blindly and keep lucky improvements. That fails because random changes are sample-inefficient and can destroy useful behavior. So the page introduces a parameterized policy and objective over expected return. and uses it to estimate a gradient or improvement direction and update policy parameters.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a parameterized policy and objective over expected return. The operation is: Estimate a gradient or improvement direction and update policy parameters. The boundary is: Gradient estimates can be noisy and depend on exploration and reward quality.</p></div></details>
+  <div class="explain-box"><p>A walking robot with a neural policy may not have a small action table to fill. Policy optimization changes the policy parameters directly, making actions that led to better rollouts more likely and harmful actions less likely.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The objective is expected return under the current policy. Updates estimate a direction in parameter space that should increase that return.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

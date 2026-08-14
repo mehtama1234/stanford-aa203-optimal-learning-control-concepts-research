@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A robotic arm path is not a pile of unrelated positions; the arm must move continuously with limited velocity and torque. Start from the ordinary pressure: A controller must choose a path through time, and changing one part of the path changes the total cost. The shortcut is to optimize each point on the path independently. That fails because neighboring points are linked by dynamics and smoothness, so a path must be varied as a connected object. So the page introduces a functional that scores a whole curve. and uses it to perturb the curve and require that no small admissible perturbation improves the cost.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a functional that scores a whole curve. The operation is: Perturb the curve and require that no small admissible perturbation improves the cost. The boundary is: The approach needs smooth variations and a meaningful path-level cost.</p></div></details>
+  <div class="explain-box"><p>A thrown ball path is not chosen at one point. The whole curve matters. Calculus of variations asks what happens to total cost if the entire path is nudged slightly, while endpoints or dynamics are respected.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The object is a functional: it takes a whole curve and returns a number. The operation is to perturb the curve and set the first variation to zero for an optimal candidate.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

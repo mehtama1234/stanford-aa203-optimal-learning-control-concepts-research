@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>For a spacecraft transfer, the indirect method derives equations for both the state path and the shadow price of state errors. Start from the ordinary pressure: Instead of searching over all paths directly, use mathematical structure to reduce the search to conditions of optimality. The shortcut is to discretize everything immediately and hand the whole problem to a numerical optimizer. That fails because direct search can be large and blind to useful analytic structure. So the page introduces necessary conditions such as state, costate, and stationarity equations. and uses it to derive the boundary-value problem implied by optimality and solve those equations.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is necessary conditions such as state, costate, and stationarity equations. The operation is: Derive the boundary-value problem implied by optimality and solve those equations. The boundary is: It depends on correct derivation and can be sensitive to boundary guesses.</p></div></details>
+  <div class="explain-box"><p>Instead of giving a big nonlinear program to a solver, an indirect method first derives the equations an optimal path must obey. It is like finding the laws of the winning path before trying to compute the path itself.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The method derives state equations, costate equations, boundary conditions, and stationarity conditions, then solves that boundary-value problem.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

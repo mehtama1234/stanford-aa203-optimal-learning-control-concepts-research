@@ -184,10 +184,10 @@ def main() -> int:
             errors.append(f"evidence anchor missing from evidence.html: {row['id']}")
     rendered_checks = {
         "derivations.html": ["Failure test", "Formula shape", "First-principles intuition", "Transfer check"],
-        "worked-examples.html": ["Method Route", "Failure Signal", "Decision Pressure", "Concrete Run", "Method Boundary"],
-        "drills.html": ["Setup hint", "Wrong turn to avoid", "What a strong answer must include", "Transfer variant"],
-        "solutions.html": ["Strong answer", "Solution walkthrough", "Transfer variant", "Grading criteria"],
-        "misconceptions.html": ["Stronger version", "Failure consequence", "Replacement rule", "Transfer prompt"],
+        "worked-examples.html": ["How To Read A Worked Example", "Example Cards", "Method Route", "Failure Signal", "Decision Pressure", "Concrete Run", "Method Boundary", "future burden"],
+        "drills.html": ["How To Work A Drill", "Drill Cards", "Setup hint", "Wrong turn to avoid", "What a strong answer must include", "Transfer variant", "recursive feasibility"],
+        "solutions.html": ["What Counts As A Strong Solution", "Solution Cards", "Strong answer", "Solution walkthrough", "Transfer variant", "Grading criteria", "distribution shift"],
+        "misconceptions.html": ["How To Repair A Weak Claim", "Repair Cards", "Stronger version", "Failure consequence", "Replacement rule", "Transfer prompt", "what the sentence hides"],
         "course-spine.html": ["Handoff:", "If skipped:", "Name the moving situation", "Learn only where written structure runs out"],
         "families.html": ["The move:", "Wrong shortcut:", "Boundary test:", "Choosing A Family In One Run", "transfer", "A method family is a response", "drone", "rover", "warehouse robot"],
         "primitives.html": ["reusable pieces", "One Debug Sequence", "Question it answers", "Failure if wrong", "The action is the command", "Constraint says what cannot be crossed"],
@@ -243,10 +243,10 @@ def main() -> int:
         "evidence.html": 6600,
         "completion-audit.html": 850,
         "provenance.html": 800,
-        "worked-examples.html": 1250,
-        "drills.html": 800,
-        "solutions.html": 1450,
-        "misconceptions.html": 650,
+        "worked-examples.html": 1450,
+        "drills.html": 1050,
+        "solutions.html": 1700,
+        "misconceptions.html": 900,
     }
     for filename, minimum in minimum_page_words.items():
         path = SITE / filename

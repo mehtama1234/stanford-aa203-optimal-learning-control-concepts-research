@@ -1430,7 +1430,18 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <p>{linked}</p>
 """
         example_cards.append(card(item["title"], body))
-    write(SITE / "worked-examples.html", page("Worked Examples", f"<h1>Worked Examples</h1><p class=\"lede\">Concrete setups that force the learner to name state, action, cost, constraints, method route, and failure signal.</p><section class=\"stack\">{''.join(example_cards)}</section>", "derivations"))
+    worked_intro = """
+<h1>Worked Examples</h1>
+<p class="lede">Concrete setups that force the learner to name state, action, cost, constraints, method route, and failure signal.</p>
+<div class="essay">
+  <h2>How To Read A Worked Example</h2>
+  <p>Begin with the moving object, not the method name. A rocket, rover, robot arm, car, or drone has a present condition. It accepts only certain commands. The world changes after each command. Some endings are wanted, some are costly, and some are forbidden. The table is useful only after those pieces are visible.</p>
+  <p>Then read the method route as a choice made under pressure. A shooting method is natural when the whole path can be described by a small set of starting guesses. A transcription method is natural when many points along the path must satisfy dynamics and limits. Dynamic programming is natural when the same state can be reached by different earlier choices and the future burden must be stored at that state.</p>
+  <p>The failure signal is the part to linger on. If the example says a rocket violates touchdown speed, that is not a small detail; it means the cost or constraint failed to protect the real landing. If the rover chooses sharp rocks because distance is cheap, the future state was priced too weakly. If a learned policy leaves the demonstrated poses, the training data stopped covering the states the controller now visits.</p>
+</div>
+<h2>Example Cards</h2>
+"""
+    write(SITE / "worked-examples.html", page("Worked Examples", f"{worked_intro}<section class=\"stack\">{''.join(example_cards)}</section>", "derivations"))
 
     drill_cards = []
     solution_cards = []
@@ -1449,8 +1460,30 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
                 f"<p><strong>Prompt:</strong> {esc(item['prompt'])}</p><p><strong>Setup hint:</strong> {esc(item.get('setup_hint', ''))}</p><p><strong>Wrong turn:</strong> {esc(item['wrong_turn'])}</p><p><strong>Strong answer:</strong> {esc(item['strong_answer'])}</p><p><strong>Solution walkthrough:</strong> {esc(item.get('solution_walkthrough', ''))}</p><p><strong>Transfer variant:</strong> {esc(item.get('transfer_variant', ''))}</p><p><strong>Grading criteria:</strong></p>{criteria}<p>{linked}</p>",
             )
         )
-    write(SITE / "drills.html", page("Drills", f"<h1>Drills</h1><p class=\"lede\">Practice prompts that train setup, method choice, future-cost recognition, feasibility diagnosis, reward repair, and approximation boundaries.</p><section class=\"stack\">{''.join(drill_cards)}</section>", "drills"))
-    write(SITE / "solutions.html", page("Solutions", f"<h1>Solutions</h1><p class=\"lede\">Full solution notes that name the common wrong turn before giving the stronger control explanation.</p><section class=\"stack\">{''.join(solution_cards)}</section>", "drills"))
+    drill_intro = """
+<h1>Drills</h1>
+<p class="lede">Practice prompts that train setup, method choice, future-cost recognition, feasibility diagnosis, reward repair, and approximation boundaries.</p>
+<div class="essay">
+  <h2>How To Work A Drill</h2>
+  <p>Do not begin by hunting for the lecture label. First write the machine in plain words: what is measured now, what command can be sent, what changes next, what future is being paid for, and what line cannot be crossed. If that sentence cannot be written, the answer is still too thin.</p>
+  <p>After the setup is physical, choose the method by the kind of pressure in the problem. A path-planning drill asks for many linked states and commands. A Bellman drill asks what future burden is stored at a state. An MPC drill asks whether the short plan leaves a state from which another legal plan can still be made. A learning drill asks which part of the control loop is missing and what new failure data creates.</p>
+  <p>The transfer variant is the real test. If a drone delivery answer cannot survive an indoor drone window, it was memorized. If a traffic MPC answer cannot survive a narrower braking margin, it did not understand recursive feasibility. If a reward repair answer cannot survive a different robot task, it only patched the words.</p>
+</div>
+<h2>Drill Cards</h2>
+"""
+    solution_intro = """
+<h1>Solutions</h1>
+<p class="lede">Full solution notes that name the common wrong turn before giving the stronger control explanation.</p>
+<div class="essay">
+  <h2>What Counts As A Strong Solution</h2>
+  <p>A strong solution should sound like an operator could check it. It names the state record, the command, the rule that moves the system, the cost paid along the way, the end condition, and the hard limits. It does not hide behind words such as performance or behavior. It says what changes and why.</p>
+  <p>For path problems, the solution should say whether the unknown is a continuous curve, a sequence of knot points, or a feedback rule. For future-price problems, it should say what value is stored and how an action changes the next state before the next value is read. For repeated planning, it should test the state left behind for the next solve. For learning, it should say what the data covers and what happens when the closed loop visits states outside that cover.</p>
+  <p>Use the wrong turn as a diagnostic. The wrong answer is not merely incomplete; it usually drops one physical piece. It drops the action limits, drops wind, drops future cost, drops terminal safety, drops distribution shift, or lets reward reward the wrong thing. The stronger answer repairs the missing piece and then checks the repair on the transfer variant.</p>
+</div>
+<h2>Solution Cards</h2>
+"""
+    write(SITE / "drills.html", page("Drills", f"{drill_intro}<section class=\"stack\">{''.join(drill_cards)}</section>", "drills"))
+    write(SITE / "solutions.html", page("Solutions", f"{solution_intro}<section class=\"stack\">{''.join(solution_cards)}</section>", "drills"))
 
     base_misconceptions = [
         ("Optimal means globally best", "Many methods produce local candidates or model-conditioned optima, not universal guarantees."),
@@ -1465,7 +1498,19 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
                 f"<p><strong>Diagnosis:</strong> {esc(item['diagnosis'])}</p><p><strong>Failure consequence:</strong> {esc(item.get('failure_consequence', ''))}</p><p><strong>Replacement rule:</strong> {esc(item.get('replacement_rule', ''))}</p><p><strong>Stronger version:</strong> {esc(item['strong'])}</p><p><strong>Transfer prompt:</strong> {esc(item.get('transfer_prompt', ''))}</p>",
             )
         )
-    write(SITE / "misconceptions.html", page("Misconceptions", f"<h1>Misconceptions And Weak-Claim Repairs</h1><section class=\"grid\">{''.join(misconception_cards)}</section>", "review"))
+    misconception_intro = """
+<h1>Misconceptions And Weak-Claim Repairs</h1>
+<p class="lede">Weak claims are places where the writing has lost the machine, the command, the future, or the boundary.</p>
+<div class="essay">
+  <h2>How To Repair A Weak Claim</h2>
+  <p>First ask what the sentence hides. A claim about a better controller may hide the cost being reduced. A claim about safety may hide the reachable states being protected. A claim about learning may hide which part is learned: policy, reward, value, or model. The repair should name the hidden object in ordinary words before it names the course term.</p>
+  <p>Second, ask what would go wrong in a real run. A car planner can look legal for two seconds and still leave no braking path. A model-based learner can plan through a learned model and choose a move that only works inside the model mistake. A reward can be maximized by the wrong action if the reward misses the task goal.</p>
+  <p>Third, write the replacement sentence so it can be checked. It should say what state is measured, what action is allowed, what future is priced, what constraint is active, or what data cover is missing. If none of those pieces appears, the sentence is probably still decoration.</p>
+  <p>A repair is done only when it changes what the reader would inspect. For MPC, the reader should inspect the state left for the next solve. For imitation learning, the reader should inspect states reached after small policy errors. For reward design, the reader should inspect the action that wins the score and ask whether it also completes the task.</p>
+</div>
+<h2>Repair Cards</h2>
+"""
+    write(SITE / "misconceptions.html", page("Misconceptions", f"{misconception_intro}<section class=\"grid\">{''.join(misconception_cards)}</section>", "review"))
 
     evidence_html = "".join(evidence_card(row) for row in evidence)
     evidence_intro = """

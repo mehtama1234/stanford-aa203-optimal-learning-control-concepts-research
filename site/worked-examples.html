@@ -22,7 +22,17 @@
 <a class="" href="evidence.html">Evidence</a>
 <a class="" href="review-guide.html">Review</a></nav>
   </header>
-  <main><h1>Worked Examples</h1><p class="lede">Concrete setups that force the learner to name state, action, cost, constraints, method route, and failure signal.</p><section class="stack"><article class="card "><h3>Rocket Landing</h3>
+  <main>
+<h1>Worked Examples</h1>
+<p class="lede">Concrete setups that force the learner to name state, action, cost, constraints, method route, and failure signal.</p>
+<div class="essay">
+  <h2>How To Read A Worked Example</h2>
+  <p>Begin with the moving object, not the method name. A rocket, rover, robot arm, car, or drone has a present condition. It accepts only certain commands. The world changes after each command. Some endings are wanted, some are costly, and some are forbidden. The table is useful only after those pieces are visible.</p>
+  <p>Then read the method route as a choice made under pressure. A shooting method is natural when the whole path can be described by a small set of starting guesses. A transcription method is natural when many points along the path must satisfy dynamics and limits. Dynamic programming is natural when the same state can be reached by different earlier choices and the future burden must be stored at that state.</p>
+  <p>The failure signal is the part to linger on. If the example says a rocket violates touchdown speed, that is not a small detail; it means the cost or constraint failed to protect the real landing. If the rover chooses sharp rocks because distance is cheap, the future state was priced too weakly. If a learned policy leaves the demonstrated poses, the training data stopped covering the states the controller now visits.</p>
+</div>
+<h2>Example Cards</h2>
+<section class="stack"><article class="card "><h3>Rocket Landing</h3>
 <p>A vertical rocket must land softly with limited fuel and bounded thrust.</p>
 <table>
   <tr><th>State</th><td>Height, vertical velocity, mass or fuel, and possibly engine state.</td></tr>

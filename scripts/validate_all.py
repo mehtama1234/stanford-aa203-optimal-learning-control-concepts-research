@@ -329,6 +329,12 @@ def main() -> int:
                     errors.append(f"bellman concept page missing recursion marker: {marker}")
             if len(words) < 740:
                 errors.append(f"bellman concept page below core richness floor: {len(words)} < 740")
+        if concept.get("id") == "stochastic-dynamic-programming":
+            for marker in ["probability 0.6", "probability 0.3", "probability 0.1", "0.6*5 + 0.3*12 + 0.1*20 = 8.6", "P(x_next|x,u) V(x_next)"]:
+                if marker not in text:
+                    errors.append(f"stochastic DP concept page missing expectation marker: {marker}")
+            if len(words) < 740:
+                errors.append(f"stochastic DP concept page below core richness floor: {len(words)} < 740")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

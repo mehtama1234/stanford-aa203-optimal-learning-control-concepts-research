@@ -210,8 +210,8 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "math": "Linear dynamics plus quadratic cost make the value function quadratic. The feedback gain comes from carrying that quadratic value backward through time.",
     },
     "stochastic-dynamic-programming": {
-        "run": "A delivery rover may slip left, slip right, or move as commanded when it crosses gravel. The next state is not one promised cell. Stochastic dynamic programming prices each action by averaging over the possible next states and their future values.",
-        "math": "The Bellman update uses an expectation over next states: immediate cost plus expected future value under the transition probabilities.",
+        "run": "A delivery rover can cross gravel or detour around it. Crossing gravel costs 1 minute now. The rover moves as commanded with probability 0.6 and reaches a state with future value 5, slips left with probability 0.3 and reaches a state with future value 12, or slips right with probability 0.1 and reaches a state with future value 20. The next state is not one promise. The expected future value is 0.6*5 + 0.3*12 + 0.1*20 = 8.6, so the gravel action costs 1 + 8.6 before comparing it with the detour. If the detour costs 4 minutes now and then has future value 4, its total is 8, so the safer-looking longer route wins.",
+        "math": "The stochastic Bellman update uses an expectation over next states: cost(x,u) + sum over x_next of P(x_next|x,u) V(x_next). The probabilities are part of the model. If the 0.1 slip-right event reaches a dangerous state, its value still enters the average even though it is unlikely. A policy that ignores that branch is not optimistic in a harmless way; it has priced a different world than the rover will face.",
     },
     "local-quadratic-approximation": {
         "run": "Near the bottom of a smooth bowl, the shape looks quadratic even if the larger landscape is complicated. A control solver uses the same trick near a planned motion: approximate local cost and dynamics enough to compute a correction that pushes the state back toward the nominal path.",

@@ -366,11 +366,11 @@ def main() -> int:
             if len(words) < 760:
                 errors.append(f"shooting methods concept page below core richness floor: {len(words)} < 760")
         if concept.get("id") == "collocation":
-            for marker in ["t = 0.2 seconds", "x = 0.10 meters", "x = 0.08 to 0.12 meters", "defect_mid = path_derivative_mid - f(x_mid,u_mid)", "Driving defect_mid to 0"]:
+            for marker in ["x = 0.02 meters", "x = 0.18 meters", "t = 0.2 seconds", "x = 0.10 meters", "x = 0.08 to 0.12 meters", "path_derivative_mid = 0.9 m/s", "f(x_mid,u_mid)=0.4 m/s", "local direction does not match the dynamics", "selected interior points to be physically honest", "defect_mid = path_derivative_mid - f(x_mid,u_mid)", "defect_mid = 0.9 - 0.4 = 0.5 m/s", "Driving defect_mid to 0", "clearance_mid &gt;= 0", "x_mid = 0.10 meters", "clearance_mid is negative", "t = 0.1, 0.2, and 0.3 seconds", "sampling and representation", "unmodeled flex, backlash, or contact event"]:
                 if marker not in text:
                     errors.append(f"collocation concept page missing midpoint marker: {marker}")
-            if len(words) < 740:
-                errors.append(f"collocation concept page below core richness floor: {len(words)} < 740")
+            if len(words) < 900:
+                errors.append(f"collocation concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "lqr":
             for marker in ["20 centimeters left", "e_next = e + u", "u = -0.190 meters", "x_{k+1}=A_k x_k + B_k u_k", "J(u)=u^2 + 20*(0.20 + u)^2", "K = 20/21", "actuator saturates"]:
                 if marker not in text:

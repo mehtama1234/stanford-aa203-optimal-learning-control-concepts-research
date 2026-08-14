@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Provenance · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="index.html">Overview</a>
+<a class="" href="lectures.html">Lectures</a>
+<a class="" href="transcripts.html">Transcripts</a>
+<a class="" href="concept-seed.html">Concept Seed</a>
+<a class="active" href="provenance.html">Provenance</a></nav>
+  </header>
+  <main>
+<h1>Provenance</h1>
+<p>The canonical source is <a href="https://www.youtube.com/playlist?list=PLa9dmHsLK9dg">https://www.youtube.com/playlist?list=PLa9dmHsLK9dg</a>.</p>
+<p>Playlist metadata is stored in <code>raw-material/youtube/playlist.json</code>. Caption files are stored under <code>raw-material/youtube/transcripts/raw-vtt/</code>, cleaned text under <code>raw-material/youtube/transcripts/clean/</code>, and availability in <code>raw-material/youtube/transcript-index.json</code>.</p>
+<p>Run <code>python3 scripts/download_youtube_course_transcripts.py</code>, then <code>python3 scripts/build_site.py</code>, then <code>python3 scripts/validate_all.py</code>.</p>
+</main>
+</body>
+</html>

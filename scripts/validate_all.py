@@ -305,6 +305,12 @@ def main() -> int:
                     errors.append(f"horizon concept page missing delayed-consequence marker: {marker}")
             if len(words) < 720:
                 errors.append(f"horizon concept page below core richness floor: {len(words)} < 720")
+        if concept.get("id") == "constraints":
+            for marker in ["4 centimeters from the shelf", "12 newton-meters", "g(x,u) &lt;= 0", "0.04 - distance_to_shelf(x_k) &lt;= 0", "low cost cannot buy permission"]:
+                if marker not in text:
+                    errors.append(f"constraints concept page missing hard-limit marker: {marker}")
+            if len(words) < 720:
+                errors.append(f"constraints concept page below core richness floor: {len(words)} < 720")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

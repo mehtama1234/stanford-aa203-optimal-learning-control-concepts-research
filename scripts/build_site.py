@@ -142,8 +142,8 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "math": "A finite-horizon problem chooses actions for k = 0...N. With dt = 0.5 seconds and N = 6, the controller sees only 3 seconds. With N = 60, it sees 30 seconds. N is not just a number of samples; it decides whether delayed costs such as low battery, touchdown speed, or wind near the landing zone can enter the optimization before the first action is chosen.",
     },
     "constraints": {
-        "run": "A robot arm may find a low-energy path by swinging through a shelf. The cost likes it; the world does not. Constraints are the hard walls in the problem: joint limits, torque limits, collision surfaces, battery reserve, and safe speed.",
-        "math": "A constraint is an equation or inequality such as g(x,u) <= 0. A candidate path is not admissible unless every required constraint is satisfied at the relevant time.",
+        "run": "A robot arm moving a camera around a shelf can save energy by cutting through the shelf corner. Suppose the gripper must stay at least 4 centimeters from the shelf and each joint motor is limited to 12 newton-meters of torque. A path that clears the shelf by -1 centimeter or asks for 15 newton-meters may have a lower written cost, but it is not a candidate path. Constraints remove that future from the legal set before the optimizer compares scores.",
+        "math": "A constraint is an equation or inequality such as g(x,u) <= 0. A clearance constraint might be 0.04 - distance_to_shelf(x_k) <= 0 at every grid point, and a torque bound might be abs(tau_k) <= 12. A candidate path is admissible only when every required constraint is satisfied at the relevant time; low cost cannot buy permission to cross a hard physical limit.",
     },
     "feasibility": {
         "run": "A car boxed between two trucks may have no legal lane change, no legal stop, and no legal acceleration that avoids trouble. Feasibility asks this before arguing about best behavior: is there at least one legal future left?",

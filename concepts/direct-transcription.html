@@ -38,7 +38,7 @@
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a discretized trajectory with state and action variables at grid points. Use it when you need to use this when the path is the object and a nonlinear optimizer will solve the finite version.</p>
+    <p>The working object is a discretized trajectory with state and action variables at grid points. Use it when the path is the object and a nonlinear optimizer will solve the finite version.</p>
     <p>What the object does: Add constraints that force neighboring grid points to approximate the dynamics.</p>
   </div>
 </section>
@@ -54,8 +54,8 @@
 <section class="fp">
   <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A robot arm path is a smooth curve, but a solver needs a finite list of numbers. Direct transcription places dots along the path: joint angles, velocities, and commands at selected times. Then it adds constraints saying neighboring dots must be connected by the dynamics. The solver chooses the dots; the engineer checks whether the space between dots hid trouble.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The continuous path becomes decision variables x_0...x_N and u_0...u_N. Defect constraints enforce x_{k+1} minus the dynamics step from x_k and u_k.</p></div></details>
+  <div class="explain-box"><p>A robot arm must move from joint angle 0.0 rad to 1.2 rad in 0.6 seconds while staying under a torque limit. Direct transcription does not ask for a smooth curve in one piece. It creates grid variables at t = 0.0, 0.2, 0.4, and 0.6 seconds: joint angle, joint velocity, and torque at each point. If the grid says the arm is at 0.4 rad with velocity 1.0 rad/s at t = 0.2, then the dynamics predict roughly 0.6 rad at t = 0.4 after the chosen torque. If the next grid variable says 0.9 rad, the defect is 0.3 rad. That defect must be driven to zero or the path is a drawing, not a real arm motion.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The continuous path becomes decision variables x_0...x_N and u_0...u_N. A defect constraint has the form defect_k = x_{k+1} - step(x_k,u_k). Direct transcription asks the optimizer to choose all grid states and controls while also enforcing defect_k = 0, torque bounds, endpoint constraints, and collision constraints. The grid points are therefore not independent dots; they are tied by equations that make neighboring states obey real dynamics.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">05 · boundary</div>

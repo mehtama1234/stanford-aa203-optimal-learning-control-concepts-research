@@ -31,24 +31,24 @@
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Planning one second ahead and planning the whole mission are different problems.</p>
-    <p>The tempting shortcut is simple: Pick an arbitrary lookahead window. But that shortcut breaks because a short horizon can miss delayed consequences; a long horizon can be too expensive or depend on unreliable forecasts.</p>
+    <p>A common wrong first move is: Pick an arbitrary lookahead window. It fails when a short horizon can miss delayed consequences; a long horizon can be too expensive or depend on unreliable forecasts.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The controller keeps track of a finite horizon, infinite horizon, or receding horizon. This answers a practical question: ask when the consequences of a bad action first appear.</p>
-    <p>The operation is concrete: Limit or extend the future cost summed by the optimization.</p>
+    <p>The working object is a finite horizon, infinite horizon, or receding horizon. Use it when you need to ask when the consequences of a bad action first appear.</p>
+    <p>What the object does: Limit or extend the future cost summed by the optimization.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a finite horizon, infinite horizon, or receding horizon. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Before naming the method, point to a finite horizon, infinite horizon, or receding horizon in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
     <p>Now apply one command or one update. Limit or extend the future cost summed by the optimization. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
-    <p>The world check is the example: A car changing lanes must look far enough ahead to avoid a merge conflict, not just avoid the next meter. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+    <p>The world check is the example: A car changing lanes must look far enough ahead to avoid a merge conflict, not just avoid the next meter. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
 <section class="fp">
@@ -62,7 +62,7 @@
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>The horizon should match the time scale at which consequences become visible.</p>
-    <p>If that boundary is crossed, the visible failure is this: the controller repeatedly makes greedy moves because the real cost lies just beyond the horizon.</p>
+    <p>When that condition fails, look for this visible break: the controller repeatedly makes greedy moves because the real cost lies just beyond the horizon.</p>
     <p><strong>Recognize it in a new problem:</strong> Ask when the consequences of a bad action first appear.</p>
   </div>
 </section>

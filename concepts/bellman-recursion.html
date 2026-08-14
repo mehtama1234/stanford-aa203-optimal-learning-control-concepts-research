@@ -31,24 +31,24 @@
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>A controller needs a local equation that accounts for the future without listing every full trajectory.</p>
-    <p>The tempting shortcut is simple: Judge actions only by immediate cost. But that shortcut breaks because a cheap action can move the state into a costly future.</p>
+    <p>A common wrong first move is: Judge actions only by immediate cost. It fails when a cheap action can move the state into a costly future.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The controller keeps track of a recursive equation for the value function. This answers a practical question: use it when a decision can be split into now plus the best continuation.</p>
-    <p>The operation is concrete: For each action, add current cost to the next state&#x27;s value, then choose the best action.</p>
+    <p>The working object is a recursive equation for the value function. Use it when a decision can be split into now plus the best continuation.</p>
+    <p>What the object does: For each action, add current cost to the next state&#x27;s value, then choose the best action.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a recursive equation for the value function. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Before naming the method, point to a recursive equation for the value function in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
     <p>Now apply one command or one update. For each action, add current cost to the next state&#x27;s value, then choose the best action. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
-    <p>The world check is the example: A car may brake now even if braking costs time because the next state&#x27;s value is safer. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+    <p>The world check is the example: A car may brake now even if braking costs time because the next state&#x27;s value is safer. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
 <section class="fp">
@@ -62,7 +62,7 @@
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>The recursion depends on a correct state transition and cost decomposition.</p>
-    <p>If that boundary is crossed, the visible failure is this: if the state omits hidden variables, the next-state value is not enough.</p>
+    <p>When that condition fails, look for this visible break: if the state omits hidden variables, the next-state value is not enough.</p>
     <p><strong>Recognize it in a new problem:</strong> Use it when a decision can be split into now plus the best continuation.</p>
   </div>
 </section>

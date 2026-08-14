@@ -288,11 +288,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"optimal control problem page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "action-control-input":
-            for marker in ["48 percent above hover", "v_next = v + dt * a(u)", "action limits are limits on u"]:
+            for marker in ["h = 10 meters", "v = 0.2 m/s", "48 percent above hover", "dt = 0.1 seconds", "a(u)=4.8 m/s^2", "v_next = 0.2 + 0.1*4.8 = 0.68 m/s", "h_next = 10 + 0.1*0.68 = 10.068 meters", "6.8 centimeters", "motors, acceleration, velocity, and only then position", "a(u)=10*u", "-0.3 &lt;= u &lt;= 0.5", "v_next = v + dt * a(u)", "h_next = h + dt * v_next", "u = 0.9", "clips it to u = 0.5", "a=5.0 m/s^2", "x_next = f(x, u)", "action limits are limits on u", "(h_next - 12)^2", "actuator truth", "delay, saturation, dead zones, and rate limits"]:
                 if marker not in text:
                     errors.append(f"action concept page missing command-vs-outcome marker: {marker}")
-            if len(words) < 720:
-                errors.append(f"action concept page below core richness floor: {len(words)} < 720")
+            if len(words) < 900:
+                errors.append(f"action concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "dynamics":
             for marker in ["speed 20 m/s", "theta = 0 degrees", "u = 5 degrees", "dt = 0.2 seconds", "yaw_rate = 0.30 rad/s", "theta_next = 0 + 0.2*0.30 = 0.06 rad", "yaw_rate = 0.05 rad/s", "v_y = -1.0 m/s", "theta_next = 0 + 0.2*0.05 = 0.01 rad", "y_next = y + 0.2*(-1.0)", "x_next = f(x,u)", "dx/dt = f(x,u)", "x=[y,theta,v_y,speed]", "f_dry", "f_ice", "model fidelity"]:
                 if marker not in text:

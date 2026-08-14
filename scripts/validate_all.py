@@ -354,11 +354,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"trajectory optimization concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "direct-transcription":
-            for marker in ["0.0 rad to 1.2 rad", "t = 0.0, 0.2, 0.4, and 0.6 seconds", "defect is 0.3 rad", "defect_k = x_{k+1} - step(x_k,u_k)", "defect_k = 0"]:
+            for marker in ["0.0 rad to 1.2 rad", "5 newton-meter torque limit", "t = 0.0, 0.2, 0.4, and 0.6 seconds", "q_0=0.0, q_1=0.4, q_2=0.9, q_3=1.2", "tau_1=2 newton-meters", "q_2_pred = 0.6 rad", "q_2 - q_2_pred = 0.9 - 0.6 = 0.3 rad", "tau_1=8", "8 &gt; 5", "middle states and controls together", "x_k=[q_k,v_k]", "u_k=tau_k", "defect_k = x_{k+1} - step(x_k,u_k)", "defect_1 = q_2 - q_2_pred = 0.3 rad", "defect_1 = 0", "defect_k = 0", "-5 &lt;= tau_k &lt;= 5", "q_0=0 and q_3=1.2", "states as variables", "stop those exposed states from lying", "between t = 0.2 and t = 0.4"]:
                 if marker not in text:
                     errors.append(f"direct transcription concept page missing defect marker: {marker}")
-            if len(words) < 760:
-                errors.append(f"direct transcription concept page below core richness floor: {len(words)} < 760")
+            if len(words) < 900:
+                errors.append(f"direct transcription concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "shooting-methods":
             for marker in ["x = 0 meters", "u_0 = 4 m/s^2", "x_2 = 7 meters", "only u_0 and u_1 are decision variables", "residual r = [x_2 - 10, v_2 - 0]", "gap_1 = x_join - step(x_0,u_0)"]:
                 if marker not in text:

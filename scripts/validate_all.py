@@ -461,6 +461,12 @@ def main() -> int:
                     errors.append(f"costate concept page missing backward-price marker: {marker}")
             if len(words) < 900:
                 errors.append(f"costate concept page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "hamiltonian-optimal-control":
+            for marker in ["running cost is 0.5*u^2", "x_dot = u", "p = -20", "H = 0.5*u^2 + p*u", "u = 0: H = 0", "u = 10: H = 50 - 200 = -150", "u = 20: H = 200 - 400 = -200", "u = 30: H = 450 - 600 = -150", "H(x,u,p)=L(x,u)+p*f(x,u)", "H(u)=0.5*u^2 - 20*u", "dH/du = u - 20 = 0", "augment the cost with the constraint", "u &lt;= 12", "omits motor heat"]:
+                if marker not in text:
+                    errors.append(f"Hamiltonian concept page missing local-accounting marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"Hamiltonian concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "value-based-rl":
             for marker in ["battery 22 percent", "Q(x,turn_left) = 3", "Q(x,turn_right) = 7", "gamma = 0.9", "y = -1 + 0.9*10 = 8", "alpha = 0.5", "7 + 0.5*(8 - 7) = 7.5", "V_pi(x)", "Q_pi(x,u)", "policy evaluation", "policy improvement", "Q(x,u) &lt;- Q(x,u) + alpha*(y - Q(x,u))", "slick floors"]:
                 if marker not in text:

@@ -377,6 +377,12 @@ def main() -> int:
                     errors.append(f"local quadratic approximation concept page missing fitted-bowl marker: {marker}")
             if len(words) < 780:
                 errors.append(f"local quadratic approximation concept page below core richness floor: {len(words)} < 780")
+        if concept.get("id") == "reachability":
+            for marker in ["5 meters apart", "0.6 meters per second", "0.4 meters per second", "T_bad = {gap &lt;= 0.3 meters}", "next_gap &lt;= 0.5 + 0.4 - 0.6 = 0.3", "backward avoidance set A_1", "for all disturbances, there must exist a control"]:
+                if marker not in text:
+                    errors.append(f"reachability concept page missing set-propagation marker: {marker}")
+            if len(words) < 800:
+                errors.append(f"reachability concept page below core richness floor: {len(words)} < 800")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

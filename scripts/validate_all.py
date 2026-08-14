@@ -365,6 +365,12 @@ def main() -> int:
                     errors.append(f"collocation concept page missing midpoint marker: {marker}")
             if len(words) < 740:
                 errors.append(f"collocation concept page below core richness floor: {len(words)} < 740")
+        if concept.get("id") == "lqr":
+            for marker in ["20 centimeters left", "e_next = e + u", "u = -0.190 meters", "x_{k+1}=A_k x_k + B_k u_k", "J(u)=u^2 + 20*(0.20 + u)^2", "K = 20/21", "actuator saturates"]:
+                if marker not in text:
+                    errors.append(f"LQR concept page missing feedback-gain marker: {marker}")
+            if len(words) < 780:
+                errors.append(f"LQR concept page below core richness floor: {len(words)} < 780")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

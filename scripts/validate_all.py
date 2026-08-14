@@ -188,7 +188,7 @@ def main() -> int:
         "drills.html": ["How To Work A Drill", "Drill Cards", "Setup hint", "Wrong turn to avoid", "What a strong answer must include", "Transfer variant", "recursive feasibility"],
         "solutions.html": ["What Counts As A Strong Solution", "Solution Cards", "Strong answer", "Solution walkthrough", "Transfer variant", "Grading criteria", "distribution shift"],
         "misconceptions.html": ["How To Repair A Weak Claim", "Repair Cards", "Stronger version", "Failure consequence", "Replacement rule", "Transfer prompt", "what the sentence hides"],
-        "course-spine.html": ["Handoff:", "If skipped:", "Name the moving situation", "Learn only where written structure runs out"],
+        "course-spine.html": ["Handoff:", "If skipped:", "Name the moving situation", "Learn only where written structure runs out", "Same Car, Harder Questions", "future state it creates", "legal braking or steering"],
         "families.html": ["The move:", "Wrong shortcut:", "Boundary test:", "Choosing A Family In One Run", "transfer", "A method family is a response", "drone", "rover", "warehouse robot"],
         "primitives.html": ["reusable pieces", "One Debug Sequence", "Question it answers", "Failure if wrong", "The action is the command", "Constraint says what cannot be crossed"],
         "formula-reader.html": ["A formula is a machine", "One Reading Run", "Three Checks For Any Formula", "Input:", "Output:", "Wrong read:", "where it fails", "rocket", "rover"],
@@ -230,7 +230,7 @@ def main() -> int:
             if phrase in text_without_quotes:
                 errors.append(f"vague filler phrase in {path.relative_to(ROOT)}: {phrase}")
     minimum_page_words = {
-        "course-spine.html": 1200,
+        "course-spine.html": 1500,
         "index.html": 900,
         "lectures.html": 2300,
         "families.html": 1250,

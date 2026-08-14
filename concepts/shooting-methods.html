@@ -46,7 +46,7 @@
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
   <div class="explain-box"><p>A rocket planner can guess a thrust sequence, simulate the rocket forward, and see where it lands. If it misses the pad, the planner changes the guessed controls and shoots again. The states are consequences of the guessed controls, not independent decision variables.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>Shooting parameterizes controls, integrates dynamics forward, and optimizes the control parameters so endpoint, constraint, and cost conditions improve.</p></div></details>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>Shooting parameterizes controls, integrates dynamics forward, and changes the control parameters until endpoint error, constraint violation, and path cost go down.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

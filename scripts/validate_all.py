@@ -492,11 +492,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"value-based RL concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "policy-optimization":
-            for marker in ["body leaning forward 6 degrees", "right knee bent 20 degrees", "pi_theta(long_step|x) = 0.30", "pi_theta(short_step|x) = 0.70", "return G = 12", "return G = 2", "pi_theta_new(long_step|x) = 0.38", "J(theta)=E_{tau~pi_theta}[G(tau)]", "grad_theta log pi_theta(u_t|x_t) * A_t", "theta_new = theta + eta*g", "surrogate objective", "Noisy returns"]:
+            for marker in ["body leaning forward 6 degrees", "right knee bent 20 degrees", "pi_theta(long_step|x) = 0.30", "pi_theta(short_step|x) = 0.70", "return G = 12", "return G = 2", "baseline b(x)=7", "A_long = 12 - 7 = +5", "A_short = 2 - 7 = -5", "pi_theta_new(long_step|x) = 0.38", "probability shift is earned by advantage", "J(theta)=E_{tau~pi_theta}[G(tau)]", "grad_theta log pi_theta(u_t|x_t) * A_t", "theta_new = theta + eta*g", "eta = 0.04", "Delta score_long = 0.04*5 = 0.20", "Delta score_short = 0.04*(-5) = -0.20", "surrogate objective", "tile floor", "return G = -8", "A_tile = -8 - 7 = -15", "eta = 0.20", "Delta score = 0.20*(-15) = -3.0", "rubber mat and tile floor are different states", "erase a useful rubber-mat action", "Noisy returns"]:
                 if marker not in text:
                     errors.append(f"policy optimization concept page missing direct-policy-update marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"policy optimization concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 1040:
+                errors.append(f"policy optimization concept page below core richness floor: {len(words)} < 1040")
         if concept.get("id") == "exploration":
             for marker in ["18 newtons", "0.04 m/s", "7 out of 10 times", "12 degrees with 22 newtons", "60 newtons", "epsilon = 0.10", "10 of 100 attempts", "force &lt;= 25 newtons", "handle_angle &lt;= 15 degrees", "9 out of 10 times", "pi_explore(u|x) = 1 - epsilon", "Q(x,u) + beta*uncertainty(x,u)", "coverage under constraints"]:
                 if marker not in text:

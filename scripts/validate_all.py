@@ -420,11 +420,11 @@ def main() -> int:
             if len(words) < 1160:
                 errors.append(f"behavioral cloning concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "distribution-shift-imitation":
-            for marker in ["within 10 centimeters of lane center", "understeers by only 2 centimeters", "second 4", "18 centimeters right", "3 of the 10,000 expert frames", "d_expert(x)", "d_pi(x)", "d_pi(18 cm right) much larger than d_expert(18 cm right)", "collect rollout states from d_pi"]:
+            for marker in ["within 10 centimeters of lane center", "understeers by only 2 centimeters", "second 4", "18 centimeters right", "3 of the 10,000 expert frames", "98 percent of expert frames", "steering error below 1 degree", "steer -14 degrees left", "0.5 m/s", "steers -3 degrees left", "0.9 m/s", "24 centimeters right", "300 seconds", "42 frames", "more than 15 centimeters off center", "d_expert(x)", "d_pi(x)", "d_expert(|offset| &gt; 15 cm) = 3/10000 = 0.0003", "d_pi(|offset| &gt; 15 cm) = 42/300 = 0.14", "d_pi(18 cm right) much larger than d_expert(18 cm right)", "epsilon = 0.02", "T^2*epsilon = 50^2*0.02 = 50", "collect rollout states from d_pi", "D_1 = D_0 union {(x_j^pi_1,u_j^expert)}", "x = 18 cm right maps to u^expert = -14 degrees and 0.5 m/s", "expert can label the learner&#x27;s states"]:
                 if marker not in text:
                     errors.append(f"distribution shift concept page missing learner-state marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"distribution shift concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 1160:
+                errors.append(f"distribution shift concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "reinforcement-learning":
             for marker in ["12 newtons", "tilts the wrist by 15 degrees", "18 newtons", "reward -1", "reward +10", "gamma = 0.9", "G_0 = 0 + 0.9*(-1) + 0.9^2*10 = 7.2", "30 newtons", "G_0(tear) = 2 + 0.9*(-12) = -8.8", "credit assignment", "40 newtons", "force &gt; 25 newtons", "(x_t,u_t,r_t,x_{t+1})", "tau = [(x_0,light_grip,0,x_1),(x_1,tilt,-1,x_2),(x_2,lift,+10,x_3)]", "G_t = r_t + gamma*r_{t+1} + gamma^2*r_{t+2} + ...", "G_1 = -1 + 0.9*10 = 8", "E[sum_t gamma^t r_t]", "7.2, 6.1, 8.0, -8.8, and 7.5", "(7.2 + 6.1 + 8.0 - 8.8 + 7.5)/5 = 4.0", "empirical mean", "y = r_t + gamma max_{u&#x27;} Q(x_{t+1},u&#x27;)", "Q(x,light_grip)=3.0", "max_{u&#x27;} Q(x_next,u&#x27;)=8", "y = 0 + 0.9*8 = 7.2", "alpha = 0.5", "Q_new = 3.0 + 0.5*(7.2 - 3.0) = 5.1", "omitting tearing force"]:
                 if marker not in text:

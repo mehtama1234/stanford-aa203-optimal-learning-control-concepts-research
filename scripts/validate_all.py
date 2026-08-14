@@ -402,11 +402,11 @@ def main() -> int:
             if len(words) < 820:
                 errors.append(f"recursive feasibility concept page below core richness floor: {len(words)} < 820")
         if concept.get("id") == "stability-under-replanning":
-            for marker in ["1.5 meters left", "E = distance_error^2 + 0.5*sideways_speed^2", "E = 1.5^2 + 0.5*0.8^2 = 2.57", "E = 0.9^2 + 0.5*0.5^2 = 0.935", "x_{k+1}=f_closed(x_k)", "V(f_closed(x)) - V(x) &lt;= -stage_cost(x,pi_MPC(x))", "cycling, drifting, or amplifying velocity"]:
+            for marker in ["1.5 meters left", "E = distance_error^2 + 0.5*sideways_speed^2", "E = 1.5^2 + 0.5*0.8^2 = 2.57", "E = 0.9^2 + 0.5*0.5^2 = 0.935", "1.0 meters right", "sideways speed 0.6 m/s left", "E = 1.0^2 + 0.5*0.6^2 = 1.18", "burden rose from 0.935 to 1.18", "terminal cost, terminal set, or a decrease condition", "x_{k+1}=f_closed(x_k)", "V(f_closed(x)) - V(x) &lt;= -stage_cost(x,pi_MPC(x))", "delta V = 0.935 - 2.57 = -1.635", "delta V = 1.18 - 0.935 = +0.245", "violates a nonincrease test", "Feasibility alone would only say the next optimization exists", "terminal set gives the final predicted state", "cycling, drifting, or amplifying velocity"]:
                 if marker not in text:
                     errors.append(f"stability under replanning concept page missing decrease marker: {marker}")
-            if len(words) < 820:
-                errors.append(f"stability under replanning concept page below core richness floor: {len(words)} < 820")
+            if len(words) < 900:
+                errors.append(f"stability under replanning concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "imitation-learning":
             for marker in ["200 drawer pulls", "handle center x = 0.00 meters", "pull speed 0.04 m/s", "misses the handle by 3 centimeters", "handle may rotate 12 degrees", "sum_i ||pi_theta(x_i) - u_i^expert||^2", "x_{t+1}=f(x_t, pi_theta(x_t))", "x_j^learner"]:
                 if marker not in text:

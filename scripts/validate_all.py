@@ -401,6 +401,12 @@ def main() -> int:
                     errors.append(f"stability under replanning concept page missing decrease marker: {marker}")
             if len(words) < 820:
                 errors.append(f"stability under replanning concept page below core richness floor: {len(words)} < 820")
+        if concept.get("id") == "imitation-learning":
+            for marker in ["200 drawer pulls", "handle center x = 0.00 meters", "pull speed 0.04 m/s", "misses the handle by 3 centimeters", "handle may rotate 12 degrees", "sum_i ||pi_theta(x_i) - u_i^expert||^2", "x_{t+1}=f(x_t, pi_theta(x_t))", "x_j^learner"]:
+                if marker not in text:
+                    errors.append(f"imitation learning concept page missing demonstration-loop marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"imitation learning concept page below core richness floor: {len(words)} < 900")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

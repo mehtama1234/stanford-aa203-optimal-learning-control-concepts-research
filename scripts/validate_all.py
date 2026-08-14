@@ -12,6 +12,30 @@ RAW = ROOT / "raw-material/youtube"
 SITE = ROOT / "site"
 ANALYSIS = ROOT / "analysis"
 
+EXTRA_CONCEPT_MARKERS: dict[str, list[str]] = {
+    "feasibility": ["rescue drone has 12 battery units", "battery residual is 15 - 12 = 3", "misses distance by 6 meters"],
+    "reachability": ["wheelchair robot is 1.4 meters", "safe doorway strip after 3 seconds", "whole interval of possible next positions"],
+    "exploration": ["shiny wet tile strip", "10/12 = 0.83", "old average was hiding risk"],
+    "local-quadratic-approximation": ["thermostat starts at 66 F", "fitted bowl through those three points", "Shrink the trust region"],
+    "shooting-methods": ["toy elevator starts at floor 0", "Shot [1, 1, -2]", "explicit endpoint and path residuals"],
+    "stability-under-replanning": ["shower controller replans every 5 seconds", "B = (water_temp - 38)^2", "burden rose instead of shrinking"],
+    "value-function": ["library return robot", "2 + 18 = 20 against 7 + 6 = 13", "indexed by the state facts"],
+    "direct-transcription": ["four knot points", "teleports 0.4 meters", "equality violation"],
+    "distribution-shift-imitation": ["checkout scanner learns from 5,000 expert scans", "38/200 = 19 percent", "30/5000 = 0.6 percent"],
+    "costate-adjoint-variable": ["crane hook example", "future-price part is -64*0.5 + (-6)*1.0 = -38", "motor heat adds immediate derivative +45"],
+    "dynamics": ["conveyor belt shows the same command", "slippery belt with gain 0.4", "one-tick motor delay"],
+    "trajectory-optimization": ["hospital delivery robot carries a soup tray", "acceleration is 2.4 m/s^2", "One good row cannot forgive another failed row"],
+    "behavioral-cloning": ["mail-sorting arm copies 2,000 expert moves", "25/2000 = 1.25 percent", "learner-created rate is 14 percent"],
+    "value-based-rl": ["Q(dry, fast)=8", "two-sample mean for wet fast", "sample count behind the value"],
+    "lqr": ["warehouse cart near the lane center", "steering 35 degrees", "linear model and actuator range are honest"],
+    "bellman-recursion": ["smooth shortcut costs 1 now", "1 + 20 = 21 against 5 + 4 = 9", "state label feeding the recursion"],
+    "calculus-of-variations": ["fragile display", "u(t)=0.5", "middle interval over its speed limit"],
+    "hamiltonian-optimal-control": ["small heat term changes the local Hamiltonian choice", "4*(u - 9)^2", "counted speed but not heat"],
+    "model-based-rl": ["cardboard dust near the shelf", "0.22, 0.21, 0.05, -0.03, and 0.24 meters", "replans from the measured state"],
+}
+
+EXTRA_CONCEPT_WORD_FLOORS: dict[str, int] = {concept_id: 1500 for concept_id in EXTRA_CONCEPT_MARKERS}
+
 
 def main() -> int:
     errors: list[str] = []
@@ -274,6 +298,12 @@ def main() -> int:
         concept_floor = 740 if concept.get("family") == "learning-based control" else 520
         if len(words) < concept_floor:
             errors.append(f"concept page below richness word floor: {path.relative_to(ROOT)} has {len(words)} words")
+        extra_floor = EXTRA_CONCEPT_WORD_FLOORS.get(concept.get("id"))
+        if extra_floor and len(words) < extra_floor:
+            errors.append(f"concept page below extra richness floor: {path.relative_to(ROOT)} has {len(words)} words < {extra_floor}")
+        for marker in EXTRA_CONCEPT_MARKERS.get(concept.get("id"), []):
+            if marker not in text:
+                errors.append(f"concept page missing extra richness marker: {path.relative_to(ROOT)} -> {marker}")
         for marker in ["read it with your hands", "What to inspect first", "The world check", "one concrete run", "the actual math, one level deeper", "Where the idea stops working"]:
             if marker not in text:
                 errors.append(f"concept page missing richness marker: {path.relative_to(ROOT)} -> {marker}")

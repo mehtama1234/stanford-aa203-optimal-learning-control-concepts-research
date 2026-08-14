@@ -504,11 +504,11 @@ def main() -> int:
             if len(words) < 1160:
                 errors.append(f"exploration concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "model-based-rl":
-            for marker in ["0.20 meters before a shelf", "80 real trials", "position 1.40 m", "brake 30 percent", "x_next = (position 1.46 m, velocity 0.48 m/s)", "f_hat(x,u)", "final position 0.08 meters", "final position 0.24 meters", "executes only the first brake command", "x_{t+1}=f_hat(x_t,u_t)", "p_hat(x_{t+1}|x_t,u_t)", "[u_0,u_1,u_2]", "20 possible models", "underestimates braking distance by 0.10 meters"]:
+            for marker in ["0.20 meters before a shelf", "80 real trials", "position 1.40 m", "brake 30 percent", "x_next = (position 1.46 m, velocity 0.48 m/s)", "f_hat(x,u)", "final position 0.08 meters", "final position 0.24 meters", "Sequence C brakes 60 percent", "only 3 transitions with brake above 50 percent on dusty floor", "measured next state is position 1.58 m, velocity 0.55 m/s", "predicted position 1.54 m, velocity 0.42 m/s", "planner has found a weak spot in the model", "executes only the first brake command", "x_{t+1}=f_hat(x_t,u_t)", "p_hat(x_{t+1}|x_t,u_t)", "[u_0,u_1,u_2]", "position error is 1.58 - 1.54 = 0.04 m", "velocity error is 0.55 - 0.42 = 0.13 m/s", "20 possible models", "0.28, 0.26, 0.09, -0.04, and 0.31 meters", "(0.28 + 0.26 + 0.09 - 0.04 + 0.31)/5 = 0.18 meters", "below the required 0.20 meters", "0.24, 0.23, 0.25, 0.22, and 0.24 meters", "mean 0.236 meters", "uncertainty changes planning", "underestimates braking distance by 0.10 meters", "old data distribution and the state distribution created by the planner"]:
                 if marker not in text:
                     errors.append(f"model-based RL concept page missing learned-model-planning marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"model-based RL concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 1160:
+                errors.append(f"model-based RL concept page below core richness floor: {len(words)} < 1160")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

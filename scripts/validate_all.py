@@ -455,6 +455,12 @@ def main() -> int:
                     errors.append(f"exploration concept page missing constrained-coverage marker: {marker}")
             if len(words) < 900:
                 errors.append(f"exploration concept page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "model-based-rl":
+            for marker in ["0.20 meters before a shelf", "80 real trials", "position 1.40 m", "brake 30 percent", "x_next = (position 1.46 m, velocity 0.48 m/s)", "f_hat(x,u)", "final position 0.08 meters", "final position 0.24 meters", "executes only the first brake command", "x_{t+1}=f_hat(x_t,u_t)", "p_hat(x_{t+1}|x_t,u_t)", "[u_0,u_1,u_2]", "20 possible models", "underestimates braking distance by 0.10 meters"]:
+                if marker not in text:
+                    errors.append(f"model-based RL concept page missing learned-model-planning marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"model-based RL concept page below core richness floor: {len(words)} < 900")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

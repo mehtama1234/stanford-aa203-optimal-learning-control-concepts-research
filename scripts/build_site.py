@@ -534,6 +534,59 @@ PROVENANCE_CHECKS: list[tuple[str, str]] = [
 ]
 
 
+COMPLETION_REQUIREMENTS: list[tuple[str, str, str]] = [
+    (
+        "Playlist Source Coverage",
+        "19/19 lectures have local transcript records and the transcript index reports 207,618 words.",
+        "This proves source availability, not teaching quality. A reviewer still has to inspect whether the page uses the transcript honestly.",
+    ),
+    (
+        "Concept Coverage",
+        "38 concept pages are generated from the atlas, and each concept page must include ordinary pressure, object, concrete run, math one level deeper, boundary, and transcript evidence markers.",
+        "This proves every named concept has the required structure. It does not prove every paragraph has reached the richest possible explanation.",
+    ),
+    (
+        "Evidence Coverage",
+        "38 evidence records are rendered with anchors, transcript windows, support statements, and synthesis boundaries; manual review remaining is zero in the audit artifact.",
+        "This proves every concept can be traced to a local evidence record. It does not mean the transcript alone proves every teaching sentence.",
+    ),
+    (
+        "Teaching Artifacts",
+        "Derivations, worked examples, drills, solutions, and weak-claim repairs are generated from source artifacts and validated for concrete runs, transfer checks, setup hints, grading criteria, and replacement rules.",
+        "This proves the practice layer exists and has required fields. A reviewer should still solve at least two drills to test whether the solution reasoning feels transferable.",
+    ),
+    (
+        "Editorial Gates",
+        "The validator enforces page markers, concept word floors, top-level word floors, broad anti-filler phrases, evidence anchors, local links, and generated site coherence.",
+        "This proves a baseline bar. It cannot replace reading the site against the reference explainers for rhythm, depth, and plain everyday language.",
+    ),
+]
+
+
+COMPLETION_SAMPLE_CHECKS: list[tuple[str, str]] = [
+    (
+        "State And Action",
+        "Open state.html and action-control-input.html. The reviewer should be able to say why lane position is not enough for a car and why a drone commands thrust rather than height. If either page starts and ends as a definition, the setup layer is not complete.",
+    ),
+    (
+        "Bellman And Value",
+        "Open bellman-recursion.html and value-function.html. The reviewer should see the rover-style future-price idea before symbols: pay now, enter a new state, inherit the future burden from that state.",
+    ),
+    (
+        "MPC And Reachability",
+        "Open model-predictive-control.html and reachability.html. The reviewer should see the difference between a short legal plan and a state set that protects future safety under controls and disturbances.",
+    ),
+    (
+        "Learning Boundary",
+        "Open behavioral-cloning.html and reward.html. The reviewer should see the exact closed-loop risk: a learned policy visits states outside the data, or a reward omits damage and teaches the wrong behavior.",
+    ),
+    (
+        "Practice Transfer",
+        "Open drills.html and solutions.html. The reviewer should be able to change drone delivery to indoor delivery, or traffic MPC to a narrow drone window, and still use the same reasoning.",
+    ),
+]
+
+
 LECTURE_DEEPENING: dict[int, dict[str, str]] = {
     1: {
         "problem": "The course first has to make control visible in ordinary systems: a car, drone, thermostat, or robot changes because commands push state through time.",
@@ -1319,6 +1372,11 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
     audit_table = "<table><tr><th>Requirement</th><th>Status</th><th>Evidence</th></tr>" + "".join(
         f"<tr><td>{esc(a)}</td><td>{esc(b)}</td><td>{esc(c)}</td></tr>" for a, b, c in audit_rows
     ) + "</table>"
+    completion_requirement_rows = (
+        "<table><tr><th>Requirement</th><th>Evidence Now</th><th>What This Does Not Prove</th></tr>"
+        + "".join(f"<tr><td>{esc(a)}</td><td>{esc(b)}</td><td>{esc(c)}</td></tr>" for a, b, c in COMPLETION_REQUIREMENTS)
+        + "</table>"
+    )
     completion_intro = """
 <h1>Completion Audit</h1>
 <p class="lede">This page is the local proof that the package can be rebuilt and reviewed.</p>
@@ -1326,9 +1384,28 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <p>The audit is deliberately mechanical about files, counts, transcript coverage, evidence review, and generated pages. That mechanical check does not replace editorial judgment, but it prevents a different failure: polished prose with missing transcripts, broken links, absent evidence, or stale generated output.</p>
   <p>Read this together with the quality rubric. The audit proves the source layer is present and the site is coherent; the rubric asks whether the writing reaches the first-principles standard.</p>
   <p>A reviewer should be able to rerun the build, reopen the same pages, and see the same transcript-backed route through the course, without hidden manual edits.</p>
+  <p>The audit is also careful about what it does not claim. A green build proves that required structures and source trails are present. It does not prove that every page has the same depth as the strongest reference explainers. That final judgment still requires sampling the rendered pages as writing.</p>
 </div>
 """
-    write(SITE / "completion-audit.html", page("Completion Audit", f"{completion_intro}{audit_table}", "review"))
+    completion_review = """
+<h2>Requirement Evidence</h2>
+<div class="essay">
+  <p>Use this table before declaring completion. Each row names the current evidence and the boundary of that evidence. The boundary matters because this course goal is not just to generate files; it is to produce pages that teach control from first principles in plain language.</p>
+</div>
+"""
+    sample_cards = "".join(card(title, f"<p>{esc(body)}</p>") for title, body in COMPLETION_SAMPLE_CHECKS)
+    completion_close = """
+<h2>Human Review Still Required</h2>
+<div class="essay">
+  <p>Before calling the course finished, open the course spine, concept atlas, formula reader, review guide, quality rubric, two setup concept pages, two dynamic-programming pages, two MPC or reachability pages, and two learning pages. Each page should survive the same test: ordinary pressure first, concrete operation next, math one level deeper, then the boundary where the idea stops working.</p>
+  <p>If a sampled page only summarizes a lecture, defines a term, or praises a method without showing the state/action/future-cost machinery, the course is not done even if this audit table is green.</p>
+</div>
+"""
+    sample_section = f"""
+<h2>Sampled Page Checks</h2>
+<section class="stack">{sample_cards}</section>
+"""
+    write(SITE / "completion-audit.html", page("Completion Audit", f"{completion_intro}{audit_table}{completion_review}{completion_requirement_rows}{sample_section}{completion_close}", "review"))
 
     provenance_cards = "".join(card(title, f"<p>{esc(body)}</p>") for title, body in PROVENANCE_CHECKS)
     write(

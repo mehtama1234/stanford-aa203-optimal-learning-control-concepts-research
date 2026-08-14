@@ -419,6 +419,12 @@ def main() -> int:
                     errors.append(f"distribution shift concept page missing learner-state marker: {marker}")
             if len(words) < 900:
                 errors.append(f"distribution shift concept page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "reinforcement-learning":
+            for marker in ["reward -1", "reward +10", "gamma = 0.9", "G_0 = 0 + 0.9*(-1) + 0.9^2*10 = 7.2", "40 newtons", "(x_t,u_t,r_t,x_{t+1})", "E[sum_t gamma^t r_t]", "y = r_t + gamma max_{u&#x27;} Q(x_{t+1},u&#x27;)", "omitting tearing force"]:
+                if marker not in text:
+                    errors.append(f"reinforcement learning concept page missing rollout-return marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"reinforcement learning concept page below core richness floor: {len(words)} < 900")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

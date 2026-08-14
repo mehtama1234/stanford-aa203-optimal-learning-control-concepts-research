@@ -384,11 +384,11 @@ def main() -> int:
             if len(words) < 980:
                 errors.append(f"local quadratic approximation concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "reachability":
-            for marker in ["5 meters apart", "0.6 meters per second", "0.4 meters per second", "T_bad = {gap &lt;= 0.3 meters}", "next_gap &lt;= 0.5 + 0.4 - 0.6 = 0.3", "backward avoidance set A_1", "for all disturbances, there must exist a control"]:
+            for marker in ["5 meters apart", "0.6 meters per second", "0.4 meters per second", "current lateral gap is 0.5 meters", "0.5 + 0.4 - 0.6 = 0.3", "current gap is 0.4 meters", "best escape leaves 0.2 meters", "gap to 1.0 meters", "T_bad = {gap &lt;= 0.3 meters}", "exists a disturbance w", "for every legal control u", "The order matters", "next_gap &lt;= 0.5 + 0.4 - 0.6 = 0.3", "backward avoidance set A_1", "next_gap &lt;= 0.4 + 0.4 - 0.6 = 0.2", "strictly inside T_bad", "for all disturbances, there must exist a control"]:
                 if marker not in text:
                     errors.append(f"reachability concept page missing set-propagation marker: {marker}")
-            if len(words) < 800:
-                errors.append(f"reachability concept page below core richness floor: {len(words)} < 800")
+            if len(words) < 950:
+                errors.append(f"reachability concept page below core richness floor: {len(words)} < 950")
         if concept.get("id") == "model-predictive-control":
             for marker in ["3.0 meters from a loading mark", "10:00:00", "-0.8 m/s^2", "v_next = v + dt*u", "p_next = p + dt*v_next", "velocity 0.60 m/s and position 3.30 meters", "3.53 meters and 3.70 meters", "old -0.6 and -0.2", "position 3.40 meters and velocity 0.50 m/s", "not the predicted 3.30 meters and 0.60 m/s", "shifted horizon", "10:00:00.5 to 10:00:02.0", "u_0...u_{N-1}", "x_0 = x_measured(k)", "pi_MPC(x_measured(k)) = u_0^*", "x_0 = x_measured(k+1)", "old tail [-0.6, -0.2]", "predicted state (3.30, 0.60)", "measured state (3.40, 0.50)", "solve takes 0.8 seconds", "control period is 0.5 seconds", "no feasible continuation", "Recursive feasibility and stability are extra promises"]:
                 if marker not in text:

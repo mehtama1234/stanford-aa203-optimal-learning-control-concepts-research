@@ -12,7 +12,8 @@ Completed locally:
 - Downloaded and cleaned transcripts for all 19 lectures.
 - Captured 207,618 transcript words.
 - Built a first-pass concept atlas with 38 required concepts.
-- Built a first-pass evidence ledger with 38 timestamped local transcript-window records marked `needs_review`.
+- Built a first-pass evidence ledger with 38 timestamped local transcript-window records.
+- Manually deepened 12 load-bearing evidence records; 26 evidence records still need manual timestamp-level review.
 - Built method-family and primitive throughline artifacts.
 - Built structured teaching artifacts for derivations, worked examples, drills, solutions, and weak-claim repairs.
 - Built quality audit artifacts under `analysis/audits/`.
@@ -43,7 +44,7 @@ python3 scripts/validate_all.py
 The next phase should follow the stronger course repos:
 
 - Use `GOAL.md` as the acceptance target.
-- Deepen the `needs_review` evidence records into manually reviewed timestamp-level evidence.
+- Deepen the remaining 26 `needs_review` evidence records into manually reviewed timestamp-level evidence.
 - Expand derivation walkthroughs and worked examples from compact first-pass entries into full teaching-grade pages.
 - Add richer drill solutions and weak-claim repair cases.
 - Add a stricter editorial audit for concept word depth, forbidden filler, evidence coverage, and page completeness.

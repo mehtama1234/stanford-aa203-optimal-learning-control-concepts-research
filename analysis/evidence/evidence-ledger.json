@@ -15,9 +15,9 @@
     "supports_concepts": [
       "optimal-control-problem"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses Optimal Control Problem or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 1 explicitly frames AA203 as a breadth-first course over the main techniques in optimal control and learning-based control. The timestamp supports the site's course-level claim that optimal control and learning-based control are the two organizing poles of the playlist.",
+    "synthesis_beyond_transcript": "The site turns this syllabus framing into the broader learner thesis that action choice, dynamics, cost, constraints, and learning form one connected control problem.",
+    "confidence_status": "manual_deepened"
   },
   {
     "id": "ev-state-01",
@@ -35,9 +35,9 @@
     "supports_concepts": [
       "state"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses State or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 1 uses a drone/car example to say that a sensor gives information about the state of the system, including environmental observation and speed. This supports the concept page's claim that state is the information carried forward for control.",
+    "synthesis_beyond_transcript": "The page generalizes from the lecture's sensor/state example to the broader criterion: the state should contain what the dynamics and decision rule need for the next action.",
+    "confidence_status": "manual_deepened"
   },
   {
     "id": "ev-action-control-input-01",
@@ -75,9 +75,9 @@
     "supports_concepts": [
       "dynamics"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses Dynamics or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 1 explains that control requires modeling the system and gives the shower-temperature example as a thermodynamic model of how water affects heat. This supports treating dynamics as the rule connecting action, system behavior, and future state.",
+    "synthesis_beyond_transcript": "The page expands the example into the general control-language role of dynamics: propagating the consequence of an action through time.",
+    "confidence_status": "manual_deepened"
   },
   {
     "id": "ev-objective-cost-function-01",
@@ -95,9 +95,9 @@
     "supports_concepts": [
       "objective-cost-function"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses Objective / Cost Function or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 1 links stability with an objective of tracking a reference signal, using thermostat temperature tracking as the example. This supports the idea that objectives score what controlled behavior should do.",
+    "synthesis_beyond_transcript": "The page translates tracking into the broader cost-function language of comparing futures by safety, effort, error, and task success.",
+    "confidence_status": "manual_deepened"
   },
   {
     "id": "ev-horizon-01",
@@ -395,9 +395,9 @@
     "supports_concepts": [
       "value-function"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses Value Function or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 10 reviews the Bellman equation in an infinite-horizon MDP setting and names the optimal value function as the object being computed, with reward replacing cost in the influence/reinforcement-learning framing.",
+    "synthesis_beyond_transcript": "The page explains why this object matters for decision making: it stores future consequence in a number attached to a state.",
+    "confidence_status": "manual_deepened"
   },
   {
     "id": "ev-bellman-recursion-01",
@@ -415,9 +415,9 @@
     "supports_concepts": [
       "bellman-recursion"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses Bellman Recursion or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 7 says dynamic-programming recursion is carried out for each possible state value and can produce a globally optimal solution under the discretized state setup. This supports the Bellman page's state-indexed recursion framing.",
+    "synthesis_beyond_transcript": "The page recasts that mathematical recursion as now-plus-future accounting so a learner can recognize Bellman structure in new control problems.",
+    "confidence_status": "manual_deepened"
   },
   {
     "id": "ev-stochastic-dynamic-programming-01",
@@ -515,9 +515,9 @@
     "supports_concepts": [
       "model-predictive-control"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses Model Predictive Control or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 11 announces the transition into model predictive control after reachability and links it to continuous-time closed-loop optimal control. This supports the site treating MPC as optimization embedded in a feedback loop.",
+    "synthesis_beyond_transcript": "The page supplies the standard receding-horizon operation, which is consistent with the lecture topic but goes beyond the short timestamp's introductory wording.",
+    "confidence_status": "manual_deepened"
   },
   {
     "id": "ev-recursive-feasibility-01",
@@ -535,9 +535,9 @@
     "supports_concepts": [
       "recursive-feasibility"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses Recursive Feasibility or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 12 identifies persistent feasibility as a key property for an MPC pipeline and then introduces stability as another desired property. This directly supports the recursive-feasibility and stability-under-replanning pages.",
+    "synthesis_beyond_transcript": "The page sharpens 'persistent feasibility' into the learner test that today's MPC action must leave tomorrow's optimization problem solvable.",
+    "confidence_status": "manual_deepened"
   },
   {
     "id": "ev-stability-under-replanning-01",
@@ -575,9 +575,9 @@
     "supports_concepts": [
       "imitation-learning"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses Imitation Learning or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 15 distinguishes the learning-based-control block from classical methods and names imitation learning and reinforcement learning as the two subfamilies being organized for the learner.",
+    "synthesis_beyond_transcript": "The page adds the practical interpretation that imitation learning is useful when demonstrations are easier to obtain than a complete reward or dynamics model.",
+    "confidence_status": "manual_deepened"
   },
   {
     "id": "ev-behavioral-cloning-01",
@@ -635,9 +635,9 @@
     "supports_concepts": [
       "reinforcement-learning"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses Reinforcement Learning or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 16 contrasts imitation learning from demonstrations with inverse reinforcement learning and the reward/objective behind expert behavior. This supports the site connection among demonstration learning, reward, policy, and RL framing.",
+    "synthesis_beyond_transcript": "The page generalizes the lecture contrast into the broader RL idea of learning behavior from interaction, reward, and delayed consequences.",
+    "confidence_status": "manual_deepened"
   },
   {
     "id": "ev-reward-01",
@@ -715,9 +715,9 @@
     "supports_concepts": [
       "policy-optimization"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses Policy Optimization or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 18 explicitly introduces policy optimization as the second main model-free reinforcement-learning family and contrasts it with value-based methods where the policy is implicit in the value function.",
+    "synthesis_beyond_transcript": "The page turns that contrast into the first-principles explanation that policy optimization adjusts the decision rule directly.",
+    "confidence_status": "manual_deepened"
   },
   {
     "id": "ev-exploration-01",
@@ -755,8 +755,8 @@
     "supports_concepts": [
       "model-based-rl"
     ],
-    "what_transcript_supports": "The lecture explicitly discusses Model-Based RL or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-    "confidence_status": "needs_review"
+    "what_transcript_supports": "Lecture 19 closes the course roadmap by moving from model-free policy optimization to model-based RL. The timestamp supports the site's placement of model-based RL as the final learning-based-control family.",
+    "synthesis_beyond_transcript": "The page expands the roadmap transition into the method idea that learned or known models can support planning and reduce real trial-and-error.",
+    "confidence_status": "manual_deepened"
   }
 ]

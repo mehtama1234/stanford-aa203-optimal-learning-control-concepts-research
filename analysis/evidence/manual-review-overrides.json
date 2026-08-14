@@ -1,0 +1,63 @@
+{
+  "ev-optimal-control-problem-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 1 explicitly frames AA203 as a breadth-first course over the main techniques in optimal control and learning-based control. The timestamp supports the site's course-level claim that optimal control and learning-based control are the two organizing poles of the playlist.",
+    "synthesis_beyond_transcript": "The site turns this syllabus framing into the broader learner thesis that action choice, dynamics, cost, constraints, and learning form one connected control problem."
+  },
+  "ev-state-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 1 uses a drone/car example to say that a sensor gives information about the state of the system, including environmental observation and speed. This supports the concept page's claim that state is the information carried forward for control.",
+    "synthesis_beyond_transcript": "The page generalizes from the lecture's sensor/state example to the broader criterion: the state should contain what the dynamics and decision rule need for the next action."
+  },
+  "ev-dynamics-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 1 explains that control requires modeling the system and gives the shower-temperature example as a thermodynamic model of how water affects heat. This supports treating dynamics as the rule connecting action, system behavior, and future state.",
+    "synthesis_beyond_transcript": "The page expands the example into the general control-language role of dynamics: propagating the consequence of an action through time."
+  },
+  "ev-objective-cost-function-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 1 links stability with an objective of tracking a reference signal, using thermostat temperature tracking as the example. This supports the idea that objectives score what controlled behavior should do.",
+    "synthesis_beyond_transcript": "The page translates tracking into the broader cost-function language of comparing futures by safety, effort, error, and task success."
+  },
+  "ev-value-function-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 10 reviews the Bellman equation in an infinite-horizon MDP setting and names the optimal value function as the object being computed, with reward replacing cost in the influence/reinforcement-learning framing.",
+    "synthesis_beyond_transcript": "The page explains why this object matters for decision making: it stores future consequence in a number attached to a state."
+  },
+  "ev-bellman-recursion-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 7 says dynamic-programming recursion is carried out for each possible state value and can produce a globally optimal solution under the discretized state setup. This supports the Bellman page's state-indexed recursion framing.",
+    "synthesis_beyond_transcript": "The page recasts that mathematical recursion as now-plus-future accounting so a learner can recognize Bellman structure in new control problems."
+  },
+  "ev-model-predictive-control-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 11 announces the transition into model predictive control after reachability and links it to continuous-time closed-loop optimal control. This supports the site treating MPC as optimization embedded in a feedback loop.",
+    "synthesis_beyond_transcript": "The page supplies the standard receding-horizon operation, which is consistent with the lecture topic but goes beyond the short timestamp's introductory wording."
+  },
+  "ev-recursive-feasibility-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 12 identifies persistent feasibility as a key property for an MPC pipeline and then introduces stability as another desired property. This directly supports the recursive-feasibility and stability-under-replanning pages.",
+    "synthesis_beyond_transcript": "The page sharpens 'persistent feasibility' into the learner test that today's MPC action must leave tomorrow's optimization problem solvable."
+  },
+  "ev-imitation-learning-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 15 distinguishes the learning-based-control block from classical methods and names imitation learning and reinforcement learning as the two subfamilies being organized for the learner.",
+    "synthesis_beyond_transcript": "The page adds the practical interpretation that imitation learning is useful when demonstrations are easier to obtain than a complete reward or dynamics model."
+  },
+  "ev-reinforcement-learning-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 16 contrasts imitation learning from demonstrations with inverse reinforcement learning and the reward/objective behind expert behavior. This supports the site connection among demonstration learning, reward, policy, and RL framing.",
+    "synthesis_beyond_transcript": "The page generalizes the lecture contrast into the broader RL idea of learning behavior from interaction, reward, and delayed consequences."
+  },
+  "ev-policy-optimization-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 18 explicitly introduces policy optimization as the second main model-free reinforcement-learning family and contrasts it with value-based methods where the policy is implicit in the value function.",
+    "synthesis_beyond_transcript": "The page turns that contrast into the first-principles explanation that policy optimization adjusts the decision rule directly."
+  },
+  "ev-model-based-rl-01": {
+    "confidence_status": "manual_deepened",
+    "what_transcript_supports": "Lecture 19 closes the course roadmap by moving from model-free policy optimization to model-based RL. The timestamp supports the site's placement of model-based RL as the final learning-based-control family.",
+    "synthesis_beyond_transcript": "The page expands the roadmap transition into the method idea that learned or known models can support planning and reduce real trial-and-error."
+  }
+}
+

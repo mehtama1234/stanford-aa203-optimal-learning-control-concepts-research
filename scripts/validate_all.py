@@ -36,6 +36,7 @@ def main() -> int:
                     errors.append(f"missing clean transcript: {row.get('clean_text')}")
     concept_path = ANALYSIS / "concepts/concept-atlas.json"
     evidence_path = ANALYSIS / "evidence/evidence-ledger.json"
+    evidence_overrides_path = ANALYSIS / "evidence/manual-review-overrides.json"
     primitives_path = ANALYSIS / "throughlines/primitives.json"
     families_path = ANALYSIS / "throughlines/method-families.json"
     teaching_paths = [
@@ -77,6 +78,10 @@ def main() -> int:
     else:
         evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
         evidence_ids = {row.get("id") for row in evidence}
+        overrides = json.loads(evidence_overrides_path.read_text(encoding="utf-8")) if evidence_overrides_path.exists() else {}
+        for evidence_id in overrides:
+            if evidence_id not in evidence_ids:
+                errors.append(f"manual review override references missing evidence: {evidence_id}")
         for row in evidence:
             for field in [
                 "id",

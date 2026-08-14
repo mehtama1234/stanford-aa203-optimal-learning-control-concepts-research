@@ -12,6 +12,7 @@ ANALYSIS = ROOT / "analysis"
 CONCEPT_DIR = ANALYSIS / "concepts"
 EVIDENCE_DIR = ANALYSIS / "evidence"
 THROUGHLINE_DIR = ANALYSIS / "throughlines"
+MANUAL_REVIEW_OVERRIDES = EVIDENCE_DIR / "manual-review-overrides.json"
 
 
 def slug(value: str) -> str:
@@ -134,6 +135,12 @@ def load_transcripts(index: dict[str, Any]) -> dict[int, dict[str, Any]]:
         path = ROOT / row["clean_text"]
         out[row["lecture"]] = {**row, "text": path.read_text(encoding="utf-8")}
     return out
+
+
+def load_manual_review_overrides() -> dict[str, dict[str, str]]:
+    if not MANUAL_REVIEW_OVERRIDES.exists():
+        return {}
+    return json.loads(MANUAL_REVIEW_OVERRIDES.read_text(encoding="utf-8"))
 
 
 def find_evidence_transcript(
@@ -918,6 +925,7 @@ def main() -> int:
     manifest = json.loads((RAW / "course-manifest.json").read_text(encoding="utf-8"))
     transcript_index = json.loads((RAW / "transcript-index.json").read_text(encoding="utf-8"))
     transcripts = load_transcripts(transcript_index)
+    manual_overrides = load_manual_review_overrides()
     manifest_by_lecture = {row["lecture"]: row for row in manifest["videos"]}
 
     evidence: list[dict[str, Any]] = []
@@ -939,6 +947,7 @@ def main() -> int:
             lecture = transcript["lecture"]
             video = manifest_by_lecture[lecture]
             evidence_id = f"ev-{concept['id']}-01"
+            override = manual_overrides.get(evidence_id, {})
             timestamp_seconds = cue["timestamp_seconds"] if cue else None
             timestamp_url = (
                 f"https://www.youtube.com/watch?v={video['id']}&t={timestamp_seconds}s"
@@ -960,9 +969,15 @@ def main() -> int:
                     "raw_vtt": transcript.get("raw_vtt"),
                     "local_transcript_window": window,
                     "supports_concepts": [concept["id"]],
-                    "what_transcript_supports": f"The lecture explicitly discusses {concept['name']} or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
-                    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
-                    "confidence_status": "needs_review",
+                    "what_transcript_supports": override.get(
+                        "what_transcript_supports",
+                        f"The lecture explicitly discusses {concept['name']} or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+                    ),
+                    "synthesis_beyond_transcript": override.get(
+                        "synthesis_beyond_transcript",
+                        "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+                    ),
+                    "confidence_status": override.get("confidence_status", "needs_review"),
                 }
             )
             evidence_ids = [evidence_id]

@@ -9,6 +9,8 @@ The goal is to build this in the same style as the strongest course companions i
 
 The durable end-to-end target is written in `GOAL.md`.
 
+Current evidence review state: 12 load-bearing records are manually deepened; 26 records still need manual timestamp-level review.
+
 ## Initial Source Scope
 
 - Channel: Stanford Online

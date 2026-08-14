@@ -425,6 +425,12 @@ def main() -> int:
                     errors.append(f"reinforcement learning concept page missing rollout-return marker: {marker}")
             if len(words) < 900:
                 errors.append(f"reinforcement learning concept page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "reward":
+            for marker in ["10 - 6 = 4", "35 newtons", "10 - 1 = 9", "-0.5 per newton above 8", "-20 if the cup is damaged", "r(x,u,x_next)", "G_0 = sum_t gamma^t r_t", "10 - 1 - 0.5*(35 - 8) - 20 = -24.5", "optimized the written measuring stick"]:
+                if marker not in text:
+                    errors.append(f"reward concept page missing scalar-loophole marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"reward concept page below core richness floor: {len(words)} < 900")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

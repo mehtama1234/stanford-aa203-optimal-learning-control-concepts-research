@@ -498,11 +498,11 @@ def main() -> int:
             if len(words) < 1040:
                 errors.append(f"policy optimization concept page below core richness floor: {len(words)} < 1040")
         if concept.get("id") == "exploration":
-            for marker in ["18 newtons", "0.04 m/s", "7 out of 10 times", "12 degrees with 22 newtons", "60 newtons", "epsilon = 0.10", "10 of 100 attempts", "force &lt;= 25 newtons", "handle_angle &lt;= 15 degrees", "9 out of 10 times", "pi_explore(u|x) = 1 - epsilon", "Q(x,u) + beta*uncertainty(x,u)", "coverage under constraints"]:
+            for marker in ["18 newtons", "0.04 m/s", "7 out of 10 times", "12 degrees with 22 newtons", "60 newtons", "epsilon = 0.10", "10 of 100 attempts", "force &lt;= 25 newtons", "handle_angle &lt;= 15 degrees", "known pull has 7/10 = 0.70", "10 shallow-handle trials", "9 successes and 1 slip", "4 deep-handle trials", "1 success and 3 scrapes", "0.90 - 0.70 = 0.20", "20 more successful pulls per 100 shallow handles", "pi_explore(u|x) = 1 - epsilon", "A_safe(x) = {force &lt;= 25, handle_angle &lt;= 15}", "force = 60 is outside A_safe(x)", "Q(x,u) + beta*uncertainty(x,u)", "Q(x,straight)=0.70", "uncertainty(straight)=0.05", "Q(x,angled)=0.60", "uncertainty(angled)=0.40", "beta = 0.5", "0.70 + 0.5*0.05 = 0.725", "0.60 + 0.5*0.40 = 0.80", "score makes angled worth a safe trial", "uncertainty drops to 0.10", "not a blind gamble", "do not justify using it on deep handles", "coverage under constraints"]:
                 if marker not in text:
                     errors.append(f"exploration concept page missing constrained-coverage marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"exploration concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 1160:
+                errors.append(f"exploration concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "model-based-rl":
             for marker in ["0.20 meters before a shelf", "80 real trials", "position 1.40 m", "brake 30 percent", "x_next = (position 1.46 m, velocity 0.48 m/s)", "f_hat(x,u)", "final position 0.08 meters", "final position 0.24 meters", "executes only the first brake command", "x_{t+1}=f_hat(x_t,u_t)", "p_hat(x_{t+1}|x_t,u_t)", "[u_0,u_1,u_2]", "20 possible models", "underestimates braking distance by 0.10 meters"]:
                 if marker not in text:

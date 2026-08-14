@@ -446,6 +446,58 @@ REVIEW_WALKTHROUGH: list[dict[str, str]] = [
 ]
 
 
+QUALITY_TESTS: list[dict[str, str]] = [
+    {
+        "title": "Start With A Machine, Not A Term",
+        "weak": "State is a vector used by the controller.",
+        "strong": "A car at the same lane position can need different steering if one version is sliding and the other is moving straight. State is the record that preserves that difference before the controller chooses.",
+        "test": "The sentence passes only if a reader can picture the thing being moved and say why the formal object must exist.",
+    },
+    {
+        "title": "Name The Command The World Receives",
+        "weak": "The action changes the system.",
+        "strong": "A drone cannot command height directly. It commands thrust; thrust changes acceleration, acceleration changes velocity, and velocity changes height.",
+        "test": "The sentence passes only if it separates the desired outcome from the command the actuator or policy can issue.",
+    },
+    {
+        "title": "Turn Math Into An Operation",
+        "weak": "The Bellman equation relates current and future value.",
+        "strong": "For each rover move, add the cost of that move to the stored future cost of the state it creates, then choose the smallest total.",
+        "test": "The sentence passes only if the reader can perform the operation on a small example before reading symbols.",
+    },
+    {
+        "title": "Make Failure Visible",
+        "weak": "MPC requires care with feasibility.",
+        "strong": "A car can fit through a gap for two seconds and still be in trouble if the first acceleration leaves no legal braking or steering move for the next solve.",
+        "test": "The sentence passes only if it shows the concrete bad state that appears when the assumption is missing.",
+    },
+    {
+        "title": "Keep Learning Inside Control",
+        "weak": "Behavioral cloning learns from demonstrations.",
+        "strong": "A cloned gripper policy trains on expert states. If its own small mistake nudges the object eight centimeters sideways, the policy may now face a state the expert data never labeled.",
+        "test": "The sentence passes only if it names the data source, the closed-loop state the learner creates, and the failure caused by the gap.",
+    },
+    {
+        "title": "Tie Evidence To The Exact Claim",
+        "weak": "The lecture discusses reachability.",
+        "strong": "The transcript window names reachable sets and targets; the page adds the learner rule that safety is a question about which states can still avoid a bad target under allowed controls and disturbances.",
+        "test": "The sentence passes only if it separates what the transcript says from what the course page adds as explanation.",
+    },
+    {
+        "title": "Use Numbers When They Expose The Tradeoff",
+        "weak": "The rocket must balance fuel and landing speed.",
+        "strong": "At 80 meters and -18 m/s, a hard one-second burn may leave -12 m/s for the next state, while a weak burn may leave -20 m/s and make the last 30 meters unrecoverable under thrust limits.",
+        "test": "The sentence passes only if the numbers change the decision pressure, not if they decorate a claim already made in words.",
+    },
+    {
+        "title": "Say Where The Method Stops",
+        "weak": "LQR works near a nominal point.",
+        "strong": "LQR can correct a two-centimeter hover drift because the local dynamics and cost still look like the planned model. After a branch strike, tumbling and actuator saturation put the drone outside that local picture.",
+        "test": "The sentence passes only if it gives both the inside case and the outside case, so the learner can see the boundary.",
+    },
+]
+
+
 LECTURE_DEEPENING: dict[int, dict[str, str]] = {
     1: {
         "problem": "The course first has to make control visible in ordinary systems: a car, drone, thermostat, or robot changes because commands push state through time.",
@@ -1174,9 +1226,25 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <div class="essay">
   <p>The standard is visible transfer. After reading a page, a learner should be able to recognize the same idea in a new car, drone, robot arm, rover, or learning setup. If the learner can only repeat a definition, the page is not rich enough yet.</p>
   <p>Good writing here is plain but not thin. It uses everyday words to carry real technical load: what is known, what is commanded, what moves, what is priced, what is forbidden, and what breaks.</p>
+  <p>A page should also survive a cold read. A learner who has not watched the lecture should still be able to follow the ordinary pressure, then use the evidence link to see what the lecture actually supports. The prose can synthesize, but it should not float away from the transcript or hide the assumption boundary.</p>
+  <p>The simplest editorial question is this: can the sentence be tested against a small physical run? If not, rewrite it until it names a state, action, transition, cost, constraint, value, policy, disturbance, or failure.</p>
 </div>
 """
-    write(SITE / "quality.html", page("Quality", f"{quality_intro}<section class=\"grid\">{''.join(card(a,b) for a,b in quality)}</section>", "review"))
+    quality_test_cards = "".join(
+        card(
+            item["title"],
+            f"""<p><strong>Weak version:</strong> {esc(item['weak'])}</p>
+<p><strong>Stronger version:</strong> {esc(item['strong'])}</p>
+<p><strong>Pass test:</strong> {esc(item['test'])}</p>""",
+        )
+        for item in QUALITY_TESTS
+    )
+    quality_body = f"""{quality_intro}
+<h2>Editorial Tests</h2>
+<section class="stack">{quality_test_cards}</section>
+<h2>Rubric Rules</h2>
+<section class="grid">{''.join(card(a,b) for a,b in quality)}</section>"""
+    write(SITE / "quality.html", page("Quality", quality_body, "review"))
 
     audit_rows = [
         ("Required pages", "present", f"{len(list(SITE.rglob('*.html')))} HTML files generated before this audit page is written"),

@@ -183,7 +183,7 @@ def main() -> int:
         if f'id="{row["id"]}"' not in evidence_html:
             errors.append(f"evidence anchor missing from evidence.html: {row['id']}")
     rendered_checks = {
-        "derivations.html": ["Failure test", "Formula shape", "First-principles intuition", "Transfer check"],
+        "derivations.html": ["How To Read A Derivation", "One Derivation Run", "Derivation Cards", "Failure test", "Formula shape", "First-principles intuition", "Transfer check", "two-part ledger"],
         "worked-examples.html": ["How To Read A Worked Example", "Example Cards", "Method Route", "Failure Signal", "Decision Pressure", "Concrete Run", "Method Boundary", "future burden"],
         "drills.html": ["How To Work A Drill", "Drill Cards", "Setup hint", "Wrong turn to avoid", "What a strong answer must include", "Transfer variant", "recursive feasibility"],
         "solutions.html": ["What Counts As A Strong Solution", "Solution Cards", "Strong answer", "Solution walkthrough", "Transfer variant", "Grading criteria", "distribution shift"],
@@ -244,6 +244,7 @@ def main() -> int:
         "completion-audit.html": 850,
         "provenance.html": 1150,
         "worked-examples.html": 1450,
+        "derivations.html": 2000,
         "drills.html": 1050,
         "solutions.html": 1700,
         "misconceptions.html": 900,

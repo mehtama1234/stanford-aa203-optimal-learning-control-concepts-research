@@ -1445,7 +1445,24 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <p>{linked}</p>
 """
         derivation_cards.append(card(item["title"], body))
-    write(SITE / "derivations.html", page("Derivations", f"<h1>Derivation Walkthroughs</h1><p class=\"lede\">Slow, problem-first derivations that explain why the formula shape exists before asking the learner to manipulate symbols.</p><section class=\"stack\">{''.join(derivation_cards)}</section>", "derivations"))
+    derivation_intro = """
+<h1>Derivation Walkthroughs</h1>
+<p class="lede">Slow, problem-first derivations that explain why the formula shape exists before asking the learner to manipulate symbols.</p>
+<div class="essay">
+  <h2>How To Read A Derivation</h2>
+  <p>A derivation is not a ritual for moving symbols from one line to the next. It is a way to make a physical accounting rule unavoidable. Start by naming the thing that must be preserved: a state transition, a whole path, a future value, a local sensitivity, a feasibility condition, or a policy update.</p>
+  <p>Then ask what one legal step does. For Bellman recursion, one action creates one next state and carries one immediate cost. For the Hamiltonian, one control change has a cost now and a priced effect on later state. For direct transcription, one grid interval must connect neighboring state variables through dynamics. If the one-step move is vague, the derivation will only look formal.</p>
+  <p>Finally, read the failure test before trusting the formula. A Bellman derivation fails if the state does not carry the future-relevant information. A local quadratic derivation fails if the system has left the small region where the bowl picture is truthful. An MPC argument fails if the first action leaves no legal next solve. The failure is not a footnote; it tells you what the derivation assumed.</p>
+</div>
+<h2>One Derivation Run</h2>
+<div class="essay">
+  <p>Use the rover route from the value pages. The rover can take a rocky shortcut or a longer smooth path. The derivation should not begin with the Bellman symbol. It begins with the fact that the first move changes wheel health, battery, and position. Those variables become the state because they decide what future moves remain possible.</p>
+  <p>Now price each first move. The rocky move may have low distance cost, but it creates a next state with damaged wheels. The smooth move pays more now, but leaves a next state with cheaper later travel. The Bellman shape appears because every first move is judged by the same two-part ledger: what it costs now plus the future value stored at the state it creates.</p>
+  <p>This is the standard for every card below. The formula shape should feel like the shortest honest way to keep the accounting straight, not like a symbol copied from the lecture.</p>
+</div>
+<h2>Derivation Cards</h2>
+"""
+    write(SITE / "derivations.html", page("Derivations", f"{derivation_intro}<section class=\"stack\">{''.join(derivation_cards)}</section>", "derivations"))
 
     example_cards = []
     for item in worked_examples:

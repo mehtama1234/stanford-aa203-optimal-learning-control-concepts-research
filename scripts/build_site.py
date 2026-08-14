@@ -372,6 +372,105 @@ FORMULA_EXPLAINERS: list[dict[str, str]] = [
 ]
 
 
+LECTURE_DEEPENING: dict[int, dict[str, str]] = {
+    1: {
+        "problem": "The course first has to make control visible in ordinary systems: a car, drone, thermostat, or robot changes because commands push state through time.",
+        "move": "Name the basic pieces before choosing methods: state, action, dynamics, objective, horizon, and constraints.",
+        "run": "A drone delivery problem becomes concrete only after height, velocity, attitude, battery, thrust, wind, landing error, and no-fly zones are named.",
+    },
+    2: {
+        "problem": "Before a controller can choose a path, it needs the grammar of a single constrained decision: what can move, what is legal, and what local change lowers cost.",
+        "move": "Use finite-dimensional optimization, gradients, open sets, and constraints as the small-scale version of later control problems.",
+        "run": "A heater setting that lowers temperature error may violate a power limit; the gradient points downhill, but the constraint says whether that move is allowed.",
+    },
+    3: {
+        "problem": "A path cannot be judged by one point. The whole curve has cost, endpoints, and legal motion along the way.",
+        "move": "Shift from choosing numbers to choosing functions or trajectories, then ask how total cost changes when the whole path is nudged.",
+        "run": "A rocket arc that starts and ends correctly can still waste fuel in the middle; calculus of variations asks what path-wide nudge would lower the total cost.",
+    },
+    4: {
+        "problem": "A small state error now can change fuel, velocity, and endpoint error later, so present controls need a price for downstream state changes.",
+        "move": "Introduce costates and the Hamiltonian as local bookkeeping for immediate cost plus future state sensitivity.",
+        "run": "More rocket thrust costs fuel now, but it may reduce a costly terminal velocity error. The costate prices that later benefit.",
+    },
+    5: {
+        "problem": "Necessary equations are not enough if the actual path still has to be computed on a machine.",
+        "move": "Connect optimality conditions to computational methods and the practical burden of solving trajectory problems.",
+        "run": "A boundary-value condition may describe the landing path, but a solver still needs variables, guesses, tolerances, and checks that the result obeys the dynamics.",
+    },
+    6: {
+        "problem": "A computer cannot optimize over every point of a continuous path directly.",
+        "move": "Use direct methods: shooting, collocation, and transcription turn a path problem into finite variables and constraints.",
+        "run": "A robot arm path becomes joint states and torques on a grid; defect constraints stop the optimizer from inventing motion between grid points.",
+    },
+    7: {
+        "problem": "Listing every future action sequence becomes impossible when every action creates a new state with later choices.",
+        "move": "Use dynamic programming: store future cost at states and solve the problem by now-plus-future recursion.",
+        "run": "A rover cell near sharp rocks gets a high future price because entering it damages later mobility, even if the next step is short.",
+    },
+    8: {
+        "problem": "A full nonlinear solve is too much for small deviations near a planned motion.",
+        "move": "Exploit linear dynamics and quadratic cost so local feedback can be computed from value curvature.",
+        "run": "A hovering drone pushed two centimeters sideways can use a local feedback gain instead of replanning the whole flight.",
+    },
+    9: {
+        "problem": "The next state may be a distribution, not a promise, when wind, gravel, or sensor noise changes the outcome.",
+        "move": "Extend dynamic programming so future value is averaged over possible next states.",
+        "run": "A rover crossing gravel prices a move by the chance of slipping left, slipping right, or moving as intended.",
+    },
+    10: {
+        "problem": "A controller needs to know which states can still reach a target or avoid danger before optimizing a preferred path.",
+        "move": "Use reachability to reason about sets of states under controls, disturbances, and targets.",
+        "run": "A car near a wall may look safe by distance, but reachability asks whether any legal steering and braking sequence can still avoid collision.",
+    },
+    11: {
+        "problem": "A plan made at the old state goes stale as soon as the world moves or the model is wrong.",
+        "move": "Introduce MPC: solve a finite-horizon problem, apply the first action, observe, and solve again.",
+        "run": "A car plans five seconds of steering but executes only a small slice before measuring traffic again.",
+    },
+    12: {
+        "problem": "Repeated planning can make legal moves that leave the next optimization with no legal solution.",
+        "move": "Study feasibility, recursive feasibility, and stability conditions for MPC.",
+        "run": "A car entering a narrow gap may be collision-free now but have no braking option one second later; recursive feasibility rejects that handoff.",
+    },
+    13: {
+        "problem": "Learning enters only after the course has named what written models and objectives can and cannot supply.",
+        "move": "Bridge model-based control to data-driven control: what can be learned, from what signal, and with what new failure modes.",
+        "run": "A robot may know its arm physics but not the right contact strategy for a drawer handle; demonstrations or reward can fill that missing piece.",
+    },
+    14: {
+        "problem": "Imitation and reinforcement learning answer different missing-information problems.",
+        "move": "Separate learning from demonstrations from learning through reward and interaction.",
+        "run": "If an expert can show good grasps, imitation is natural; if success can only be scored after trial, reinforcement learning becomes the tool.",
+    },
+    15: {
+        "problem": "Copying expert actions is not the same as building a robust closed-loop controller.",
+        "move": "Study imitation learning and behavioral cloning as supervised policy learning with distribution-shift risk.",
+        "run": "A cloned driving policy trained near lane center may drift right, then face states the expert almost never visited.",
+    },
+    16: {
+        "problem": "A reward signal can teach behavior without action labels, but delayed credit and unsafe exploration make the learning problem hard.",
+        "move": "Introduce reinforcement learning through policy, reward, return, exploration, and objective learning.",
+        "run": "A grasp that succeeds after a wrist correction must credit earlier actions, not only the final lift.",
+    },
+    17: {
+        "problem": "The learner may not know the best action, but it can learn which states or state-action pairs lead to better future return.",
+        "move": "Use value-based RL to learn future-return estimates from sampled transitions.",
+        "run": "A game agent chooses a move by comparing the learned values of the board positions those moves create.",
+    },
+    18: {
+        "problem": "Large continuous action policies may be easier to improve directly than through a table of values.",
+        "move": "Use policy optimization to update the action rule from rollout returns.",
+        "run": "A walking robot changes neural policy weights so steps that led to longer stable walking become more likely.",
+    },
+    19: {
+        "problem": "Real trial-and-error is expensive when hardware can break or data collection is slow.",
+        "move": "Use model-based RL to learn or use a predictive model, rehearse futures, and spend real trials carefully.",
+        "run": "A warehouse robot can test shelf-collision futures inside a learned model before risking the real arm.",
+    },
+}
+
+
 def main() -> int:
     manifest = load_json(RAW / "course-manifest.json", {"videos": []})
     transcript_index = load_json(
@@ -544,6 +643,12 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 </section>
 <h2>Strongest Entry Points</h2>
 <section class="grid">{entries}</section>
+<h2>How To Read This Site</h2>
+<div class="essay">
+  <p>Start with a simple physical question: what can the system do now, and what future will that action create? Every page comes back to that question. State says what the controller must know. Action says what can actually be commanded. Dynamics say how the command changes the world. Cost says which future is preferred. Constraints say what future is illegal.</p>
+  <p>The course then changes tools only when the pressure changes. Direct methods appear when the whole path must be chosen. Dynamic programming appears when future consequence can be stored by state. LQR appears when the world is close enough to a local model. MPC appears when a plan must be rebuilt from fresh measurements. Learning appears when the model, reward, or expert behavior cannot be fully written by hand.</p>
+  <p>The evidence links keep the transcript layer honest. The teaching prose goes beyond the transcript, but each evidence record says what the lecture actually supports and where the site is synthesizing.</p>
+</div>
 <h2>Current Build State</h2>
 <p>The current build has full transcript coverage, a complete minimum concept atlas, timestamped evidence records with manual deepening, and expanded teaching artifacts for derivations, examples, drills, solutions, and weak-claim repairs.</p>
 """,
@@ -554,20 +659,37 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
     lecture_rows = []
     for video in manifest["videos"]:
         rec = by_video.get(video["id"], {})
+        deep = LECTURE_DEEPENING.get(video["lecture"])
         available = bool(rec.get("transcript_available"))
         label = "transcript captured" if available else "missing transcript"
         lecture_concepts = [c for c in concepts if c.get("lecture") == video["lecture"]]
         links = " ".join(f'<span class="pill">{concept_link(c)}</span>' for c in lecture_concepts[:6])
         if len(lecture_concepts) > 6:
             links += f' <span class="muted">+{len(lecture_concepts)-6} more</span>'
+        if not deep:
+            raise SystemExit(f"missing lecture deepening: lecture {video['lecture']}")
         lecture_rows.append(
             f"""<div class="lecture-row">
   <strong>Lecture {video['lecture']:02d}</strong>
-  <div><h3>{esc(video['title'])}</h3><p class="muted">{esc(label)} · {rec.get('word_count', 0):,} words · <a href="https://www.youtube.com/watch?v={esc(video['id'])}">{esc(video['id'])}</a></p><p>{links or '<span class="muted">No primary concept assigned yet.</span>'}</p></div>
+  <div>
+    <h3>{esc(video['title'])}</h3>
+    <p class="muted">{esc(label)} · {rec.get('word_count', 0):,} words · <a href="https://www.youtube.com/watch?v={esc(video['id'])}">{esc(video['id'])}</a></p>
+    <p><strong>The problem:</strong> {esc(deep['problem'])}</p>
+    <p><strong>The move:</strong> {esc(deep['move'])}</p>
+    <div class="explain-box"><p>{esc(deep['run'])}</p></div>
+    <p>{links or '<span class="muted">No primary concept assigned yet.</span>'}</p>
+  </div>
   <span class="tag">{'ready' if available else 'gap'}</span>
 </div>"""
         )
-    write(SITE / "lectures.html", page("Lectures", f"<h1>Lectures</h1><section class=\"lecture-list\">{''.join(lecture_rows)}</section>", "lectures"))
+    lecture_intro = """
+<h1>Lectures</h1>
+<p class="lede">Read the playlist as one route through a problem, not as nineteen isolated videos. Each lecture adds one pressure: name the moving system, choose a path, price the future, replan safely, or learn the missing structure from data.</p>
+<div class="essay">
+  <p>The lecture list below keeps transcript counts and source links, but the main job is different: it tells you what new control problem each lecture makes visible and what mathematical move the lecture adds.</p>
+</div>
+"""
+    write(SITE / "lectures.html", page("Lectures", f"{lecture_intro}<section class=\"lecture-list\">{''.join(lecture_rows)}</section>", "lectures"))
 
     transcript_cards = []
     for video in manifest["videos"]:
@@ -849,20 +971,75 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
     write(SITE / "evidence.html", page("Evidence", f"<h1>Evidence Ledger</h1><p class=\"lede\">Each record points to a local transcript window, timestamp URL, and manual statement of what the transcript supports versus what the site synthesizes beyond it.</p><section class=\"stack\">{evidence_html}</section>", "evidence"))
 
     review = [
-        ("First-principles depth", "Open a setup concept, a dynamic-programming concept, an MPC concept, and a learning concept. Check that each starts from the control pressure before formulas."),
-        ("Evidence discipline", "Open evidence records and verify that local transcript windows support the concept vocabulary without pretending to prove the whole synthesis."),
-        ("Practice usefulness", "Run the drills and verify the solutions name wrong turns, not just final answers."),
-        ("Audit path", "Use the completion audit, evidence ledger, and provenance page to verify transcript coverage, timestamp anchors, generated pages, and local rebuild commands."),
+        (
+            "First-principles depth",
+            "Open a setup concept, a dynamic-programming concept, an MPC concept, and a learning concept. The page should begin with a real object such as a drone, car, rocket, rover, robot arm, shelf, or reward signal. If the first useful sentence is only a formal definition, the page is not done.",
+        ),
+        (
+            "Concrete operation",
+            "For each page, identify what gets moved, updated, propagated, minimized, priced, constrained, sampled, or replanned. A good page lets the reader say what the mathematical object does before seeing symbols.",
+        ),
+        (
+            "Evidence discipline",
+            "Open evidence records and verify that local transcript windows support the concept vocabulary without pretending to prove the whole synthesis. The record should say what the transcript supports and what the site adds as explanation.",
+        ),
+        (
+            "Practice usefulness",
+            "Run the drills and read the solutions. A useful solution names the wrong turn, explains why it fails in a control setting, and then repairs the setup or method choice.",
+        ),
+        (
+            "Reference comparison",
+            "Compare the main pages with the local reference explainers. They should feel like compact essays: problem, failure, object, operation, concrete run, math one level deeper, and boundary.",
+        ),
+        (
+            "Audit path",
+            "Use the completion audit, evidence ledger, and provenance page to verify transcript coverage, timestamp anchors, generated pages, local rebuild commands, and richness gates.",
+        ),
     ]
-    write(SITE / "review-guide.html", page("Review Guide", f"<h1>Review Guide</h1><section class=\"stack\">{''.join(card(a,b) for a,b in review)}</section>", "review"))
+    review_intro = """
+<h1>Review Guide</h1>
+<p class="lede">Use this page like a reviewer path through the site. The goal is not to confirm that files exist; it is to decide whether the writing teaches control from first principles.</p>
+<div class="essay">
+  <p>A quick review should sample one page from each part of the course: setup, trajectory optimization, dynamic programming, MPC, imitation learning, reinforcement learning, and model-based RL. On each page, ask whether a learner can retell the idea using a real system before using course vocabulary.</p>
+</div>
+"""
+    write(SITE / "review-guide.html", page("Review Guide", f"{review_intro}<section class=\"stack\">{''.join(card(a,b) for a,b in review)}</section>", "review"))
 
     quality = [
-        ("First principles", "Start from state, action, consequence, constraint, and future cost before naming the method."),
-        ("Plain language", "Translate formal objects without flattening the mathematical job they perform."),
-        ("Failure boundary", "State where the method breaks: model mismatch, infeasibility, approximation error, distribution shift, unsafe exploration, or reward hacking."),
-        ("Evidence honesty", "Separate what the transcript directly supports from synthesis beyond the transcript."),
+        (
+            "First principles",
+            "Start from a moving thing and an available command. A sentence is strong when it says what state changes, what action causes the change, what future consequence matters, and what assumption could make the conclusion false.",
+        ),
+        (
+            "Plain language",
+            "Use everyday words before course labels. Say the drone commands thrust before saying control input. Say the rover stores future travel cost before saying value function. Say the car must still have a legal braking future before saying recursive feasibility.",
+        ),
+        (
+            "Concrete math",
+            "Translate formal objects without flattening their job. A formula block should name the object, the operation, a small run with numbers or time steps, and the failure case.",
+        ),
+        (
+            "Failure boundary",
+            "State where the method breaks: model mismatch, infeasibility, coarse discretization, local approximation error, distribution shift, unsafe exploration, reward hacking, or learned-model exploitation.",
+        ),
+        (
+            "Evidence honesty",
+            "Separate what the transcript directly supports from synthesis beyond the transcript. A timestamp is not enough; the record must name the lecture argument being used.",
+        ),
+        (
+            "No filler",
+            "Remove sentences that only say a method is useful, powerful, important, or improves performance. Replace them with the state, action, future cost, constraint, approximation, or failure a practitioner would see.",
+        ),
     ]
-    write(SITE / "quality.html", page("Quality", f"<h1>Quality Rubric</h1><section class=\"grid\">{''.join(card(a,b) for a,b in quality)}</section>", "review"))
+    quality_intro = """
+<h1>Quality Rubric</h1>
+<p class="lede">This rubric is an editorial test, not a decoration. It exists to keep the AA203 site close to the richer first-principles explainers: concrete, simple, low-jargon, and transferable.</p>
+<div class="essay">
+  <p>The standard is visible transfer. After reading a page, a learner should be able to recognize the same idea in a new car, drone, robot arm, rover, or learning setup. If the learner can only repeat a definition, the page is not rich enough yet.</p>
+  <p>Good writing here is plain but not thin. It uses everyday words to carry real technical load: what is known, what is commanded, what moves, what is priced, what is forbidden, and what breaks.</p>
+</div>
+"""
+    write(SITE / "quality.html", page("Quality", f"{quality_intro}<section class=\"grid\">{''.join(card(a,b) for a,b in quality)}</section>", "review"))
 
     audit_rows = [
         ("Required pages", "present", f"{len(list(SITE.rglob('*.html')))} HTML files generated before this audit page is written"),

@@ -191,6 +191,10 @@ def main() -> int:
         "families.html": ["The move:", "A method family is a response", "drone", "rover", "warehouse robot"],
         "primitives.html": ["reusable pieces", "The action is the command", "Constraint says what cannot be crossed"],
         "formula-reader.html": ["A formula is a machine", "The operation:", "where it fails", "rocket", "rover"],
+        "lectures.html": ["The problem:", "The move:", "Read the playlist as one route", "warehouse robot"],
+        "index.html": ["How To Read This Site", "The course then changes tools", "evidence record"],
+        "review-guide.html": ["Reference comparison", "Concrete operation", "richness gates"],
+        "quality.html": ["No filler", "Concrete math", "This rubric is an editorial test"],
     }
     for filename, needles in rendered_checks.items():
         path = SITE / filename
@@ -214,9 +218,13 @@ def main() -> int:
                 errors.append(f"vague filler phrase in {path.relative_to(ROOT)}: {phrase}")
     minimum_page_words = {
         "course-spine.html": 650,
+        "index.html": 360,
+        "lectures.html": 1500,
         "families.html": 750,
         "primitives.html": 450,
         "formula-reader.html": 750,
+        "review-guide.html": 260,
+        "quality.html": 300,
     }
     for filename, minimum in minimum_page_words.items():
         path = SITE / filename

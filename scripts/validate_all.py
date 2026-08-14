@@ -281,6 +281,12 @@ def main() -> int:
             for marker in ["data inside the loop", "What the learner changes next", "What states did the data actually cover", "warehouse drawer"]:
                 if marker not in text:
                     errors.append(f"learning concept page missing control-loop marker: {path.relative_to(ROOT)} -> {marker}")
+        if concept.get("id") == "optimal-control-problem":
+            for marker in ["80 meters above the pad", "18 m/s", "12 seconds of fuel", "dt = 1 second", "x = (height, velocity, fuel)", "u_0 = 18", "u_1 = 8", "velocity changes from -18 to -10 m/s", "height falls to 70 meters", "fuel drops from 12 to -24", "u_0 = 10", "height falls to 62 meters", "44 meters after two seconds", "choose u_0...u_{N-1}", "J = sum_k fuel_cost(u_k) + 100*landing_error^2 + 20*touchdown_speed^2", "x_{k+1}=f(x_k,u_k)", "fuel_k &gt;= 0", "v_{k+1}=v_k + dt*(u_k - 10)", "fuel_{k+1}=fuel_k - 2*u_k"]:
+                if marker not in text:
+                    errors.append(f"optimal control problem page missing trajectory-chain marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"optimal control problem page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "action-control-input":
             for marker in ["48 percent above hover", "v_next = v + dt * a(u)", "action limits are limits on u"]:
                 if marker not in text:

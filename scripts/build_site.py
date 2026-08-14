@@ -1029,6 +1029,28 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <p>Use this page when auditing source coverage: every lecture should show a captured transcript, a local clean-text path, and a word count large enough to support real review.</p>
   <p>If a lecture has no transcript, no concept page should pretend to quote it or build evidence from memory.</p>
 </div>
+<h2>How To Use A Transcript</h2>
+<div class="essay">
+  <p>Start with a narrow claim, not with a whole page. A transcript can prove that a lecture named model predictive control, reachable sets, quadratic cost, behavior cloning, or policy optimization. It can also support the local wording around that concept: for example, whether the lecture connects MPC with feasibility, or whether it frames behavior cloning as supervised learning from demonstrations.</p>
+  <p>A transcript cannot by itself prove the whole first-principles synthesis. If a concept page says a car entering a narrow gap may leave no legal braking future, that sentence is teaching synthesis. The transcript may support the course topic of recursive feasibility; the page must still declare the added control interpretation through the evidence record.</p>
+  <p>That split is deliberate. The transcript gives the floor; the course page builds the explanation. A reviewer should be able to inspect both layers without guessing which sentence came from source and which sentence came from synthesis.</p>
+</div>
+<h2>One Transcript Audit Run</h2>
+<div class="essay">
+  <p>Use Lecture 12 as a model. First open the clean transcript path and search for feasibility or stability. Then open the evidence record for recursive feasibility. The transcript window should show that the lecture discusses persistent feasibility in the MPC pipeline. The evidence record should say what that supports. The concept page can then teach the everyday test: after today's MPC action, does tomorrow's optimization problem still have a legal solution?</p>
+  <p>Do the same for a learning concept. A behavior-cloning transcript window can support supervised learning from demonstrated behavior. The page can add the closed-loop warning: if the learned policy drifts into a state outside the demonstrations, action prediction accuracy on the original data is not enough.</p>
+</div>
+<h2>Transcript Red Flags</h2>
+<div class="essay">
+  <p>Be suspicious if an evidence record only repeats a keyword, if a concept page quotes no local transcript path, if the raw VTT cannot be traced to a timestamp, or if the explanation claims more certainty than the transcript window supports.</p>
+  <p>Also be suspicious of transcript-shaped prose. Captions often contain false starts, repeated phrases, and lecture logistics. A good course page should not merely polish that sequence; it should rebuild the idea in everyday words, then point back to the transcript for source support.</p>
+</div>
+<h2>What To Record After Review</h2>
+<div class="essay">
+  <p>After checking a transcript claim, record three things. First, what the transcript directly supports: the lecture names a method, states an assumption, contrasts two families, or gives a formal object. Second, what the page adds: a car example, a drone failure, a reward loophole, or a plain-language operation. Third, whether the boundary is visible: the page should say where the lecture support ends and where synthesis begins.</p>
+  <p>This record matters because rich writing can drift. The deeper the explanation gets, the more carefully the evidence trail has to separate source from teaching. The goal is not to make every sentence a quote; the goal is to make every strong teaching sentence auditable.</p>
+  <p>A good note is specific: transcript supports quadratic cost terms; page adds the bowl picture and the warning that the approximation only holds near the planned motion. That note is reviewable months later by another course editor during source review work.</p>
+</div>
 """
     write(SITE / "transcripts.html", page("Transcripts", f"{transcript_intro}<section class=\"grid\">{''.join(transcript_cards)}</section>", "transcripts"))
 

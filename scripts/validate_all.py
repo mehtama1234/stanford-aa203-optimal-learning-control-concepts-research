@@ -354,11 +354,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"trajectory optimization concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "direct-transcription":
-            for marker in ["0.0 rad to 1.2 rad", "5 newton-meter torque limit", "t = 0.0, 0.2, 0.4, and 0.6 seconds", "q_0=0.0, q_1=0.4, q_2=0.9, q_3=1.2", "tau_1=2 newton-meters", "q_2_pred = 0.6 rad", "q_2 - q_2_pred = 0.9 - 0.6 = 0.3 rad", "tau_1=8", "8 &gt; 5", "middle states and controls together", "x_k=[q_k,v_k]", "u_k=tau_k", "defect_k = x_{k+1} - step(x_k,u_k)", "defect_1 = q_2 - q_2_pred = 0.3 rad", "defect_1 = 0", "defect_k = 0", "-5 &lt;= tau_k &lt;= 5", "q_0=0 and q_3=1.2", "states as variables", "stop those exposed states from lying", "between t = 0.2 and t = 0.4"]:
+            for marker in ["0.0 rad to 1.2 rad", "5 newton-meter torque limit", "t = 0.0, 0.2, 0.4, and 0.6 seconds", "q_0=0.0, q_1=0.4, q_2=0.9, q_3=1.2", "tau_1=2 newton-meters", "q_2_pred = 0.6 rad", "q_2 - q_2_pred = 0.9 - 0.6 = 0.3 rad", "tau_1=8", "8 &gt; 5", "legal repair", "q_2=0.6 while keeping tau_1=2", "q_2 - q_2_pred = 0.6 - 0.6 = 0", "middle states and controls together", "x_k=[q_k,v_k]", "u_k=tau_k", "defect_k = x_{k+1} - step(x_k,u_k)", "defect_1 = q_2 - q_2_pred = 0.3 rad", "illegal torque repair has tau_1=8", "-5 &lt;= tau_k &lt;= 5", "state repair has q_2=0.6", "defect_1 = 0.6 - 0.6 = 0", "tau_1 remains inside the torque bound", "defect_k = 0", "q_0=0 and q_3=1.2", "states as variables", "stop those exposed states from lying", "between t = 0.2 and t = 0.4"]:
                 if marker not in text:
                     errors.append(f"direct transcription concept page missing defect marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"direct transcription concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 980:
+                errors.append(f"direct transcription concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "shooting-methods":
             for marker in ["x = 0 meters", "u_0 = 4 m/s^2", "u_1 = -1 m/s^2", "x_2 = 7 meters", "3 meters short and still moving", "u_0 = 6 m/s^2", "u_1 = -2 m/s^2", "v_1 = 6", "x_1 = 6", "v_2 = 4", "x_2 = 10", "fails the stop condition", "both position and speed", "only u_0 and u_1 are decision variables", "v_{k+1}=v_k + dt*u_k", "x_{k+1}=x_k + dt*v_{k+1}", "residual r = [x_2 - 10, v_2 - 0]", "r = [7 - 10, 3 - 0] = [-3, 3]", "r = [10 - 10, 4 - 0] = [0, 4]", "reduce the final speed", "stronger braking later", "gap_1 = x_join - step(x_0,u_0)"]:
                 if marker not in text:

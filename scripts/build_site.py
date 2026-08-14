@@ -104,6 +104,10 @@ def main() -> int:
     evidence = load_json(ANALYSIS / "evidence/evidence-ledger.json", [])
     primitives = load_json(ANALYSIS / "throughlines/primitives.json", [])
     families = load_json(ANALYSIS / "throughlines/method-families.json", [])
+    derivations = load_json(ANALYSIS / "teaching/derivations.json", [])
+    worked_examples = load_json(ANALYSIS / "teaching/worked-examples.json", [])
+    drills = load_json(ANALYSIS / "teaching/drills.json", [])
+    weak_claim_repairs = load_json(ANALYSIS / "teaching/weak-claim-repairs.json", [])
     ev_by_id = evidence_by_id(evidence)
     concepts_by_id = {concept["id"]: concept for concept in concepts}
     by_video = {row["video_id"]: row for row in transcript_index.get("records", [])}
@@ -343,54 +347,72 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
     ) + "</table>"
     write(SITE / "formula-reader.html", page("Formula Reader", f"<h1>Formula Reader</h1>{formula_table}", "formulas"))
 
-    derivations = [
-        ("Bellman recursion", "Start from a state. Try each legal action. Pay immediate cost. Land in a next state. Use the stored price of the best future from that next state. Choose the action with the smallest combined number."),
-        ("Costates", "Start with a path cost. Nudge the state early. Track how that nudge changes later dynamics and cost. The backward sensitivity is the costate."),
-        ("LQR local reasoning", "Linearize the dynamics near a nominal point. Approximate cost as a quadratic bowl. Use the quadratic value shape to compute feedback gains."),
-        ("Direct transcription", "Replace a continuous path with grid variables. Add constraints tying neighboring variables to dynamics. Solve the finite nonlinear program."),
-        ("MPC replanning", "Solve a finite-horizon problem, apply only the first action, observe the new state, shift the horizon, and solve again."),
-        ("Value learning", "Use sampled transitions to push a value estimate toward reward plus the estimated value of the next state."),
-        ("Policy gradients", "Run the policy, observe return, estimate which parameter changes made better actions more likely, and update the policy."),
-    ]
-    write(SITE / "derivations.html", page("Derivations", f"<h1>Derivation Walkthroughs</h1><section class=\"stack\">{''.join(card(a, f'<p>{esc(b)}</p>') for a,b in derivations)}</section>", "derivations"))
+    derivation_cards = []
+    for item in derivations:
+        linked = " ".join(f'<span class="pill">{concept_link(concepts_by_id[cid])}</span>' for cid in item.get("linked_concepts", []) if cid in concepts_by_id)
+        body = f"""
+<p><strong>Problem:</strong> {esc(item['problem'])}</p>
+<p><strong>Starting point:</strong> {esc(item['starting_point'])}</p>
+<ol>{''.join(f'<li>{esc(step)}</li>' for step in item['steps'])}</ol>
+<p><strong>Formula shape:</strong> {esc(item['formula_shape'])}</p>
+<p><strong>Why it works:</strong> {esc(item['why_it_works'])}</p>
+<p><strong>Failure test:</strong> {esc(item['failure_test'])}</p>
+<p>{linked}</p>
+"""
+        derivation_cards.append(card(item["title"], body))
+    write(SITE / "derivations.html", page("Derivations", f"<h1>Derivation Walkthroughs</h1><p class=\"lede\">Slow, problem-first derivations that explain why the formula shape exists before asking the learner to manipulate symbols.</p><section class=\"stack\">{''.join(derivation_cards)}</section>", "derivations"))
 
-    examples = [
-        ("Rocket landing", "State is height and velocity; action is thrust; cost trades fuel, landing error, and safety margin."),
-        ("Robotic arm", "State is joint position and velocity; action is torque; constraints include collision and actuator limits."),
-        ("Autonomous car", "MPC replans as traffic moves, but recursive feasibility asks whether today&apos;s lane choice leaves a legal escape tomorrow."),
-        ("Option pricing", "Dynamic programming appears when current decisions depend on the future value of uncertain states."),
-        ("Macroeconomics", "A policy trades current intervention against delayed consequences in future system states."),
-        ("Robot learning", "Imitation learning supplies demonstrations; RL supplies reward-driven correction; model-based RL uses learned dynamics to reduce real trials."),
-    ]
-    write(SITE / "worked-examples.html", page("Worked Examples", f"<h1>Worked Examples</h1><section class=\"grid\">{''.join(card(a,b) for a,b in examples)}</section>", "derivations"))
+    example_cards = []
+    for item in worked_examples:
+        linked = " ".join(f'<span class="pill">{concept_link(concepts_by_id[cid])}</span>' for cid in item.get("linked_concepts", []) if cid in concepts_by_id)
+        body = f"""
+<p>{esc(item['setup'])}</p>
+<table>
+  <tr><th>State</th><td>{esc(item['state'])}</td></tr>
+  <tr><th>Action</th><td>{esc(item['action'])}</td></tr>
+  <tr><th>Cost</th><td>{esc(item['cost'])}</td></tr>
+  <tr><th>Constraints</th><td>{esc(item['constraints'])}</td></tr>
+  <tr><th>Method Route</th><td>{esc(item['method_route'])}</td></tr>
+  <tr><th>Failure Signal</th><td>{esc(item['failure_signal'])}</td></tr>
+</table>
+<p>{linked}</p>
+"""
+        example_cards.append(card(item["title"], body))
+    write(SITE / "worked-examples.html", page("Worked Examples", f"<h1>Worked Examples</h1><p class=\"lede\">Concrete setups that force the learner to name state, action, cost, constraints, method route, and failure signal.</p><section class=\"stack\">{''.join(example_cards)}</section>", "derivations"))
 
-    drills = [
-        ("Setup drill", "Given a drone delivery task, name state, action, dynamics, cost, constraints, and horizon."),
-        ("Method choice drill", "Choose between direct transcription, dynamic programming, MPC, imitation learning, and RL for a warehouse robot."),
-        ("Bellman drill", "Explain why a greedy action fails and write the now-plus-future reasoning in words."),
-        ("MPC feasibility drill", "Find why a short-horizon plan leaves no legal move at the next step."),
-        ("Reward drill", "Diagnose a reward that encourages fast arrival but unsafe braking."),
-        ("LQR drill", "State when a local quadratic approximation is reasonable and when it is unsafe."),
-    ]
-    write(SITE / "drills.html", page("Drills", f"<h1>Drills</h1><section class=\"stack\">{''.join(card(a, f'<p>{esc(b)}</p>') for a,b in drills)}</section>", "drills"))
-    solutions = [
-        ("Setup solution", "A strong answer separates measured state from desired outcome and names constraints before choosing an optimizer."),
-        ("Method choice solution", "Use direct transcription for a known one-shot motion plan, MPC for repeated constrained replanning, imitation when demonstrations are available, and RL when reward feedback is the main learning source."),
-        ("Bellman solution", "The correct move prices the next state by future value; the wrong move compares only immediate cost."),
-        ("MPC feasibility solution", "The weak plan is feasible now but not recursively feasible; a terminal set or longer horizon may be needed."),
-        ("Reward solution", "The reward omits comfort or safety, so the agent can score well by braking aggressively."),
-        ("LQR solution", "Local quadratic reasoning is credible near the nominal trajectory and risky after contact changes, saturation, or large nonlinear deviations."),
-    ]
-    write(SITE / "solutions.html", page("Solutions", f"<h1>Solutions</h1><section class=\"stack\">{''.join(card(a, f'<p>{esc(b)}</p>') for a,b in solutions)}</section>", "drills"))
+    drill_cards = []
+    solution_cards = []
+    for item in drills:
+        linked = " ".join(f'<span class="pill">{concept_link(concepts_by_id[cid])}</span>' for cid in item.get("linked_concepts", []) if cid in concepts_by_id)
+        drill_cards.append(
+            card(
+                item["title"],
+                f"<p>{esc(item['prompt'])}</p><p><strong>Wrong turn to avoid:</strong> {esc(item['wrong_turn'])}</p><p>{linked}</p>",
+            )
+        )
+        solution_cards.append(
+            card(
+                f"{item['title']} Solution",
+                f"<p><strong>Prompt:</strong> {esc(item['prompt'])}</p><p><strong>Wrong turn:</strong> {esc(item['wrong_turn'])}</p><p><strong>Strong answer:</strong> {esc(item['strong_answer'])}</p><p>{linked}</p>",
+            )
+        )
+    write(SITE / "drills.html", page("Drills", f"<h1>Drills</h1><p class=\"lede\">Practice prompts that train setup, method choice, future-cost recognition, feasibility diagnosis, reward repair, and approximation boundaries.</p><section class=\"stack\">{''.join(drill_cards)}</section>", "drills"))
+    write(SITE / "solutions.html", page("Solutions", f"<h1>Solutions</h1><p class=\"lede\">Full solution notes that name the common wrong turn before giving the stronger control explanation.</p><section class=\"stack\">{''.join(solution_cards)}</section>", "drills"))
 
-    misconceptions = [
+    base_misconceptions = [
         ("Optimal means globally best", "Many methods produce local candidates or model-conditioned optima, not universal guarantees."),
         ("MPC automatically stabilizes", "Repeated short-horizon solves need terminal structure or other conditions to protect long-run behavior."),
-        ("Imitation is just supervised learning", "Closed-loop distribution shift makes action prediction different from ordinary held-out accuracy."),
-        ("Reward equals task", "Reward is a proxy and can be exploited when it omits real constraints."),
         ("Model-based RL is safe because it plans", "Planning through a learned model can exploit model errors."),
     ]
-    write(SITE / "misconceptions.html", page("Misconceptions", f"<h1>Misconceptions</h1><section class=\"grid\">{''.join(card(a,b) for a,b in misconceptions)}</section>", "review"))
+    misconception_cards = [card(a, f"<p>{esc(b)}</p>") for a, b in base_misconceptions]
+    for item in weak_claim_repairs:
+        misconception_cards.append(
+            card(
+                f"Repair: {item['weak']}",
+                f"<p><strong>Diagnosis:</strong> {esc(item['diagnosis'])}</p><p><strong>Stronger version:</strong> {esc(item['strong'])}</p>",
+            )
+        )
+    write(SITE / "misconceptions.html", page("Misconceptions", f"<h1>Misconceptions And Weak-Claim Repairs</h1><section class=\"grid\">{''.join(misconception_cards)}</section>", "review"))
 
     evidence_html = "".join(evidence_card(row) for row in evidence)
     write(SITE / "evidence.html", page("Evidence", f"<h1>Evidence Ledger</h1><p class=\"lede\">Each record points to a local transcript window and marks the first-pass confidence state.</p><section class=\"stack\">{evidence_html}</section>", "evidence"))
@@ -416,7 +438,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
         ("Transcript coverage", "partial", f"{transcript_index.get('available_transcripts', 0)}/{transcript_index.get('videos', 0)} transcripts; Lecture 13 remains a source gap"),
         ("Concept atlas", "present", f"{len(concepts)} concepts generated"),
         ("Evidence ledger", "first pass", f"{len(evidence)} evidence records with needs_review status"),
-        ("Practice pages", "present", "drills.html and solutions.html generated"),
+        ("Teaching artifacts", "present", f"{len(derivations)} derivations, {len(worked_examples)} examples, {len(drills)} drills, and {len(weak_claim_repairs)} repair cases generated from analysis/teaching"),
         ("Manual review", "remaining", "timestamp-level evidence deepening and prose polish remain"),
     ]
     audit_table = "<table><tr><th>Requirement</th><th>Status</th><th>Evidence</th></tr>" + "".join(
@@ -444,4 +466,3 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

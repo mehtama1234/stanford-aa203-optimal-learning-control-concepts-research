@@ -1,0 +1,27 @@
+[
+  {
+    "weak": "MPC is useful because it optimizes the system.",
+    "diagnosis": "This says nothing about time, feedback, constraints, or why repeated optimization is needed.",
+    "strong": "MPC is useful when a controller needs to plan ahead under constraints but cannot trust one long open-loop plan; it repeatedly solves a finite-horizon problem, applies the first action, observes the new state, and replans."
+  },
+  {
+    "weak": "The value function captures the objective.",
+    "diagnosis": "This hides what value actually stores and why it helps decisions.",
+    "strong": "The value function stores the best future cost from a state, so the controller can judge a current action by the immediate cost plus the future burden of the state it creates."
+  },
+  {
+    "weak": "Imitation learning copies expert behavior.",
+    "diagnosis": "This misses the closed-loop distribution problem.",
+    "strong": "Imitation learning fits a policy from expert demonstrations, but the learned policy can drift into states the expert data did not cover, so action prediction accuracy is not the same as robust control."
+  },
+  {
+    "weak": "LQR works for robotics because it is efficient.",
+    "diagnosis": "Efficiency is not the mathematical reason LQR is appropriate.",
+    "strong": "LQR is appropriate near a nominal robotic motion when dynamics can be locally linearized and the cost can be treated as quadratic, giving fast feedback for small deviations while leaving large nonlinear events outside the guarantee."
+  },
+  {
+    "weak": "Reward tells the agent what to do.",
+    "diagnosis": "Reward does not describe behavior directly; it creates incentives that can be exploited.",
+    "strong": "Reward is the scalar feedback the agent optimizes over time; if it omits safety, smoothness, or task constraints, the agent can get high return by doing something the designer did not intend."
+  }
+]

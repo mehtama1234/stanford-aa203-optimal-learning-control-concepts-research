@@ -38,6 +38,12 @@ def main() -> int:
     evidence_path = ANALYSIS / "evidence/evidence-ledger.json"
     primitives_path = ANALYSIS / "throughlines/primitives.json"
     families_path = ANALYSIS / "throughlines/method-families.json"
+    teaching_paths = [
+        ANALYSIS / "teaching/derivations.json",
+        ANALYSIS / "teaching/worked-examples.json",
+        ANALYSIS / "teaching/drills.json",
+        ANALYSIS / "teaching/weak-claim-repairs.json",
+    ]
     concepts = []
     evidence = []
     if not concept_path.exists():
@@ -96,6 +102,13 @@ def main() -> int:
     for path in [primitives_path, families_path]:
         if not path.exists():
             errors.append(f"missing {path.relative_to(ROOT)}; run concept builder")
+    for path in teaching_paths:
+        if not path.exists():
+            errors.append(f"missing {path.relative_to(ROOT)}; run teaching artifact builder")
+        else:
+            rows = json.loads(path.read_text(encoding="utf-8"))
+            if len(rows) < 5:
+                errors.append(f"{path.relative_to(ROOT)} should contain at least 5 records")
     required_pages = [
         SITE / "index.html",
         SITE / "lectures.html",
@@ -125,6 +138,19 @@ def main() -> int:
     for row in evidence:
         if f'id="{row["id"]}"' not in evidence_html:
             errors.append(f"evidence anchor missing from evidence.html: {row['id']}")
+    rendered_checks = {
+        "derivations.html": ["Failure test", "Formula shape"],
+        "worked-examples.html": ["Method Route", "Failure Signal"],
+        "drills.html": ["Wrong turn to avoid"],
+        "solutions.html": ["Strong answer"],
+        "misconceptions.html": ["Stronger version"],
+    }
+    for filename, needles in rendered_checks.items():
+        path = SITE / filename
+        text = path.read_text(encoding="utf-8") if path.exists() else ""
+        for needle in needles:
+            if needle not in text:
+                errors.append(f"{filename} missing teaching marker: {needle}")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

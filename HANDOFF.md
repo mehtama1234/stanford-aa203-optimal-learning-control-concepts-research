@@ -14,8 +14,9 @@ Completed locally:
 - Built a first-pass concept atlas with 38 required concepts.
 - Built a first-pass evidence ledger with 38 local transcript-window records marked `needs_review`.
 - Built method-family and primitive throughline artifacts.
+- Built structured teaching artifacts for derivations, worked examples, drills, solutions, and weak-claim repairs.
 - Generated 57 HTML pages, including individual concept pages plus course spine, families, primitives, formula reader, derivations, worked examples, drills, solutions, misconceptions, evidence, review guide, quality rubric, and completion audit.
-- Added validation for manifest shape, transcript file references, concept fields, evidence fields, evidence-to-transcript links, generated pages, concept pages, evidence anchors, and local links.
+- Added validation for manifest shape, transcript file references, concept fields, evidence fields, evidence-to-transcript links, teaching artifacts, generated pages, concept pages, evidence anchors, teaching-page markers, and local links.
 
 ## Known Gap
 
@@ -30,6 +31,7 @@ Retry later:
 ```bash
 python3 scripts/download_youtube_course_transcripts.py
 python3 scripts/build_first_principles_atlas.py
+python3 scripts/build_teaching_artifacts.py
 python3 scripts/build_site.py
 python3 scripts/validate_all.py
 ```

@@ -22,6 +22,72 @@
 <a class="" href="evidence.html">Evidence</a>
 <a class="" href="review-guide.html">Review</a></nav>
   </header>
-  <main><h1>Worked Examples</h1><section class="grid"><article class="card "><h3>Rocket landing</h3>State is height and velocity; action is thrust; cost trades fuel, landing error, and safety margin.</article><article class="card "><h3>Robotic arm</h3>State is joint position and velocity; action is torque; constraints include collision and actuator limits.</article><article class="card "><h3>Autonomous car</h3>MPC replans as traffic moves, but recursive feasibility asks whether today&apos;s lane choice leaves a legal escape tomorrow.</article><article class="card "><h3>Option pricing</h3>Dynamic programming appears when current decisions depend on the future value of uncertain states.</article><article class="card "><h3>Macroeconomics</h3>A policy trades current intervention against delayed consequences in future system states.</article><article class="card "><h3>Robot learning</h3>Imitation learning supplies demonstrations; RL supplies reward-driven correction; model-based RL uses learned dynamics to reduce real trials.</article></section></main>
+  <main><h1>Worked Examples</h1><p class="lede">Concrete setups that force the learner to name state, action, cost, constraints, method route, and failure signal.</p><section class="stack"><article class="card "><h3>Rocket Landing</h3>
+<p>A vertical rocket must land softly with limited fuel and bounded thrust.</p>
+<table>
+  <tr><th>State</th><td>Height, vertical velocity, mass or fuel, and possibly engine state.</td></tr>
+  <tr><th>Action</th><td>Thrust command at each time.</td></tr>
+  <tr><th>Cost</th><td>Terminal landing error, velocity at touchdown, fuel use, and excessive control effort.</td></tr>
+  <tr><th>Constraints</th><td>Thrust limits, no underground states, structural load limits, and safe touchdown velocity.</td></tr>
+  <tr><th>Method Route</th><td>Start with trajectory optimization or direct transcription. Use MPC if disturbances or model mismatch require replanning.</td></tr>
+  <tr><th>Failure Signal</th><td>A plan that saves fuel but reaches the ground too fast reveals a cost or constraint error.</td></tr>
+</table>
+<p><span class="pill"><a href="concepts/optimal-control-problem.html">Optimal Control Problem</a></span> <span class="pill"><a href="concepts/direct-transcription.html">Direct Transcription</a></span> <span class="pill"><a href="concepts/model-predictive-control.html">Model Predictive Control</a></span> <span class="pill"><a href="concepts/constraints.html">Constraints</a></span></p>
+</article><article class="card "><h3>Robot Arm Around An Obstacle</h3>
+<p>A robot arm must move from one configuration to another without hitting a fixture.</p>
+<table>
+  <tr><th>State</th><td>Joint angles and joint velocities.</td></tr>
+  <tr><th>Action</th><td>Joint torques or desired velocity commands.</td></tr>
+  <tr><th>Cost</th><td>Tracking error, motion time, smoothness, and control effort.</td></tr>
+  <tr><th>Constraints</th><td>Joint limits, torque limits, collision constraints, and endpoint requirements.</td></tr>
+  <tr><th>Method Route</th><td>Use trajectory optimization with collocation when the model is trusted; use imitation learning if expert demonstrations are easier than writing the contact-rich objective.</td></tr>
+  <tr><th>Failure Signal</th><td>A visually short path that requires impossible torque shows why geometric planning alone is incomplete.</td></tr>
+</table>
+<p><span class="pill"><a href="concepts/trajectory-optimization.html">Trajectory Optimization</a></span> <span class="pill"><a href="concepts/collocation.html">Collocation</a></span> <span class="pill"><a href="concepts/imitation-learning.html">Imitation Learning</a></span> <span class="pill"><a href="concepts/action-control-input.html">Action / Control Input</a></span></p>
+</article><article class="card "><h3>Autonomous Car In Traffic</h3>
+<p>A car must follow a route while reacting to nearby vehicles and lane constraints.</p>
+<table>
+  <tr><th>State</th><td>Position, velocity, heading, lane context, and nearby vehicle estimates.</td></tr>
+  <tr><th>Action</th><td>Steering, acceleration, braking, or higher-level maneuver commands.</td></tr>
+  <tr><th>Cost</th><td>Progress, comfort, lane keeping, safety margin, and control smoothness.</td></tr>
+  <tr><th>Constraints</th><td>Road boundaries, collision avoidance, acceleration limits, and traffic rules.</td></tr>
+  <tr><th>Method Route</th><td>Use MPC for repeated constrained replanning and reachability for safety envelopes.</td></tr>
+  <tr><th>Failure Signal</th><td>A legal plan now that leaves no legal braking or steering option next step is not recursively feasible.</td></tr>
+</table>
+<p><span class="pill"><a href="concepts/model-predictive-control.html">Model Predictive Control</a></span> <span class="pill"><a href="concepts/reachability.html">Reachability</a></span> <span class="pill"><a href="concepts/recursive-feasibility.html">Recursive Feasibility</a></span> <span class="pill"><a href="concepts/stability-under-replanning.html">Stability Under Replanning</a></span></p>
+</article><article class="card "><h3>Warehouse Robot Learning</h3>
+<p>A mobile manipulator must learn picking behavior across shelves and object poses.</p>
+<table>
+  <tr><th>State</th><td>Robot pose, arm state, object pose estimate, gripper state, and local scene features.</td></tr>
+  <tr><th>Action</th><td>Base motion, arm motion, gripper command, or learned policy output.</td></tr>
+  <tr><th>Cost</th><td>Task success, time, collisions, dropped objects, and wear.</td></tr>
+  <tr><th>Constraints</th><td>Shelf geometry, collision constraints, payload limits, and safe exploration boundaries.</td></tr>
+  <tr><th>Method Route</th><td>Use imitation learning for initial behavior, RL for improvement from reward, and model-based RL if real trials are expensive.</td></tr>
+  <tr><th>Failure Signal</th><td>A policy that works on demonstrated centered objects but fails after nudging an object sideways shows distribution shift.</td></tr>
+</table>
+<p><span class="pill"><a href="concepts/behavioral-cloning.html">Behavioral Cloning</a></span> <span class="pill"><a href="concepts/distribution-shift-imitation.html">Distribution Shift in Imitation</a></span> <span class="pill"><a href="concepts/reinforcement-learning.html">Reinforcement Learning</a></span> <span class="pill"><a href="concepts/model-based-rl.html">Model-Based RL</a></span></p>
+</article><article class="card "><h3>Option Pricing As Dynamic Decision Accounting</h3>
+<p>A financial decision depends on uncertain future prices and choices made over time.</p>
+<table>
+  <tr><th>State</th><td>Current price, time, volatility estimate, and portfolio state.</td></tr>
+  <tr><th>Action</th><td>Exercise, hold, hedge, or rebalance decision.</td></tr>
+  <tr><th>Cost</th><td>Expected payoff, risk exposure, transaction cost, and terminal value.</td></tr>
+  <tr><th>Constraints</th><td>Market rules, liquidity, budget, and admissible trading choices.</td></tr>
+  <tr><th>Method Route</th><td>Use dynamic programming or stochastic dynamic programming when future value depends on uncertain transitions.</td></tr>
+  <tr><th>Failure Signal</th><td>A decision rule that ignores rare but high-loss outcomes is a sign that the stochastic model or objective is incomplete.</td></tr>
+</table>
+<p><span class="pill"><a href="concepts/stochastic-dynamic-programming.html">Stochastic Dynamic Programming</a></span> <span class="pill"><a href="concepts/bellman-recursion.html">Bellman Recursion</a></span> <span class="pill"><a href="concepts/value-function.html">Value Function</a></span> <span class="pill"><a href="concepts/policy.html">Policy</a></span></p>
+</article><article class="card "><h3>Macroeconomic Policy</h3>
+<p>A policy maker chooses interventions whose effects unfold through delayed system dynamics.</p>
+<table>
+  <tr><th>State</th><td>Inflation, unemployment, output gap, debt, and expectation summaries.</td></tr>
+  <tr><th>Action</th><td>Interest-rate change, spending decision, or policy lever.</td></tr>
+  <tr><th>Cost</th><td>Inflation deviation, unemployment, volatility, debt burden, and political or welfare loss.</td></tr>
+  <tr><th>Constraints</th><td>Institutional limits, budget constraints, delayed observability, and uncertainty.</td></tr>
+  <tr><th>Method Route</th><td>Use optimal-control framing to expose the state, action, dynamics, and objective before arguing about a policy.</td></tr>
+  <tr><th>Failure Signal</th><td>A one-period improvement that worsens later inflation or debt shows why horizon and dynamics matter.</td></tr>
+</table>
+<p><span class="pill"><a href="concepts/horizon.html">Horizon</a></span> <span class="pill"><a href="concepts/dynamics.html">Dynamics</a></span> <span class="pill"><a href="concepts/objective-cost-function.html">Objective / Cost Function</a></span> <span class="pill"><a href="concepts/optimal-control-problem.html">Optimal Control Problem</a></span></p>
+</article></section></main>
 </body>
 </html>

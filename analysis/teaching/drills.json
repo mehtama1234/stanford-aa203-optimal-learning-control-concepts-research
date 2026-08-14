@@ -1,0 +1,79 @@
+[
+  {
+    "id": "drone-delivery-setup",
+    "title": "Set Up A Drone Delivery Control Problem",
+    "prompt": "A drone must carry a small package across a windy campus and land on a marked pad. Name the state, action, dynamics, cost, constraints, and horizon.",
+    "wrong_turn": "Saying only 'minimize delivery time' skips the physical state, legal actions, wind-disturbed dynamics, and safety constraints.",
+    "strong_answer": "State includes position, velocity, attitude, battery, and package state. Action is rotor thrust or a lower-level velocity command. Dynamics include motion under wind and gravity. Cost trades time, energy, tracking, and landing accuracy. Constraints include thrust limits, no-fly zones, battery reserve, payload safety, and safe touchdown. The horizon must cover enough time for approach, descent, and landing.",
+    "linked_concepts": [
+      "state",
+      "action-control-input",
+      "dynamics",
+      "objective-cost-function",
+      "constraints",
+      "horizon"
+    ]
+  },
+  {
+    "id": "warehouse-method-choice",
+    "title": "Choose A Method For A Warehouse Robot",
+    "prompt": "A robot has a known arm model, cluttered shelves, and thousands of human teleoperation demonstrations. Which methods would you combine and why?",
+    "wrong_turn": "Picking only RL ignores the useful known model and the demonstration data.",
+    "strong_answer": "Use trajectory optimization or MPC for model-based motion under constraints, imitation learning or behavioral cloning to initialize task behavior from demonstrations, and RL or model-based RL only for improvement where reward feedback and safe exploration are available.",
+    "linked_concepts": [
+      "trajectory-optimization",
+      "model-predictive-control",
+      "imitation-learning",
+      "behavioral-cloning",
+      "model-based-rl"
+    ]
+  },
+  {
+    "id": "bellman-recognition",
+    "title": "Recognize Bellman Structure",
+    "prompt": "A rover must choose whether to cross rough terrain now or detour. The rough route is shorter but may damage wheels and reduce future mobility. Explain why this is a Bellman-style decision.",
+    "wrong_turn": "Comparing only immediate travel distance misses that the next state changes future options.",
+    "strong_answer": "Each action has immediate cost and creates a next state with its own future value. The rough path may look cheap now but can move the rover into a high-cost future state. The Bellman move is to compare immediate cost plus value of the resulting state.",
+    "linked_concepts": [
+      "bellman-recursion",
+      "value-function",
+      "dynamic-programming"
+    ]
+  },
+  {
+    "id": "mpc-feasibility",
+    "title": "Diagnose MPC Feasibility",
+    "prompt": "An MPC controller for a car keeps choosing a narrow gap because it is collision-free for the next two seconds, then suddenly becomes infeasible. What is wrong?",
+    "wrong_turn": "Saying the optimizer failed misses that the problem formulation may permit a move that destroys future feasibility.",
+    "strong_answer": "The horizon or terminal condition is too weak. The current solve is feasible, but applying its first action leads to a state where the next optimization has no legal escape. The design needs recursive-feasibility structure, longer horizon, terminal set, backup policy, or reachability safety check.",
+    "linked_concepts": [
+      "model-predictive-control",
+      "recursive-feasibility",
+      "reachability"
+    ]
+  },
+  {
+    "id": "reward-hacking",
+    "title": "Repair A Reward Function",
+    "prompt": "A robot is rewarded for moving an object to a target quickly. It learns to slap the object, often damaging it. What is missing?",
+    "wrong_turn": "Adding more training without changing the reward can make the bad behavior more reliable.",
+    "strong_answer": "The reward prices target arrival and speed but omits damage, contact force, smoothness, and safety constraints. The repair is to add the missing task values or hard constraints and inspect whether the scalar reward can still be exploited.",
+    "linked_concepts": [
+      "reward",
+      "reinforcement-learning",
+      "constraints"
+    ]
+  },
+  {
+    "id": "lqr-boundary",
+    "title": "Find The Boundary Of LQR Reasoning",
+    "prompt": "A controller designed around small deviations from hover is used after a drone clips a branch and tumbles. Why is the LQR explanation no longer enough?",
+    "wrong_turn": "Saying LQR is bad misses that it is a local method being used outside its local assumptions.",
+    "strong_answer": "LQR relies on local linear dynamics and quadratic cost near the nominal operating point. After impact and tumbling, attitude, actuator limits, and aerodynamics are far from that region. The local approximation no longer prices the real dynamics.",
+    "linked_concepts": [
+      "lqr",
+      "local-quadratic-approximation",
+      "dynamics"
+    ]
+  }
+]

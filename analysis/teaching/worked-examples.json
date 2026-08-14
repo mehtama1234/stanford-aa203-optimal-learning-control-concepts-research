@@ -1,0 +1,104 @@
+[
+  {
+    "id": "rocket-landing",
+    "title": "Rocket Landing",
+    "setup": "A vertical rocket must land softly with limited fuel and bounded thrust.",
+    "state": "Height, vertical velocity, mass or fuel, and possibly engine state.",
+    "action": "Thrust command at each time.",
+    "cost": "Terminal landing error, velocity at touchdown, fuel use, and excessive control effort.",
+    "constraints": "Thrust limits, no underground states, structural load limits, and safe touchdown velocity.",
+    "method_route": "Start with trajectory optimization or direct transcription. Use MPC if disturbances or model mismatch require replanning.",
+    "failure_signal": "A plan that saves fuel but reaches the ground too fast reveals a cost or constraint error.",
+    "linked_concepts": [
+      "optimal-control-problem",
+      "direct-transcription",
+      "model-predictive-control",
+      "constraints"
+    ]
+  },
+  {
+    "id": "robot-arm",
+    "title": "Robot Arm Around An Obstacle",
+    "setup": "A robot arm must move from one configuration to another without hitting a fixture.",
+    "state": "Joint angles and joint velocities.",
+    "action": "Joint torques or desired velocity commands.",
+    "cost": "Tracking error, motion time, smoothness, and control effort.",
+    "constraints": "Joint limits, torque limits, collision constraints, and endpoint requirements.",
+    "method_route": "Use trajectory optimization with collocation when the model is trusted; use imitation learning if expert demonstrations are easier than writing the contact-rich objective.",
+    "failure_signal": "A visually short path that requires impossible torque shows why geometric planning alone is incomplete.",
+    "linked_concepts": [
+      "trajectory-optimization",
+      "collocation",
+      "imitation-learning",
+      "action-control-input"
+    ]
+  },
+  {
+    "id": "autonomous-car",
+    "title": "Autonomous Car In Traffic",
+    "setup": "A car must follow a route while reacting to nearby vehicles and lane constraints.",
+    "state": "Position, velocity, heading, lane context, and nearby vehicle estimates.",
+    "action": "Steering, acceleration, braking, or higher-level maneuver commands.",
+    "cost": "Progress, comfort, lane keeping, safety margin, and control smoothness.",
+    "constraints": "Road boundaries, collision avoidance, acceleration limits, and traffic rules.",
+    "method_route": "Use MPC for repeated constrained replanning and reachability for safety envelopes.",
+    "failure_signal": "A legal plan now that leaves no legal braking or steering option next step is not recursively feasible.",
+    "linked_concepts": [
+      "model-predictive-control",
+      "reachability",
+      "recursive-feasibility",
+      "stability-under-replanning"
+    ]
+  },
+  {
+    "id": "warehouse-robot-learning",
+    "title": "Warehouse Robot Learning",
+    "setup": "A mobile manipulator must learn picking behavior across shelves and object poses.",
+    "state": "Robot pose, arm state, object pose estimate, gripper state, and local scene features.",
+    "action": "Base motion, arm motion, gripper command, or learned policy output.",
+    "cost": "Task success, time, collisions, dropped objects, and wear.",
+    "constraints": "Shelf geometry, collision constraints, payload limits, and safe exploration boundaries.",
+    "method_route": "Use imitation learning for initial behavior, RL for improvement from reward, and model-based RL if real trials are expensive.",
+    "failure_signal": "A policy that works on demonstrated centered objects but fails after nudging an object sideways shows distribution shift.",
+    "linked_concepts": [
+      "behavioral-cloning",
+      "distribution-shift-imitation",
+      "reinforcement-learning",
+      "model-based-rl"
+    ]
+  },
+  {
+    "id": "option-pricing",
+    "title": "Option Pricing As Dynamic Decision Accounting",
+    "setup": "A financial decision depends on uncertain future prices and choices made over time.",
+    "state": "Current price, time, volatility estimate, and portfolio state.",
+    "action": "Exercise, hold, hedge, or rebalance decision.",
+    "cost": "Expected payoff, risk exposure, transaction cost, and terminal value.",
+    "constraints": "Market rules, liquidity, budget, and admissible trading choices.",
+    "method_route": "Use dynamic programming or stochastic dynamic programming when future value depends on uncertain transitions.",
+    "failure_signal": "A decision rule that ignores rare but high-loss outcomes is a sign that the stochastic model or objective is incomplete.",
+    "linked_concepts": [
+      "stochastic-dynamic-programming",
+      "bellman-recursion",
+      "value-function",
+      "policy"
+    ]
+  },
+  {
+    "id": "macro-policy",
+    "title": "Macroeconomic Policy",
+    "setup": "A policy maker chooses interventions whose effects unfold through delayed system dynamics.",
+    "state": "Inflation, unemployment, output gap, debt, and expectation summaries.",
+    "action": "Interest-rate change, spending decision, or policy lever.",
+    "cost": "Inflation deviation, unemployment, volatility, debt burden, and political or welfare loss.",
+    "constraints": "Institutional limits, budget constraints, delayed observability, and uncertainty.",
+    "method_route": "Use optimal-control framing to expose the state, action, dynamics, and objective before arguing about a policy.",
+    "failure_signal": "A one-period improvement that worsens later inflation or debt shows why horizon and dynamics matter.",
+    "linked_concepts": [
+      "horizon",
+      "dynamics",
+      "objective-cost-function",
+      "optimal-control-problem"
+    ]
+  }
+]

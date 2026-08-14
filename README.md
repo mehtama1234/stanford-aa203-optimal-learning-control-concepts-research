@@ -28,10 +28,12 @@ The durable end-to-end target is written in `GOAL.md`.
 - `analysis/concepts/concept-atlas.json`: first-pass required concept atlas
 - `analysis/evidence/evidence-ledger.json`: transcript-window evidence records
 - `analysis/throughlines/`: method families and mathematical primitives
+- `analysis/teaching/`: derivations, worked examples, drills, and weak-claim repairs
 - `GOAL.md`: meaty end-to-end build target for the full course site
 - `site/`: generated static HTML starter site
 - `scripts/download_youtube_course_transcripts.py`: refresh playlist metadata and captions
 - `scripts/build_first_principles_atlas.py`: build the first-pass concept and evidence artifacts
+- `scripts/build_teaching_artifacts.py`: build the deeper teaching/practice artifacts
 - `scripts/build_site.py`: build the starter HTML site from local artifacts
 - `scripts/validate_all.py`: validate source files and generated pages
 
@@ -40,6 +42,7 @@ The durable end-to-end target is written in `GOAL.md`.
 ```bash
 python3 scripts/download_youtube_course_transcripts.py
 python3 scripts/build_first_principles_atlas.py
+python3 scripts/build_teaching_artifacts.py
 python3 scripts/build_site.py
 python3 scripts/validate_all.py
 ```

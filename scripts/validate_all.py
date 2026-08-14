@@ -188,6 +188,9 @@ def main() -> int:
         "drills.html": ["Wrong turn to avoid", "What a strong answer must include"],
         "solutions.html": ["Strong answer", "Solution walkthrough", "Grading criteria"],
         "misconceptions.html": ["Stronger version", "Failure consequence", "Transfer prompt"],
+        "families.html": ["The move:", "A method family is a response", "drone", "rover", "warehouse robot"],
+        "primitives.html": ["reusable pieces", "The action is the command", "Constraint says what cannot be crossed"],
+        "formula-reader.html": ["A formula is a machine", "The operation:", "where it fails", "rocket", "rover"],
     }
     for filename, needles in rendered_checks.items():
         path = SITE / filename
@@ -207,6 +210,18 @@ def main() -> int:
         for phrase in forbidden_vague_phrases:
             if phrase in text:
                 errors.append(f"vague filler phrase in {path.relative_to(ROOT)}: {phrase}")
+    minimum_page_words = {
+        "course-spine.html": 650,
+        "families.html": 750,
+        "primitives.html": 450,
+        "formula-reader.html": 750,
+    }
+    for filename, minimum in minimum_page_words.items():
+        path = SITE / filename
+        text = re.sub(r"<[^>]+>", " ", path.read_text(encoding="utf-8")) if path.exists() else ""
+        words = re.findall(r"\b\w+\b", text)
+        if len(words) < minimum:
+            errors.append(f"{filename} below richness word floor: {len(words)} < {minimum}")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

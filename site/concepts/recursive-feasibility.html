@@ -25,12 +25,12 @@
   <main>
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Recursive Feasibility</h1>
-<p class="lede">The property that after applying today&amp;apos;s MPC action, tomorrow&amp;apos;s optimization problem is still feasible.</p>
+<p class="lede">The property that after applying today&#x27;s MPC action, tomorrow&#x27;s optimization problem is still feasible.</p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
-    <p>Replanning is only useful if today&amp;apos;s legal move does not leave the controller with no legal move next time.</p>
+    <p>Replanning is only useful if today&#x27;s legal move does not leave the controller with no legal move next time.</p>
     <p>The tempting shortcut is simple: Check only that the current MPC problem has a solution. But that shortcut breaks because the first action of a feasible plan can lead to a state where the next problem is infeasible.</p>
   </div>
 </section>
@@ -45,7 +45,7 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A car must not enter a narrow lane unless it can still brake or steer safely in the next planning step. Start from the ordinary pressure: Replanning is only useful if today&amp;apos;s legal move does not leave the controller with no legal move next time. The shortcut is to check only that the current mpc problem has a solution. That fails because the first action of a feasible plan can lead to a state where the next problem is infeasible. So the page introduces a recursively feasible set or terminal condition. and uses it to design the mpc problem so feasibility propagates from one solve to the next.</p></div>
+  <div class="explain-box"><p>A car must not enter a narrow lane unless it can still brake or steer safely in the next planning step. Start from the ordinary pressure: Replanning is only useful if today&#x27;s legal move does not leave the controller with no legal move next time. The shortcut is to check only that the current mpc problem has a solution. That fails because the first action of a feasible plan can lead to a state where the next problem is infeasible. So the page introduces a recursively feasible set or terminal condition. and uses it to design the mpc problem so feasibility propagates from one solve to the next.</p></div>
   <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a recursively feasible set or terminal condition. The operation is: Design the MPC problem so feasibility propagates from one solve to the next. The boundary is: The guarantee depends on model accuracy, constraints, and terminal set design.</p></div></details>
 </section>
 <section class="fp">

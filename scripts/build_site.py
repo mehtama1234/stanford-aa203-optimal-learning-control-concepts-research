@@ -173,6 +173,121 @@ def concept_run(concept: dict[str, Any]) -> dict[str, str]:
     }
 
 
+FAMILY_DEEPENING: dict[str, dict[str, str]] = {
+    "problem-setup": {
+        "pressure": "This family exists because a moving system does not obey wishes. A planner must name what is known, what can be changed, how the world moves, what future is preferred, and which lines cannot be crossed.",
+        "operation": "Turn a story into state, action, dynamics, cost, horizon, constraints, and feasibility before choosing any solver.",
+        "worked": "For a drone delivery task, 'get there fast' becomes position, velocity, attitude, battery, payload, wind, rotor thrust, no-fly zones, landing pad error, and safe touchdown speed.",
+    },
+    "optimization-foundations": {
+        "pressure": "Before control chooses a path, ordinary optimization teaches what it means for a choice to be locally better, blocked by a constraint, or stuck at a boundary.",
+        "operation": "Look at small changes in the decision and ask whether the objective can still be lowered without leaving the legal set.",
+        "worked": "A thermostat setting may lower temperature error but hit a power limit. The gradient points toward a better setting; the constraint says whether that setting is legal.",
+    },
+    "trajectory-optimization": {
+        "pressure": "A path is not a drawing between start and finish. Every point along it must be reachable from the previous point using real commands.",
+        "operation": "Make the whole path the decision, enforce dynamics along the path, and ask the solver for a legal low-cost history.",
+        "worked": "A robot arm moving around a fixture needs joint angles, velocities, and torques at many times, not just a start pose and an end pose.",
+    },
+    "dynamic-programming": {
+        "pressure": "Some problems are too large if the controller lists every future action sequence. The repeated structure is that after one action, the remaining future is another control problem.",
+        "operation": "Attach a future-cost number to each state, then compare actions by immediate cost plus the future value of the state they create.",
+        "worked": "A rover chooses between a short rocky route and a longer smooth route by pricing wheel damage as a worse future state, not only by counting meters.",
+    },
+    "local-structure": {
+        "pressure": "Near a planned motion, the full nonlinear problem may be more detail than the controller needs at every instant.",
+        "operation": "Replace the local neighborhood with linear dynamics and quadratic cost, compute fast feedback, and use it only while the state stays near that neighborhood.",
+        "worked": "A drone hovering near level can push back against a small drift with LQR; after impact, the same approximation is no longer a truthful picture.",
+    },
+    "safety-and-feasibility": {
+        "pressure": "A plan can look good and still put the system into a state where no safe future remains.",
+        "operation": "Track sets of states that can reach a target, avoid danger, or remain feasible after the next action.",
+        "worked": "A car entering a narrow gap should ask whether braking or steering remains possible one second later, not only whether the next two seconds are collision-free.",
+    },
+    "replanning": {
+        "pressure": "A long open-loop plan goes stale as soon as wind, traffic, contact, or estimation error changes the state.",
+        "operation": "Solve a short future problem, apply the first command, measure again, and solve from the new state while protecting the next solve.",
+        "worked": "An autonomous car replans after each small movement because nearby cars move and the measured state is more trustworthy than yesterday's prediction.",
+    },
+    "learning-based-control": {
+        "pressure": "Sometimes the model, reward, or expert behavior is too hard to write down cleanly, but data can show part of the missing structure.",
+        "operation": "Fit a policy, value, reward, or model from demonstrations or experience, then keep asking what state distribution, reward, and safety boundary the learner is actually using.",
+        "worked": "A warehouse robot can clone a human drawer-opening motion, then use reward or a learned model to improve, while checking that mistakes do not move it outside the demonstrated states.",
+    },
+}
+
+
+PRIMITIVE_DEEPENING: dict[str, str] = {
+    "state": "The state is the present-tense record the controller trusts. If the record leaves out velocity, fuel, contact, or another car, two different futures may look identical.",
+    "action": "The action is the command the machine can actually issue, not the outcome it wants. A drone commands thrust; height changes only after dynamics carry thrust forward.",
+    "dynamics": "Dynamics are the rule that turns action into the next state. They are where mass, friction, actuator limits, and delay enter the story.",
+    "cost": "Cost is the written scoreboard for futures. If damage, discomfort, or risk is missing from it, the controller is free to ignore those things.",
+    "constraint": "A constraint is a line the plan may not cross: no collision, no empty battery, no torque beyond the motor, no state outside the safe set.",
+    "value": "Value is future cost compressed into a number attached to the current state. It lets the controller compare actions without listing every later move.",
+    "policy": "A policy is the rule that turns current information into an action. In closed loop, its own actions create the next states it must handle.",
+    "uncertainty": "Uncertainty means the next state is not a single promised outcome. Wind, sensor noise, human drivers, and learned-model error all widen the future.",
+    "feasibility": "Feasibility asks whether any legal plan exists before asking which legal plan is best.",
+}
+
+
+FORMULA_EXPLAINERS: list[dict[str, str]] = [
+    {
+        "name": "Dynamics",
+        "shape": "x_next = f(x, u)",
+        "problem": "A command is not a teleport. If the car turns the steering wheel, the next state depends on current speed, tire grip, and heading.",
+        "object": "The object is a transition rule from present state and action to next state.",
+        "operation": "Feed in the state and action, then propagate the consequence one step forward.",
+        "worked": "If a drone has upward velocity 1 m/s and the controller cuts thrust, the next height may still rise for a moment while velocity falls. Dynamics explain that delay.",
+        "failure": "If the model ignores wind, ice, contact, or actuator lag, the controller prices a future that the real system will not follow.",
+    },
+    {
+        "name": "Objective",
+        "shape": "total cost = path costs + terminal cost",
+        "problem": "A future is not good just because it reaches the goal. It may use too much fuel, hit a wall, arrive late, or end with unsafe speed.",
+        "object": "The object is a cost functional: a rule for scoring a whole history.",
+        "operation": "Add the cost paid along the path and the cost left at the end.",
+        "worked": "A rocket landing score can add fuel burn every second, then add a large final penalty for height error and touchdown speed.",
+        "failure": "If the written cost omits damage or risk, the optimizer can choose a future that is cheap on paper and bad in the world.",
+    },
+    {
+        "name": "Bellman Recursion",
+        "shape": "V(x) = best action of cost now + value next",
+        "problem": "The controller needs to judge a current action by the future state it creates, without listing every complete future.",
+        "object": "The object is a value function: future cost stored at each state.",
+        "operation": "For each action, add immediate cost to the value of the next state, then choose the best sum.",
+        "worked": "A rover may pay one extra minute to avoid sharp rocks because the next state after the rocky shortcut has damaged wheels and worse future value.",
+        "failure": "If the state is missing hidden information, the value table attaches the wrong future price to that state.",
+    },
+    {
+        "name": "Hamiltonian",
+        "shape": "H = stage cost + costate times dynamics",
+        "problem": "A small action change affects cost now and also pushes the whole future state history.",
+        "object": "The object is a local package that combines immediate cost with a backward price on state motion.",
+        "operation": "Price a control change by adding what it costs now to what its state change costs later.",
+        "worked": "For a rocket, more thrust burns fuel now but changes future velocity. The costate says how valuable that velocity change is later near touchdown.",
+        "failure": "Hamiltonian conditions are necessary conditions; they can identify a candidate path without proving it is the best global path.",
+    },
+    {
+        "name": "MPC",
+        "shape": "solve horizon, apply first action, measure, repeat",
+        "problem": "A long plan becomes stale after the first gust of wind, moving car, or bad state estimate.",
+        "object": "The object is a finite-horizon problem rebuilt from the current measured state.",
+        "operation": "Solve, use only the first command, shift the horizon, and solve again.",
+        "worked": "A car plans five seconds ahead but executes only 0.1 seconds of steering and throttle before traffic is measured again.",
+        "failure": "A short horizon without terminal protection can make a legal first move that leaves no legal move next time.",
+    },
+    {
+        "name": "Policy Gradient",
+        "shape": "move policy parameters toward higher return",
+        "problem": "Sometimes the learner has no clean model or action labels, only rollouts and delayed reward.",
+        "object": "The object is a parameterized policy that chooses actions from observations or states.",
+        "operation": "Use rollout returns to nudge the policy toward actions that led to higher long-run reward.",
+        "worked": "A grasping robot tries many wrist angles; successful lifts increase the probability of similar actions in similar poses.",
+        "failure": "Sparse reward, unsafe exploration, or random lucky rollouts can push the policy in the wrong direction.",
+    },
+]
+
+
 def main() -> int:
     manifest = load_json(RAW / "course-manifest.json", {"videos": []})
     transcript_index = load_json(
@@ -484,30 +599,90 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
     )
     write(SITE / "course-spine.html", page("Course Spine", f"<h1>Course Spine</h1><p class=\"lede\">The course is one question repeated at larger scale: what should this system do now, knowing that the action changes the future it will have to live in?</p>{spine_html}", "spine"))
 
-    family_cards = "".join(
-        card(family["name"], f"<p>{esc(family['problem'])}</p><p>{' '.join(f'<span class=\"pill\">{concept_link(concepts_by_id[cid])}</span>' for cid in family['concepts'] if cid in concepts_by_id)}</p>")
-        for family in families
+    family_cards = []
+    for family in families:
+        deep = FAMILY_DEEPENING.get(family["id"], {})
+        links = " ".join(
+            f'<span class="pill">{concept_link(concepts_by_id[cid])}</span>'
+            for cid in family["concepts"]
+            if cid in concepts_by_id
+        )
+        body = f"""
+<div class="essay">
+  <p>{esc(deep.get('pressure', family['problem']))}</p>
+  <p><strong>The move:</strong> {esc(deep.get('operation', family['problem']))}</p>
+</div>
+<div class="explain-box"><p>{esc(deep.get('worked', family['problem']))}</p></div>
+<p>{links}</p>
+"""
+        family_cards.append(card(family["name"], body))
+    write(
+        SITE / "families.html",
+        page(
+            "Method Families",
+            f"""<h1>Method Families</h1>
+<p class="lede">A method family is a response to a specific pressure: the path is too large, the future is delayed, the local model is enough, the plan goes stale, or the missing structure must be learned from data.</p>
+<div class="essay">
+  <p>Read this page as a map of why the course changes tools. The switch from direct methods to dynamic programming is not a change of fashion; it is a change in what is hard. Sometimes the hard part is making a legal path. Sometimes it is pricing all futures from a state. Sometimes it is keeping a short-horizon plan from destroying tomorrow. Sometimes the missing piece has to be learned from demonstrations or reward.</p>
+  <p>The same test applies to every family: what real mistake would happen if this family did not exist?</p>
+</div>
+<section class="stack">{''.join(family_cards)}</section>""",
+            "families",
+        ),
     )
-    write(SITE / "families.html", page("Method Families", f"<h1>Method Families</h1><section class=\"stack\">{family_cards}</section>", "families"))
 
-    primitive_cards = "".join(
-        card(p["name"], f"<p>{esc(p['plain_language'])}</p><p>{' '.join(f'<span class=\"pill\">{concept_link(concepts_by_id[cid])}</span>' for cid in p['used_by'] if cid in concepts_by_id)}</p>")
-        for p in primitives
+    primitive_cards = []
+    for p in primitives:
+        links = " ".join(
+            f'<span class="pill">{concept_link(concepts_by_id[cid])}</span>'
+            for cid in p["used_by"]
+            if cid in concepts_by_id
+        )
+        body = f"<p>{esc(PRIMITIVE_DEEPENING.get(p['id'], p['plain_language']))}</p><p>{links}</p>"
+        primitive_cards.append(card(p["name"], body))
+    write(
+        SITE / "primitives.html",
+        page(
+            "Primitives",
+            f"""<h1>Mathematical Primitives</h1>
+<p class="lede">These are the reusable pieces. They appear in different formulas, but each one answers an everyday control question.</p>
+<div class="essay">
+  <p>A primitive is not a small word to memorize. It is a role in the control story. State says what must be carried forward. Action says what can actually be commanded. Dynamics say how the command changes the world. Cost says which future is preferred. Constraint says what cannot be crossed. Value prices the future from here. Policy chooses the next action. Uncertainty admits that the next state may not be the one the planner hoped for.</p>
+  <p>Once these pieces are named, the course becomes less mysterious. New methods mostly rearrange the same pieces: direct transcription lays them on a time grid, dynamic programming stores future cost in value, MPC rebuilds them every tick, and learning estimates one of them from data.</p>
+  <p>If a plan fails, one primitive is usually lying, missing, or too loosely written. Debug the primitive before blaming the solver.</p>
+</div>
+<section class="grid">{''.join(primitive_cards)}</section>""",
+            "primitives",
+        ),
     )
-    write(SITE / "primitives.html", page("Primitives", f"<h1>Mathematical Primitives</h1><section class=\"grid\">{primitive_cards}</section>", "primitives"))
 
-    formula_rows = [
-        ("Dynamics", "x next equals f of state and action", "State transition", "Propagate consequence forward", "Wrong model, wrong future"),
-        ("Objective", "sum of stage costs plus terminal cost", "Cost functional", "Compare whole futures", "Proxy cost misses real task"),
-        ("Bellman Recursion", "value equals min over action of cost plus next value", "Value function", "Split now from future", "State is incomplete"),
-        ("Hamiltonian", "stage cost plus costate times dynamics", "Local future-price package", "Price action by immediate and downstream effect", "Only necessary, not global"),
-        ("MPC", "solve finite horizon, apply first action, repeat", "Receding-horizon problem", "Turn planning into feedback", "Future infeasibility"),
-        ("Policy Gradient", "change policy parameters toward higher return", "Parameterized policy", "Improve the action rule directly", "Noisy or unsafe exploration"),
-    ]
-    formula_table = "<table><tr><th>Formula Shape</th><th>Plain Reading</th><th>Object</th><th>Operation</th><th>Failure Test</th></tr>" + "".join(
-        f"<tr><td>{esc(a)}</td><td>{esc(b)}</td><td>{esc(c)}</td><td>{esc(d)}</td><td>{esc(e)}</td></tr>" for a, b, c, d, e in formula_rows
-    ) + "</table>"
-    write(SITE / "formula-reader.html", page("Formula Reader", f"<h1>Formula Reader</h1>{formula_table}", "formulas"))
+    formula_cards = []
+    for item in FORMULA_EXPLAINERS:
+        body = f"""
+<p class="tag">{esc(item['shape'])}</p>
+<div class="essay">
+  <p>{esc(item['problem'])}</p>
+  <p><strong>The object:</strong> {esc(item['object'])}</p>
+  <p><strong>The operation:</strong> {esc(item['operation'])}</p>
+</div>
+<div class="explain-box"><p>{esc(item['worked'])}</p></div>
+<details class="math"><summary>where it fails</summary><div><p>{esc(item['failure'])}</p></div></details>
+"""
+        formula_cards.append(card(item["name"], body))
+    write(
+        SITE / "formula-reader.html",
+        page(
+            "Formula Reader",
+            f"""<h1>Formula Reader</h1>
+<p class="lede">A formula is a machine for doing one job. Read it by asking what it operates on, what gets changed, what future is being priced, and where the reading becomes false.</p>
+<div class="essay">
+  <p>The symbols in AA203 are easy to misread as decoration. They are not. Each formula is a small machine: put in a state, an action, a cost, a model, or a rollout; get out a next state, a price on the future, a constraint check, or a policy update.</p>
+  <p>The useful reading order is always the same. First ask what real situation forced the formula to exist. Then identify the object it stores. Then name the operation it performs. Only after that should the symbols matter.</p>
+</div>
+<section class="stack">{''.join(formula_cards)}</section>""",
+            "formulas",
+        ),
+    )
 
     derivation_cards = []
     for item in derivations:

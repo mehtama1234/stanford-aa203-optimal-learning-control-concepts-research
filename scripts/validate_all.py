@@ -282,11 +282,11 @@ def main() -> int:
                 if marker not in text:
                     errors.append(f"learning concept page missing control-loop marker: {path.relative_to(ROOT)} -> {marker}")
         if concept.get("id") == "optimal-control-problem":
-            for marker in ["80 meters above the pad", "18 m/s", "12 seconds of fuel", "dt = 1 second", "x = (height, velocity, fuel)", "u_0 = 18", "u_1 = 8", "velocity changes from -18 to -10 m/s", "height falls to 70 meters", "fuel drops from 12 to -24", "u_0 = 10", "height falls to 62 meters", "44 meters after two seconds", "choose u_0...u_{N-1}", "J = sum_k fuel_cost(u_k) + 100*landing_error^2 + 20*touchdown_speed^2", "x_{k+1}=f(x_k,u_k)", "fuel_k &gt;= 0", "v_{k+1}=v_k + dt*(u_k - 10)", "fuel_{k+1}=fuel_k - 2*u_k"]:
+            for marker in ["80 meters above the pad", "18 m/s", "12 seconds of fuel", "dt = 1 second", "x = (height, velocity, fuel)", "u_0 = 18", "u_1 = 8", "velocity changes from -18 to -10 m/s", "height falls to 70 meters", "fuel drops from 12 to -24", "u_0 = 4", "u_1 = 2", "velocity is -32 m/s", "height is 24 meters", "fuel is 0", "legal on fuel but headed for a hard crash", "u_0 = 3", "u_1 = 3", "h_2 = 23 meters", "v_2 = -32 m/s", "A is rejected before scoring", "choose u_0...u_{N-1}", "J = sum_k fuel_cost(u_k) + 100*landing_error^2 + 20*touchdown_speed^2", "x_{k+1}=f(x_k,u_k)", "fuel_k &gt;= 0", "v_{k+1}=v_k + dt*(u_k - 10)", "h_{k+1}=h_k + dt*v_{k+1}", "fuel_{k+1}=fuel_k - 2*u_k", "12 - 2*4 - 2*2 = 0", "100*(24 - 0)^2 + 20*(-32)^2 = 78,080", "12 - 2*3 - 2*3 = 0", "100*(23 - 0)^2 + 20*(-32)^2 = 73,380"]:
                 if marker not in text:
                     errors.append(f"optimal control problem page missing trajectory-chain marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"optimal control problem page below core richness floor: {len(words)} < 900")
+            if len(words) < 980:
+                errors.append(f"optimal control problem page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "action-control-input":
             for marker in ["h = 10 meters", "v = 0.2 m/s", "48 percent above hover", "dt = 0.1 seconds", "a(u)=4.8 m/s^2", "v_next = 0.2 + 0.1*4.8 = 0.68 m/s", "h_next = 10 + 0.1*0.68 = 10.068 meters", "6.8 centimeters", "u = 0.9, meaning 90 percent above hover", "u_sent = 0.5", "0.2 + 0.1*5.0 = 0.70 m/s", "next height is 10.070 meters", "motors, acceleration, velocity, and only then position", "a(u)=10*u", "-0.3 &lt;= u &lt;= 0.5", "v_next = v + dt * a(u)", "h_next = h + dt * v_next", "u_clipped = min(0.9,0.5) = 0.5", "a=5.0 m/s^2", "v_next = 0.2 + 0.1*5.0 = 0.70", "h_next = 10 + 0.1*0.70 = 10.070", "x_next = f(x, u_clipped)", "action limits are limits on u", "(h_next - 12)^2", "actuator truth", "delay, saturation, dead zones, and rate limits"]:
                 if marker not in text:

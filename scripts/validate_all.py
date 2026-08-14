@@ -455,6 +455,12 @@ def main() -> int:
                     errors.append(f"calculus of variations concept page missing curve-perturbation marker: {marker}")
             if len(words) < 900:
                 errors.append(f"calculus of variations concept page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "costate-adjoint-variable":
+            for marker in ["height 10 meters after two seconds", "x_next = x + u", "100*(x_2 - 10)^2", "100*(0.1^2) = 1", "x_1 = 9.4 meters", "200*(x_1 + u_1 - 10)", "u_1 is 0.5", "final height is 9.9", "derivative is -20", "p(t)", "x_dot = f(x,u)", "lambda_2 = d terminal_cost/dx_2", "lambda_2 = -20", "lambda_1 = lambda_2*1 = -20", "x_2 = 0.5*x_1 + u_1", "lambda_1 = -10", "omitted heat, collision, or actuator wear"]:
+                if marker not in text:
+                    errors.append(f"costate concept page missing backward-price marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"costate concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "value-based-rl":
             for marker in ["battery 22 percent", "Q(x,turn_left) = 3", "Q(x,turn_right) = 7", "gamma = 0.9", "y = -1 + 0.9*10 = 8", "alpha = 0.5", "7 + 0.5*(8 - 7) = 7.5", "V_pi(x)", "Q_pi(x,u)", "policy evaluation", "policy improvement", "Q(x,u) &lt;- Q(x,u) + alpha*(y - Q(x,u))", "slick floors"]:
                 if marker not in text:

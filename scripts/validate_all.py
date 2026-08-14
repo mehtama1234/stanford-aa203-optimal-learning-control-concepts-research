@@ -389,6 +389,12 @@ def main() -> int:
                     errors.append(f"MPC concept page missing receding-horizon marker: {marker}")
             if len(words) < 820:
                 errors.append(f"MPC concept page below core richness floor: {len(words)} < 820")
+        if concept.get("id") == "recursive-feasibility":
+            for marker in ["2.0 meters left before the stop line", "speed is below 0.2 m/s", "1.4 m/s with only 1.1 meters left", "handed 10:00.5 an impossible problem", "[u_0^*, u_1^*, u_2^*]", "[u_1^*, u_2^*, v_backup]", "X_F is controlled invariant"]:
+                if marker not in text:
+                    errors.append(f"recursive feasibility concept page missing shifted-tail marker: {marker}")
+            if len(words) < 820:
+                errors.append(f"recursive feasibility concept page below core richness floor: {len(words)} < 820")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

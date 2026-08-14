@@ -192,7 +192,7 @@ def main() -> int:
         "families.html": ["The move:", "Wrong shortcut:", "Boundary test:", "Choosing A Family In One Run", "transfer", "A method family is a response", "drone", "rover", "warehouse robot"],
         "primitives.html": ["reusable pieces", "One Debug Sequence", "Question it answers", "Failure if wrong", "The action is the command", "Constraint says what cannot be crossed"],
         "formula-reader.html": ["A formula is a machine", "One Reading Run", "Three Checks For Any Formula", "Input:", "Output:", "Wrong read:", "where it fails", "rocket", "rover"],
-        "lectures.html": ["The problem:", "The move:", "Read the playlist as one route", "warehouse robot"],
+        "lectures.html": ["Lecture Blocks", "How To Use A Lecture Row", "Lecture Route Cross-Checks", "Lecture-By-Lecture Route", "Extract:", "Wrong turn:", "The problem:", "The move:", "Read the playlist as one route", "warehouse robot"],
         "index.html": ["How To Read This Site", "The Route Through The Material", "What This Site Is Not", "First Read Path", "Replan Without Losing Safety", "Learn Where Writing Runs Out", "evidence record"],
         "review-guide.html": ["Reviewer Route", "Reject condition", "Setup Page Test", "Future-Price Page Test", "Replanning Safety Test", "Reference comparison", "richness gates"],
         "quality.html": ["Editorial Tests", "Weak version", "Stronger version", "Pass test", "Start With A Machine", "Keep Learning Inside Control", "This rubric is an editorial test"],
@@ -232,7 +232,7 @@ def main() -> int:
     minimum_page_words = {
         "course-spine.html": 1200,
         "index.html": 900,
-        "lectures.html": 1500,
+        "lectures.html": 2300,
         "families.html": 1250,
         "primitives.html": 1200,
         "formula-reader.html": 1250,

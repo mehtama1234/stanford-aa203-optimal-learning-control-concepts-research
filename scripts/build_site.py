@@ -769,6 +769,40 @@ LECTURE_DEEPENING: dict[int, dict[str, str]] = {
 }
 
 
+LECTURE_BLOCKS: list[dict[str, str]] = [
+    {
+        "title": "Lectures 1-2: Make Control Speak Plainly",
+        "extract": "The learner should leave with the grammar of a control problem: state, action, dynamics, cost, horizon, constraints, feasibility, and local improvement.",
+        "wrong_turn": "Do not treat these lectures as preliminaries to skip. If the setup is vague, every later solver and learner will solve the wrong problem.",
+        "run": "A drone delivery story becomes real only when position, velocity, attitude, battery, wind, thrust, no-fly zones, and touchdown speed are named.",
+    },
+    {
+        "title": "Lectures 3-6: Turn A Path Into Something A Computer Can Check",
+        "extract": "The learner should see why a trajectory is the decision: calculus of variations, costates, Hamiltonians, shooting, transcription, and collocation all ask how a whole path obeys dynamics and cost.",
+        "wrong_turn": "Do not read these as solver trivia. The danger is a path that looks smooth but hides endpoint error, torque spikes, missed collisions, or dynamics defects.",
+        "run": "A robot arm going around a fixture needs states and torques along the path, not only a start pose and an end pose.",
+    },
+    {
+        "title": "Lectures 7-10: Price The Future From The State",
+        "extract": "The learner should understand value as stored future burden. Dynamic programming, stochastic outcomes, LQR, and reachability all depend on what the current state says about possible futures.",
+        "wrong_turn": "Do not reduce Bellman reasoning to a formula. The real move is judging today's action by the state it creates.",
+        "run": "A rover may avoid a short rocky path because wheel damage makes every later move worse.",
+    },
+    {
+        "title": "Lectures 11-12: Replan Without Destroying Tomorrow",
+        "extract": "The learner should distinguish a feasible short plan from a safe repeated controller. MPC, recursive feasibility, stability, and reachability ask what state is handed to the next solve.",
+        "wrong_turn": "Do not trust the current optimization just because it found a legal two-second path.",
+        "run": "A car can fit into a traffic gap now and still leave no legal braking future after the first acceleration.",
+    },
+    {
+        "title": "Lectures 13-19: Learn Missing Structure Without Forgetting Control",
+        "extract": "The learner should see learning as filling missing policy, reward, value, or model structure while keeping state distribution, reward loopholes, exploration risk, and model error visible.",
+        "wrong_turn": "Do not treat data as a magic replacement for state, action, dynamics, cost, constraints, and safety boundaries.",
+        "run": "A warehouse robot can clone drawer-opening demonstrations, but its own small error may put the handle pose outside the demonstrated states.",
+    },
+]
+
+
 def main() -> int:
     manifest = load_json(RAW / "course-manifest.json", {"videos": []})
     transcript_index = load_json(
@@ -1007,9 +1041,35 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <p class="lede">Read the playlist as one route through a problem, not as nineteen isolated videos. Each lecture adds one pressure: name the moving system, choose a path, price the future, replan safely, or learn the missing structure from data.</p>
 <div class="essay">
   <p>The lecture list below keeps transcript counts and source links, but the main job is different: it tells you what new control problem each lecture makes visible and what mathematical move the lecture adds.</p>
+  <p>Use the blocks first, then the individual lecture rows. The blocks say what a learner should extract from a cluster of videos. The rows say what each video contributes and which concept pages carry the idea further.</p>
 </div>
 """
-    write(SITE / "lectures.html", page("Lectures", f"{lecture_intro}<section class=\"lecture-list\">{''.join(lecture_rows)}</section>", "lectures"))
+    lecture_block_cards = "".join(
+        card(
+            item["title"],
+            f"""<p><strong>Extract:</strong> {esc(item['extract'])}</p>
+<p><strong>Wrong turn:</strong> {esc(item['wrong_turn'])}</p>
+<div class="explain-box"><p>{esc(item['run'])}</p></div>""",
+        )
+        for item in LECTURE_BLOCKS
+    )
+    lectures_body = f"""{lecture_intro}
+<h2>Lecture Blocks</h2>
+<section class="stack">{lecture_block_cards}</section>
+<h2>How To Use A Lecture Row</h2>
+<div class="essay">
+  <p>Read each row in four passes. First, read the problem sentence and ask what pressure entered the course at that point. Second, read the move sentence and identify the mathematical object or method family that answers that pressure. Third, read the concrete run and check whether you can retell it with another machine. Fourth, open the linked concepts and evidence record to separate transcript support from teaching synthesis.</p>
+  <p>For example, Lecture 12 should not be remembered as "the MPC lecture after reachability." It should be remembered as the place where repeated planning is tested: today's feasible first command must leave tomorrow's optimization with a legal continuation. Lecture 15 should not be remembered as "imitation learning." It should be remembered as supervised policy learning under a closed-loop distribution problem.</p>
+</div>
+<h2>Lecture Route Cross-Checks</h2>
+<div class="essay">
+  <p>Check the route against three other pages. The concept atlas should turn each lecture move into a standalone explanation with ordinary pressure, concrete run, math, evidence, and boundary. The drills should force transfer: a lecture idea should survive a new drone, car, rover, warehouse, or reward setup. The evidence ledger should keep the source trail honest by saying what the transcript directly supports.</p>
+  <p>A lecture row fails this cross-check if it only names a topic. "Lecture 7 covers dynamic programming" is not enough. The row must say that dynamic programming stores future cost at states so the controller can judge today's action by the state it creates. "Lecture 19 covers model-based RL" is not enough. The row must say that a learned model lets the robot rehearse futures while model error remains a failure mode.</p>
+  <p>The first and last lectures should still feel connected. Lecture 1 asks what state, action, dynamics, cost, and constraints make a control problem. Lecture 19 returns to the same pieces after data enters: the model may be learned, but it still predicts next states for actions inside a control loop under real constraints, hardware limits, and safety checks.</p>
+</div>
+<h2>Lecture-By-Lecture Route</h2>
+<section class="lecture-list">{''.join(lecture_rows)}</section>"""
+    write(SITE / "lectures.html", page("Lectures", lectures_body, "lectures"))
 
     transcript_cards = []
     for video in manifest["videos"]:

@@ -412,6 +412,40 @@ CONCEPT_OVERVIEW_FAMILIES: list[dict[str, str]] = [
 ]
 
 
+REVIEW_WALKTHROUGH: list[dict[str, str]] = [
+    {
+        "title": "Setup Page Test",
+        "sample": "Open State, Action / Control Input, Dynamics, Objective / Cost Function, and Constraints.",
+        "pass": "A passing page lets the reviewer rebuild a drone, car, or robot setup before any formal label appears. It says what the controller knows, what command it can issue, how the world changes, what future is preferred, and what is forbidden.",
+        "reject": "Reject a page that only defines the term or says the idea matters. The page must show a real command moving a real state and name the visible failure caused by a missing variable, impossible action, wrong model, weak cost, or soft constraint.",
+    },
+    {
+        "title": "Path Page Test",
+        "sample": "Open Trajectory Optimization, Direct Transcription, Shooting Methods, and Collocation.",
+        "pass": "A passing page makes clear that the answer is a whole history of states and actions. It should show why a smooth-looking path can still be illegal because dynamics, torque, collision, or grid spacing expose a hidden middle.",
+        "reject": "Reject a page that treats the method as a solver choice without saying what variables are created, what defects are enforced, what simulation is run, or what can be missed between grid points.",
+    },
+    {
+        "title": "Future-Price Page Test",
+        "sample": "Open Value Function, Bellman Recursion, Dynamic Programming, and Stochastic Dynamic Programming.",
+        "pass": "A passing page makes future consequence feel like an object attached to the current state. A rover, option, battery, or wheel-damage example should show why the next action is judged by the state it creates.",
+        "reject": "Reject a page that only writes the recursion. It must explain what the value stores, why the state must contain delayed burdens, and how uncertainty changes one promised next state into an average over possible next states.",
+    },
+    {
+        "title": "Replanning Safety Test",
+        "sample": "Open Model Predictive Control, Recursive Feasibility, Reachability, and Stability Under Replanning.",
+        "pass": "A passing page distinguishes a legal short plan from a safe handoff to the next solve. It should show a car, drone, or warehouse robot taking one command and then asking whether the next state still has a legal future.",
+        "reject": "Reject a page that praises replanning without naming the first action, the measured next state, the terminal protection, the safe set, or the failure where tomorrow's optimization has no escape.",
+    },
+    {
+        "title": "Learning Page Test",
+        "sample": "Open Imitation Learning, Behavioral Cloning, Distribution Shift, Reward, Reinforcement Learning, Policy Optimization, Exploration, and Model-Based RL.",
+        "pass": "A passing page keeps control thinking alive after data appears. It names the state distribution, reward loophole, exploration risk, learned-model error, and closed-loop states created by the learner's own actions.",
+        "reject": "Reject a page that treats learning as magic performance gain. The page must say what signal is learned from, what the learner can exploit, and what hardware or task failure appears when the signal is incomplete.",
+    },
+]
+
+
 LECTURE_DEEPENING: dict[int, dict[str, str]] = {
     1: {
         "problem": "The course first has to make control visible in ordinary systems: a car, drone, thermostat, or robot changes because commands push state through time.",
@@ -1088,9 +1122,25 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <p class="lede">Use this page like a reviewer path through the site. The goal is not to confirm that files exist; it is to decide whether the writing teaches control from first principles.</p>
 <div class="essay">
   <p>A quick review should sample one page from each part of the course: setup, trajectory optimization, dynamic programming, MPC, imitation learning, reinforcement learning, and model-based RL. On each page, ask whether a learner can retell the idea using a real system before using course vocabulary.</p>
+  <p>The review should be strict about order. A page should start with a pressure in the world, then introduce the mathematical object because that object solves a problem. If the reader meets symbols before they know what the symbols are carrying, the page still needs work. If the page has a concrete story but never says where the story breaks, it also needs work.</p>
+  <p>The reference standard is an explainer that a learner can retell without memorizing. After reading a page, the learner should be able to say: here is the machine, here is the command, here is what changes next, here is what future gets priced, here is the line the plan cannot cross, and here is the assumption that can fail.</p>
 </div>
 """
-    write(SITE / "review-guide.html", page("Review Guide", f"{review_intro}<section class=\"stack\">{''.join(card(a,b) for a,b in review)}</section>", "review"))
+    walkthrough_cards = "".join(
+        card(
+            item["title"],
+            f"""<p><strong>Sample:</strong> {esc(item['sample'])}</p>
+<p><strong>Pass condition:</strong> {esc(item['pass'])}</p>
+<p><strong>Reject condition:</strong> {esc(item['reject'])}</p>""",
+        )
+        for item in REVIEW_WALKTHROUGH
+    )
+    review_body = f"""{review_intro}
+<h2>Reviewer Route</h2>
+<section class="stack">{walkthrough_cards}</section>
+<h2>Rubric Checks</h2>
+<section class="stack">{''.join(card(a,b) for a,b in review)}</section>"""
+    write(SITE / "review-guide.html", page("Review Guide", review_body, "review"))
 
     quality = [
         (

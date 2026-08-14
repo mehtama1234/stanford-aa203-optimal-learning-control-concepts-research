@@ -443,6 +443,12 @@ def main() -> int:
                     errors.append(f"static optimization concept page missing one-shot-decision marker: {marker}")
             if len(words) < 900:
                 errors.append(f"static optimization concept page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "gradient-first-order-condition":
+            for marker in ["J(z) = (z - 3)^2 + 0.2*z^2", "dJ/dz = 2*(0 - 3) + 0.4*0 = -6", "delta z = +0.1", "-6*0.1 = -0.6", "z = 2.5", "J(2.4) = (2.4 - 3)^2 + 0.2*2.4^2 = 1.512", "J(2.5) = 1.5", "J(2.6) = 1.512", "rock begins at steering above 2.3 degrees", "J(z + delta z)", "grad J(z)^T delta z &lt; 0", "grad J(z) = 0", "z &lt;= 2.5", "not proof of global optimality"]:
+                if marker not in text:
+                    errors.append(f"gradient first-order condition page missing local-slope marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"gradient first-order condition page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "value-based-rl":
             for marker in ["battery 22 percent", "Q(x,turn_left) = 3", "Q(x,turn_right) = 7", "gamma = 0.9", "y = -1 + 0.9*10 = 8", "alpha = 0.5", "7 + 0.5*(8 - 7) = 7.5", "V_pi(x)", "Q_pi(x,u)", "policy evaluation", "policy improvement", "Q(x,u) &lt;- Q(x,u) + alpha*(y - Q(x,u))", "slick floors"]:
                 if marker not in text:

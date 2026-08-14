@@ -462,11 +462,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"gradient first-order condition page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "calculus-of-variations":
-            for marker in ["1 meter rail in 2 seconds", "u(t) from t = 0 to t = 2", "0.5 m/s", "x(2) = 1 meter", "0.8 m/s", "0.2 m/s", "J[u] = integral_0^2 u(t)^2 dt", "2*(0.5^2) = 0.5", "1*(0.8^2) + 1*(0.2^2) = 0.68", "epsilon*eta(t)", "d/depsilon J[u + epsilon*eta]", "x_dot = u", "integral_0^2 eta(t) dt = 0", "smooth admissible perturbations"]:
+            for marker in ["1 meter rail in 2 seconds", "u(t) from t = 0 to t = 2", "0.5 m/s", "x(2) = 1 meter", "0.8 m/s", "0.2 m/s", "J[u] = integral_0^2 u(t)^2 dt", "2*(0.5^2) = 0.5", "1*(0.8^2) + 1*(0.2^2) = 0.68", "reduce the first-second speed by 0.1 m/s", "-0.1*1 + 0.1*1 = 0", "1*(0.7^2) + 1*(0.3^2) = 0.58", "every small shape eta(t)", "epsilon*eta(t)", "d/depsilon J[u + epsilon*eta]", "integral_0^2 2*u(t)*eta(t) dt", "x_dot = u", "integral_0^2 eta(t) dt = 0", "integral_0^2 2*0.5*eta(t) dt", "eta(t)=-1 on the first second", "eta(t)=+1 on the second", "first variation is 2*0.8*(-1)*1 + 2*0.2*(+1)*1 = -1.2", "0.68 down to 0.58", "smooth admissible perturbations"]:
                 if marker not in text:
                     errors.append(f"calculus of variations concept page missing curve-perturbation marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"calculus of variations concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 980:
+                errors.append(f"calculus of variations concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "costate-adjoint-variable":
             for marker in ["height 10 meters after two seconds", "x_next = x + u", "100*(x_2 - 10)^2", "100*(0.1^2) = 1", "x_1 = 9.4 meters", "200*(x_1 + u_1 - 10)", "u_1 is 0.5", "final height is 9.9", "derivative is -20", "p(t)", "x_dot = f(x,u)", "lambda_2 = d terminal_cost/dx_2", "lambda_2 = -20", "lambda_1 = lambda_2*1 = -20", "x_2 = 0.5*x_1 + u_1", "lambda_1 = -10", "omitted heat, collision, or actuator wear"]:
                 if marker not in text:

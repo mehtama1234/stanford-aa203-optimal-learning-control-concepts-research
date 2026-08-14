@@ -449,6 +449,12 @@ def main() -> int:
                     errors.append(f"policy optimization concept page missing direct-policy-update marker: {marker}")
             if len(words) < 900:
                 errors.append(f"policy optimization concept page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "exploration":
+            for marker in ["18 newtons", "0.04 m/s", "7 out of 10 times", "12 degrees with 22 newtons", "60 newtons", "epsilon = 0.10", "10 of 100 attempts", "force &lt;= 25 newtons", "handle_angle &lt;= 15 degrees", "9 out of 10 times", "pi_explore(u|x) = 1 - epsilon", "Q(x,u) + beta*uncertainty(x,u)", "coverage under constraints"]:
+                if marker not in text:
+                    errors.append(f"exploration concept page missing constrained-coverage marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"exploration concept page below core richness floor: {len(words)} < 900")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

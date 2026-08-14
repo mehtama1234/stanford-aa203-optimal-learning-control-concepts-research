@@ -347,6 +347,12 @@ def main() -> int:
                     errors.append(f"trajectory optimization concept page missing path-history marker: {marker}")
             if len(words) < 740:
                 errors.append(f"trajectory optimization concept page below core richness floor: {len(words)} < 740")
+        if concept.get("id") == "direct-transcription":
+            for marker in ["0.0 rad to 1.2 rad", "t = 0.0, 0.2, 0.4, and 0.6 seconds", "defect is 0.3 rad", "defect_k = x_{k+1} - step(x_k,u_k)", "defect_k = 0"]:
+                if marker not in text:
+                    errors.append(f"direct transcription concept page missing defect marker: {marker}")
+            if len(words) < 760:
+                errors.append(f"direct transcription concept page below core richness floor: {len(words)} < 760")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

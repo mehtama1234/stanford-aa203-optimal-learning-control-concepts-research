@@ -80,7 +80,7 @@ def sentence_body(value: str) -> str:
 def recognition_sentence(value: str) -> str:
     text = sentence_body(value)
     lowered = text[:1].lower() + text[1:]
-    for prefix in ["Use it when ", "Use this term when "]:
+    for prefix in ["Use it when ", "Use this when ", "Use this term when "]:
         if text.lower().startswith(prefix.lower()):
             return "Use it when " + text[len(prefix):]
     if text.lower().startswith("choose this lens when "):
@@ -186,8 +186,8 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "math": "In the deterministic case, V(x) = min_u [cost(x,u) + V(f(x,u))]. The bracket is the work: for each legal action u, move to f(x,u), read the value stored there, add the immediate cost, and keep the smallest total. With uncertainty, replace the single next value with an expected next value over possible next states.",
     },
     "direct-transcription": {
-        "run": "A robot arm path is a smooth curve, but a solver needs a finite list of numbers. Direct transcription places dots along the path: joint angles, velocities, and commands at selected times. Then it adds constraints saying neighboring dots must be connected by the dynamics. The solver chooses the dots; the engineer checks whether the space between dots hid trouble.",
-        "math": "The continuous path becomes decision variables x_0...x_N and u_0...u_N. Defect constraints enforce x_{k+1} minus the dynamics step from x_k and u_k.",
+        "run": "A robot arm must move from joint angle 0.0 rad to 1.2 rad in 0.6 seconds while staying under a torque limit. Direct transcription does not ask for a smooth curve in one piece. It creates grid variables at t = 0.0, 0.2, 0.4, and 0.6 seconds: joint angle, joint velocity, and torque at each point. If the grid says the arm is at 0.4 rad with velocity 1.0 rad/s at t = 0.2, then the dynamics predict roughly 0.6 rad at t = 0.4 after the chosen torque. If the next grid variable says 0.9 rad, the defect is 0.3 rad. That defect must be driven to zero or the path is a drawing, not a real arm motion.",
+        "math": "The continuous path becomes decision variables x_0...x_N and u_0...u_N. A defect constraint has the form defect_k = x_{k+1} - step(x_k,u_k). Direct transcription asks the optimizer to choose all grid states and controls while also enforcing defect_k = 0, torque bounds, endpoint constraints, and collision constraints. The grid points are therefore not independent dots; they are tied by equations that make neighboring states obey real dynamics.",
     },
     "shooting-methods": {
         "run": "A rocket planner can guess a thrust sequence, simulate the rocket forward, and see where it lands. If it misses the pad, the planner changes the guessed controls and shoots again. The states are consequences of the guessed controls, not independent decision variables.",

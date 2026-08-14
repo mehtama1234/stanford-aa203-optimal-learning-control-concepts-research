@@ -48,7 +48,9 @@
   <div class="essay">
     <p>Before naming the method, point to a state-action trajectory in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
     <p>Now apply one command or one update. Optimize the path while enforcing dynamics and constraints. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
-    <p>The world check is the example: A robotic arm must move around an obstacle without exceeding joint torque or velocity limits. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
+    <p>The world check is the example: A robotic arm at joint angle q=0 must reach q=π/2 in 2 seconds, moving around an obstacle at q=π/4. A naïve path q(t) = (π/4)·t matches the geometric requirement but requires joint acceleration beyond motor limits: dq/dt grows unbounded near t=0. Trajectory optimization chooses a smoother path (e.g., quintic spline) with states q(t) and ů(t) at timesteps t=0, 0.5, 1.0, 1.5, 2.0 seconds, adding constraints: |u(t)| ≤ 2 N·m (torque limit) and q(t) ≠ π/4 ± 0.1 (obstacle avoidance). The optimizer finds q=[0, π/6, π/3, 5π/12, π/2] and u=[0.5, 0.8, 1.0, 0.6, 0] that obeys all constraints and minimizes integrated control effort (∫u²dt). This trajectory is executable on real hardware.
+
+Trajectory optimization differs from control: it produces a planned path that will be executed open-loop or passed to a local controller, not a feedback rule that reacts to state at each moment. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
 <section class="fp">

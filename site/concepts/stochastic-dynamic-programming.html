@@ -48,7 +48,9 @@
   <div class="essay">
     <p>Before naming the method, point to an expected-value bellman equation in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
     <p>Now apply one command or one update. Add immediate cost to the expectation of next-state value under the transition distribution. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
-    <p>The world check is the example: A delivery robot crossing a wet floor must account for possible slip, not only the nominal wheel motion. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
+    <p>The world check is the example: A grid-world robot at cell (2,2) wants to reach (5,5). Each move forward succeeds with probability 0.9 but slips sideways with probability 0.1. Moving east succeeds 90% of the time (reaching (3,2)) and slips north to (2,3) with 10% probability. Deterministic DP would compute V(2,2) as min(cost(east) + V(3,2), cost(north) + V(2,3), ...). But here, moving east does not deterministically land at (3,2). Stochastic DP averages: V(2,2) = min( cost(east) + 0.9·V(3,2) + 0.1·V(2,3), cost(north) + 0.9·V(2,3) + 0.1·V(1,2), ... ). The value of (2,2) is the immediate cost plus a weighted average of the values of where the robot might end up (with probabilities 0.9 and 0.1).
+
+The optimal policy learned from stochastic DP avoids cells where slipping is dangerous (e.g., cells adjacent to obstacles) because V(slip_destination) is high. A deterministic algorithm would miss this penalty entirely. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
 <section class="fp">

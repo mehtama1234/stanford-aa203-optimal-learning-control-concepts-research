@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Constraints · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Constraints</h1>
+<p class="lede">Rules the solution must obey even if breaking them would reduce the written cost.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>Physical systems have limits: actuators saturate, obstacles block motion, temperatures must stay bounded, and budgets run out.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Add a soft penalty and hope the optimizer avoids illegal behavior.</p><p><strong>Why it fails:</strong> Some violations are not tradeoffs; a robot collision or infeasible thrust command is simply not allowed.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>Equality and inequality constraints over states, actions, and trajectories.</p></article>
+  <article class="card "><h3>Operation</h3><p>Restrict the feasible set before choosing the best point inside it.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>A drone path that clips through a wall may have low energy cost but is not a candidate path.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>The constraint must describe the actual safety or physical boundary closely enough.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>A controller finds a mathematically cheap path through a forbidden region.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Ask what the controller is never allowed to do, even to improve the score.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-constraints-01">
+  <h3>ev-constraints-01: Lecture 2 · Optimization Theory</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=FbkNYklySak">FbkNYklySak</a> · <code>raw-material/youtube/transcripts/clean/lecture-02-FbkNYklySak.txt</code> · needs_review</p>
+  <blockquote>If you re within the open set yes then if there is a local minimum then the derivative has to be equal to zero Yeah gt gt So when you say the open set does that mean the same thing as the constraint gt gt No So if um basically so here so you can have like an interval like this one right So the interval does have constraints So has a lower bound as an upper bound but does not contain its boundary</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Constraints or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-constraints-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/optimal-control-problem.html">Optimal Control Problem</a></span> <span class="pill"><a href="../concepts/state.html">State</a></span> <span class="pill"><a href="../concepts/action-control-input.html">Action / Control Input</a></span> <span class="pill"><a href="../concepts/dynamics.html">Dynamics</a></span> <span class="pill"><a href="../concepts/objective-cost-function.html">Objective / Cost Function</a></span> <span class="pill"><a href="../concepts/horizon.html">Horizon</a></span></p>
+</main>
+</body>
+</html>

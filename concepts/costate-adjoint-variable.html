@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Costate / Adjoint Variable · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Costate / Adjoint Variable</h1>
+<p class="lede">A shadow quantity that measures how much future cost changes if the state is nudged now.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>An early state error matters because it changes every later possibility, but that downstream effect needs to be priced locally.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Only penalize the state error at the moment it appears.</p><p><strong>Why it fails:</strong> The same small error can be harmless or disastrous depending on how it propagates into later cost.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>A costate or adjoint variable evolving backward in time.</p></article>
+  <article class="card "><h3>Operation</h3><p>Propagate future sensitivity backward so present actions can be judged by downstream consequences.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>Being one meter off course near the start of a spacecraft maneuver may require large later correction, so the costate prices that future burden.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>The interpretation depends on the model and differentiability of the trajectory problem.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>The controller underprices early deviations whose cost appears later.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Look for the variable that tells how valuable or dangerous a state change is because of the future.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-costate-adjoint-variable-01">
+  <h3>ev-costate-adjoint-variable-01: Lecture 4 · Indirect Methods</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=7rejaoMWviw">7rejaoMWviw</a> · <code>raw-material/youtube/transcripts/clean/lecture-04-7rejaoMWviw.txt</code> · needs_review</p>
+  <blockquote>dimensional optimization the constrained setting And specifically in finite dimensional optimization if you remember we introduced the concept of lrangen where essentially we took the constraint we added it to the objective function uh together with some lrange multipliers which we called lambda and then we treated the problem as if it was unconstrained So essentially this term represented like a penalty for violating those constraints And so here what we do is exactly the same thing in the sense that we uh posit</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Costate / Adjoint Variable or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-costate-adjoint-variable-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/calculus-of-variations.html">Calculus of Variations</a></span> <span class="pill"><a href="../concepts/hamiltonian-optimal-control.html">Hamiltonian for Optimal Control</a></span> <span class="pill"><a href="../concepts/indirect-methods.html">Indirect Methods</a></span> <span class="pill"><a href="../concepts/direct-transcription.html">Direct Transcription</a></span> <span class="pill"><a href="../concepts/shooting-methods.html">Shooting Methods</a></span> <span class="pill"><a href="../concepts/collocation.html">Collocation</a></span></p>
+</main>
+</body>
+</html>

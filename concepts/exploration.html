@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exploration · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Exploration</h1>
+<p class="lede">Trying actions to discover consequences the agent does not yet know.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>An agent cannot improve only from familiar behavior if better actions have never been tested.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Always take the action that currently looks best.</p><p><strong>Why it fails:</strong> Early estimates are wrong or incomplete, so greed locks in mediocre behavior.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>An exploration strategy or stochastic policy.</p></article>
+  <article class="card "><h3>Operation</h3><p>Trade off exploiting known reward against collecting information from uncertain actions.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>A robot may need to try a different grasp angle to learn that it is more reliable.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>Exploration must respect safety and data-collection cost.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>Unsafe exploration damages hardware or learns from unrepresentative trials.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Ask what the learner must try before it can know which action is best.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-exploration-01">
+  <h3>ev-exploration-01: Lecture 16 · Fundamentals of RL</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=cqPbt3OfRK4">cqPbt3OfRK4</a> · <code>raw-material/youtube/transcripts/clean/lecture-16-cqPbt3OfRK4.txt</code> · needs_review</p>
+  <blockquote>s a valid point especially if you have these um maybe the generate cases where you know the policy is visiting the state over and over Um I would say in general this probably boils down to you want to have sufficient exploration right so you want the policy that basically explores your state space state action space uh well enough uh for uh for these tools to be efficient and effective in practice Um but yes so when you have these cases you</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Exploration or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-exploration-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/imitation-learning.html">Imitation Learning</a></span> <span class="pill"><a href="../concepts/behavioral-cloning.html">Behavioral Cloning</a></span> <span class="pill"><a href="../concepts/distribution-shift-imitation.html">Distribution Shift in Imitation</a></span> <span class="pill"><a href="../concepts/reinforcement-learning.html">Reinforcement Learning</a></span> <span class="pill"><a href="../concepts/reward.html">Reward</a></span> <span class="pill"><a href="../concepts/policy.html">Policy</a></span></p>
+</main>
+</body>
+</html>

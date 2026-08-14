@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dynamic Programming · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Dynamic Programming</h1>
+<p class="lede">Solve a time-coupled decision problem by breaking it into state-indexed future-cost subproblems.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>A planner needs to know which action is best now, but that depends on the best plan after the next state.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Enumerate every possible action sequence from the start.</p><p><strong>Why it fails:</strong> The number of sequences grows explosively with horizon and branching.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>A value function over states and time.</p></article>
+  <article class="card "><h3>Operation</h3><p>Work backward or iterate: combine immediate cost with the best future value after each action.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>A grid-world robot chooses a move by adding the step cost to the value of the cell it will reach.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>The state must summarize the future-relevant information and the transition model must be usable.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>The state space becomes too large or the model is wrong.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Use it when the same future subproblem appears after many different action histories.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-dynamic-programming-01">
+  <h3>ev-dynamic-programming-01: Lecture 7 · Dynamic Programming</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=hy-e9g4nugE">hy-e9g4nugE</a> · <code>raw-material/youtube/transcripts/clean/lecture-07-hy-e9g4nugE.txt</code> · needs_review</p>
+  <blockquote>it seems true that closed loop control policies are more robust and better in general than open loop control sequences How do we solve for them So what we re going to do next is to discuss an algorithm referred to as dynamic programming that is a very procedural way to solve for optimal closed loop control policies Then you may say why don t you always use dynamic programming Well because dynamic programming is computationally much more intensive So the one hand you</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Dynamic Programming or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-dynamic-programming-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/value-function.html">Value Function</a></span> <span class="pill"><a href="../concepts/bellman-recursion.html">Bellman Recursion</a></span> <span class="pill"><a href="../concepts/stochastic-dynamic-programming.html">Stochastic Dynamic Programming</a></span></p>
+</main>
+</body>
+</html>

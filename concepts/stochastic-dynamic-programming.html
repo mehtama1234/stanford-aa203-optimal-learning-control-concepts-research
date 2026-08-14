@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stochastic Dynamic Programming · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Stochastic Dynamic Programming</h1>
+<p class="lede">Dynamic programming when the next state is uncertain and future value must be averaged over possible outcomes.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>A controller often does not know exactly what will happen after an action because noise, disturbances, or environment changes intervene.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Plan for the most likely next state only.</p><p><strong>Why it fails:</strong> Rare but costly outcomes can dominate safety and expected cost.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>An expected-value Bellman equation.</p></article>
+  <article class="card "><h3>Operation</h3><p>Add immediate cost to the expectation of next-state value under the transition distribution.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>A delivery robot crossing a wet floor must account for possible slip, not only the nominal wheel motion.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>The uncertainty model must describe the relevant randomness.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>The policy is brittle because it ignores low-probability dangerous states.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Use it when the same action can lead to several next states.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-stochastic-dynamic-programming-01">
+  <h3>ev-stochastic-dynamic-programming-01: Lecture 9 · Stochastic Dynamic Programming</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=C9mLpI8Td9g">C9mLpI8Td9g</a> · <code>raw-material/youtube/transcripts/clean/lecture-09-C9mLpI8Td9g.txt</code> · needs_review</p>
+  <blockquote>belong to some set capital Q That is our set of controls is in general constrained within some set capital U Now the disturbance W are quantities that are computed by nature in a way And so they are modeled as uh random variables And we do place a key assumption on the distribution of such random variables W Specifically we assume that the random variables WK are distributed according to some general probability distribution It could be Gaussian it could be anything They</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Stochastic Dynamic Programming or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-stochastic-dynamic-programming-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/dynamic-programming.html">Dynamic Programming</a></span> <span class="pill"><a href="../concepts/value-function.html">Value Function</a></span> <span class="pill"><a href="../concepts/bellman-recursion.html">Bellman Recursion</a></span></p>
+</main>
+</body>
+</html>

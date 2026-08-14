@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Derivations · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="index.html">Overview</a>
+<a class="" href="lectures.html">Lectures</a>
+<a class="" href="transcripts.html">Transcripts</a>
+<a class="" href="concepts.html">Concepts</a>
+<a class="" href="course-spine.html">Spine</a>
+<a class="" href="families.html">Families</a>
+<a class="" href="primitives.html">Primitives</a>
+<a class="" href="formula-reader.html">Formulas</a>
+<a class="active" href="derivations.html">Derivations</a>
+<a class="" href="drills.html">Drills</a>
+<a class="" href="evidence.html">Evidence</a>
+<a class="" href="review-guide.html">Review</a></nav>
+  </header>
+  <main><h1>Derivation Walkthroughs</h1><section class="stack"><article class="card "><h3>Bellman recursion</h3><p>Start from a state. Try each legal action. Pay immediate cost. Land in a next state. Use the stored price of the best future from that next state. Choose the action with the smallest combined number.</p></article><article class="card "><h3>Costates</h3><p>Start with a path cost. Nudge the state early. Track how that nudge changes later dynamics and cost. The backward sensitivity is the costate.</p></article><article class="card "><h3>LQR local reasoning</h3><p>Linearize the dynamics near a nominal point. Approximate cost as a quadratic bowl. Use the quadratic value shape to compute feedback gains.</p></article><article class="card "><h3>Direct transcription</h3><p>Replace a continuous path with grid variables. Add constraints tying neighboring variables to dynamics. Solve the finite nonlinear program.</p></article><article class="card "><h3>MPC replanning</h3><p>Solve a finite-horizon problem, apply only the first action, observe the new state, shift the horizon, and solve again.</p></article><article class="card "><h3>Value learning</h3><p>Use sampled transitions to push a value estimate toward reward plus the estimated value of the next state.</p></article><article class="card "><h3>Policy gradients</h3><p>Run the policy, observe return, estimate which parameter changes made better actions more likely, and update the policy.</p></article></section></main>
+</body>
+</html>

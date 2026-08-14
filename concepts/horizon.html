@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Horizon · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Horizon</h1>
+<p class="lede">How far into the future the controller is asked to reason.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>Planning one second ahead and planning the whole mission are different problems.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Pick an arbitrary lookahead window.</p><p><strong>Why it fails:</strong> A short horizon can miss delayed consequences; a long horizon can be too expensive or depend on unreliable forecasts.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>A finite horizon, infinite horizon, or receding horizon.</p></article>
+  <article class="card "><h3>Operation</h3><p>Limit or extend the future cost summed by the optimization.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>A car changing lanes must look far enough ahead to avoid a merge conflict, not just avoid the next meter.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>The horizon should match the time scale at which consequences become visible.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>The controller repeatedly makes greedy moves because the real cost lies just beyond the horizon.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Ask when the consequences of a bad action first appear.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-horizon-01">
+  <h3>ev-horizon-01: Lecture 1 · Course Overview</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=Au2stLALZew">Au2stLALZew</a> · <code>raw-material/youtube/transcripts/clean/lecture-01-Au2stLALZew.txt</code> · needs_review</p>
+  <blockquote>ll be using TF F stands for final uh is the final time of operations Let me give you a very simple example that you should already be familiar with a double integrator So we have a a cart moving on the horizontal plane We only have one state variable which is the displacement of the center of the cart from the origin So we assume that the origin is here So S is telling us how much we travel on the left or</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Horizon or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-horizon-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/optimal-control-problem.html">Optimal Control Problem</a></span> <span class="pill"><a href="../concepts/state.html">State</a></span> <span class="pill"><a href="../concepts/action-control-input.html">Action / Control Input</a></span> <span class="pill"><a href="../concepts/dynamics.html">Dynamics</a></span> <span class="pill"><a href="../concepts/objective-cost-function.html">Objective / Cost Function</a></span> <span class="pill"><a href="../concepts/constraints.html">Constraints</a></span></p>
+</main>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reinforcement Learning · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Reinforcement Learning</h1>
+<p class="lede">Learn a policy through interaction by using reward feedback from actions and their consequences.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>The designer may not know the best action labels, but the system can try actions and receive feedback.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Try actions randomly until reward improves.</p><p><strong>Why it fails:</strong> Feedback can be delayed, sparse, unsafe, or expensive, so exploration and credit assignment matter.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>A policy, reward, value function, and transition process.</p></article>
+  <article class="card "><h3>Operation</h3><p>Collect experience and update the policy or value estimates to increase expected return.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>A robot learns a manipulation strategy by trying motions and improving actions that lead to successful grasps.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>RL needs a reward signal and interaction process that match the real task.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>The agent exploits reward loopholes or learns unsafe exploration behavior.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Use it when behavior is learned from trial, consequence, and reward rather than expert labels alone.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-reinforcement-learning-01">
+  <h3>ev-reinforcement-learning-01: Lecture 16 · Fundamentals of RL</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=cqPbt3OfRK4">cqPbt3OfRK4</a> · <code>raw-material/youtube/transcripts/clean/lecture-16-cqPbt3OfRK4.txt</code> · needs_review</p>
+  <blockquote>our um specific paradigm of interest where you know loosely speaking we uh pitched imitation learning as this idea of wanting to learn from demonstrations Uh and so we saw different types of ways of doing this specifically behavioral cloning and inverse reinforcement learning where the idea there is do we want to directly learn a policy that represents or mimics and approximates the behavior of our expert or do we want to learn the objective that is the underlying reward function that the</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Reinforcement Learning or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-reinforcement-learning-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/imitation-learning.html">Imitation Learning</a></span> <span class="pill"><a href="../concepts/behavioral-cloning.html">Behavioral Cloning</a></span> <span class="pill"><a href="../concepts/distribution-shift-imitation.html">Distribution Shift in Imitation</a></span> <span class="pill"><a href="../concepts/reward.html">Reward</a></span> <span class="pill"><a href="../concepts/policy.html">Policy</a></span> <span class="pill"><a href="../concepts/value-based-rl.html">Value-Based RL</a></span></p>
+</main>
+</body>
+</html>

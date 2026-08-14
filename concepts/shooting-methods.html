@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shooting Methods · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Shooting Methods</h1>
+<p class="lede">Guess controls or missing boundary values, simulate forward, and adjust the guess until the endpoint or constraints match.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>A trajectory problem often knows where it starts and what it wants to hit, but the control sequence between them is unknown.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Guess the whole path without checking how dynamics generate it.</p><p><strong>Why it fails:</strong> The guessed path may not be reachable from the initial state.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>A parameterized initial condition or control sequence plus forward simulation.</p></article>
+  <article class="card "><h3>Operation</h3><p>Shoot the dynamics forward and optimize the parameters by endpoint error and cost.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>Aim a spacecraft burn sequence, simulate where it lands, then adjust the burn parameters.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>Forward simulation must be stable enough that small parameter changes are informative.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>Sensitive dynamics make the shot miss wildly or create an ill-conditioned optimization.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Look for a method that treats simulation as the constraint-enforcing step.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-shooting-methods-01">
+  <h3>ev-shooting-methods-01: Lecture 6 · Direct Methods</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=zX8raxUa2DE">zX8raxUa2DE</a> · <code>raw-material/youtube/transcripts/clean/lecture-06-zX8raxUa2DE.txt</code> · needs_review</p>
+  <blockquote>transcribe that is uh discretize and remodel as a discrete optimization uh uh problem the original optimal control problem And so we have namely state and control parameterization methods also known as uh collocation methods and control parameterization methods also known as shooting So at a high level starting from the latter so the control parameterization methods is that we take the optimal control problem in continuous time and we will be discretizing time and assume that only the controls uh for us are</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Shooting Methods or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-shooting-methods-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/calculus-of-variations.html">Calculus of Variations</a></span> <span class="pill"><a href="../concepts/costate-adjoint-variable.html">Costate / Adjoint Variable</a></span> <span class="pill"><a href="../concepts/hamiltonian-optimal-control.html">Hamiltonian for Optimal Control</a></span> <span class="pill"><a href="../concepts/indirect-methods.html">Indirect Methods</a></span> <span class="pill"><a href="../concepts/direct-transcription.html">Direct Transcription</a></span> <span class="pill"><a href="../concepts/collocation.html">Collocation</a></span></p>
+</main>
+</body>
+</html>

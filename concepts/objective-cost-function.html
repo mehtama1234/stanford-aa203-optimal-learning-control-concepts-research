@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Objective / Cost Function · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Objective / Cost Function</h1>
+<p class="lede">The scoring rule that says which futures are better or worse.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>A controller needs a way to compare a fast route, a smooth route, a safe route, and a cheap route.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Optimize the most visible target, such as time or distance.</p><p><strong>Why it fails:</strong> The visible target can hide fuel, safety, wear, comfort, or constraint risk.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>A stage cost, terminal cost, reward, or objective functional.</p></article>
+  <article class="card "><h3>Operation</h3><p>Accumulate cost across the trajectory and choose the action sequence with the best total.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>An autonomous car can minimize travel time by tailgating unless the cost also prices safety margin.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>The written cost is only as good as the values and tradeoffs it encodes.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>The controller optimizes a proxy and produces behavior the designer did not intend.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Ask what future mistake the scoring rule would punish.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-objective-cost-function-01">
+  <h3>ev-objective-cost-function-01: Lecture 1 · Course Overview</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=Au2stLALZew">Au2stLALZew</a> · <code>raw-material/youtube/transcripts/clean/lecture-01-Au2stLALZew.txt</code> · needs_review</p>
+  <blockquote>stability But in general by stability we uh we say we mean that the system doesn t go out of whack So basically the system output is under control It stays bounded It doesn t do something crazy Uh we have an objective in general of tracking something We have a reference signal for example the setting for your thermostat We want to make sure that uh the uh home temperature uh tracks as as close as possible uh as possible that We want</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Objective / Cost Function or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-objective-cost-function-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/optimal-control-problem.html">Optimal Control Problem</a></span> <span class="pill"><a href="../concepts/state.html">State</a></span> <span class="pill"><a href="../concepts/action-control-input.html">Action / Control Input</a></span> <span class="pill"><a href="../concepts/dynamics.html">Dynamics</a></span> <span class="pill"><a href="../concepts/horizon.html">Horizon</a></span> <span class="pill"><a href="../concepts/constraints.html">Constraints</a></span></p>
+</main>
+</body>
+</html>

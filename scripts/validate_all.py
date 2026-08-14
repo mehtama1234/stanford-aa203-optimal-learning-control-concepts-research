@@ -395,6 +395,12 @@ def main() -> int:
                     errors.append(f"recursive feasibility concept page missing shifted-tail marker: {marker}")
             if len(words) < 820:
                 errors.append(f"recursive feasibility concept page below core richness floor: {len(words)} < 820")
+        if concept.get("id") == "stability-under-replanning":
+            for marker in ["1.5 meters left", "E = distance_error^2 + 0.5*sideways_speed^2", "E = 1.5^2 + 0.5*0.8^2 = 2.57", "E = 0.9^2 + 0.5*0.5^2 = 0.935", "x_{k+1}=f_closed(x_k)", "V(f_closed(x)) - V(x) &lt;= -stage_cost(x,pi_MPC(x))", "cycling, drifting, or amplifying velocity"]:
+                if marker not in text:
+                    errors.append(f"stability under replanning concept page missing decrease marker: {marker}")
+            if len(words) < 820:
+                errors.append(f"stability under replanning concept page below core richness floor: {len(words)} < 820")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

@@ -486,11 +486,11 @@ def main() -> int:
             if len(words) < 1160:
                 errors.append(f"indirect methods concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "value-based-rl":
-            for marker in ["battery 22 percent", "Q(x,turn_left) = 3", "Q(x,turn_right) = 7", "gamma = 0.9", "y = -1 + 0.9*10 = 8", "alpha = 0.5", "7 + 0.5*(8 - 7) = 7.5", "V_pi(x)", "Q_pi(x,u)", "policy evaluation", "policy improvement", "Q(x,u) &lt;- Q(x,u) + alpha*(y - Q(x,u))", "slick floors"]:
+            for marker in ["battery 22 percent", "Q(x,turn_left) = 3", "Q(x,turn_right) = 7", "gamma = 0.9", "y = -1 + 0.9*10 = 8", "alpha = 0.5", "7 + 0.5*(8 - 7) = 7.5", "Q(x_next,charge_now)=10", "Q(x_next,inspect_box)=4", "epsilon-greedy behavior policy", "slow charger line", "y_SARSA = -1 + 0.9*4 = 2.6", "7 + 0.5*(2.6 - 7) = 4.8", "y_Q = -1 + 0.9*10 = 8", "Same first transition, different target", "V_pi(x)", "Q_pi(x,u)", "policy evaluation", "policy improvement", "Q(x,u) &lt;- Q(x,u) + alpha*(y - Q(x,u))", "max_a Q(x_next,a)=10", "behavior policy is the rule that collected the sample", "target policy is the rule used inside the update", "SARSA uses y_SARSA = r + gamma Q(x_next,u_next)", "Q-learning uses y_Q = r + gamma max_a Q(x_next,a)", "SARSA learns the value of behaving with exploration still present", "Q-learning learns toward the greedy policy", "slick floors"]:
                 if marker not in text:
                     errors.append(f"value-based RL concept page missing value-update marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"value-based RL concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 1140:
+                errors.append(f"value-based RL concept page below core richness floor: {len(words)} < 1140")
         if concept.get("id") == "policy-optimization":
             for marker in ["body leaning forward 6 degrees", "right knee bent 20 degrees", "pi_theta(long_step|x) = 0.30", "pi_theta(short_step|x) = 0.70", "return G = 12", "return G = 2", "baseline b(x)=7", "A_long = 12 - 7 = +5", "A_short = 2 - 7 = -5", "pi_theta_new(long_step|x) = 0.38", "probability shift is earned by advantage", "J(theta)=E_{tau~pi_theta}[G(tau)]", "grad_theta log pi_theta(u_t|x_t) * A_t", "theta_new = theta + eta*g", "eta = 0.04", "Delta score_long = 0.04*5 = 0.20", "Delta score_short = 0.04*(-5) = -0.20", "surrogate objective", "tile floor", "return G = -8", "A_tile = -8 - 7 = -15", "eta = 0.20", "Delta score = 0.20*(-15) = -3.0", "rubber mat and tile floor are different states", "erase a useful rubber-mat action", "Noisy returns"]:
                 if marker not in text:

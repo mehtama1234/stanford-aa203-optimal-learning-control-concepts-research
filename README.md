@@ -7,6 +7,8 @@ https://www.youtube.com/watch?v=R4_fHzTo0IM&list=PLa9dmHsLK9dg
 
 The goal is to build this in the same style as the strongest course companions in `/home/manishmehta/projects`: raw transcript evidence stays separate from synthesis, HTML pages explain the course from first principles, and concept pages make the math necessary before naming it.
 
+The durable end-to-end target is written in `GOAL.md`.
+
 ## Initial Source Scope
 
 - Channel: Stanford Online
@@ -23,6 +25,7 @@ The goal is to build this in the same style as the strongest course companions i
 - `raw-material/youtube/transcripts/clean/`: cleaned transcript text
 - `raw-material/youtube/transcript-index.json`: machine-readable transcript availability and word counts
 - `analysis/research-seed.md`: first course spine and concept seed
+- `GOAL.md`: meaty end-to-end build target for the full course site
 - `site/`: generated static HTML starter site
 - `scripts/download_youtube_course_transcripts.py`: refresh playlist metadata and captions
 - `scripts/build_site.py`: build the starter HTML site from local artifacts
@@ -52,4 +55,3 @@ Each future concept page should answer:
 4. What operation is performed on that object?
 5. What breaks if the assumption is false?
 6. Which lecture transcript supports the explanation?
-

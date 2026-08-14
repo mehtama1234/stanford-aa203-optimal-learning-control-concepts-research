@@ -6,6 +6,7 @@ The repository is initialized as a standalone git repo for Stanford AA203 Optima
 
 Completed locally:
 
+- Added `GOAL.md` as the durable end-to-end course-site target.
 - Created canonical course manifest for the 19-video Stanford Online playlist.
 - Downloaded flat playlist metadata with `yt-dlp`.
 - Downloaded and cleaned transcripts for 18 of 19 lectures.
@@ -33,8 +34,8 @@ python3 scripts/validate_all.py
 
 The next phase should follow the stronger course repos:
 
+- Use `GOAL.md` as the acceptance target.
 - Build a first-principles concept atlas.
 - Add transcript-backed evidence records with local quote windows.
 - Generate individual concept pages for value functions, Bellman recursion, costates, direct transcription, LQR, reachability, MPC feasibility, imitation learning, value-based RL, policy optimization, and model-based RL.
 - Add derivation walkthroughs, formula readers, failure modes, drills, and a review guide.
-

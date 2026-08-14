@@ -396,11 +396,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"MPC concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "recursive-feasibility":
-            for marker in ["2.0 meters left before the stop line", "speed is below 0.2 m/s", "1.4 m/s with only 1.1 meters left", "maximum braking 0.8 m/s^2", "v^2/(2a)=1.4^2/(2*0.8)=1.225 meters", "more than the 1.1 meters left", "handed 10:00.5 an impossible problem", "[u_0^*, u_1^*, u_2^*]", "x_3 lies in a terminal set X_F", "x_{k+1}=f(x_k,u_0^*) = x_1", "[u_1^*, u_2^*, v_backup]", "X_F is controlled invariant", "f(x_3,v_backup) in X_F", "speed &lt;= 0.2 m/s", "stopping_distance_remaining &gt;= 0.4 meters", "outside the safe handoff set", "even maximum braking needs 1.225 meters", "not invariant"]:
+            for marker in ["2.0 meters left before the stop line", "speed is below 0.2 m/s", "1.4 m/s with only 1.1 meters left", "maximum braking 0.8 m/s^2", "v^2/(2a)=1.4^2/(2*0.8)=1.225 meters", "more than the 1.1 meters left", "handed 10:00.5 an impossible problem", "speed 1.0 m/s with 1.2 meters left", "1.0^2/(2*0.8)=0.625 meters", "0.575 meters of margin", "feasible continuation", "[u_0^*, u_1^*, u_2^*]", "x_3 lies in a terminal set X_F", "x_{k+1}=f(x_k,u_0^*) = x_1", "[u_1^*, u_2^*, v_backup]", "X_F is controlled invariant", "f(x_3,v_backup) in X_F", "speed &lt;= 0.2 m/s", "stopping_distance_remaining &gt;= 0.4 meters", "outside the safe handoff set", "even maximum braking needs 1.225 meters", "stopping_distance = 0.625 meters", "stopping_distance_remaining - stopping_distance = 1.2 - 0.625 = 0.575 meters", "still has a continuation", "not invariant"]:
                 if marker not in text:
                     errors.append(f"recursive feasibility concept page missing shifted-tail marker: {marker}")
-            if len(words) < 950:
-                errors.append(f"recursive feasibility concept page below core richness floor: {len(words)} < 950")
+            if len(words) < 980:
+                errors.append(f"recursive feasibility concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "stability-under-replanning":
             for marker in ["1.5 meters left", "E = distance_error^2 + 0.5*sideways_speed^2", "E = 1.5^2 + 0.5*0.8^2 = 2.57", "E = 0.9^2 + 0.5*0.5^2 = 0.935", "1.0 meters right", "sideways speed 0.6 m/s left", "E = 1.0^2 + 0.5*0.6^2 = 1.18", "burden rose from 0.935 to 1.18", "terminal cost, terminal set, or a decrease condition", "x_{k+1}=f_closed(x_k)", "V(f_closed(x)) - V(x) &lt;= -stage_cost(x,pi_MPC(x))", "delta V = 0.935 - 2.57 = -1.635", "delta V = 1.18 - 0.935 = +0.245", "violates a nonincrease test", "Feasibility alone would only say the next optimization exists", "terminal set gives the final predicted state", "cycling, drifting, or amplifying velocity"]:
                 if marker not in text:

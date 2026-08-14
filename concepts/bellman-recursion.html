@@ -54,8 +54,8 @@
 <section class="fp">
   <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A warehouse robot choosing between two aisles does not need to list every possible path to the loading dock. For each aisle, it can count the cost of entering that aisle now, then look up the best remaining cost from the state at the end of that move. That is the Bellman split: pay now, then inherit the future value of the state you created.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>V(x) = min over u of cost(x,u) + V(f(x,u)) in the deterministic case. With uncertainty, the next value is averaged over possible next states.</p></div></details>
+  <div class="explain-box"><p>A warehouse robot stands at a junction and can enter aisle A or aisle B. Aisle A costs 2 seconds now and leaves the robot in a crowded state whose stored future value is 9. Aisle B costs 5 seconds now and leaves the robot beside a clear lane whose stored future value is 3. The Bellman step does not list every route to the loading dock. It computes A: 2 + 9 = 11 and B: 5 + 3 = 8, then stores 8 as the value of the junction and chooses aisle B. Choosing A would be greedy about the next aisle and blind to the jam after it.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>In the deterministic case, V(x) = min_u [cost(x,u) + V(f(x,u))]. The bracket is the work: for each legal action u, move to f(x,u), read the value stored there, add the immediate cost, and keep the smallest total. With uncertainty, replace the single next value with an expected next value over possible next states.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">05 · boundary</div>

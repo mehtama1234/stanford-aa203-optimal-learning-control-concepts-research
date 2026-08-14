@@ -299,6 +299,12 @@ def main() -> int:
                     errors.append(f"objective concept page missing tradeoff marker: {marker}")
             if len(words) < 740:
                 errors.append(f"objective concept page below core richness floor: {len(words)} < 740")
+        if concept.get("id") == "horizon":
+            for marker in ["60 meters from the pad", "18 percent battery", "dt = 0.5 seconds", "N = 60", "delayed costs such as low battery"]:
+                if marker not in text:
+                    errors.append(f"horizon concept page missing delayed-consequence marker: {marker}")
+            if len(words) < 720:
+                errors.append(f"horizon concept page below core richness floor: {len(words)} < 720")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

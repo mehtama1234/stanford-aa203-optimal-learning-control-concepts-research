@@ -44,12 +44,17 @@ Current evidence review state: all 38 evidence records are manually deepened wit
 ## Workflow
 
 ```bash
-python3 scripts/download_youtube_course_transcripts.py
 python3 scripts/build_first_principles_atlas.py
 python3 scripts/build_teaching_artifacts.py
 python3 scripts/audit_course_quality.py
 python3 scripts/build_site.py
 python3 scripts/validate_all.py
+```
+
+Run the downloader only when refreshing source material from YouTube:
+
+```bash
+python3 scripts/download_youtube_course_transcripts.py
 ```
 
 Open:
@@ -58,9 +63,18 @@ Open:
 site/index.html
 ```
 
+Or review through a local server:
+
+```bash
+cd site
+python3 -m http.server 8020 --bind 127.0.0.1
+```
+
+Then open `http://127.0.0.1:8020/`.
+
 ## Quality Standard
 
-Each future concept page should answer:
+Each concept page should answer:
 
 1. What ordinary control problem forces this idea to exist?
 2. What state, action, cost, constraint, or uncertainty does the idea track?
@@ -68,3 +82,5 @@ Each future concept page should answer:
 4. What operation is performed on that object?
 5. What breaks if the assumption is false?
 6. Which lecture transcript supports the explanation?
+
+The current validator also checks for richer page markers and word floors across the main pages, concept pages, learning-specific concept pages, evidence ledger, derivations, drills, solutions, provenance, and the course spine. Passing validation is still not the same as final editorial approval; use `site/review-guide.html`, `site/quality.html`, `site/completion-audit.html`, and `GOAL.md` for the human review route.

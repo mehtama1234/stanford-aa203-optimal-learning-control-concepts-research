@@ -1,0 +1,1622 @@
+Yeah. So, uh, today we begin kind of the
+the second part of the class
+specifically. Up until last week, we
+were focused on the, uh, bottom half of
+our usual road map. Specifically, where
+we focused on methods for optimal
+control. So if uh if you recall we
+started our discussion through openloop
+methods and namely through the lens of
+indirect and direct methods where the
+goal was to compute an optimal
+trajectory uh from a given initial
+condition. Uh we then you know this is
+great because they are fast and reliable
+but they are specific to the given
+initial condition where we are in. uh we
+then moved to towards the the closed
+loop section uh namely through dynamic
+programming and Hamilton Jakomi Bellman
+or Jaconi Isax equations where there the
+focus was on computing an optimal
+control policy that is a function that
+maps states to optimal controls and we
+saw how this was definitely more
+powerful at least in principle compared
+to the open loop framework because it
+gives us a rule of how to behave uh
+independently on the state in which
+we're in But at the same time this came
+with uh important kind of uh unimportant
+computational expense. And so last week
+we focused on MPC or model predictive
+control which is basically a framework
+which tries to gets the best of these
+two approaches namely achieve the
+performance of closed loop methods
+through the recursive solution of
+openloop optimal control problems.
+Underlying all of these methods was the
+assumptions that we knew how the
+dynamics behaved. So we always knew that
+we had a good representation of our
+dynamics which came from maybe an
+analytical expression or a differential
+equation that represents our our
+dynamics. And so in the second part of
+this course we kind of relax this
+assumptions and we move into the
+learning based setting where we assume
+we do not know uh in advance the
+dynamics of our models. Um
+yes
+and so specifically for today we will be
+first of all transitioning into the
+learning base setup uh giving uh a rough
+idea of the kind of topics we'll be
+discussing and then we will be
+approaching specifically the top left
+part of the quadrant which relates with
+more classical ways of dealing with uh
+with learning um uh dealing with
+learning specifically regarding uh
+system identification and adaptive
+control and we'll see two example of
+adaptive controls namely MRACH or model
+reference adaptive control or MayAK
+model identification adaptive control
+and as a general uh setting. So remember
+the the framework the the setting we are
+in. So specifically we look at
+controlling some system through the
+definition of a controller or a
+controller. Um and in order to control
+the system, we may be measuring we have
+having some sensors which measure the
+output of our system. And we might want
+to compare these the measurements that
+come from our sensor with some reference
+which we have in mind that is an ideal
+behavior of our system that we would
+want it to um to execute. Um and this
+will lead the construction of our
+controller. And so we have this feedback
+loop which which happens kind of in in
+closed loop.
+However, the question is what happens in
+the moment where we have some
+uncertainty or some unmodled effects in
+how the system behaves. And so this is
+exactly the setting in which we'll be uh
+working on today and for the rest of
+this class.
+And so fundamentally uh so when looking
+at dealing with this kind of uncertainty
+that could be present in our in our
+system, how can we handle this? And so
+kind of a simple approach uh could be
+that in many cases uncertainties may
+have only a small effect. So for
+example, consider we're trying to fly a
+drone and we might have some unmodled
+wind effects which are still pretty
+small. And so in this case perhaps uh
+kind of we don't really need to do
+anything too sophisticated about dealing
+with this uncertainty, but having a
+feedback controller uh maybe may be just
+enough to compensate for this amount of
+effects. And so this could be as simple
+as we have some reference trajectory for
+our drone that we want to follow. Uh and
+we might want to build a sort of
+feedback controller that tracks this
+reference trajectory for example through
+P control. But again we're in the system
+where we might have some unmodled
+effects. If these are pretty small then
+maybe feedback control is good enough.
+A second approach is we could try to be
+a little bit more sophisticated and
+going into for example robust control
+approaches. So we discussed or uh last
+week or a couple weeks back if you
+remember kind of
+uh
+minmax formulation where
+our goal was to maximize some
+measure of reward
+which had the the a form of of this type
+accord maximize uh with respect to our
+controls u and we were assuming there
+was some
+distribution gamma set of distributions
+gamma uh which were basically playing
+the role of the adversary. So
+essentially modeling the worst case
+possible disturbance that could affect
+my system. And in class we were looking
+at this you know relatively sadistic
+example of the homicidal chauffeur. uh
+but uh this is if you if we see this
+from the perspective of dealing with
+uncertainty we it is as if we're saying
+we have a system with some uncertainty
+which we are not aware of things we
+cannot model and so let us be robust
+with respect to this uncertainty by
+reasoning in the with respect to the
+worst case scenario possible and so of
+course this is on one hand great but it
+could come with behavior that is
+potentially too uh uh too defensive and
+a little bit too conservative.
+But again, this is a valid second high
+level strategy of of approaches.
+The third one, which is also the one
+we'll be specifically focusing on today
+and for the remaining weeks, is the one
+where we have some uncertainty and we
+take into consideration the fact that we
+we can collect examples of um behavior
+and state transitions in our
+environment. So again, consider the case
+where we have our drone flying uh flying
+to accomplish some task. We might be
+storing logs of previous flights in
+order to observe these state transitions
+and use those to learn from data an
+approximate model of our dynamics.
+And so this is exactly the the setting
+we'll be uh working with. But I think
+this is a nice kind of frame uh mental
+model to have in the sense that whenever
+we have some uncertainty, we might be
+good enough with some feedback that in
+order to correct for a model effects, we
+might want to be extremely um
+conservative and reason about worst case
+scenario possible. Or we could use
+datadriven approaches that leverage
+pre-collected state transitions
+observations in order to learn an
+approximate model of our dynamics.
+Any
+questions on these high and high level
+and macro categories of of methods?
+Okay.
+And so in the moment we zoom in our
+third of these macrocategories that is
+datadriven methods kind of the question
+that comes to mind is okay we say we
+want to learn something uh but what can
+we learn and at a high level I would say
+that different methods for learning
+based control typically divide
+themselves across two uh main families
+of approaches. In the first one, we want
+to use measurements or collected
+episodes or transitions in order to
+directly improve the controller.
+On the other hand, we might want to use
+these measurements to learn an
+approximate model of our dynamics and
+then use this model to approve the
+controller. So you see that in the
+second of these two families, we have
+this intermediate objective which is uh
+kind of system identification in a way
+um which is then a proxy to improve our
+overall controller.
+And so the types of methods that we will
+see today and for the rest of this class
+kind of loosely fall within these two uh
+buckets. And so today we'll be focusing
+at uh direct adaptive control and
+indirect adaptive control as well as
+system identification. But in the coming
+weeks we'll also focus on imitation
+learning as well as model free and model
+based uh reinforcement learning.
+Okay. And so
+as a second question that comes to mind
+would be then uh kind of how how does
+learning actually happen and
+specifically there are three I would say
+prototypical cases. The first one is the
+zero episodes case which is also known
+as the kind of system identification
+approach. And the assumption here is
+that uh we have uh in some way
+pre-colcted a data set of state
+transitions or rollouts if you wish of
+some policy controlling our system and
+we might want to use this offline data
+set to improve our controller. This
+could be directly improving the
+controller or it could be learning a
+model to then improve the controller.
+But what I want to stress the fact here
+is that these this zero episodes case
+essentially entails having some
+mechanism of collecting a data set
+completely offline and then we use this
+data set to estimate some some
+parameters or some models in order to
+improve uh controller performance.
+This is to be distinguished from the one
+episode case where we want to have this
+adaptation and learning happening
+directly online as kind of while we
+control the system. And I think kind of
+again taking our kind of drone example
+say that we have some quadrotor that is
+carrying some payload of an unknown mass
+m. the one episode or online adaptation
+approach would essentially mean that we
+have no mechanism of um kind of
+estimating this mass m from previous
+flights. But this is something that we
+have to estimate and adapt to online
+while we control the drone. And so the
+goal here would be to while we are
+controlling the drone estimate some
+unknown parameters such as for example
+the unknown mass of our of our payload.
+And then a third category of approaches
+is the one of the uh multiple episodes
+setting and this is the classical
+framework for reinforcement learning.
+The idea here is that we have some
+environment with which we can interact
+with. Say for example um
+uh we want to learn a policy that plays
+chess optimally. We this is we have an
+environment which is the game
+environments of chess and these
+environments can be reset indefinitely.
+And here learning happens in between
+these episodes. So we could have a
+situation where we kind of spawn our
+environment the beginning of the chess
+game. We interact with the environment
+in order to complete one episode and
+then this gets reset at the beginning
+and we use these repetitions of
+different strategies in order to update
+our uh parameters or policies depending
+on what we're trying to do.
+But I hope that it is clear that kind of
+the point of this slide is that once we
+choose that we want to learn and
+approach control through learning. uh
+then kind of different algorithms will
+be better suited for different settings
+depending on if we assume we have
+collected some data set some offline
+data sets beforehand or on the other
+hand whether we want to control some
+system and adapt to unmodel effects
+directly while we are deploying and
+operating our system or in the last case
+the one of the multiple episodes where
+we have an environment with which we
+have the luxury of being able to
+interact Of
+course the kind of the boundaries here
+are not so strict. Uh methods fall
+between different categories. So for
+example I would say online reinforcement
+learning typically assumes we have this
+environment we can reset and com and
+iteratively adapt to but there are
+methods that still belong to the realm
+of reinforcement learning say offline
+reinforcement learning which actually
+fall in the zero episode case. So don't
+take this too literally, but I think
+typically you have these three very
+specific modalities of experience which
+come into play.
+Any questions here?
+&gt;&gt; Yes. The key difference between one
+episode, multiple episodes is that
+multiple episodes is capable of
+interacting with the environment and
+learning through those interactions,
+right?
+So I would say that also in the one
+episode case you interact with the
+environment. Uh in the multiple episodes
+case I would say the difference is that
+you have this episodic nature where you
+can learn across repeated episodes. So
+again I think a good example here is
+chess. So if I'm trying to learn a
+policy to play chess I could play an
+infinite amount of games and I improve
+my policy across these games. here. If
+we take the same chess analogy, it will
+mean that I'm trying to learn how to
+play chess in during a single game.
+&gt;&gt; Yeah.
+&gt;&gt; Sometimes like with multiple episodes,
+that's the only way you can get to other
+states, right?
+&gt;&gt; Sorry. Can can you repeat?
+&gt;&gt; Like like if you have a policy, if you
+run it once, you can only get to the
+states you you like go to in that one
+versus like getting to different states
+with multiple
+&gt;&gt; in the one episode case.
+&gt;&gt; Yeah.
+No, I'm asking like that's how you get
+to the other states that you wouldn't
+get if you don't want time through,
+right?
+&gt;&gt; Uh yeah. So in the multiple episodes
+case, if you act differently in the same
+environment, you would be able to
+explore different parts of your state
+space. If this is what you're referring
+to
+episodes, if you deploy a vehicle and
+then take different time horizons which
+do like different actions, are could
+those be considered different episodes
+or is that still one episode?
+So,
+um, are you referring to kind of an RL
+like approach where I want
+&gt;&gt; if you're trying to
+dynamics of the vehicle for instance,
+like would you cut up like one, I don't
+know, piloted thing of like some
+operation into like multiple times and
+then use that as multiple episodes or is
+that still one episode?
+&gt;&gt; I see. I would probably classify this in
+the zero episode case, meaning that you
+have a data set of trajectories and
+you're basically chunking this up in
+order to build a kind of next state
+prediction or a for dynamics problem. Uh
+if that makes sense because you're not
+really being an necessarily an agent in
+collecting that data, right? So here in
+the multiple episodes case, typically
+your policy, your control law is
+actually the one that dictates the
+experience that you have. Right? Right?
+In the zero episode case, you probably
+don't want a neural net from scratch
+kind of driving a vehicle, right?
+Because this will crash for sure. But uh
+in what happens in chess is that you
+have very bad policies at the beginning
+and then you improve over time. Yeah.
+Okay.
+And so given this this this broader
+framework let's approach uh kind of
+learning based control methods
+specifically students of classical
+approaches to to learning starting from
+uh system identification
+and the problem and the idea of system
+identification is that uh for many
+problems we don't have to learn online
+right but we could actually have a
+pipeline where we collect data set of um
+previous experiments or behaviors in a
+given environment or system that we care
+to model and we want to use this data
+set to build a datadriven model of the
+dynamics.
+So in this way what we can then do is
+that we we can then use this um
+datadriven model to essentially replace
+our knowledge of the dynamics for
+control. Right? Right. So the idea is
+that the overall problem we want to
+solve, we have a missing dynamical
+model. We want to learn to approximate
+this from some data ga gathered
+beforehand and then use this approximate
+model as a essentially proxy for then
+using any control tool that we wish to
+to use.
+And the classical uh at least
+traditionally uh methods for or tool for
+system identification is linear
+regression. And so I'm sure this will be
+kind of repetition for uh for most of
+you. Uh but let's just set the notation
+straight on uh kind of learning through
+uh le square minimization uh and and
+linear regression in in particular.
+So specifically we are describing a a
+setting where we assume that we have
+some uh system model
+described as y = theta transpose z plus
+some noise epsilon
+where y is the output.
+We have some inputs Z.
+Theta are some parameters which we wish
+to learn.
+And then we assume that this process
+that we wish to approximate is described
+by some in inherent noise. uh actually
+and the way we want to approximate the
+system is through examples
+which we which we collect in a data set
+D which are nothing else than tupoles of
+input output pairs Z Y with either goes
+from one to n data points and we want to
+use this data set that we collected
+offline of examples of uh input output
+realizations to learn to estimate an
+approximate model of our of our system.
+Now, typically the way we use these uh
+examples is through and the way we learn
+the parameters theta to approximate our
+model is through the minimization of
+some sort of uh performance criterion or
+loss which could be kind of the the le
+squares loss. So something that
+essentially encodes the difference
+between the true realizations and our uh
+predictions
+right something of this form
+in the slides we have we are referring
+to capital Z as
+kind of the matrix of the stacked input
+vectors.
+which allows us to rewrite it in in
+compact form as the minimization
+of the squared uklidian norm.
+[snorts]
+Okay. And from our all our discussions
+on optimization uh and numerical
+optimization we know that this is a
+convex function which we wish to uh
+minimize. And so we know that in order
+to let's go here
+to find the minimum of that function we
+need to set the gradient of the
+objective with respect to theta equal to
+zero.
+Right. So this is our necessary and
+necessary and sufficient condition for
+for optimality
+which essentially means that we want to
+take the gradient of yrpose y - 2 theta
+transpose zrpose y plus theta transpose
+zrpose z theta.
+And we want to set this to zero.
+And by taking the gradient what we get
+is -2 zrpose y + 2 zrppose z theta needs
+to be equal to zero which essentially
+leads to the solution that we have uh on
+the slide
+which is basically that the value of the
+parameters theta that minimize our le
+squares error is zrpose
+the inverse of zrppose z time zrpose y.
+Okay. So, not nothing too uh technically
+deep or too insightful in this slide,
+but just to make sure we have the the
+notation in place.
+Okay. So, we're saying that we want to
+use uh these tools for system
+identification. So, let us map this
+framework into the problem that we
+actually care about which is using a
+linear model to approximate our system
+dynamics.
+And so specifically what we're saying is
+that we are assuming that our system
+evolves according to uh the following uh
+linear
+system xt + 1 = a xt plus b u t
+plus some noise T
+which we can rewrite essentially more
+compactly as
+the dotproduct between XT UT and vector
+AB
+plus the noise term FT
+right and once we write it this way I
+think it's pretty
+clear to see that this is what we're
+referring to as our Y.
+These are our inputs Z and these will be
+our parameters theta according to the
+notation from the previous slide.
+[snorts]
+So
+in practice what this means is that we
+assume we have access to a data set of
+previous transitions or rollouts of our
+our system. So if you wish we are
+assuming we have collected some
+trajectories that represent possible
+evolutions of our systems. These
+trajectories are nothing else than uh
+collections of um
+kind of states and controls
+over time.
+And we can then use these uh
+trajectories that we collected in order
+to basically construct a data set
+which again is uh two poles of
+XT UT which are our inputs and XT + one
+which will be our outputs.
+right? So this is what we mean when we
+say we want to learn an approximate
+model of our dynamics from from data.
+That is we'll have some mechanism uh to
+collect examples of evolutions of the
+system and we repurpose these uh
+examples essentially as a as a
+regression problem which maps from
+current state and current control to the
+next state.
+Okay. Any any questions on this?
+I'm sure this is probably just a
+background for for you but just to make
+sure we are all on the same page.
+Okay. So some comments. So in practice
+uh we have shown how the solution to the
+our le squares optimization entails this
+inverse over zranspose z. Depending on
+how large our data set is, Z could be
+very large. And so doing this inverse
+can also be computationally quite
+expensive. And so there exists a number
+of uh recursive formulations or uh forms
+for this optimal uh solution which
+essentially
+uh enable us to avoid this recursive uh
+inverse uh of a potentially very large
+matrix that could be extremely expensive
+in practice. So this is very useful if
+we have like a stream of data coming in
+and we don't want to resolve this recmp
+compute this image every time and of
+course here we're dealing with the
+discrete time formulation but there
+exist equivalent also in in continuum
+time.
+Okay so here just a couple of um
+theoretical results you might be
+familiar with. So the first one is that
+uh this estimator uh is actually turns
+out that it is actually the best linear
+unbiased estimator
+um for any noise distribution that obeys
+some common assumptions specifically
+that the uh noise terms epsilon t are
+zero mean uncorrelated and all have the
+same and finite variance. So you might
+be familiar this from your statistics
+classes. And if the noise distribution
+is gausian specifically then this
+estimator that we just derived is also
+known as the maximum likelihood
+estimator.
+Okay. So a question that we might want
+to ask ourselves the moment we decide
+that this is the mechanism for which we
+are trying to estimate our known
+parameters is what are sufficient
+conditions for which our estimator theta
+hat converges to the ground truth to the
+known and true parameters uh theta.
+So in other in other words what we're
+saying is that
+say we have an x-axis here which
+represents kind of the data the amount
+of data that we collect and we have the
+y-axis here that represents our
+estimator theta hat
+and consider a specific value for the
+ground truth value of our parameters
+theta star. What we wish to know is we
+could see this this process of
+estimating uh theta hat is itself as a
+random variable. And what we might want
+to know is first of all if given more
+data does this process is it centered on
+the ground truth value of theta and also
+how does this estimation vary the more
+data we collect.
+And so the reason why I'm saying that we
+could see this as a realization of
+random variable is because from the
+definition which we just derived of our
+solution, we see how our estimator theta
+hat depends on the true outputs y which
+is a process that depends on noise
+epsilon. Right? So we defined before our
+y's as theta transpose z plus some noise
+epsilon. And so by just doing the
+appropriate substitutions,
+so here we're just replacing the
+definition of y.
+And by just doing re reassembling the
+terms, what we get is that we can
+rewrite our estimator of theta hat as
+theta plus zrpose z the inverse of
+zrpose zrpose times the noise epilon.
+And so epsilon is indeed some uh this is
+what makes kind of our estimator itself
+a random variable.
+And so if this is a random variable, we
+might want to study the kind of
+questions we are asking over here on the
+behavior of our estimator through the
+lens of looking at the moments of this
+uh random variable. So specifically the
+uh mean and coariance of of our
+estimator.
+Is it clear uh what we are trying to do?
+Okay.
+So looking at the mean first uh first of
+all we simply replace our new definition
+of the estimator of theta hat inside the
+expectation.
+uh we
+since the only uh random variable here
+is the noise term epsilon, we can
+basically take everything out of the
+expectation operator.
+And we see how we can use the assumption
+that our noise terms are zero mean to
+basically cancel out this right term.
+And so what we get is that the
+expectation of our estimator is indeed
+the true value of the parameters theta
+which is a nice result. Right? So what
+we know here is that in expectation uh
+the if we keep using our estimator of
+the true parameters theta we will
+converge to the true value theta. So in
+this case we basically proven that the
+more data we collect in expectation the
+more we will actually be converging to
+the ground truth value of of theta.
+Okay. So similarly we can look at the
+coariance. So how our estimation
+oscillates around the true value of
+theta and we can do again some algebraic
+steps. So first of all we again just
+rewrite the definition of theta hat
+and then we use this useful identity
+that is that the coariance of ax is
+equal to a coariance of x a transpose
+and here specifically
+uh we define a as zrpose z so the
+inverse of zrpose zrpose and x as our
+noise action
+And so what we get is this second row
+over here. And we use again kind of one
+of the assumptions that we were seeing
+before on how the noise uh distribution
+is defined. And specifically we were
+assuming if you recall from the previous
+slide
+that all the error the noise terms
+epsilon t are uncorrelated and all have
+the same finite variance. So this
+essentially means that our coariance
+matrix for the epsilon values is
+something that only looks has zero terms
+everywhere except from the diagonal
+where we have the same uh the same
+variance
+where here we're assuming the variance
+is sigma square right
+which essentially means that we can do
+this [snorts] substitution over
+So again doing some algebraic steps I
+think the bottom line is that we get an
+expression of our coariance which is the
+uh variance sigma squ multiplied by the
+inverse of a summation terms that goes
+from 1 to n of basically different
+combinations of our states and and
+controls.
+Now from the perspective of our
+estimation process, we would like the
+coariance to basically go to zero the
+more data we collect, right? So we want
+our estimation to be more and more
+centered around our uh expectation.
+And so this means that in practice since
+this is an inverse and so this it goes
+at the denominator what we want is that
+this summation from 1 to n uh you know
+the more n grows this has to go to
+infinity so that the overall thing goes
+to zero and so what we're saying is that
+first of all this is a you know neat
+result again in the sense that as long
+as the you know if our system operates
+forever and it operates in a non-trivial
+way meaning that the x's and news that
+we observe are non-trivial for example
+just statically stop uh stop to zero
+then that summation will go to infinity
+and so our coariance will go to zero
+so here I meant when I refer to as
+non-trivally uh um
+non-trivally operating the system what I
+meant is that I refer to this
+characteristic that is known as
+persistent excitation which essentially
+encodes this idea that we have to
+continuously probe the system in in
+meaningful ways. And if we do so then uh
+to the limit of n that goes to infinity
+also our estimator will be um exactly
+around the true value of theta.
+Okay. Any any questions here?
+Yes. Oh, sorry. Uh I was wondering is
+there an intuition on why this is
+invertible enough to
+&gt;&gt; sorry
+&gt;&gt; like is there an intuition why this is
+portable enough to like what
+&gt;&gt; no sorry so there is here we're kind of
+simplifying the the treatment there is
+some uh you know I can definitely refer
+you to the complete derivations that
+basically uh will tell us when this is
+invertible but this is just as a frame
+of reference kind of uh considering that
+our goal here is system dynamics uh and
+estimating these true parameters theta.
+I was just kind of
+uh fasttracking to the overall result
+saying that if we use linear models to
+estimate our dynamical systems and we
+use this estimator for theta then we get
+something that is unbiased and that
+under some regularity conditions uh
+basically also converges with with zero
+coariance if that makes sense. So there
+are some regularity conditions that that
+I'm happy to uh refer you to.
+&gt;&gt; No. Yeah.
+Okay.
+And so in practice kind of system
+identification kind of leads to a number
+of questions, right? So we're describing
+this overall framework or paradigm where
+we want to essentially approximate uh
+the system dynamics through by learning
+from data. And so some questions that
+could emerge is what if we have a data
+budget? So how much data is required to
+learn the model or how can we even
+quantify what good means uh in terms of
+uh parameter estimation? And
+interestingly kind of so we're we did
+all of these analysis from the
+perspective of you know a statistician
+wanting to analyze the performance or
+the behavior of an estimator of our
+parameters. But in reality what we care
+about is control performance. Right? So
+uh we do not really care too much about
+model accuracy. What we care about is
+that we get a better controller out of
+this process. And so again just to make
+a a visual
+um a visual discussion here. So consider
+the case where we have a very extreme
+case where
+we have our depending on some parameter
+theta which we uh don't really know the
+exact value of. Depending on the
+parameter theta our control law would
+vary wildly. So say that if theta is
+negative we would have one specific
+control that we have to take and if
+theta is positive we would have a
+different control that we have to take.
+So a very kind of step-wise control
+function depending on on theta and say
+that the ground truth value of theta is
+uh over here. Now
+consider these two different estimates
+for specifically theta 1 and theta hat 2
+for that same uh parameter theta. Of
+course, kind of the one on the left is
+from a purely statistical point of view
+or at least you know distance based here
+is worse right because it's further off
+but from the perspective of control
+since we are on the right side of the
+sign this would actually lead to the
+controller having better performance
+right so of course this is a extreme
+case and completely pictorial but this
+is exactly the intuition that I that I'm
+referring
+And in a way this is one of the the main
+kind of downsides or bottlenecks of uh
+these uh system identification
+approaches because we are introducing
+this intermediate objective that is
+model estimation which is not
+necessarily aligned with uh controller
+performance.
+Okay. Some other question is so we we
+are assuming we have access to a data
+set how do we collect this data set um
+what if we are learning while we collect
+the data set or what if we have some
+safety considerations that have to be
+done while we collect the the data set.
+Uh of course we need to take this into
+account because we would be operating in
+a system with only partial knowledge of
+what the system is and so we might want
+to be more more conservative.
+And lastly here we are assuming we are
+doing everything under this linear
+assumption. So we have a ground truth
+linear model and we are trying to
+estimate the parameters of a linear
+model. So the family of models actually
+matches when in reality we don't really
+know what how the system behaves
+sometimes right and so there's an entire
+discussion on is our family of models
+that we're trying to estimate expressive
+enough to include the dynamics that we
+actually wish to learn. And so there's a
+trade-off between how much data we have,
+what is the expressivity of the model we
+want to learn and so forth.
+Okay, any questions on system
+identification before we move on to
+adaptive control.
+I mean, I guess the the main idea here
+is pretty simple, right? So we want to
+estimate a model from data and then use
+this potentially to improve our
+controller uh later on.
+Okay. But so let's move to adaptive
+control.
+And if system identification was
+essentially lying into this zero
+episodes setting where we had this data
+and we wanted to use this data to
+estimate a model of our dynamics.
+adaptive control fall falls into this
+one episode uh setting whereby we want
+to improve our control essentially
+through online adaptation uh in in real
+time as we operate the system. And so
+this can be done again as we were saying
+before by either directly improving the
+controller or by first learning a model
+and then using this model to improve the
+controller. And this is what
+differentiates between model reference
+adaptive control which essentially falls
+in the first category where as we will
+see we're directly improving the
+controller or model identification
+adaptive control. So notice
+identification also in the in the name
+which falls under the second category
+where we are first estimating a model
+and then using this to improve the
+controller performance.
+And I would say that kind of literature
+in adaptive control it's uh pretty
+traditional. So it dates back to uh a
+number of years ago. And I would say
+that in general the classical setting is
+that it does not consider the optimal
+adaptive control setting whereby by
+optimal I mean we are not necessarily
+optimizing for some performance metric
+or cost but we are but I would say that
+adaptive control strategies are
+typically focusing on proving the
+stability of the coupled system which
+entails the the coupling of the
+controller the adaptive component and
+the system dynamics. So how we will see
+is that we won't be necessarily
+optimizing for some performance metric.
+So minimization of some cost function
+but we will be studying the stability of
+the coupled closed loop dynamics that
+emerge from the definition of a specific
+controller which we have to come up with
+of an adaptive component that is how we
+adapt the controller based on experience
+which we have to decide and the system
+dynamics.
+Okay. And so as a brief uh recap and
+detour kind of the tool we are using
+throughout this class to analyze
+stability is the one of leapon of
+stability and specifically as we
+discussed uh last week we defined the
+leapon of theorem as follows. So we're
+given an autonomous system x dot f ofx.
+Note that we can easily represent kind
+of system that are controlled through
+some policy X as an autonomous system
+whereby we are directly encoding the
+effect of our control as a function of
+the state P of X.
+So we're given an autonomous system and
+we have an equilibrium point XAR such
+that the dynamics F at XAR are equal to
+zero. So this is an equilibrium point
+for our system. So we last time we
+introduced leapon of stability as this
+you know we we saw it from a very
+pragmatic lens as this tool that enables
+us to derive uh stability properties of
+of the system
+and we did this from the perspective of
+according to the leapon of theorem for
+global stability
+if there exists a function that
+satisfies some uh characteristics which
+we'll see briefly then this equilibrium
+is globally asymtoically stable. I think
+last week we only discussed the local
+versions of this. So we're not really
+looking at the global stability but we
+are reinforcing this uh today and
+specifically the conditions is that uh
+we need to find this leapon function v
+which respects these three conditions.
+The first one is that v of x so it has
+to be the function v has to be positive
+for all x that are not the equilibrium
+point and zero at the equilibrium point.
+The derivative v dot of x has to be
+negative for all points that are not the
+equilibrium. And the third uh property
+uh and the third condition that we have
+to respect which is the one we are using
+to strengthen our conditions for global
+stability. Uh and this is also known as
+radial unboundedness is that as the norm
+of x grows to infinity also the value of
+the function grows to infinity.
+So
+visually what we're saying is that we
+have a system of in x1 x2
+um the aono function is something that
+is like ball shaped
+and that following the dynamics of the
+system it essentially dissipates energy
+and and reaches the equilibrium point
+All right. So this is positive
+everywhere except at the equilibrium
+where it's zero. And the third condition
+essentially says that this keeps growing
+the more we go further out.
+And we discussed as this was essentially
+an extremely useful way of approaching
+the stability property because we don't
+have to um integrate our dynamics or
+solve these for every possible
+conditions but we just have to define a
+function that respects these properties
+and we can draw conclusions about the
+stability of the system.
+Okay.
+Any any questions here? This is mostly
+repetition but any questions on uh so
+far.
+Okay.
+So what we will be doing um going
+forward is that we'll be using this
+leaponov stability theorem to prove
+stability of uh kind of coupled system
+dynamics controller and adaptive
+component mechanisms. And so here we
+take a little step back. We open this
+parenthesis where we show exactly what
+we mean by doing these leaponov
+stability analysis on a system that
+doesn't really entail control at all but
+just to show you how we do uh the
+stability analysis which we will then be
+doing for the purpose of adaptive
+control.
+Okay.
+So let me
+make some room here.
+Okay. And so let's consider the system
+um composed of a mass spring spring
+damper system where we have some mass m
+on which we apply some force F. Uh we
+have a spring uh K and we have a damper
+uh D.
+We want to prove the stability of this
+system to the um zero uh point
+specifically zero position and zero uh
+velocity and to do this we will assume
+and we'll consider that the energy of
+the system is our candidate leapona
+function.
+So the system is described by an energy
+function E of X X dot which is 12 K X
+dot + 12 M
+X dot squared.
+Uh so essentially a combination of
+potential and kinetic energy. And so
+what we want to do is given a candidate
+leap upon a function for our system, we
+want to check those three properties
+that we were describing in the previous
+slide.
+So in this case uh condition one and
+condition three are easily derivable by
+inspection. So we can see how uh this
+energy function is positive for all x
+and x dot uh unless these are equal to
+zero. So our equilibrium point [snorts]
+and we can see that as x grows also our
+energy function uh grows. And so we'll
+focus on our analysis on proving the
+second of the three uh conditions that
+is that the derivative of our function
+in this case the energy function is
+negative for all points that are not the
+equilibrium.
+So let us let us do this. So let's
+compute the derivative of the energy
+function E of X X dot which is equal to
+K X X dot plus M X dot X dot.
+[snorts] Here we can use the fact that
+from our system dynamics that we know
+that mx dot is equal to negative
+dx dot + kx
+to essentially rewrite this as k x dot
+minus x dot *
+dx dot + kx X
+from which we know that these two cancel
+out. And so we get essentially the
+result that we have on the slide that is
+negatived x dot squ
+which indeed verifies our uh second
+property because this is indeed always
+negative besides from the equilibrium
+point.
+Okay. So this is indeed the what we mean
+by performing a stability analysis
+through leapon of theorems.
+Okay. So let us now move to uh what we
+actually care about which is adaptive
+control uh techniques. And so
+specifically let us start from model
+reference adaptive control.
+So in model reference adaptive control
+we essentially will be defining four key
+elements or parts. So the first one will
+be a plant containing unknown
+parameters. So the plant here is a very
+specific word but just let's consider
+the system. Uh so this is the system
+where we have some unknown parameters.
+We will be defining a reference model
+which essentially compactly specified
+the desired output that we would want to
+have from our system.
+In a way the reference model can be seen
+as an alternative way to specify
+performance. Right? So we're not really
+measuring performance through the lens
+of a metric or objective function that
+we wish to optimize but we wish perform
+we um measure performance from the
+perspective of measuring distance with
+respect to a reference signal.
+The third element is that we will have a
+feedback control law that contains some
+adjustable parameters. So we will be
+coming up with a control mechanism or
+control policy which depends on some
+parameters which are adjustable
+and in particular we will be adjusting
+these parameters according to an
+adaptation mechanisms uh which we will
+be you know tasked with coming up with.
+Any question on the on the setting?
+Okay, great.
+Okay, so now we'll be going through an
+example of the kind of analysis that
+we're doing we we might be doing on um
+in adaptive uh control. We'll be first
+of all setting up the stage in a setting
+where everything is known. So we'll be
+just doing the analysis when we actually
+don't have unknown parameters and
+adaptation mechanisms and then we will
+be taking that same example but now
+adding this adjusting uh component and
+repeating the analysis.
+Okay. But as a
+frame of reference,
+remember that in adaptive control, we
+care about measuring the stability of
+the coupled u system controller
+adaptation mechanism um system, right?
+So this coupled system and so in general
+we will be defining
+our four ingredients. So we'll have a
+system which might have some
+unknown
+parameters.
+Uh in this case we consider a double
+integrator system. So for us the system
+will be mx dot= u.
+We said before that we want to measure
+performance as distance with respect to
+our reference uh output that we wish to
+have from our system. And specifically
+for us the reference will be described
+as
+through an uh fictitious variable which
+we introduce X subm which represents the
+uh essentially the the the version of
+our state X which we uh which we create
+this kind of fictitious model. um
+in order to uh represent it. So we
+assume we have uh someone giving us uh
+positioning command RT and we
+come up with this ideal response of the
+controlled uh mass uh which we assume
+evolves according to this differential
+equation. So we're introducing this
+fictitious XM X subm and we hypothesize
+that our system will evolve according to
+this reference model. So X subm stands
+for uh model.
+[snorts]
+So specifically our reference will be X
+dot XM dot plus KD
+XM dot plus KP XM
+equals K R of T
+[snorts]
+right so X of M will be our ideal output
+uh K the various Ks here are just gains
+we can choose as a system designer and
+we assume that R is a uh positioning
+command that is given to us.
+[snorts]
+Okay.
+So now we assume that the mass is known
+exactly and
+we can basically state the fact that if
+the mass is known exactly we know that
+we can achieve perfect tracking of our
+reference uh model through that
+controller.
+So the controller specifically is that u
+is equal to m * xm dot minus 2 lambda
+x dot minus lambda squar xilda
+where we are denoting as xilda
+as the difference between the output of
+the acro system and the reference the
+ideal output that we would want from the
+system. So if you want the the tracking
+error
+right. So you see here as we are
+building the different ingredients of
+our adaptive control uh pipeline
+and you know you might wonder like where
+is
+any of this coming from right? The point
+is that if we were actually having to
+design this system we would be tasked
+with designing these things ourselves.
+So we would be having to uh we would
+have to come up with a reference signal
+which we think is appropriate for our
+system. We would have to come up with a
+control law which uh controls our system
+which again we think is appropriate. Uh
+but the purpose of this is that we are
+assuming that someone gives all of these
+elements to us and we are showing the
+kind of stability analysis uh that
+follows once we have these ingredients.
+In reality, there is obviously an
+iterative component where maybe we have
+a system, we try out a specific type of
+reference model, we see how it works,
+and then maybe this doesn't we're not
+really able to prove stability and we
+keep iterating on this.
+But for the purpose of this stability
+analysis, this is the kind of setting
+we're in, right? So we have a system we
+define the reference uh
+uh a reference that we wish to track and
+we have a control law which um which
+exponentially converges uh to the zero
+tracking error. So to show that this is
+a controller that basically converges to
+zero tracking error we have to derive
+the closed loop dynamics of this
+combined system.
+Is it clear what we are trying to do?
+Okay.
+[snorts]
+So let us start from our system
+dynamics. So m MX dot equals U.
+So we have just defined u according to
+this controller. And so we can basically
+replace this as m
+x dot mus
+2 lambda x tilda dot minus lambda 2 xa
+which we can rewrite as m *
+X dot minus XM dot + 2 lambda X tilda
+dot plus lambda squar X tilda
+just to be equal to zero. So we just
+brought uh this term on the other side.
+Now from our definitions we know that
+this is
+xilda double dot
+[snorts]
+and so we see that we can essentially
+discard m because this has be to be
+equal to zero. And so if we solve this
+uh OD, the solution of the OD is
+actually that [snorts] x tilda t is
+equal to
+c 0 + c1 t * e to the lambda t.
+Right?
+Now we know that lambda lambda is a gain
+which we choose and this gain is
+positive right. So we know that lambda
+here is is positive.
+So what we can say is that as
+t goes to infinity
+then this
+so x tilda t goes to zero
+right
+but what does this tell us about uh
+tracking error?
+Yes.
+Yes. Exactly. So we defined Xilda as the
+tracking error itself, right? So we
+defined it as X - XM and we know that
+this goes to zero.
+[snorts]
+Okay. So this was basically you know we
+introduced the overall setting. We
+hypothesized the mass m was known and we
+basically said that this control law was
+you know the controller that guaranteed
+convergence to uh zero tracking error
+and we have motivated it by this
+analysis over here. Now we go into the
+setting that we actually care about
+which is the one where we assume that
+the mass is not known exactly right. So
+here
+we assume that everything uh basically
+stays the same but now we have we are in
+the slightly more realistic setting
+where the mass is not known and so we
+will have an estimate for the mass mhat.
+Okay.
+So now let us once again derive the
+closed loop uh dynamics of this combined
+system.
+Okay. And to do this let us do some um
+definitions just for notational
+compactness. So we'll define s as x
+tilda dot plus lambda x tilda.
+We'll define new as x m dot - 2 lambda x
+dot minus lambda^ 2 xtilda.
+And we will define m tilda as the
+estimation error basically mhat minus m.
+[snorts]
+So given these definitions
+let us essentially do the exact same
+analysis we did over here. Right? So we
+we will derive the closed loop dynamics
+of this of this combined uh system.
+So we start once again from our dynamics
+mx dot equals u.
+We know what u is because this is
+something we defined.
+But this time u is a function of the
+unknown mass mhat. Right?
+So, mhat
+uh times x m dot
+minus 2 lambda x dot x dot minus lambda
+squar x tilda.
+This is new,
+right?
+And so we get m tilda plus mn
+right where basically here we're using
+the fact that um mhat is equal to m
+tilda plus m
+from the way we defined um m tilda.
+And so this leads to our closed loop
+dynamics defined as m x * x dot minus
+new
+m tilda new
+which we can expand as m *
+X dot minus X M dot + 2 lambda X tilda
+dot plus lambda^ 2 XA
+equals
+M T
+where this is X dot
+And so we basically get what we have on
+the slide. So we have m
+* s dot + lambda s
+= m tilda.
+[snorts]
+Right? So nothing too deep here. just
+some algebraic manipulations. But here
+we are again defining this coupled
+system and we are computing the closed
+loop dynamics of this coupled system.
+Okay. So now what we want to do is um
+considering a specific way of adjusting
+our estimate mhat. So remember that we
+are interested in doing these
+adaptations and so we need an adaptive
+component in the picture
+and specifically we assume that we will
+be adjusting our estimate M hat
+as according to this law that is mhat
+dot is equal to negative gamma new s
+where gamma is again u which we So an
+adaptation gain it has to be positive,
+right? Okay. So basically now we have
+all of the ingredients to perform our
+stability analysis through leaponov. So
+what we're going to do is we will be
+considering this candidate leapono
+function and we will use this to
+basically verify that the system is
+globally asintotically stable to an
+equilibrium point
+and we'll study what this equilibrium
+point means essentially.
+Okay. So we have this candidate
+function defined as uh 12 * ms^ squar +
+1 / gamma
+m tilda^ 2.
+Remember that according to our leapon of
+analysis, we have to check for our three
+properties
+um
+which are again these ones here on the
+slide. So once again the first one and
+the third one are easy to prove and I'll
+leave this uh up to you guys and so
+we'll focus on the second one that is
+that the
+uh derivative of this leap of function v
+dot has to be negative for all points
+that are not the equilibrium
+and so we'll be computing the derivative
+v dot which is equal to ms s dot + one
+over gamma
+milda
+mtilda dot.
+So here we use the fact that m tilda as
+we defined it is equal to mhat minus m.
+But become m because m is a fixed mass
+so it's a constant. From this we can say
+that m tilda dot is equal m dot
+right.
+Yeah.
+Okay.
+And so what we get is ms uh * s dot
+uh + 1 / gamma
+m tilda * mhat dot
+which is equal to ms s dot minus 1 /
+gamma
+m tilda
+gamma new s
+right where here we just used basically
+the fact that M uh hat dot is equal to
+negative gamma
+uh no s according to how we defined the
+adaptation component
+which essentially leads to the fact that
+the derivative of our leapon function B
+dot is equal = to s * ms dot minus m
+tilda
+where this is - m
+lambda S and so we basically get the
+result on the slide, right? So we know
+that
+uh we can write here.
+Yes. So minus lambda m^
+squ right
+which basically uh
+uh confirms the the second validates the
+second property specifically as a
+function of uh s in this case. And so
+what this is saying is that since we are
+have been done this jacon of stab
+stability uh for given this candidate
+function what we can say is that
+um
+we can say that s goes to zero because
+we are considering this as our
+candidate equilibrium point. So s goes
+to zero and so
+remember how we defined s which is um x
+tilda dot plus lambda x tilda.
+What we're basically saying is that we
+have shown that this quantity goes to
+zero
+which means that x
+which means that x uh tilda dot is equal
+to negative x lambda x
+where lambda is positive, right? So
+remember that lambda is positive. And so
+we've shown that s goes to zero. And so
+this means that x tilda dot converges to
+uh tends to this. And so visually what
+we're seeing is that our system
+if we were to express it in a plot as a
+function of x tilda and x tilda dot is
+something that converges to the line x
+tilda dot equals negative lambda x
+tilda.
+Right? So it's something that
+as t goes to infinity converges to this
+line
+and specifically
+once it's on the line if um x tilda is
+negative the derivative of xilda will be
+positive
+and so it will tend to grow. On the
+other hand, if x tilda is positive, the
+derivative will be negative. So it will
+tend to decrease.
+And so we have shown that the system
+will essentially be converging to this
+line. And once on this line, it will be
+going to zero.
+[snorts]
+Why do we care about this? is because if
+x tilda goes to zero, we know that x
+tilda is our tracking error essentially
+and so x minus xm also goes to zero.
+&gt;&gt; Yes.
+Sorry.
+&gt;&gt; So here we were using the tool of leapon
+of stability to essentially prove uh
+well stability of the system to an
+equilibrium point. Specifically this uh
+leapono candidate leapono function
+uh is defined as as such which is
+basically
+a function of of s in this case here.
+And so we have verified
+explicitly the second of the three
+properties. But the other three are more
+easily shown by even just by by
+inspection. And we know that if um
+candidate the function satisfies these
+three properties, it shows that the
+system will be globally and
+asintotically stable to uh the
+equilibrium point. um which in this case
+for us was showing that
+&gt;&gt; [snorts]
+&gt;&gt; uh the system would essentially be
+globally asotically converging to uh s
+going to zero and we show then the this
+analysis whereby if s is going to zero
+then the tracking error will also be be
+going to zero. So we're this is in a way
+like a onetoone mapping and application
+of the leapon of stability theorem if
+that makes sense.
+Yes,
+&gt;&gt; in this case with unknown mass and the
+previous case with known mass is prove
+convergence like stability but not
+actually computing gamma or computing
+what I've done.
+&gt;&gt; No, so indeed let me um take a step
+back. So specifically we you know the
+the general setting we're working with
+is we are introducing adaptive control
+and we mentioned that classically
+adaptive control is instantiated as
+having to come up with um a coupled
+system of different ingredients namely a
+system the controller and an adaptation
+mechanism of some adjustable parameters.
+And the entire problem will be posited
+as we want to derive the and prove the
+stability of this coupled system. Right?
+So specifically what we have shown
+before is that we we basically con built
+constructed towards this example by
+first introducing the case where M was
+known and we just proved the stability
+of that overall system. Um now we are
+introducing adjustable uh an adaptation
+mechanism in order to adjust our
+estimate of M and these adaptation
+mechanisms rely on some gains that we uh
+are introducing in practice we would
+have to tune this gain that kind of now
+to answer your your questions more
+directly um so I'm aware that this I
+would say this analysis can be can feel
+you know some somewhat intricate and
+complex in the sense that we are
+introducing a lot of functions which is
+kind of unclear where it comes from.
+We're introducing a control law which is
+also unclear where it comes from and
+same thing for the reference. The
+reality is that if we were to you know
+study this explicitly this would be an
+extremely case specific uh discussion
+and so I think for the purpose of this
+class not very meaningful. So the
+reality is that whenever we have a
+system and we wish to apply adaptive
+control for the system, we will have to
+be doing some studies and you know
+analysis on ways of deriving all of
+these components, deriving the
+reference, deriving the control law,
+deciding how I want to adapt my
+adjustable parameters and also deriving
+a candidate Japan function. So, a lot to
+to take in. But then kind of what we
+decided to to focus on for the purpose
+of this class is showing that once we
+have all of these ingredients, what are
+the stability analysis that that come uh
+as a as a result?
+&gt;&gt; Yes.
+&gt;&gt; This analysis with hinged on that
+particularly function, right? Yes.
+&gt;&gt; Yeah. This is the the point where we are
+completely kind of fasttracking. The
+reality is that you know if you have an
+interesting system and you derive a
+leapon function and you show that the
+system is stable, you write a paper
+about it and you're you're happy about
+it. So so this is you know something
+where it's extremely case dependent. Uh
+we won't go into it. I think there are a
+number of references that I'm uh
+actually I think the next slides is
+exactly on this. So I definitely advise
+you to look into this reference over
+here to basically see the if you wish
+the forward direction of this uh
+discussion. So until now we've basically
+been assuming that either us you know a
+previous version of us or someone
+incredibly smart is giving us all of
+these things and we just analyze it. But
+in practice we have to come up with it.
+All right so I'm out of time so I'll
+conclude the discussion of Mayak next
+time and see you see on Wednesday.

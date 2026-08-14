@@ -108,6 +108,7 @@ def main() -> int:
     worked_examples = load_json(ANALYSIS / "teaching/worked-examples.json", [])
     drills = load_json(ANALYSIS / "teaching/drills.json", [])
     weak_claim_repairs = load_json(ANALYSIS / "teaching/weak-claim-repairs.json", [])
+    quality_audit = load_json(ANALYSIS / "audits/course-quality-audit.json", {})
     ev_by_id = evidence_by_id(evidence)
     concepts_by_id = {concept["id"]: concept for concept in concepts}
     by_video = {row["video_id"]: row for row in transcript_index.get("records", [])}
@@ -441,6 +442,26 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
         ("Teaching artifacts", "present", f"{len(derivations)} derivations, {len(worked_examples)} examples, {len(drills)} drills, and {len(weak_claim_repairs)} repair cases generated from analysis/teaching"),
         ("Manual review", "remaining", "timestamp-level evidence deepening and prose polish remain"),
     ]
+    if quality_audit:
+        transcript_gaps = len(quality_audit.get("transcript_coverage", {}).get("gaps", []))
+        manual_review = quality_audit.get("evidence", {}).get("manual_review_remaining", len(evidence))
+        audit_rows[1] = (
+            "Transcript coverage",
+            "complete" if transcript_gaps == 0 else "partial",
+            f"{transcript_index.get('available_transcripts', 0)}/{transcript_index.get('videos', 0)} transcripts; audit gaps: {transcript_gaps}",
+        )
+        audit_rows[3] = (
+            "Evidence ledger",
+            "first pass" if manual_review else "reviewed",
+            f"{len(evidence)} evidence records; {manual_review} still need manual review",
+        )
+        audit_rows.append(
+            (
+                "Quality audit",
+                "present",
+                "analysis/audits/course-quality-audit.json and analysis/audits/course-quality-audit.md generated",
+            )
+        )
     audit_table = "<table><tr><th>Requirement</th><th>Status</th><th>Evidence</th></tr>" + "".join(
         f"<tr><td>{esc(a)}</td><td>{esc(b)}</td><td>{esc(c)}</td></tr>" for a, b, c in audit_rows
     ) + "</table>"

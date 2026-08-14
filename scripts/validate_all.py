@@ -44,6 +44,7 @@ def main() -> int:
         ANALYSIS / "teaching/drills.json",
         ANALYSIS / "teaching/weak-claim-repairs.json",
     ]
+    quality_audit_path = ANALYSIS / "audits/course-quality-audit.json"
     concepts = []
     evidence = []
     if not concept_path.exists():
@@ -109,6 +110,17 @@ def main() -> int:
             rows = json.loads(path.read_text(encoding="utf-8"))
             if len(rows) < 5:
                 errors.append(f"{path.relative_to(ROOT)} should contain at least 5 records")
+    if not quality_audit_path.exists():
+        errors.append("missing analysis/audits/course-quality-audit.json; run quality audit")
+    else:
+        audit = json.loads(quality_audit_path.read_text(encoding="utf-8"))
+        coverage = audit.get("transcript_coverage", {})
+        if coverage.get("available") != coverage.get("videos"):
+            errors.append("quality audit reports incomplete transcript coverage")
+        if audit.get("concepts", {}).get("without_evidence"):
+            errors.append("quality audit reports concepts without evidence")
+        if audit.get("evidence", {}).get("missing_transcripts"):
+            errors.append("quality audit reports evidence pointing to missing transcripts")
     required_pages = [
         SITE / "index.html",
         SITE / "lectures.html",

@@ -2,8 +2,8 @@
   "course": "Stanford AA203 Optimal and Learning-Based Control | Spring 2026",
   "playlist_url": "https://www.youtube.com/playlist?list=PLa9dmHsLK9dg",
   "videos": 19,
-  "available_transcripts": 18,
-  "total_transcript_words": 197258,
+  "available_transcripts": 19,
+  "total_transcript_words": 207618,
   "records": [
     {
       "lecture": 1,
@@ -130,8 +130,10 @@
       "video_id": "RtJSHiqOdgQ",
       "title": "Intro to Learning",
       "url": "https://www.youtube.com/watch?v=RtJSHiqOdgQ",
-      "transcript_available": false,
-      "error": "es to: /home/manishmehta/projects/stanford-aa203-optimal-learning-control-concepts-research/raw-material/youtube/transcripts/raw-vtt/lecture-13-RtJSHiqOdgQ.en.vtt\nWARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies\nERROR: Unable to download video subtitles for 'en': HTTP Error 429: Too Many Requests"
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-13-RtJSHiqOdgQ.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-13-RtJSHiqOdgQ.txt",
+      "word_count": 10360
     },
     {
       "lecture": 14,

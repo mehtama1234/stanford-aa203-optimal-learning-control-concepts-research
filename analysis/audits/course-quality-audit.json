@@ -1,0 +1,35 @@
+{
+  "transcript_coverage": {
+    "available": 19,
+    "videos": 19,
+    "total_words": 207618,
+    "gaps": []
+  },
+  "concepts": {
+    "count": 38,
+    "without_evidence": [],
+    "shallow_concepts": []
+  },
+  "evidence": {
+    "count": 38,
+    "confidence_status_counts": {
+      "needs_review": 38
+    },
+    "short_windows": [],
+    "missing_transcripts": [],
+    "manual_review_remaining": 38
+  },
+  "teaching": {
+    "derivations": 6,
+    "worked_examples": 6,
+    "drills": 6,
+    "weak_claim_repairs": 5
+  },
+  "completion_readiness": {
+    "locally_reproducible": true,
+    "teaching_grade_complete": false,
+    "remaining_blockers": [
+      "manual timestamp-level evidence review"
+    ]
+  }
+}

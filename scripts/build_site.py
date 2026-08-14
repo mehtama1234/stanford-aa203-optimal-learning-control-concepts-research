@@ -168,7 +168,7 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
     },
     "shooting-methods": {
         "run": "A rocket planner can guess a thrust sequence, simulate the rocket forward, and see where it lands. If it misses the pad, the planner changes the guessed controls and shoots again. The states are consequences of the guessed controls, not independent decision variables.",
-        "math": "Shooting parameterizes controls, integrates dynamics forward, and optimizes the control parameters so endpoint, constraint, and cost conditions improve.",
+        "math": "Shooting parameterizes controls, integrates dynamics forward, and changes the control parameters until endpoint error, constraint violation, and path cost go down.",
     },
     "collocation": {
         "run": "A robot arm moving around a fixture should not be checked only at the start and end. Collocation picks interior points, makes state and action variables there, and forces the dynamics to hold at those points so the path cannot quietly cheat between them.",
@@ -191,7 +191,7 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "math": "The Bellman update uses an expectation over next states: immediate cost plus expected future value under the transition probabilities.",
     },
     "local-quadratic-approximation": {
-        "run": "Near the bottom of a smooth bowl, the shape looks quadratic even if the larger landscape is complicated. A control solver uses the same trick near a planned motion: approximate local cost and dynamics enough to compute a useful correction.",
+        "run": "Near the bottom of a smooth bowl, the shape looks quadratic even if the larger landscape is complicated. A control solver uses the same trick near a planned motion: approximate local cost and dynamics enough to compute a correction that pushes the state back toward the nominal path.",
         "math": "A Taylor expansion keeps linear terms for dynamics and quadratic terms for cost around a nominal state-action path. The approximation is trusted only nearby.",
     },
     "reachability": {
@@ -243,7 +243,7 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "math": "The objective is expected return under the current policy. Updates estimate a direction in parameter space that should increase that return.",
     },
     "exploration": {
-        "run": "A robot that always repeats the first safe grasp it found may never learn a better grasp. A robot that explores wildly may drop objects or hit the shelf. Exploration is the controlled search for useful experience.",
+        "run": "A robot that always repeats the first safe grasp it found may never learn a better grasp. A robot that explores wildly may drop objects or hit the shelf. Exploration is the controlled search for trials that teach the policy without wrecking the task.",
         "math": "Exploration changes the action distribution to gather information. The tradeoff is between learning value and the cost or risk of trying uncertain actions.",
     },
     "model-based-rl": {
@@ -444,7 +444,7 @@ LECTURE_DEEPENING: dict[int, dict[str, str]] = {
         "run": "If an expert can show good grasps, imitation is natural; if success can only be scored after trial, reinforcement learning becomes the tool.",
     },
     15: {
-        "problem": "Copying expert actions is not the same as building a robust closed-loop controller.",
+        "problem": "Copying expert actions is not the same as building a controller that recovers after its own small mistakes.",
         "move": "Study imitation learning and behavioral cloning as supervised policy learning with distribution-shift risk.",
         "run": "A cloned driving policy trained near lane center may drift right, then face states the expert almost never visited.",
     },
@@ -905,7 +905,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <p class="lede">A formula is a machine for doing one job. Read it by asking what it operates on, what gets changed, what future is being priced, and where the reading becomes false.</p>
 <div class="essay">
   <p>The symbols in AA203 are easy to misread as decoration. They are not. Each formula is a small machine: put in a state, an action, a cost, a model, or a rollout; get out a next state, a price on the future, a constraint check, or a policy update.</p>
-  <p>The useful reading order is always the same. First ask what real situation forced the formula to exist. Then identify the object it stores. Then name the operation it performs. Only after that should the symbols matter.</p>
+  <p>The reading order is always the same. First ask what real situation forced the formula to exist. Then identify the object it stores. Then name the operation it performs. Only after that should the symbols matter.</p>
 </div>
 <section class="stack">{''.join(formula_cards)}</section>""",
             "formulas",
@@ -992,7 +992,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <h1>Evidence Ledger</h1>
 <p class="lede">Evidence is the guardrail between lecture source and teaching synthesis.</p>
 <div class="essay">
-  <p>Each record points to a lecture, video id, timestamp URL, local transcript window, and raw VTT source. The important fields are not just the timestamp. The record must say what the transcript directly supports and what the site adds beyond the transcript.</p>
+  <p>Each record points to a lecture, video id, timestamp URL, local transcript window, and raw VTT source. The timestamp is only the locator. The record must say what the transcript directly supports and what the site adds beyond the transcript.</p>
   <p>Use this page to check honesty. A keyword match is not evidence by itself. A good evidence record names the lecture argument: for example, that Lecture 11 discusses reachability through reachable sets, or that Lecture 7 frames dynamic programming as state-indexed recursion.</p>
   <p>If a concept page makes a stronger teaching claim, the evidence record should make the boundary visible rather than hiding that synthesis.</p>
 </div>
@@ -1002,7 +1002,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
     review = [
         (
             "First-principles depth",
-            "Open a setup concept, a dynamic-programming concept, an MPC concept, and a learning concept. The page should begin with a real object such as a drone, car, rocket, rover, robot arm, shelf, or reward signal. If the first useful sentence is only a formal definition, the page is not done.",
+            "Open a setup concept, a dynamic-programming concept, an MPC concept, and a learning concept. The page should begin with a real object such as a drone, car, rocket, rover, robot arm, shelf, or reward signal. If the first sentence that teaches the idea is only a formal definition, the page is not done.",
         ),
         (
             "Concrete operation",
@@ -1013,8 +1013,8 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
             "Open evidence records and verify that local transcript windows support the concept vocabulary without pretending to prove the whole synthesis. The record should say what the transcript supports and what the site adds as explanation.",
         ),
         (
-            "Practice usefulness",
-            "Run the drills and read the solutions. A useful solution names the wrong turn, explains why it fails in a control setting, and then repairs the setup or method choice.",
+            "Practice transfer",
+            "Run the drills and read the solutions. A strong solution names the wrong turn, explains why it fails in a control setting, and then repairs the setup or method choice.",
         ),
         (
             "Reference comparison",
@@ -1057,7 +1057,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
         ),
         (
             "No filler",
-            "Remove sentences that only say a method is useful, powerful, important, or improves performance. Replace them with the state, action, future cost, constraint, approximation, or failure a practitioner would see.",
+            "Remove sentences that only praise a method without naming its job. Replace praise with the state, action, future cost, constraint, approximation, or failure a practitioner would see.",
         ),
     ]
     quality_intro = """

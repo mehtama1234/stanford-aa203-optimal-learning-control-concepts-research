@@ -76,9 +76,9 @@
   <tr><th>Constraints</th><td>Shelf geometry, collision constraints, payload limits, and safe exploration boundaries.</td></tr>
   <tr><th>Method Route</th><td>Use imitation learning for initial behavior, RL for improvement from reward, and model-based RL if real trials are expensive.</td></tr>
   <tr><th>Failure Signal</th><td>A policy that works on demonstrated centered objects but fails after nudging an object sideways shows distribution shift.</td></tr>
-  <tr><th>Decision Pressure</th><td>The robot needs useful behavior before exhaustive real-world trial and error, but the learned behavior must survive shelf poses and object contacts outside the demonstrations.</td></tr>
+  <tr><th>Decision Pressure</th><td>The robot needs a working picking policy before exhaustive real-world trial and error, but the learned behavior must survive shelf poses and object contacts outside the demonstrations.</td></tr>
   <tr><th>Concrete Run</th><td>Train on 2,000 centered-object demonstrations. At deployment, an object is 8 cm off center after a bump. The cloned policy has no practiced recovery unless data collection or rollouts covered that shifted state.</td></tr>
-  <tr><th>Method Boundary</th><td>Behavior cloning is a starting policy, not a safety guarantee. Model-based refinement is useful when simulated or learned dynamics can reduce expensive hardware trials.</td></tr>
+  <tr><th>Method Boundary</th><td>Behavior cloning is a starting policy, not a safety guarantee. Model-based refinement earns its place when simulated or learned dynamics reduce expensive hardware trials.</td></tr>
   <tr><th>Transfer Question</th><td>How would you detect that failures come from distribution shift rather than from a bad low-level controller?</td></tr>
 </table>
 <p><span class="pill"><a href="concepts/behavioral-cloning.html">Behavioral Cloning</a></span> <span class="pill"><a href="concepts/distribution-shift-imitation.html">Distribution Shift in Imitation</a></span> <span class="pill"><a href="concepts/reinforcement-learning.html">Reinforcement Learning</a></span> <span class="pill"><a href="concepts/model-based-rl.html">Model-Based RL</a></span></p>
@@ -93,7 +93,7 @@
   <tr><th>Failure Signal</th><td>A decision rule that ignores rare but high-loss outcomes is a sign that the stochastic model or objective is incomplete.</td></tr>
   <tr><th>Decision Pressure</th><td>Holding or exercising changes the future decision set under uncertain price motion, so a myopic payoff comparison can discard valuable optionality.</td></tr>
   <tr><th>Concrete Run</th><td>If exercising now pays 4 but holding gives a 40 percent chance of payoff 10 and a 60 percent chance of payoff 1, the immediate payoff alone is not the decision. The state carries time and price because they change future choice value.</td></tr>
-  <tr><th>Method Boundary</th><td>Stochastic dynamic programming fits when the state captures the variables that determine future payoff distributions; if market impact or hidden information dominates, the state model is incomplete.</td></tr>
+  <tr><th>Method Boundary</th><td>Stochastic dynamic programming fits when the state contains the variables that determine future payoff distributions; if market impact or hidden information dominates, the state model is incomplete.</td></tr>
   <tr><th>Transfer Question</th><td>What future value is lost when an option is exercised early?</td></tr>
 </table>
 <p><span class="pill"><a href="concepts/stochastic-dynamic-programming.html">Stochastic Dynamic Programming</a></span> <span class="pill"><a href="concepts/bellman-recursion.html">Bellman Recursion</a></span> <span class="pill"><a href="concepts/value-function.html">Value Function</a></span> <span class="pill"><a href="concepts/policy.html">Policy</a></span></p>

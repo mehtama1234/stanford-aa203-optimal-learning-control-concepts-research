@@ -26,7 +26,7 @@
 <h1>Evidence Ledger</h1>
 <p class="lede">Evidence is the guardrail between lecture source and teaching synthesis.</p>
 <div class="essay">
-  <p>Each record points to a lecture, video id, timestamp URL, local transcript window, and raw VTT source. The important fields are not just the timestamp. The record must say what the transcript directly supports and what the site adds beyond the transcript.</p>
+  <p>Each record points to a lecture, video id, timestamp URL, local transcript window, and raw VTT source. The timestamp is only the locator. The record must say what the transcript directly supports and what the site adds beyond the transcript.</p>
   <p>Use this page to check honesty. A keyword match is not evidence by itself. A good evidence record names the lecture argument: for example, that Lecture 11 discusses reachability through reachable sets, or that Lecture 7 frames dynamic programming as state-indexed recursion.</p>
   <p>If a concept page makes a stronger teaching claim, the evidence record should make the boundary visible rather than hiding that synthesis.</p>
 </div>
@@ -189,13 +189,13 @@
   <p class="muted"><a href="https://www.youtube.com/watch?v=1YdgSwEtf_s">1YdgSwEtf_s</a> · <a href="https://www.youtube.com/watch?v=1YdgSwEtf_s&amp;t=62s">00:01:02.480-00:01:11.429</a> · <code>raw-material/youtube/transcripts/clean/lecture-08-1YdgSwEtf_s.txt</code> · manual_deepened</p>
   <blockquote>and reachability theory And to do so we discuss uh some structure some key structure that the problem the optimal control problem as we formulate it has that we can leverage to derive dynamic programming equations and then I presented LQR as one example that allow me to show you how to apply the dynamic programming uh recussion and at the same time LQR is a problem that is of interest in its own right now in the second P set you</blockquote>
   <p><strong>Transcript supports:</strong> Lecture 8 presents LQR as an example that applies dynamic-programming recursion and is also a control problem of interest in its own right. This directly supports the LQR concept page.</p>
-  <p><strong>Synthesis boundary:</strong> The page expands the timestamp into why LQR is useful: local linear and quadratic structure gives tractable feedback for small deviations.</p>
+  <p><strong>Synthesis boundary:</strong> The page expands the timestamp into the LQR mechanism: local linear and quadratic structure gives tractable feedback for small deviations.</p>
   <p><a href="evidence.html#ev-lqr-01">Open evidence record</a></p>
 </article><article class="evidence-card" id="ev-local-quadratic-approximation-01">
   <h3>ev-local-quadratic-approximation-01: Lecture 8 · LQR-Style Algorithms</h3>
   <p class="muted"><a href="https://www.youtube.com/watch?v=1YdgSwEtf_s">1YdgSwEtf_s</a> · <a href="https://www.youtube.com/watch?v=1YdgSwEtf_s&amp;t=556s">00:09:16.880-00:09:27.430</a> · <code>raw-material/youtube/transcripts/clean/lecture-08-1YdgSwEtf_s.txt</code> · manual_deepened</p>
   <blockquote>invariant Actually the mat the state matrix A and B can depend on time as denoted by the subscript K This will become relevant later Well actually this is a useful property of MQR And then we assume that we have a quadratic cost So last time we looked at uh the cost until here So we have a quadratic penalty on the terminal state plus a running cost that entails a penalty quadratic penalty on the state and quadratic penalty on the control</blockquote>
-  <p><strong>Transcript supports:</strong> Lecture 8 states the assumption of a quadratic cost with terminal, state, and control penalties. This supports the local-quadratic-approximation page&#x27;s claim that quadratic structure is a useful local simplification.</p>
+  <p><strong>Transcript supports:</strong> Lecture 8 states the assumption of a quadratic cost with terminal, state, and control penalties. This supports the local-quadratic-approximation page&#x27;s claim that quadratic structure is a local replacement for a harder nonlinear shape.</p>
   <p><strong>Synthesis boundary:</strong> The page adds the boundary condition that local quadratic reasoning is credible only near the operating region where the approximation remains accurate.</p>
   <p><a href="evidence.html#ev-local-quadratic-approximation-01">Open evidence record</a></p>
 </article><article class="evidence-card" id="ev-reachability-01">
@@ -231,14 +231,14 @@
   <p class="muted"><a href="https://www.youtube.com/watch?v=udHX5Auj7ik">udHX5Auj7ik</a> · <a href="https://www.youtube.com/watch?v=udHX5Auj7ik&amp;t=42s">00:00:42.480-00:00:48.790</a> · <code>raw-material/youtube/transcripts/clean/lecture-15-udHX5Auj7ik.txt</code> · manual_deepened</p>
   <blockquote>well on Monday we focused on more classical methods to learning based control So we looked at things such as system identification and adaptive control And then uh on last week Wednesday we started to introduce the general framework and terminology for imitation learning and reinforcement learning and kind of starting to build a bit of a mental model about how to see different methods and different algorithms within these two uh subasses And so specifically today we ll then zoom into the specifically</blockquote>
   <p><strong>Transcript supports:</strong> Lecture 15 distinguishes the learning-based-control block from classical methods and names imitation learning and reinforcement learning as the two subfamilies being organized for the learner.</p>
-  <p><strong>Synthesis boundary:</strong> The page adds the practical interpretation that imitation learning is useful when demonstrations are easier to obtain than a complete reward or dynamics model.</p>
+  <p><strong>Synthesis boundary:</strong> The page adds the practical interpretation that demonstrations can stand in for a reward or dynamics model that the designer cannot write cleanly.</p>
   <p><a href="evidence.html#ev-imitation-learning-01">Open evidence record</a></p>
 </article><article class="evidence-card" id="ev-behavioral-cloning-01">
   <h3>ev-behavioral-cloning-01: Lecture 15 · Imitation Learning</h3>
   <p class="muted"><a href="https://www.youtube.com/watch?v=udHX5Auj7ik">udHX5Auj7ik</a> · <a href="https://www.youtube.com/watch?v=udHX5Auj7ik&amp;t=195s">00:03:15.680-00:03:21.910</a> · <code>raw-material/youtube/transcripts/clean/lecture-15-udHX5Auj7ik.txt</code> · manual_deepened</p>
   <blockquote>mention on other paradigms that fall within the behavior cloning um hat and then we ll look at inverse enforcement learning So just to uh briefly recap in one slide the lecture from Wednesday we started by seeing behavior cloning essentially as supervised learning of behavior right so we introduced the general notation of supervised learning whereby we essentially want to learn a parametric mapping that maps some inputs x to some outputs y uh kind of uh prototypical example would be the classification</blockquote>
   <p><strong>Transcript supports:</strong> Lecture 15 describes behavior cloning as supervised learning of behavior and connects it to learning a parametric mapping from inputs to outputs. This directly supports the behavioral-cloning page.</p>
-  <p><strong>Synthesis boundary:</strong> The page adds the control-specific closed-loop caveat: supervised action accuracy does not by itself guarantee robust execution.</p>
+  <p><strong>Synthesis boundary:</strong> The page adds the control-specific closed-loop caveat: supervised action accuracy does not by itself guarantee recovery after the learned policy visits off-demonstration states.</p>
   <p><a href="evidence.html#ev-behavioral-cloning-01">Open evidence record</a></p>
 </article><article class="evidence-card" id="ev-distribution-shift-imitation-01">
   <h3>ev-distribution-shift-imitation-01: Lecture 15 · Imitation Learning</h3>

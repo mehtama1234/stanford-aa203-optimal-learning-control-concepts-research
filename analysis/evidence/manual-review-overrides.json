@@ -42,7 +42,7 @@
   "ev-imitation-learning-01": {
     "confidence_status": "manual_deepened",
     "what_transcript_supports": "Lecture 15 distinguishes the learning-based-control block from classical methods and names imitation learning and reinforcement learning as the two subfamilies being organized for the learner.",
-    "synthesis_beyond_transcript": "The page adds the practical interpretation that imitation learning is useful when demonstrations are easier to obtain than a complete reward or dynamics model."
+    "synthesis_beyond_transcript": "The page adds the practical interpretation that demonstrations can stand in for a reward or dynamics model that the designer cannot write cleanly."
   },
   "ev-reinforcement-learning-01": {
     "confidence_status": "manual_deepened",
@@ -142,11 +142,11 @@
   "ev-lqr-01": {
     "confidence_status": "manual_deepened",
     "what_transcript_supports": "Lecture 8 presents LQR as an example that applies dynamic-programming recursion and is also a control problem of interest in its own right. This directly supports the LQR concept page.",
-    "synthesis_beyond_transcript": "The page expands the timestamp into why LQR is useful: local linear and quadratic structure gives tractable feedback for small deviations."
+    "synthesis_beyond_transcript": "The page expands the timestamp into the LQR mechanism: local linear and quadratic structure gives tractable feedback for small deviations."
   },
   "ev-local-quadratic-approximation-01": {
     "confidence_status": "manual_deepened",
-    "what_transcript_supports": "Lecture 8 states the assumption of a quadratic cost with terminal, state, and control penalties. This supports the local-quadratic-approximation page's claim that quadratic structure is a useful local simplification.",
+    "what_transcript_supports": "Lecture 8 states the assumption of a quadratic cost with terminal, state, and control penalties. This supports the local-quadratic-approximation page's claim that quadratic structure is a local replacement for a harder nonlinear shape.",
     "synthesis_beyond_transcript": "The page adds the boundary condition that local quadratic reasoning is credible only near the operating region where the approximation remains accurate."
   },
   "ev-stability-under-replanning-01": {
@@ -157,7 +157,7 @@
   "ev-behavioral-cloning-01": {
     "confidence_status": "manual_deepened",
     "what_transcript_supports": "Lecture 15 describes behavior cloning as supervised learning of behavior and connects it to learning a parametric mapping from inputs to outputs. This directly supports the behavioral-cloning page.",
-    "synthesis_beyond_transcript": "The page adds the control-specific closed-loop caveat: supervised action accuracy does not by itself guarantee robust execution."
+    "synthesis_beyond_transcript": "The page adds the control-specific closed-loop caveat: supervised action accuracy does not by itself guarantee recovery after the learned policy visits off-demonstration states."
   },
   "ev-distribution-shift-imitation-01": {
     "confidence_status": "manual_deepened",

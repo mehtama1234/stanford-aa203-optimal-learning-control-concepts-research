@@ -78,8 +78,8 @@
       "reinforcement-learning",
       "model-based-rl"
     ],
-    "decision_pressure": "The robot needs useful behavior before exhaustive real-world trial and error, but the learned behavior must survive shelf poses and object contacts outside the demonstrations.",
-    "method_boundary": "Behavior cloning is a starting policy, not a safety guarantee. Model-based refinement is useful when simulated or learned dynamics can reduce expensive hardware trials.",
+    "decision_pressure": "The robot needs a working picking policy before exhaustive real-world trial and error, but the learned behavior must survive shelf poses and object contacts outside the demonstrations.",
+    "method_boundary": "Behavior cloning is a starting policy, not a safety guarantee. Model-based refinement earns its place when simulated or learned dynamics reduce expensive hardware trials.",
     "concrete_run": "Train on 2,000 centered-object demonstrations. At deployment, an object is 8 cm off center after a bump. The cloned policy has no practiced recovery unless data collection or rollouts covered that shifted state.",
     "transfer_question": "How would you detect that failures come from distribution shift rather than from a bad low-level controller?"
   },
@@ -100,7 +100,7 @@
       "policy"
     ],
     "decision_pressure": "Holding or exercising changes the future decision set under uncertain price motion, so a myopic payoff comparison can discard valuable optionality.",
-    "method_boundary": "Stochastic dynamic programming fits when the state captures the variables that determine future payoff distributions; if market impact or hidden information dominates, the state model is incomplete.",
+    "method_boundary": "Stochastic dynamic programming fits when the state contains the variables that determine future payoff distributions; if market impact or hidden information dominates, the state model is incomplete.",
     "concrete_run": "If exercising now pays 4 but holding gives a 40 percent chance of payoff 10 and a 60 percent chance of payoff 1, the immediate payoff alone is not the decision. The state carries time and price because they change future choice value.",
     "transfer_question": "What future value is lost when an option is exercised early?"
   },

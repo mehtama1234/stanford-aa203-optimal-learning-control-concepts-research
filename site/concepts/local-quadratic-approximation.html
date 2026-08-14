@@ -45,7 +45,7 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>Near the bottom of a smooth bowl, the shape looks quadratic even if the larger landscape is complicated. A control solver uses the same trick near a planned motion: approximate local cost and dynamics enough to compute a useful correction.</p></div>
+  <div class="explain-box"><p>Near the bottom of a smooth bowl, the shape looks quadratic even if the larger landscape is complicated. A control solver uses the same trick near a planned motion: approximate local cost and dynamics enough to compute a correction that pushes the state back toward the nominal path.</p></div>
   <details class="math"><summary>the actual math, one level deeper</summary><div><p>A Taylor expansion keeps linear terms for dynamics and quadratic terms for cost around a nominal state-action path. The approximation is trusted only nearby.</p></div></details>
 </section>
 <section class="fp">
@@ -62,7 +62,7 @@
   <h3>ev-local-quadratic-approximation-01: Lecture 8 · LQR-Style Algorithms</h3>
   <p class="muted"><a href="https://www.youtube.com/watch?v=1YdgSwEtf_s">1YdgSwEtf_s</a> · <a href="https://www.youtube.com/watch?v=1YdgSwEtf_s&amp;t=556s">00:09:16.880-00:09:27.430</a> · <code>raw-material/youtube/transcripts/clean/lecture-08-1YdgSwEtf_s.txt</code> · manual_deepened</p>
   <blockquote>invariant Actually the mat the state matrix A and B can depend on time as denoted by the subscript K This will become relevant later Well actually this is a useful property of MQR And then we assume that we have a quadratic cost So last time we looked at uh the cost until here So we have a quadratic penalty on the terminal state plus a running cost that entails a penalty quadratic penalty on the state and quadratic penalty on the control</blockquote>
-  <p><strong>Transcript supports:</strong> Lecture 8 states the assumption of a quadratic cost with terminal, state, and control penalties. This supports the local-quadratic-approximation page&#x27;s claim that quadratic structure is a useful local simplification.</p>
+  <p><strong>Transcript supports:</strong> Lecture 8 states the assumption of a quadratic cost with terminal, state, and control penalties. This supports the local-quadratic-approximation page&#x27;s claim that quadratic structure is a local replacement for a harder nonlinear shape.</p>
   <p><strong>Synthesis boundary:</strong> The page adds the boundary condition that local quadratic reasoning is credible only near the operating region where the approximation remains accurate.</p>
   <p><a href="../evidence.html#ev-local-quadratic-approximation-01">Open evidence record</a></p>
 </article></section>

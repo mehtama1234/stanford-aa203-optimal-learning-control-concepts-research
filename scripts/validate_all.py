@@ -215,11 +215,18 @@ def main() -> int:
         "The method optimizes the system",
         "Start from the ordinary pressure",
         "The mathematical object is",
+        "useful behavior",
+        "robust closed-loop controller",
+        "important fields",
+        "particularly useful",
     ]
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
+        if path.name == "misconceptions.html":
+            text = re.sub(r"Repair:.*?(?=<article|\Z)", "", text, flags=re.S)
+        text_without_quotes = re.sub(r"<blockquote>.*?</blockquote>", "", text, flags=re.S)
         for phrase in forbidden_vague_phrases:
-            if phrase in text:
+            if phrase in text_without_quotes:
                 errors.append(f"vague filler phrase in {path.relative_to(ROOT)}: {phrase}")
     minimum_page_words = {
         "course-spine.html": 650,

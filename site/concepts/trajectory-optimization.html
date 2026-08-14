@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A robotic arm must move around an obstacle without exceeding joint torque or velocity limits. Start from the ordinary pressure: Many control tasks are not about one command but about a full motion plan. The shortcut is to plan a geometric path first and worry about dynamics later. That fails because a short path may require impossible acceleration, torque, or contact transitions. So the page introduces a state-action trajectory. and uses it to optimize the path while enforcing dynamics and constraints.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a state-action trajectory. The operation is: Optimize the path while enforcing dynamics and constraints. The boundary is: The optimized model must represent the important dynamics and constraints.</p></div></details>
+  <div class="explain-box"><p>A walking robot cannot choose footsteps without considering balance, joint limits, and how today&#x27;s body motion affects tomorrow&#x27;s stance. Trajectory optimization treats the whole motion history as the object to choose.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The decision is a sequence or curve of states and controls. The solver minimizes path cost while satisfying dynamics, boundary conditions, and constraints along the trajectory.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

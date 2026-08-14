@@ -118,6 +118,42 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "run": "A car that reaches a parking spot fastest may scrape the wall. A car that never moves is safe but useless. The cost is the scoreboard that says which future is better: time, distance from the goal, steering effort, comfort, and collision risk all get counted in one place.",
         "math": "A typical objective adds stage costs along the path and a terminal cost at the end. The weights are not decoration; they state the tradeoff the controller will actually obey.",
     },
+    "horizon": {
+        "run": "A delivery drone choosing its next three seconds may fly straight toward the pad. A drone planning the next thirty seconds must also budget for descent, battery reserve, and wind near the landing zone. The horizon is the length of future the controller is willing to put on the table.",
+        "math": "A finite-horizon problem chooses actions for k = 0...N. N is not just a number of samples; it decides which delayed costs and constraints can be seen by the optimizer.",
+    },
+    "constraints": {
+        "run": "A robot arm may find a low-energy path by swinging through a shelf. The cost likes it; the world does not. Constraints are the hard walls in the problem: joint limits, torque limits, collision surfaces, battery reserve, and safe speed.",
+        "math": "A constraint is an equation or inequality such as g(x,u) <= 0. A candidate path is not admissible unless every required constraint is satisfied at the relevant time.",
+    },
+    "feasibility": {
+        "run": "A car boxed between two trucks may have no legal lane change, no legal stop, and no legal acceleration that avoids trouble. Feasibility asks this before arguing about best behavior: is there at least one legal future left?",
+        "math": "The feasible set contains states and actions satisfying dynamics, bounds, and path constraints. Optimization starts only after this set is nonempty.",
+    },
+    "static-optimization": {
+        "run": "Choosing one thermostat setting for the next hour is a static problem. Choosing a heater command every second while room temperature changes is control. Static optimization is the smaller grammar: decision, objective, constraint, and local improvement.",
+        "math": "A static problem chooses z to minimize J(z) subject to constraints. There is no evolving state unless the problem is extended into a time-indexed control problem.",
+    },
+    "gradient-first-order-condition": {
+        "run": "A rover adjusting a steering angle can try a tiny change left and a tiny change right. If every tiny legal change makes the score worse, the rover is locally stuck. The gradient is the local slope that says which small change lowers cost fastest.",
+        "math": "For an unconstrained smooth minimum, the first derivative is zero. With constraints, the first-order condition includes which legal directions remain available.",
+    },
+    "calculus-of-variations": {
+        "run": "A thrown ball path is not chosen at one point. The whole curve matters. Calculus of variations asks what happens to total cost if the entire path is nudged slightly, while endpoints or dynamics are respected.",
+        "math": "The object is a functional: it takes a whole curve and returns a number. The operation is to perturb the curve and set the first variation to zero for an optimal candidate.",
+    },
+    "costate-adjoint-variable": {
+        "run": "A rocket one meter too low early in flight may force extra fuel burn later. The costate is the backward price of that state error. It tells the controller how expensive a small state mistake is after future dynamics have had time to amplify it.",
+        "math": "The costate evolves backward from terminal conditions. It carries the derivative of future cost with respect to state, so current control can be priced by downstream effect.",
+    },
+    "hamiltonian-optimal-control": {
+        "run": "More thrust costs fuel now and changes velocity later. The Hamiltonian puts both facts in one local expression: immediate cost plus the costate's price for how the dynamics move the state.",
+        "math": "H(x,u,lambda) combines stage cost with lambda times dynamics. Stationarity with respect to u gives a necessary condition for a locally optimal control.",
+    },
+    "indirect-methods": {
+        "run": "Instead of giving a big nonlinear program to a solver, an indirect method first derives the equations an optimal path must obey. It is like finding the laws of the winning path before trying to compute the path itself.",
+        "math": "The method derives state equations, costate equations, boundary conditions, and stationarity conditions, then solves that boundary-value problem.",
+    },
     "value-function": {
         "run": "A rover at the edge of a rocky slope should not ask only whether the next meter is easy. It should ask what the world looks like after that meter. The value of a state is the price tag on standing there with all future choices still ahead.",
         "math": "V(x) stores the best future cost from state x. Once V is known, a current action can be judged by immediate cost plus the value of the next state it creates.",
@@ -130,9 +166,33 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "run": "A robot arm path is a smooth curve, but a solver needs a finite list of numbers. Direct transcription places dots along the path: joint angles, velocities, and commands at selected times. Then it adds constraints saying neighboring dots must be connected by the dynamics. The solver chooses the dots; the engineer checks whether the space between dots hid trouble.",
         "math": "The continuous path becomes decision variables x_0...x_N and u_0...u_N. Defect constraints enforce x_{k+1} minus the dynamics step from x_k and u_k.",
     },
+    "shooting-methods": {
+        "run": "A rocket planner can guess a thrust sequence, simulate the rocket forward, and see where it lands. If it misses the pad, the planner changes the guessed controls and shoots again. The states are consequences of the guessed controls, not independent decision variables.",
+        "math": "Shooting parameterizes controls, integrates dynamics forward, and optimizes the control parameters so endpoint, constraint, and cost conditions improve.",
+    },
+    "collocation": {
+        "run": "A robot arm moving around a fixture should not be checked only at the start and end. Collocation picks interior points, makes state and action variables there, and forces the dynamics to hold at those points so the path cannot quietly cheat between them.",
+        "math": "Collocation uses polynomial or grid approximations and enforces defect equations at selected points. Smaller defects mean the discretized path better matches continuous dynamics.",
+    },
+    "trajectory-optimization": {
+        "run": "A walking robot cannot choose footsteps without considering balance, joint limits, and how today's body motion affects tomorrow's stance. Trajectory optimization treats the whole motion history as the object to choose.",
+        "math": "The decision is a sequence or curve of states and controls. The solver minimizes path cost while satisfying dynamics, boundary conditions, and constraints along the trajectory.",
+    },
+    "dynamic-programming": {
+        "run": "A grid rover can solve a maze backward from the goal. Each cell stores the best remaining cost from there. Once those numbers are known, choosing a move is local: step cost plus value of the cell reached.",
+        "math": "Dynamic programming solves coupled subproblems indexed by state. The update writes each state's value from neighboring future values until the recursion is solved.",
+    },
     "lqr": {
         "run": "A drone hovering in still air does not need a full nonlinear planner for a two-centimeter drift. Near hover, the motion is almost linear and the penalty for being off-center is almost a bowl. LQR turns that local picture into a feedback rule: if the state error points this way, push back that way.",
         "math": "Linear dynamics plus quadratic cost make the value function quadratic. The feedback gain comes from carrying that quadratic value backward through time.",
+    },
+    "stochastic-dynamic-programming": {
+        "run": "A delivery rover may slip left, slip right, or move as commanded when it crosses gravel. The next state is not one promised cell. Stochastic dynamic programming prices each action by averaging over the possible next states and their future values.",
+        "math": "The Bellman update uses an expectation over next states: immediate cost plus expected future value under the transition probabilities.",
+    },
+    "local-quadratic-approximation": {
+        "run": "Near the bottom of a smooth bowl, the shape looks quadratic even if the larger landscape is complicated. A control solver uses the same trick near a planned motion: approximate local cost and dynamics enough to compute a useful correction.",
+        "math": "A Taylor expansion keeps linear terms for dynamics and quadratic terms for cost around a nominal state-action path. The approximation is trusted only nearby.",
     },
     "reachability": {
         "run": "A car near a wall may still look safe because there is space in front of it. Reachability asks the sharper question: from this speed and steering limit, is there any legal sequence of controls that avoids the wall no matter what disturbance arrives? The answer is a set of states, not a single path.",
@@ -142,13 +202,49 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "run": "An autonomous car plans five seconds ahead, but only drives the first tenth of a second. Then it looks again. The old plan was not wrong; it was temporary. Traffic moved, the measured state changed, and the next optimization should start from the real state, not the predicted one.",
         "math": "MPC repeatedly solves a finite-horizon problem, applies the first control, shifts the horizon, and solves again. Recursive feasibility asks whether that first control leaves tomorrow's problem solvable.",
     },
+    "recursive-feasibility": {
+        "run": "A car can choose a legal steering command that fits through a narrow gap now but leaves no legal braking option one second later. Recursive feasibility rejects that move because today's feasible plan must hand tomorrow another feasible problem.",
+        "math": "If x_k is feasible and the MPC applies u_k, recursive feasibility requires the resulting x_{k+1} to remain inside a set from which a feasible horizon plan exists.",
+    },
+    "stability-under-replanning": {
+        "run": "A warehouse robot that replans every second can keep changing its mind and circle the same aisle forever. Stability under replanning asks for more than legality: each replan should make durable progress toward the goal or reduce a trusted measure of error.",
+        "math": "A terminal cost, terminal set, or Lyapunov-like decrease condition can make repeated finite-horizon solves behave like one stable closed-loop controller.",
+    },
     "imitation-learning": {
         "run": "A person can show a robot how to pull a drawer without writing a reward for every contact force and handle angle. Imitation learning turns demonstrations into an action rule. The danger is closed-loop drift: one small mistake puts the robot in a state the teacher never showed.",
         "math": "The data are state-action pairs from an expert. The learned policy maps observations to actions. Training loss measures action mismatch on the demonstrated states, not on every state the learned policy may later visit.",
     },
+    "behavioral-cloning": {
+        "run": "A robot sees thousands of examples where a human moves the gripper toward a handle. Behavioral cloning treats this like supervised learning: given this observation, predict the expert's action. It is simple, but it only trains on states the expert visited.",
+        "math": "The policy parameters are fit by minimizing action prediction loss on demonstration pairs. Closed-loop success also depends on what states the learned policy creates after its own errors.",
+    },
+    "distribution-shift-imitation": {
+        "run": "A cloned driving policy may drift a little right of lane center. The expert data has few examples from that off-center state because the expert rarely made the mistake. The learned policy now has to act in a part of the world where it was not trained.",
+        "math": "Training data comes from the expert's state distribution, but deployment states come from the learned policy's distribution. Small action errors can compound because those distributions differ.",
+    },
     "reinforcement-learning": {
         "run": "If no expert can label every action, the robot can try actions and learn from delayed reward. A grasp may look bad at first contact but succeed after a wrist turn. RL has to connect the later score back to earlier actions without letting unsafe exploration damage the system.",
         "math": "The learner adjusts a policy or value estimate to increase expected return. The hard parts are delayed credit, exploration, and whether the reward truly matches the task.",
+    },
+    "reward": {
+        "run": "A robot rewarded only for moving an object to a target quickly may slap the object across the table and break it. The reward was not wrong by syntax; it was missing the real task values: gentle contact, no damage, and controlled motion.",
+        "math": "Reward is the scalar feedback used to compute return. The learned behavior follows the written reward signal, including its omissions and loopholes.",
+    },
+    "policy": {
+        "run": "A thermostat policy reads temperature and decides heat on or off. A robot policy reads camera, joint, and gripper state and decides a motion command. The policy is the closed-loop rule, not a one-time plan.",
+        "math": "A policy maps state or observation to action, possibly as a probability distribution. In deployment, the policy's action changes the next input it will see.",
+    },
+    "value-based-rl": {
+        "run": "A game-playing agent may not know the best move directly, but it can learn which board states tend to lead to higher future return. It then picks actions by looking at the values of the states those actions create.",
+        "math": "Value-based RL learns V(x) or Q(x,u) from sampled rewards and transitions. The policy is obtained by choosing actions with high estimated value.",
+    },
+    "policy-optimization": {
+        "run": "A walking robot with a neural policy may not have a small action table to fill. Policy optimization changes the policy parameters directly, making actions that led to better rollouts more likely and harmful actions less likely.",
+        "math": "The objective is expected return under the current policy. Updates estimate a direction in parameter space that should increase that return.",
+    },
+    "exploration": {
+        "run": "A robot that always repeats the first safe grasp it found may never learn a better grasp. A robot that explores wildly may drop objects or hit the shelf. Exploration is the controlled search for useful experience.",
+        "math": "Exploration changes the action distribution to gather information. The tradeoff is between learning value and the cost or risk of trying uncertain actions.",
     },
     "model-based-rl": {
         "run": "A real robot should not need to crash into a shelf a thousand times to learn that shelves are hard. Model-based RL learns or uses a model, rehearses possible futures inside it, and spends real trials on the choices that look most informative or promising.",
@@ -158,19 +254,7 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
 
 
 def concept_run(concept: dict[str, Any]) -> dict[str, str]:
-    if concept["id"] in CONCEPT_RUNS:
-        return CONCEPT_RUNS[concept["id"]]
-    return {
-        "run": (
-            f"{concept['worked_example']} Start from the ordinary pressure: {concept['ordinary_problem']} "
-            f"The shortcut is to {concept['naive_approach'].lower()} That fails because {concept['why_naive_fails'].lower()} "
-            f"So the page introduces {concept['mathematical_object'].lower()} and uses it to {concept['operation'].lower()}"
-        ),
-        "math": (
-            f"The mathematical object is {concept['mathematical_object'].lower()} The operation is: "
-            f"{concept['operation']} The boundary is: {concept['assumption_boundary']}"
-        ),
-    }
+    return CONCEPT_RUNS[concept["id"]]
 
 
 FAMILY_DEEPENING: dict[str, dict[str, str]] = {
@@ -305,6 +389,9 @@ def main() -> int:
     quality_audit = load_json(ANALYSIS / "audits/course-quality-audit.json", {})
     ev_by_id = evidence_by_id(evidence)
     concepts_by_id = {concept["id"]: concept for concept in concepts}
+    missing_concept_runs = [concept["id"] for concept in concepts if concept["id"] not in CONCEPT_RUNS]
+    if missing_concept_runs:
+        raise SystemExit(f"missing first-principles concept runs: {', '.join(missing_concept_runs)}")
     by_video = {row["video_id"]: row for row in transcript_index.get("records", [])}
     concepts_by_family: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for concept in concepts:

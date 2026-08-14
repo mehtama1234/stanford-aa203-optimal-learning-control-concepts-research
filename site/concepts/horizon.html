@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A car changing lanes must look far enough ahead to avoid a merge conflict, not just avoid the next meter. Start from the ordinary pressure: Planning one second ahead and planning the whole mission are different problems. The shortcut is to pick an arbitrary lookahead window. That fails because a short horizon can miss delayed consequences; a long horizon can be too expensive or depend on unreliable forecasts. So the page introduces a finite horizon, infinite horizon, or receding horizon. and uses it to limit or extend the future cost summed by the optimization.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a finite horizon, infinite horizon, or receding horizon. The operation is: Limit or extend the future cost summed by the optimization. The boundary is: The horizon should match the time scale at which consequences become visible.</p></div></details>
+  <div class="explain-box"><p>A delivery drone choosing its next three seconds may fly straight toward the pad. A drone planning the next thirty seconds must also budget for descent, battery reserve, and wind near the landing zone. The horizon is the length of future the controller is willing to put on the table.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>A finite-horizon problem chooses actions for k = 0...N. N is not just a number of samples; it decides which delayed costs and constraints can be seen by the optimizer.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

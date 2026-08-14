@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>Aim a spacecraft burn sequence, simulate where it lands, then adjust the burn parameters. Start from the ordinary pressure: A trajectory problem often knows where it starts and what it wants to hit, but the control sequence between them is unknown. The shortcut is to guess the whole path without checking how dynamics generate it. That fails because the guessed path may not be reachable from the initial state. So the page introduces a parameterized initial condition or control sequence plus forward simulation. and uses it to shoot the dynamics forward and optimize the parameters by endpoint error and cost.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a parameterized initial condition or control sequence plus forward simulation. The operation is: Shoot the dynamics forward and optimize the parameters by endpoint error and cost. The boundary is: Forward simulation must be stable enough that small parameter changes are informative.</p></div></details>
+  <div class="explain-box"><p>A rocket planner can guess a thrust sequence, simulate the rocket forward, and see where it lands. If it misses the pad, the planner changes the guessed controls and shoots again. The states are consequences of the guessed controls, not independent decision variables.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>Shooting parameterizes controls, integrates dynamics forward, and optimizes the control parameters so endpoint, constraint, and cost conditions improve.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

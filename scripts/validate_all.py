@@ -204,6 +204,8 @@ def main() -> int:
         "This captures the objective",
         "This is useful in robotics",
         "The method optimizes the system",
+        "Start from the ordinary pressure",
+        "The mathematical object is",
     ]
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
@@ -222,6 +224,16 @@ def main() -> int:
         words = re.findall(r"\b\w+\b", text)
         if len(words) < minimum:
             errors.append(f"{filename} below richness word floor: {len(words)} < {minimum}")
+    for concept in concepts:
+        path = SITE / "concepts" / f"{concept['id']}.html"
+        text = path.read_text(encoding="utf-8") if path.exists() else ""
+        plain = re.sub(r"<[^>]+>", " ", text)
+        words = re.findall(r"\b\w+\b", plain)
+        if len(words) < 430:
+            errors.append(f"concept page below richness word floor: {path.relative_to(ROOT)} has {len(words)} words")
+        for marker in ["one concrete run", "the actual math, one level deeper", "Where the idea stops working"]:
+            if marker not in text:
+                errors.append(f"concept page missing richness marker: {path.relative_to(ROOT)} -> {marker}")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

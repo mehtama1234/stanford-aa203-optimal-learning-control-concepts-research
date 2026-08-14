@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>If a car is too close to a wall at high speed, no braking command may avoid impact within the remaining distance. Start from the ordinary pressure: A controller cannot optimize a plan that no physical or legal action can execute. The shortcut is to solve for the best plan and check constraints afterward. That fails because if no admissible plan exists, the optimizer&#x27;s output is not a plan; it is evidence that the setup is impossible or too tight. So the page introduces a feasible set or recursively feasible set. and uses it to check whether at least one trajectory obeys all dynamics and constraints.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a feasible set or recursively feasible set. The operation is: Check whether at least one trajectory obeys all dynamics and constraints. The boundary is: Feasibility depends on the current state, constraint model, horizon, and actuator limits.</p></div></details>
+  <div class="explain-box"><p>A car boxed between two trucks may have no legal lane change, no legal stop, and no legal acceleration that avoids trouble. Feasibility asks this before arguing about best behavior: is there at least one legal future left?</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The feasible set contains states and actions satisfying dynamics, bounds, and path constraints. Optimization starts only after this set is nonempty.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

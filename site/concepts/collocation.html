@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A drone path spline is checked at interior points so acceleration and velocity stay physically consistent. Start from the ordinary pressure: The optimizer needs a finite way to ensure the path obeys continuous dynamics. The shortcut is to check the dynamics only at the endpoints. That fails because a path can look valid at endpoints while bending through impossible motion between them. So the page introduces collocation points and defect constraints. and uses it to force the derivative implied by the path representation to match the dynamics at chosen points.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is collocation points and defect constraints. The operation is: Force the derivative implied by the path representation to match the dynamics at chosen points. The boundary is: The polynomial or grid representation must resolve the motion between points.</p></div></details>
+  <div class="explain-box"><p>A robot arm moving around a fixture should not be checked only at the start and end. Collocation picks interior points, makes state and action variables there, and forces the dynamics to hold at those points so the path cannot quietly cheat between them.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>Collocation uses polynomial or grid approximations and enforces defect equations at selected points. Smaller defects mean the discretized path better matches continuous dynamics.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

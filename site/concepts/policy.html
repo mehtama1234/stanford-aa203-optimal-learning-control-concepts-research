@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A drone policy maps position and velocity errors to thrust commands. Start from the ordinary pressure: The controller needs a repeatable decision rule, not a separate hand-picked action for every moment. The shortcut is to store a fixed action sequence. That fails because disturbances and uncertainty mean the state may differ from the planned path. So the page introduces a deterministic or stochastic policy. and uses it to given a state or observation, output an action or action distribution.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a deterministic or stochastic policy. The operation is: Given a state or observation, output an action or action distribution. The boundary is: A policy can only react to information available in its input.</p></div></details>
+  <div class="explain-box"><p>A thermostat policy reads temperature and decides heat on or off. A robot policy reads camera, joint, and gripper state and decides a motion command. The policy is the closed-loop rule, not a one-time plan.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>A policy maps state or observation to action, possibly as a probability distribution. In deployment, the policy&#x27;s action changes the next input it will see.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>Rewarding a robot only for reaching an object can make it slam into the table unless impact is also penalized. Start from the ordinary pressure: An agent needs a scalar learning signal, but real tasks often have many values: safety, speed, smoothness, cost, and success. The shortcut is to reward the easiest measurable outcome. That fails because the agent may maximize the measurement while violating the intended behavior. So the page introduces a reward function and return. and uses it to accumulate reward over time and update behavior toward higher expected return.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a reward function and return. The operation is: Accumulate reward over time and update behavior toward higher expected return. The boundary is: The reward must align with the real task and safety constraints.</p></div></details>
+  <div class="explain-box"><p>A robot rewarded only for moving an object to a target quickly may slap the object across the table and break it. The reward was not wrong by syntax; it was missing the real task values: gentle contact, no damage, and controlled motion.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>Reward is the scalar feedback used to compute return. The learned behavior follows the written reward signal, including its omissions and loopholes.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

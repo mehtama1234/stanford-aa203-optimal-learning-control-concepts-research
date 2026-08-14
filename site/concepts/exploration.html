@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A robot may need to try a different grasp angle to learn that it is more reliable. Start from the ordinary pressure: An agent cannot improve only from familiar behavior if better actions have never been tested. The shortcut is to always take the action that currently looks best. That fails because early estimates are wrong or incomplete, so greed locks in mediocre behavior. So the page introduces an exploration strategy or stochastic policy. and uses it to trade off exploiting known reward against collecting information from uncertain actions.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is an exploration strategy or stochastic policy. The operation is: Trade off exploiting known reward against collecting information from uncertain actions. The boundary is: Exploration must respect safety and data-collection cost.</p></div></details>
+  <div class="explain-box"><p>A robot that always repeats the first safe grasp it found may never learn a better grasp. A robot that explores wildly may drop objects or hit the shelf. Exploration is the controlled search for useful experience.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>Exploration changes the action distribution to gather information. The tradeoff is between learning value and the cost or risk of trying uncertain actions.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

@@ -45,8 +45,8 @@
 <section class="fp">
   <div class="kick">03 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A drone path that clips through a wall may have low energy cost but is not a candidate path. Start from the ordinary pressure: Physical systems have limits: actuators saturate, obstacles block motion, temperatures must stay bounded, and budgets run out. The shortcut is to add a soft penalty and hope the optimizer avoids illegal behavior. That fails because some violations are not tradeoffs; a robot collision or infeasible thrust command is simply not allowed. So the page introduces equality and inequality constraints over states, actions, and trajectories. and uses it to restrict the feasible set before choosing the best point inside it.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is equality and inequality constraints over states, actions, and trajectories. The operation is: Restrict the feasible set before choosing the best point inside it. The boundary is: The constraint must describe the actual safety or physical boundary closely enough.</p></div></details>
+  <div class="explain-box"><p>A robot arm may find a low-energy path by swinging through a shelf. The cost likes it; the world does not. Constraints are the hard walls in the problem: joint limits, torque limits, collision surfaces, battery reserve, and safe speed.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>A constraint is an equation or inequality such as g(x,u) &lt;= 0. A candidate path is not admissible unless every required constraint is satisfied at the relevant time.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">04 · boundary</div>

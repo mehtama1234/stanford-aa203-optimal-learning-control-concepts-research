@@ -54,8 +54,8 @@
 <section class="fp">
   <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A rover at the edge of a rocky slope should not ask only whether the next meter is easy. It should ask what the world looks like after that meter. The value of a state is the price tag on standing there with all future choices still ahead.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>V(x) stores the best future cost from state x. Once V is known, a current action can be judged by immediate cost plus the value of the next state it creates.</p></div></details>
+  <div class="explain-box"><p>A rover has two first moves. The rocky shortcut costs 1 minute now but leaves the rover with damaged wheels, and from that damaged state the remaining trip is estimated at 18 minutes. The smooth route costs 4 minutes now but leaves the rover healthy, with 7 minutes of remaining trip. If the rover looks only at the next move, it chooses the shortcut. If it reads the value of the next state, it compares 1 + 18 against 4 + 7 and chooses the smooth route. The value of a state is that stored future burden.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>V(x) stores the best future cost from state x. Once V is known, a current action can be judged by immediate cost plus the value of the next state it creates: choose u by comparing cost(x,u) + V(f(x,u)). In the rover run, the rocky next state has V = 18 and the smooth next state has V = 7, so the current action changes because the future price is attached to the state after the move.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">05 · boundary</div>

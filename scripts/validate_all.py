@@ -317,6 +317,12 @@ def main() -> int:
                     errors.append(f"feasibility concept page missing empty-set marker: {marker}")
             if len(words) < 740:
                 errors.append(f"feasibility concept page below core richness floor: {len(words)} < 740")
+        if concept.get("id") == "value-function":
+            for marker in ["1 + 18", "4 + 7", "V = 18", "V = 7", "cost(x,u) + V(f(x,u))"]:
+                if marker not in text:
+                    errors.append(f"value-function concept page missing future-price marker: {marker}")
+            if len(words) < 740:
+                errors.append(f"value-function concept page below core richness floor: {len(words)} < 740")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

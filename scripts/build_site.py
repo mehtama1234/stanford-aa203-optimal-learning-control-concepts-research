@@ -178,8 +178,8 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "math": "The method derives state equations, costate equations, boundary conditions, and stationarity conditions, then solves that boundary-value problem.",
     },
     "value-function": {
-        "run": "A rover at the edge of a rocky slope should not ask only whether the next meter is easy. It should ask what the world looks like after that meter. The value of a state is the price tag on standing there with all future choices still ahead.",
-        "math": "V(x) stores the best future cost from state x. Once V is known, a current action can be judged by immediate cost plus the value of the next state it creates.",
+        "run": "A rover has two first moves. The rocky shortcut costs 1 minute now but leaves the rover with damaged wheels, and from that damaged state the remaining trip is estimated at 18 minutes. The smooth route costs 4 minutes now but leaves the rover healthy, with 7 minutes of remaining trip. If the rover looks only at the next move, it chooses the shortcut. If it reads the value of the next state, it compares 1 + 18 against 4 + 7 and chooses the smooth route. The value of a state is that stored future burden.",
+        "math": "V(x) stores the best future cost from state x. Once V is known, a current action can be judged by immediate cost plus the value of the next state it creates: choose u by comparing cost(x,u) + V(f(x,u)). In the rover run, the rocky next state has V = 18 and the smooth next state has V = 7, so the current action changes because the future price is attached to the state after the move.",
     },
     "bellman-recursion": {
         "run": "A warehouse robot choosing between two aisles does not need to list every possible path to the loading dock. For each aisle, it can count the cost of entering that aisle now, then look up the best remaining cost from the state at the end of that move. That is the Bellman split: pay now, then inherit the future value of the state you created.",

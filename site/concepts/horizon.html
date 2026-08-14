@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Horizon</h1>
 <p class="lede">How far into the future the controller is asked to reason.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>Planning one second ahead and planning the whole mission are different problems.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Pick an arbitrary lookahead window.</p><p><strong>Why it fails:</strong> A short horizon can miss delayed consequences; a long horizon can be too expensive or depend on unreliable forecasts.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A finite horizon, infinite horizon, or receding horizon.</p></article>
-  <article class="card "><h3>Operation</h3><p>Limit or extend the future cost summed by the optimization.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>Planning one second ahead and planning the whole mission are different problems.</p>
+    <p>The tempting shortcut is simple: Pick an arbitrary lookahead window. But that shortcut breaks because a short horizon can miss delayed consequences; a long horizon can be too expensive or depend on unreliable forecasts.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A car changing lanes must look far enough ahead to avoid a merge conflict, not just avoid the next meter.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The horizon should match the time scale at which consequences become visible.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The controller repeatedly makes greedy moves because the real cost lies just beyond the horizon.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Ask when the consequences of a bad action first appear.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a finite horizon, infinite horizon, or receding horizon. This answers a practical question: ask when the consequences of a bad action first appear.</p>
+    <p>The operation is concrete: Limit or extend the future cost summed by the optimization.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A car changing lanes must look far enough ahead to avoid a merge conflict, not just avoid the next meter. Start from the ordinary pressure: Planning one second ahead and planning the whole mission are different problems. The shortcut is to pick an arbitrary lookahead window. That fails because a short horizon can miss delayed consequences; a long horizon can be too expensive or depend on unreliable forecasts. So the page introduces a finite horizon, infinite horizon, or receding horizon. and uses it to limit or extend the future cost summed by the optimization.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a finite horizon, infinite horizon, or receding horizon. The operation is: Limit or extend the future cost summed by the optimization. The boundary is: The horizon should match the time scale at which consequences become visible.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The horizon should match the time scale at which consequences become visible.</p>
+    <p>If that boundary is crossed, the visible failure is this: the controller repeatedly makes greedy moves because the real cost lies just beyond the horizon.</p>
+    <p><strong>Recognize it in a new problem:</strong> Ask when the consequences of a bad action first appear.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-horizon-01">

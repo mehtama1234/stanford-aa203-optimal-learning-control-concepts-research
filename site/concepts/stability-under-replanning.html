@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Stability Under Replanning</h1>
 <p class="lede">The property that repeated replanning moves the system toward controlled behavior rather than causing drift or oscillation.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>A controller can solve every short-horizon problem and still behave badly over many replans.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Assume repeated optimization automatically stabilizes the system.</p><p><strong>Why it fails:</strong> Each short plan may postpone hard work or reverse earlier choices.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A Lyapunov-like decrease condition, terminal cost, or terminal set.</p></article>
-  <article class="card "><h3>Operation</h3><p>Constrain or score the finite-horizon problem so each replan preserves long-run progress.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>A controller can solve every short-horizon problem and still behave badly over many replans.</p>
+    <p>The tempting shortcut is simple: Assume repeated optimization automatically stabilizes the system. But that shortcut breaks because each short plan may postpone hard work or reverse earlier choices.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A quadrotor should not keep making short corrections that reduce immediate error while building velocity oscillations.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>Stability claims require conditions beyond mere feasibility.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The system remains feasible but jitters, diverges, or cycles.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Ask what prevents the next replan from undoing the current one.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a lyapunov-like decrease condition, terminal cost, or terminal set. This answers a practical question: ask what prevents the next replan from undoing the current one.</p>
+    <p>The operation is concrete: Constrain or score the finite-horizon problem so each replan preserves long-run progress.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A quadrotor should not keep making short corrections that reduce immediate error while building velocity oscillations. Start from the ordinary pressure: A controller can solve every short-horizon problem and still behave badly over many replans. The shortcut is to assume repeated optimization automatically stabilizes the system. That fails because each short plan may postpone hard work or reverse earlier choices. So the page introduces a lyapunov-like decrease condition, terminal cost, or terminal set. and uses it to constrain or score the finite-horizon problem so each replan preserves long-run progress.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a lyapunov-like decrease condition, terminal cost, or terminal set. The operation is: Constrain or score the finite-horizon problem so each replan preserves long-run progress. The boundary is: Stability claims require conditions beyond mere feasibility.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>Stability claims require conditions beyond mere feasibility.</p>
+    <p>If that boundary is crossed, the visible failure is this: the system remains feasible but jitters, diverges, or cycles.</p>
+    <p><strong>Recognize it in a new problem:</strong> Ask what prevents the next replan from undoing the current one.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-stability-under-replanning-01">

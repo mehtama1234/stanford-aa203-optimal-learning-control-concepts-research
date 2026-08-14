@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Action / Control Input</h1>
 <p class="lede">The choice the controller is allowed to make at a particular moment.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>A planner needs to know which knobs it can turn: thrust, steering, torque, investment, braking, or a robot joint command.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Treat every desired change as directly selectable.</p><p><strong>Why it fails:</strong> A robot cannot choose its next position directly if motors only supply torques under limits.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A control input, action, or policy output.</p></article>
-  <article class="card "><h3>Operation</h3><p>Choose the input and feed it through the system dynamics.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>A planner needs to know which knobs it can turn: thrust, steering, torque, investment, braking, or a robot joint command.</p>
+    <p>The tempting shortcut is simple: Treat every desired change as directly selectable. But that shortcut breaks because a robot cannot choose its next position directly if motors only supply torques under limits.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A drone can command rotor thrust, not instant position; the position changes only through acceleration and velocity.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The action set must reflect actuator limits and legal moves.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The plan asks for a move no actuator can produce.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Separate what you want the system to do from what command you can actually issue.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a control input, action, or policy output. This answers a practical question: separate what you want the system to do from what command you can actually issue.</p>
+    <p>The operation is concrete: Choose the input and feed it through the system dynamics.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A drone pilot may want the drone to be two meters higher. The controller cannot choose height directly. It can change rotor thrust; thrust changes acceleration, acceleration changes velocity, and velocity changes height. Calling height the action would make the plan ask for magic.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The action u is the command passed into the dynamics. The next state is not chosen directly; it is produced by x_next = f(x, u).</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The action set must reflect actuator limits and legal moves.</p>
+    <p>If that boundary is crossed, the visible failure is this: the plan asks for a move no actuator can produce.</p>
+    <p><strong>Recognize it in a new problem:</strong> Separate what you want the system to do from what command you can actually issue.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-action-control-input-01">

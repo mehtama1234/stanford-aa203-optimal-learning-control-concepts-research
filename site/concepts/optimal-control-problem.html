@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Optimal Control Problem</h1>
 <p class="lede">A problem where you choose actions over time so a moving system reaches a better future without violating the rules.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>A rocket, car, arm, portfolio, or economy does not respond only once. Each action changes the next situation, so the planner must judge a whole chain of consequences.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Pick the action that looks best right now.</p><p><strong>Why it fails:</strong> A locally attractive action can make the later state expensive, unsafe, or impossible to recover from.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A state, a control input, dynamics, a cost, constraints, and a horizon.</p></article>
-  <article class="card "><h3>Operation</h3><p>Search over action sequences while propagating the state forward and adding future cost.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>A rocket, car, arm, portfolio, or economy does not respond only once. Each action changes the next situation, so the planner must judge a whole chain of consequences.</p>
+    <p>The tempting shortcut is simple: Pick the action that looks best right now. But that shortcut breaks because a locally attractive action can make the later state expensive, unsafe, or impossible to recover from.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>For a landing rocket, throttling hard now may reduce height error but waste fuel and leave too little authority near touchdown.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The setup only says what should be optimized if the state, dynamics, cost, and constraints have been named correctly.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The controller can satisfy the written objective while missing the real mission, such as saving fuel while arriving too fast.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>If today&amp;apos;s action changes tomorrow&amp;apos;s choices, write it as an optimal control problem before choosing a solver.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a state, a control input, dynamics, a cost, constraints, and a horizon. This answers a practical question: if today&amp;apos;s action changes tomorrow&amp;apos;s choices, write it as an optimal control problem before choosing a solver.</p>
+    <p>The operation is concrete: Search over action sequences while propagating the state forward and adding future cost.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>Suppose a landing rocket is 80 meters above the pad, falling at 18 m/s, with 12 seconds of fuel left. A hard burn now slows it, but may leave too little fuel for the last meters. A weak burn saves fuel, but may make the later braking problem impossible. The object is not one throttle command. It is the whole chain of states and commands until touchdown.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>State x might contain height, velocity, and fuel. Control u is thrust. Dynamics move x forward one time step. Cost adds fuel use, landing error, and touchdown speed. Constraints forbid negative fuel, too much thrust, and unsafe impact speed.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The setup only says what should be optimized if the state, dynamics, cost, and constraints have been named correctly.</p>
+    <p>If that boundary is crossed, the visible failure is this: the controller can satisfy the written objective while missing the real mission, such as saving fuel while arriving too fast.</p>
+    <p><strong>Recognize it in a new problem:</strong> If today&amp;apos;s action changes tomorrow&amp;apos;s choices, write it as an optimal control problem before choosing a solver.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-optimal-control-problem-01">

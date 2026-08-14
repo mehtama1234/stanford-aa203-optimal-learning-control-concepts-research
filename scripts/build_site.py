@@ -97,6 +97,82 @@ def evidence_card(row: dict[str, Any], depth: int = 0) -> str:
 </article>"""
 
 
+CONCEPT_RUNS: dict[str, dict[str, str]] = {
+    "optimal-control-problem": {
+        "run": "Suppose a landing rocket is 80 meters above the pad, falling at 18 m/s, with 12 seconds of fuel left. A hard burn now slows it, but may leave too little fuel for the last meters. A weak burn saves fuel, but may make the later braking problem impossible. The object is not one throttle command. It is the whole chain of states and commands until touchdown.",
+        "math": "State x might contain height, velocity, and fuel. Control u is thrust. Dynamics move x forward one time step. Cost adds fuel use, landing error, and touchdown speed. Constraints forbid negative fuel, too much thrust, and unsafe impact speed.",
+    },
+    "state": {
+        "run": "Two cars can sit at the same point in a lane and need opposite controls. One is moving straight at 20 mph; the other is sliding sideways at 20 mph. Position alone hides the difference. Speed, heading, tire slip, and nearby cars are part of the state because they change what the next steering or braking command will do.",
+        "math": "A state is the smallest present-tense record that lets the model predict the next state from the next action. If two histories give the same state, the controller is claiming their future options are the same.",
+    },
+    "action-control-input": {
+        "run": "A drone pilot may want the drone to be two meters higher. The controller cannot choose height directly. It can change rotor thrust; thrust changes acceleration, acceleration changes velocity, and velocity changes height. Calling height the action would make the plan ask for magic.",
+        "math": "The action u is the command passed into the dynamics. The next state is not chosen directly; it is produced by x_next = f(x, u).",
+    },
+    "dynamics": {
+        "run": "If a car is moving fast on ice, the same steering angle produces a different next state than it would on dry asphalt. Dynamics are the rule that carries a command through the body and the world. Without that rule, planning is only drawing wishes on a map.",
+        "math": "Dynamics can be written as x_next = f(x, u) in discrete time or dx/dt = f(x, u) in continuous time. The function is the claim about how action becomes motion.",
+    },
+    "objective-cost-function": {
+        "run": "A car that reaches a parking spot fastest may scrape the wall. A car that never moves is safe but useless. The cost is the scoreboard that says which future is better: time, distance from the goal, steering effort, comfort, and collision risk all get counted in one place.",
+        "math": "A typical objective adds stage costs along the path and a terminal cost at the end. The weights are not decoration; they state the tradeoff the controller will actually obey.",
+    },
+    "value-function": {
+        "run": "A rover at the edge of a rocky slope should not ask only whether the next meter is easy. It should ask what the world looks like after that meter. The value of a state is the price tag on standing there with all future choices still ahead.",
+        "math": "V(x) stores the best future cost from state x. Once V is known, a current action can be judged by immediate cost plus the value of the next state it creates.",
+    },
+    "bellman-recursion": {
+        "run": "A warehouse robot choosing between two aisles does not need to list every possible path to the loading dock. For each aisle, it can count the cost of entering that aisle now, then look up the best remaining cost from the state at the end of that move. That is the Bellman split: pay now, then inherit the future value of the state you created.",
+        "math": "V(x) = min over u of cost(x,u) + V(f(x,u)) in the deterministic case. With uncertainty, the next value is averaged over possible next states.",
+    },
+    "direct-transcription": {
+        "run": "A robot arm path is a smooth curve, but a solver needs a finite list of numbers. Direct transcription places dots along the path: joint angles, velocities, and commands at selected times. Then it adds constraints saying neighboring dots must be connected by the dynamics. The solver chooses the dots; the engineer checks whether the space between dots hid trouble.",
+        "math": "The continuous path becomes decision variables x_0...x_N and u_0...u_N. Defect constraints enforce x_{k+1} minus the dynamics step from x_k and u_k.",
+    },
+    "lqr": {
+        "run": "A drone hovering in still air does not need a full nonlinear planner for a two-centimeter drift. Near hover, the motion is almost linear and the penalty for being off-center is almost a bowl. LQR turns that local picture into a feedback rule: if the state error points this way, push back that way.",
+        "math": "Linear dynamics plus quadratic cost make the value function quadratic. The feedback gain comes from carrying that quadratic value backward through time.",
+    },
+    "reachability": {
+        "run": "A car near a wall may still look safe because there is space in front of it. Reachability asks the sharper question: from this speed and steering limit, is there any legal sequence of controls that avoids the wall no matter what disturbance arrives? The answer is a set of states, not a single path.",
+        "math": "A backward reachable set collects states that can reach a target, or cannot avoid a bad target, under the allowed controls and disturbances. Safety means staying on the correct side of that set.",
+    },
+    "model-predictive-control": {
+        "run": "An autonomous car plans five seconds ahead, but only drives the first tenth of a second. Then it looks again. The old plan was not wrong; it was temporary. Traffic moved, the measured state changed, and the next optimization should start from the real state, not the predicted one.",
+        "math": "MPC repeatedly solves a finite-horizon problem, applies the first control, shifts the horizon, and solves again. Recursive feasibility asks whether that first control leaves tomorrow's problem solvable.",
+    },
+    "imitation-learning": {
+        "run": "A person can show a robot how to pull a drawer without writing a reward for every contact force and handle angle. Imitation learning turns demonstrations into an action rule. The danger is closed-loop drift: one small mistake puts the robot in a state the teacher never showed.",
+        "math": "The data are state-action pairs from an expert. The learned policy maps observations to actions. Training loss measures action mismatch on the demonstrated states, not on every state the learned policy may later visit.",
+    },
+    "reinforcement-learning": {
+        "run": "If no expert can label every action, the robot can try actions and learn from delayed reward. A grasp may look bad at first contact but succeed after a wrist turn. RL has to connect the later score back to earlier actions without letting unsafe exploration damage the system.",
+        "math": "The learner adjusts a policy or value estimate to increase expected return. The hard parts are delayed credit, exploration, and whether the reward truly matches the task.",
+    },
+    "model-based-rl": {
+        "run": "A real robot should not need to crash into a shelf a thousand times to learn that shelves are hard. Model-based RL learns or uses a model, rehearses possible futures inside it, and spends real trials on the choices that look most informative or promising.",
+        "math": "The learned model predicts next states or rollout outcomes. Planning through that model reduces real trial count, but model errors can create plans that work only inside the model.",
+    },
+}
+
+
+def concept_run(concept: dict[str, Any]) -> dict[str, str]:
+    if concept["id"] in CONCEPT_RUNS:
+        return CONCEPT_RUNS[concept["id"]]
+    return {
+        "run": (
+            f"{concept['worked_example']} Start from the ordinary pressure: {concept['ordinary_problem']} "
+            f"The shortcut is to {concept['naive_approach'].lower()} That fails because {concept['why_naive_fails'].lower()} "
+            f"So the page introduces {concept['mathematical_object'].lower()} and uses it to {concept['operation'].lower()}"
+        ),
+        "math": (
+            f"The mathematical object is {concept['mathematical_object'].lower()} The operation is: "
+            f"{concept['operation']} The boundary is: {concept['assumption_boundary']}"
+        ),
+    }
+
+
 def main() -> int:
     manifest = load_json(RAW / "course-manifest.json", {"videos": []})
     transcript_index = load_json(
@@ -201,6 +277,31 @@ blockquote {
   background: #f7faf9;
   color: #2c3a40;
 }
+.fp { border-top: 1px solid var(--line); padding: 26px 0 8px; }
+.kick { font-size: 12px; color: var(--accent-2); font-weight: 760; text-transform: uppercase; letter-spacing: .08em; }
+.essay p { max-width: 76ch; font-size: 16px; color: #24323a; margin: 10px 0; }
+.explain-box {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  background: var(--paper);
+  padding: 14px 16px;
+  margin: 14px 0;
+}
+.explain-box p { margin: 7px 0; }
+.math {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #eef5f4;
+  margin: 14px 0;
+}
+.math summary {
+  cursor: pointer;
+  padding: 10px 13px;
+  color: var(--accent);
+  font-weight: 760;
+}
+.math div { border-top: 1px solid var(--line); padding: 4px 14px 12px; }
 table { width: 100%; border-collapse: collapse; background: var(--paper); border: 1px solid var(--line); }
 th, td { padding: 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
@@ -291,23 +392,41 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
     for concept in concepts:
         ev_cards = "".join(evidence_card(ev_by_id[eid], depth=1) for eid in concept.get("course_evidence_ids", []) if eid in ev_by_id)
         related = [c for c in concepts if c["family"] == concept["family"] and c["id"] != concept["id"]][:6]
+        run = concept_run(concept)
         body = f"""
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>{esc(concept['name'])}</h1>
 <p class="lede">{esc(concept['plain_language_definition'])}</p>
-<section class="wide-grid">
-  {card("Ordinary Problem", f"<p>{esc(concept['ordinary_problem'])}</p>")}
-  {card("Naive Approach", f"<p>{esc(concept['naive_approach'])}</p><p><strong>Why it fails:</strong> {esc(concept['why_naive_fails'])}</p>")}
-  {card("Mathematical Object", f"<p>{esc(concept['mathematical_object'])}</p>")}
-  {card("Operation", f"<p>{esc(concept['operation'])}</p>")}
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>{esc(concept['ordinary_problem'])}</p>
+    <p>The tempting shortcut is simple: {esc(concept['naive_approach'])} But that shortcut breaks because {esc(concept['why_naive_fails']).lower()}</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>{esc(concept['worked_example'])}</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  {card("Assumption Boundary", f"<p>{esc(concept['assumption_boundary'])}</p>")}
-  {card("Failure Mode", f"<p>{esc(concept['failure_mode'])}</p>")}
-  {card("Recognize It", f"<p>{esc(concept['recognition_test'])}</p>")}
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of {esc(concept['mathematical_object']).lower()} This answers a practical question: {esc(concept['recognition_test']).lower()}</p>
+    <p>The operation is concrete: {esc(concept['operation'])}</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>{esc(run['run'])}</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>{esc(run['math'])}</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>{esc(concept['assumption_boundary'])}</p>
+    <p>If that boundary is crossed, the visible failure is this: {esc(concept['failure_mode']).lower()}</p>
+    <p><strong>Recognize it in a new problem:</strong> {esc(concept['recognition_test'])}</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack">{ev_cards or '<p class="muted">No evidence record yet.</p>'}</section>
@@ -317,14 +436,53 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
         write(SITE / "concepts" / f"{concept['id']}.html", page(concept["name"], body, "concepts", depth=1))
 
     spine_items = [
-        ("Name the control problem", "State, action, dynamics, cost, horizon, constraints, and feasibility define what counts as a legal future."),
-        ("Move from snapshots to paths", "Calculus of variations, indirect methods, direct transcription, shooting, collocation, and trajectory optimization make the whole path the object."),
-        ("Compress future consequence", "Dynamic programming, value functions, Bellman recursion, and stochastic DP turn future planning into state-indexed accounting."),
-        ("Exploit local structure", "LQR and local quadratic approximations make fast feedback possible when deviations stay near a nominal plan."),
-        ("Replan safely", "Reachability, MPC, recursive feasibility, and stability under replanning keep finite-horizon decisions from painting the system into a corner."),
-        ("Learn when structure is incomplete", "Imitation learning, behavioral cloning, RL, reward, policies, value-based RL, policy optimization, exploration, and model-based RL add data-driven control."),
+        (
+            "01",
+            "Name the moving situation",
+            "A control problem begins when a choice today changes what choices are available tomorrow. Before formulas, name the moving thing, the information you know now, the command you can issue, the rule that turns that command into motion, the future you prefer, and the lines you cannot cross.",
+            "A delivery drone is not controlled by saying 'arrive quickly.' Its state includes position, velocity, attitude, battery, payload, and wind estimate. Its action is thrust or a lower-level motion command. Its cost trades time, energy, landing error, and smoothness. Its constraints include no-fly zones, thrust limits, battery reserve, and safe touchdown.",
+        ),
+        (
+            "02",
+            "Make the whole path the decision",
+            "Static optimization chooses a point. Control chooses a path. Calculus of variations, costates, Hamiltonians, shooting, transcription, and collocation are different ways of saying that a legal answer is not one number; it is a history of states and actions that must fit the dynamics at every step.",
+            "For a robot arm moving around a fixture, a shortest geometric curve can still require impossible torque. Direct methods put states and commands on a grid, enforce dynamics between neighboring grid points, and let the solver choose a path that the arm can physically trace.",
+        ),
+        (
+            "03",
+            "Price the future from each state",
+            "Dynamic programming appears when the future after the next state is another copy of the same problem. The value function is the price tag on being in a state with all future choices still open. Bellman recursion is the bookkeeping rule: compare actions by the cost now plus the future value of the state they create.",
+            "A rover may choose a longer route around rough ground because the short route damages its wheels. The immediate distance is smaller, but the next state has worse future value because every later move is harder.",
+        ),
+        (
+            "04",
+            "Use local structure when the world is near the plan",
+            "LQR works when the real motion is close enough to a nominal motion that the dynamics look linear and the cost looks like a bowl. It is not magic feedback. It is a local promise: small errors near the planned state can be pushed back with a fast linear correction.",
+            "A hovering drone can use LQR for a small drift. After clipping a branch and tumbling, the same local model is no longer the right picture; the state has left the region where the approximation tells the truth.",
+        ),
+        (
+            "05",
+            "Replan without losing tomorrow",
+            "MPC turns planning into feedback by repeatedly solving a short future problem and applying only the first command. Reachability and recursive feasibility ask the question MPC alone can miss: after this first command, will the next problem still have a legal escape?",
+            "A car can choose a narrow traffic gap that is collision-free for two seconds and still be making a bad control choice if the state after one second has no safe braking or steering option left.",
+        ),
+        (
+            "06",
+            "Learn only where written structure runs out",
+            "Learning-based control is not a replacement for control thinking. It enters when the model is incomplete, the cost is hard to write, expert behavior is easier to show than specify, or trial feedback is the only teacher. The same questions remain: what is the state, what action is chosen, what future is being priced, and what failure does the learner create?",
+            "Behavior cloning can teach a robot a drawer-pulling motion from demonstrations, but the learned policy may drift into a handle angle the expert never showed. RL can improve from reward, but if the reward pays only for speed, the robot may learn to damage the object quickly.",
+        ),
     ]
-    write(SITE / "course-spine.html", page("Course Spine", f"<h1>Course Spine</h1><section class=\"stack\">{''.join(card(a,b) for a,b in spine_items)}</section>", "spine"))
+    spine_html = "".join(
+        f"""<section class="fp">
+  <div class="kick">{num} · course move</div>
+  <h2>{esc(title)}</h2>
+  <div class="essay"><p>{esc(problem)}</p></div>
+  <div class="explain-box"><p>{esc(example)}</p></div>
+</section>"""
+        for num, title, problem, example in spine_items
+    )
+    write(SITE / "course-spine.html", page("Course Spine", f"<h1>Course Spine</h1><p class=\"lede\">The course is one question repeated at larger scale: what should this system do now, knowing that the action changes the future it will have to live in?</p>{spine_html}", "spine"))
 
     family_cards = "".join(
         card(family["name"], f"<p>{esc(family['problem'])}</p><p>{' '.join(f'<span class=\"pill\">{concept_link(concepts_by_id[cid])}</span>' for cid in family['concepts'] if cid in concepts_by_id)}</p>")

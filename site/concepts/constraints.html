@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Constraints</h1>
 <p class="lede">Rules the solution must obey even if breaking them would reduce the written cost.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>Physical systems have limits: actuators saturate, obstacles block motion, temperatures must stay bounded, and budgets run out.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Add a soft penalty and hope the optimizer avoids illegal behavior.</p><p><strong>Why it fails:</strong> Some violations are not tradeoffs; a robot collision or infeasible thrust command is simply not allowed.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>Equality and inequality constraints over states, actions, and trajectories.</p></article>
-  <article class="card "><h3>Operation</h3><p>Restrict the feasible set before choosing the best point inside it.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>Physical systems have limits: actuators saturate, obstacles block motion, temperatures must stay bounded, and budgets run out.</p>
+    <p>The tempting shortcut is simple: Add a soft penalty and hope the optimizer avoids illegal behavior. But that shortcut breaks because some violations are not tradeoffs; a robot collision or infeasible thrust command is simply not allowed.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A drone path that clips through a wall may have low energy cost but is not a candidate path.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The constraint must describe the actual safety or physical boundary closely enough.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>A controller finds a mathematically cheap path through a forbidden region.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Ask what the controller is never allowed to do, even to improve the score.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of equality and inequality constraints over states, actions, and trajectories. This answers a practical question: ask what the controller is never allowed to do, even to improve the score.</p>
+    <p>The operation is concrete: Restrict the feasible set before choosing the best point inside it.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A drone path that clips through a wall may have low energy cost but is not a candidate path. Start from the ordinary pressure: Physical systems have limits: actuators saturate, obstacles block motion, temperatures must stay bounded, and budgets run out. The shortcut is to add a soft penalty and hope the optimizer avoids illegal behavior. That fails because some violations are not tradeoffs; a robot collision or infeasible thrust command is simply not allowed. So the page introduces equality and inequality constraints over states, actions, and trajectories. and uses it to restrict the feasible set before choosing the best point inside it.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is equality and inequality constraints over states, actions, and trajectories. The operation is: Restrict the feasible set before choosing the best point inside it. The boundary is: The constraint must describe the actual safety or physical boundary closely enough.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The constraint must describe the actual safety or physical boundary closely enough.</p>
+    <p>If that boundary is crossed, the visible failure is this: a controller finds a mathematically cheap path through a forbidden region.</p>
+    <p><strong>Recognize it in a new problem:</strong> Ask what the controller is never allowed to do, even to improve the score.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-constraints-01">

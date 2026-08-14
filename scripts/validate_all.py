@@ -195,6 +195,18 @@ def main() -> int:
         for needle in needles:
             if needle not in text:
                 errors.append(f"{filename} missing teaching marker: {needle}")
+    forbidden_vague_phrases = [
+        "This is important for control",
+        "This improves performance",
+        "This captures the objective",
+        "This is useful in robotics",
+        "The method optimizes the system",
+    ]
+    for path in SITE.rglob("*.html"):
+        text = path.read_text(encoding="utf-8")
+        for phrase in forbidden_vague_phrases:
+            if phrase in text:
+                errors.append(f"vague filler phrase in {path.relative_to(ROOT)}: {phrase}")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

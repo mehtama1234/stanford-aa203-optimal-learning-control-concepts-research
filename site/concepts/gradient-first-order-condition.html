@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Gradient and First-Order Condition</h1>
 <p class="lede">A local test for whether a tiny move can immediately improve the objective.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>An optimizer needs a direction that says which small change makes the score better or worse.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Try random changes until the cost goes down.</p><p><strong>Why it fails:</strong> Random search wastes structure and becomes expensive in high-dimensional control trajectories.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A gradient, derivative, or stationarity condition.</p></article>
-  <article class="card "><h3>Operation</h3><p>Differentiate the objective and look for directions of improvement or stationarity.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>An optimizer needs a direction that says which small change makes the score better or worse.</p>
+    <p>The tempting shortcut is simple: Try random changes until the cost goes down. But that shortcut breaks because random search wastes structure and becomes expensive in high-dimensional control trajectories.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>If increasing steering torque slightly reduces path error but increases actuator cost sharply, the gradient exposes the tradeoff.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>Gradient reasoning is local and depends on smoothness and the chosen coordinates.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The method stops at a local stationary point that is not globally safe or useful.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Use it when tiny changes to a decision have meaningful, computable effects.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a gradient, derivative, or stationarity condition. This answers a practical question: use it when tiny changes to a decision have meaningful, computable effects.</p>
+    <p>The operation is concrete: Differentiate the objective and look for directions of improvement or stationarity.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>If increasing steering torque slightly reduces path error but increases actuator cost sharply, the gradient exposes the tradeoff. Start from the ordinary pressure: An optimizer needs a direction that says which small change makes the score better or worse. The shortcut is to try random changes until the cost goes down. That fails because random search wastes structure and becomes expensive in high-dimensional control trajectories. So the page introduces a gradient, derivative, or stationarity condition. and uses it to differentiate the objective and look for directions of improvement or stationarity.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a gradient, derivative, or stationarity condition. The operation is: Differentiate the objective and look for directions of improvement or stationarity. The boundary is: Gradient reasoning is local and depends on smoothness and the chosen coordinates.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>Gradient reasoning is local and depends on smoothness and the chosen coordinates.</p>
+    <p>If that boundary is crossed, the visible failure is this: the method stops at a local stationary point that is not globally safe or useful.</p>
+    <p><strong>Recognize it in a new problem:</strong> Use it when tiny changes to a decision have meaningful, computable effects.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-gradient-first-order-condition-01">

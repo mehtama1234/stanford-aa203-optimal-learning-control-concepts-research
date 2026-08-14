@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Value Function</h1>
 <p class="lede">A table or function that tells how much future cost remains from each state if decisions are made well.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>To choose now, the controller needs a compact price for the future after each possible next state.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Re-solve the entire future plan from scratch for every possible action.</p><p><strong>Why it fails:</strong> That repeats the same downstream reasoning and makes planning expensive.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A value function V or J.</p></article>
-  <article class="card "><h3>Operation</h3><p>Store or approximate the best future cost from each state.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>To choose now, the controller needs a compact price for the future after each possible next state.</p>
+    <p>The tempting shortcut is simple: Re-solve the entire future plan from scratch for every possible action. But that shortcut breaks because that repeats the same downstream reasoning and makes planning expensive.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>In navigation, a cell near the goal has low value; a cell near a trap has high future cost even if it is nearby.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The value is meaningful only for the state, dynamics, objective, and policy assumptions used to compute it.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>A bad value estimate makes the controller prefer states that are actually costly later.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Look for the object that converts future planning into a number attached to the current state.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a value function v or j. This answers a practical question: look for the object that converts future planning into a number attached to the current state.</p>
+    <p>The operation is concrete: Store or approximate the best future cost from each state.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A rover at the edge of a rocky slope should not ask only whether the next meter is easy. It should ask what the world looks like after that meter. The value of a state is the price tag on standing there with all future choices still ahead.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>V(x) stores the best future cost from state x. Once V is known, a current action can be judged by immediate cost plus the value of the next state it creates.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The value is meaningful only for the state, dynamics, objective, and policy assumptions used to compute it.</p>
+    <p>If that boundary is crossed, the visible failure is this: a bad value estimate makes the controller prefer states that are actually costly later.</p>
+    <p><strong>Recognize it in a new problem:</strong> Look for the object that converts future planning into a number attached to the current state.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-value-function-01">

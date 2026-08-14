@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Distribution Shift in Imitation</h1>
 <p class="lede">The gap between states in the expert dataset and states the learned policy actually visits.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>A policy&amp;apos;s own mistakes change the inputs it sees next.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Evaluate the policy only on held-out expert states.</p><p><strong>Why it fails:</strong> Closed-loop execution creates new states that were rare or absent in the demonstrations.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A state distribution induced by a policy.</p></article>
-  <article class="card "><h3>Operation</h3><p>Compare or correct the mismatch between expert data and learner rollouts.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>A policy&amp;apos;s own mistakes change the inputs it sees next.</p>
+    <p>The tempting shortcut is simple: Evaluate the policy only on held-out expert states. But that shortcut breaks because closed-loop execution creates new states that were rare or absent in the demonstrations.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A robot trained only on centered object grasps may fail when its first motion nudges the object aside.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The issue matters most when actions affect future observations.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>Errors compound until the policy reaches states where it has no competent behavior.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Ask whether the learner will see the same state distribution as the expert data.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a state distribution induced by a policy. This answers a practical question: ask whether the learner will see the same state distribution as the expert data.</p>
+    <p>The operation is concrete: Compare or correct the mismatch between expert data and learner rollouts.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A robot trained only on centered object grasps may fail when its first motion nudges the object aside. Start from the ordinary pressure: A policy&amp;apos;s own mistakes change the inputs it sees next. The shortcut is to evaluate the policy only on held-out expert states. That fails because closed-loop execution creates new states that were rare or absent in the demonstrations. So the page introduces a state distribution induced by a policy. and uses it to compare or correct the mismatch between expert data and learner rollouts.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a state distribution induced by a policy. The operation is: Compare or correct the mismatch between expert data and learner rollouts. The boundary is: The issue matters most when actions affect future observations.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The issue matters most when actions affect future observations.</p>
+    <p>If that boundary is crossed, the visible failure is this: errors compound until the policy reaches states where it has no competent behavior.</p>
+    <p><strong>Recognize it in a new problem:</strong> Ask whether the learner will see the same state distribution as the expert data.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-distribution-shift-imitation-01">

@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Dynamics</h1>
 <p class="lede">The rule that says how the current state and action produce the next state.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>Actions matter only through how they move the system. The controller needs a rule for that movement.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Plan as if the action immediately creates the desired result.</p><p><strong>Why it fails:</strong> Momentum, delay, friction, and coupling can make the result arrive later or in a different direction.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A transition equation or differential equation.</p></article>
-  <article class="card "><h3>Operation</h3><p>Propagate the state forward one step or through continuous time.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>Actions matter only through how they move the system. The controller needs a rule for that movement.</p>
+    <p>The tempting shortcut is simple: Plan as if the action immediately creates the desired result. But that shortcut breaks because momentum, delay, friction, and coupling can make the result arrive later or in a different direction.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>Turning a steering wheel changes heading gradually; the car does not slide sideways to the target lane.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The dynamics must match the time scale and operating region where the controller acts.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>A model mismatch makes a plan look feasible on paper and fail on hardware.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>If an action&amp;apos;s effect depends on current motion, write the dynamics before optimizing.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a transition equation or differential equation. This answers a practical question: if an action&amp;apos;s effect depends on current motion, write the dynamics before optimizing.</p>
+    <p>The operation is concrete: Propagate the state forward one step or through continuous time.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>If a car is moving fast on ice, the same steering angle produces a different next state than it would on dry asphalt. Dynamics are the rule that carries a command through the body and the world. Without that rule, planning is only drawing wishes on a map.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>Dynamics can be written as x_next = f(x, u) in discrete time or dx/dt = f(x, u) in continuous time. The function is the claim about how action becomes motion.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The dynamics must match the time scale and operating region where the controller acts.</p>
+    <p>If that boundary is crossed, the visible failure is this: a model mismatch makes a plan look feasible on paper and fail on hardware.</p>
+    <p><strong>Recognize it in a new problem:</strong> If an action&amp;apos;s effect depends on current motion, write the dynamics before optimizing.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-dynamics-01">

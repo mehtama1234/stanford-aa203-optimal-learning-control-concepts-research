@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Stochastic Dynamic Programming</h1>
 <p class="lede">Dynamic programming when the next state is uncertain and future value must be averaged over possible outcomes.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>A controller often does not know exactly what will happen after an action because noise, disturbances, or environment changes intervene.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Plan for the most likely next state only.</p><p><strong>Why it fails:</strong> Rare but costly outcomes can dominate safety and expected cost.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>An expected-value Bellman equation.</p></article>
-  <article class="card "><h3>Operation</h3><p>Add immediate cost to the expectation of next-state value under the transition distribution.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>A controller often does not know exactly what will happen after an action because noise, disturbances, or environment changes intervene.</p>
+    <p>The tempting shortcut is simple: Plan for the most likely next state only. But that shortcut breaks because rare but costly outcomes can dominate safety and expected cost.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A delivery robot crossing a wet floor must account for possible slip, not only the nominal wheel motion.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The uncertainty model must describe the relevant randomness.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The policy is brittle because it ignores low-probability dangerous states.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Use it when the same action can lead to several next states.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of an expected-value bellman equation. This answers a practical question: use it when the same action can lead to several next states.</p>
+    <p>The operation is concrete: Add immediate cost to the expectation of next-state value under the transition distribution.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A delivery robot crossing a wet floor must account for possible slip, not only the nominal wheel motion. Start from the ordinary pressure: A controller often does not know exactly what will happen after an action because noise, disturbances, or environment changes intervene. The shortcut is to plan for the most likely next state only. That fails because rare but costly outcomes can dominate safety and expected cost. So the page introduces an expected-value bellman equation. and uses it to add immediate cost to the expectation of next-state value under the transition distribution.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is an expected-value bellman equation. The operation is: Add immediate cost to the expectation of next-state value under the transition distribution. The boundary is: The uncertainty model must describe the relevant randomness.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The uncertainty model must describe the relevant randomness.</p>
+    <p>If that boundary is crossed, the visible failure is this: the policy is brittle because it ignores low-probability dangerous states.</p>
+    <p><strong>Recognize it in a new problem:</strong> Use it when the same action can lead to several next states.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-stochastic-dynamic-programming-01">

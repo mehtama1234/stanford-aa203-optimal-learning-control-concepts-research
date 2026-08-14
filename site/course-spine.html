@@ -22,6 +22,36 @@
 <a class="" href="evidence.html">Evidence</a>
 <a class="" href="review-guide.html">Review</a></nav>
   </header>
-  <main><h1>Course Spine</h1><section class="stack"><article class="card "><h3>Name the control problem</h3>State, action, dynamics, cost, horizon, constraints, and feasibility define what counts as a legal future.</article><article class="card "><h3>Move from snapshots to paths</h3>Calculus of variations, indirect methods, direct transcription, shooting, collocation, and trajectory optimization make the whole path the object.</article><article class="card "><h3>Compress future consequence</h3>Dynamic programming, value functions, Bellman recursion, and stochastic DP turn future planning into state-indexed accounting.</article><article class="card "><h3>Exploit local structure</h3>LQR and local quadratic approximations make fast feedback possible when deviations stay near a nominal plan.</article><article class="card "><h3>Replan safely</h3>Reachability, MPC, recursive feasibility, and stability under replanning keep finite-horizon decisions from painting the system into a corner.</article><article class="card "><h3>Learn when structure is incomplete</h3>Imitation learning, behavioral cloning, RL, reward, policies, value-based RL, policy optimization, exploration, and model-based RL add data-driven control.</article></section></main>
+  <main><h1>Course Spine</h1><p class="lede">The course is one question repeated at larger scale: what should this system do now, knowing that the action changes the future it will have to live in?</p><section class="fp">
+  <div class="kick">01 · course move</div>
+  <h2>Name the moving situation</h2>
+  <div class="essay"><p>A control problem begins when a choice today changes what choices are available tomorrow. Before formulas, name the moving thing, the information you know now, the command you can issue, the rule that turns that command into motion, the future you prefer, and the lines you cannot cross.</p></div>
+  <div class="explain-box"><p>A delivery drone is not controlled by saying &#x27;arrive quickly.&#x27; Its state includes position, velocity, attitude, battery, payload, and wind estimate. Its action is thrust or a lower-level motion command. Its cost trades time, energy, landing error, and smoothness. Its constraints include no-fly zones, thrust limits, battery reserve, and safe touchdown.</p></div>
+</section><section class="fp">
+  <div class="kick">02 · course move</div>
+  <h2>Make the whole path the decision</h2>
+  <div class="essay"><p>Static optimization chooses a point. Control chooses a path. Calculus of variations, costates, Hamiltonians, shooting, transcription, and collocation are different ways of saying that a legal answer is not one number; it is a history of states and actions that must fit the dynamics at every step.</p></div>
+  <div class="explain-box"><p>For a robot arm moving around a fixture, a shortest geometric curve can still require impossible torque. Direct methods put states and commands on a grid, enforce dynamics between neighboring grid points, and let the solver choose a path that the arm can physically trace.</p></div>
+</section><section class="fp">
+  <div class="kick">03 · course move</div>
+  <h2>Price the future from each state</h2>
+  <div class="essay"><p>Dynamic programming appears when the future after the next state is another copy of the same problem. The value function is the price tag on being in a state with all future choices still open. Bellman recursion is the bookkeeping rule: compare actions by the cost now plus the future value of the state they create.</p></div>
+  <div class="explain-box"><p>A rover may choose a longer route around rough ground because the short route damages its wheels. The immediate distance is smaller, but the next state has worse future value because every later move is harder.</p></div>
+</section><section class="fp">
+  <div class="kick">04 · course move</div>
+  <h2>Use local structure when the world is near the plan</h2>
+  <div class="essay"><p>LQR works when the real motion is close enough to a nominal motion that the dynamics look linear and the cost looks like a bowl. It is not magic feedback. It is a local promise: small errors near the planned state can be pushed back with a fast linear correction.</p></div>
+  <div class="explain-box"><p>A hovering drone can use LQR for a small drift. After clipping a branch and tumbling, the same local model is no longer the right picture; the state has left the region where the approximation tells the truth.</p></div>
+</section><section class="fp">
+  <div class="kick">05 · course move</div>
+  <h2>Replan without losing tomorrow</h2>
+  <div class="essay"><p>MPC turns planning into feedback by repeatedly solving a short future problem and applying only the first command. Reachability and recursive feasibility ask the question MPC alone can miss: after this first command, will the next problem still have a legal escape?</p></div>
+  <div class="explain-box"><p>A car can choose a narrow traffic gap that is collision-free for two seconds and still be making a bad control choice if the state after one second has no safe braking or steering option left.</p></div>
+</section><section class="fp">
+  <div class="kick">06 · course move</div>
+  <h2>Learn only where written structure runs out</h2>
+  <div class="essay"><p>Learning-based control is not a replacement for control thinking. It enters when the model is incomplete, the cost is hard to write, expert behavior is easier to show than specify, or trial feedback is the only teacher. The same questions remain: what is the state, what action is chosen, what future is being priced, and what failure does the learner create?</p></div>
+  <div class="explain-box"><p>Behavior cloning can teach a robot a drawer-pulling motion from demonstrations, but the learned policy may drift into a handle angle the expert never showed. RL can improve from reward, but if the reward pays only for speed, the robot may learn to damage the object quickly.</p></div>
+</section></main>
 </body>
 </html>

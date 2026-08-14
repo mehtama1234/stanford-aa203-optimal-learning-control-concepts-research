@@ -323,6 +323,12 @@ def main() -> int:
                     errors.append(f"value-function concept page missing future-price marker: {marker}")
             if len(words) < 740:
                 errors.append(f"value-function concept page below core richness floor: {len(words)} < 740")
+        if concept.get("id") == "bellman-recursion":
+            for marker in ["A: 2 + 9 = 11", "B: 5 + 3 = 8", "stores 8 as the value", "V(x) = min_u [cost(x,u) + V(f(x,u))]", "expected next value"]:
+                if marker not in text:
+                    errors.append(f"bellman concept page missing recursion marker: {marker}")
+            if len(words) < 740:
+                errors.append(f"bellman concept page below core richness floor: {len(words)} < 740")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

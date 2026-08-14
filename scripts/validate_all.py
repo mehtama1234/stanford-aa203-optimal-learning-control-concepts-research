@@ -311,6 +311,12 @@ def main() -> int:
                     errors.append(f"constraints concept page missing hard-limit marker: {marker}")
             if len(words) < 720:
                 errors.append(f"constraints concept page below core richness floor: {len(words)} < 720")
+        if concept.get("id") == "feasibility":
+            for marker in ["18 meters behind a stopped truck", "22 m/s", "v^2/(2a)", "F(x_0) is empty", "correct output is infeasibility"]:
+                if marker not in text:
+                    errors.append(f"feasibility concept page missing empty-set marker: {marker}")
+            if len(words) < 740:
+                errors.append(f"feasibility concept page below core richness floor: {len(words)} < 740")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

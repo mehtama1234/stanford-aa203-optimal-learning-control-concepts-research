@@ -38,7 +38,7 @@
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a feasible set or recursively feasible set. Use it when you need to before asking what is optimal, ask whether anything legal remains possible.</p>
+    <p>The working object is a feasible set or recursively feasible set. Use it before asking what is optimal; first ask whether anything legal remains possible.</p>
     <p>What the object does: Check whether at least one trajectory obeys all dynamics and constraints.</p>
   </div>
 </section>
@@ -54,8 +54,8 @@
 <section class="fp">
   <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A car boxed between two trucks may have no legal lane change, no legal stop, and no legal acceleration that avoids trouble. Feasibility asks this before arguing about best behavior: is there at least one legal future left?</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The feasible set contains states and actions satisfying dynamics, bounds, and path constraints. Optimization starts only after this set is nonempty.</p></div></details>
+  <div class="explain-box"><p>A car is 18 meters behind a stopped truck, moving 22 m/s, with a wet-road braking limit of 6 m/s^2. Even full braking needs roughly v^2/(2a), or about 40 meters, before the car stops. A lane change is also illegal because a truck is beside it with only 0.5 meters of side clearance. In that state, the question is not which plan is best. The feasible set may already be empty because no allowed braking, steering, or acceleration sequence avoids the blocked space. The controller should report the emergency boundary, not pretend that a slightly cheaper collision path is a plan.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The feasible set contains states and actions satisfying dynamics, bounds, and path constraints. In symbols, a horizon plan is feasible only if each x_{k+1}=f(x_k,u_k), each u_k stays within actuator limits, and every clearance and speed constraint is satisfied. If the set F(x_0) is empty, optimization has no legal candidate to compare; the correct output is infeasibility, not a heroic best effort.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">05 · boundary</div>

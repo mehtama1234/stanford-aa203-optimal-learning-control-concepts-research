@@ -85,6 +85,10 @@ def recognition_sentence(value: str) -> str:
             return "Use it when " + text[len(prefix):]
     if text.lower().startswith("choose this lens when "):
         return "Use this lens when " + text[len("choose this lens when "):]
+    if text.lower().startswith("before asking "):
+        body = text[len("before asking "):]
+        body = re.sub(r", ask\s+", "; first ask ", body, flags=re.I)
+        return "Use it before asking " + body
     if text.lower().startswith("ask "):
         return "Use it when you need to " + lowered
     if text.lower().startswith("look for "):
@@ -146,8 +150,8 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "math": "A constraint is an equation or inequality such as g(x,u) <= 0. A clearance constraint might be 0.04 - distance_to_shelf(x_k) <= 0 at every grid point, and a torque bound might be abs(tau_k) <= 12. A candidate path is admissible only when every required constraint is satisfied at the relevant time; low cost cannot buy permission to cross a hard physical limit.",
     },
     "feasibility": {
-        "run": "A car boxed between two trucks may have no legal lane change, no legal stop, and no legal acceleration that avoids trouble. Feasibility asks this before arguing about best behavior: is there at least one legal future left?",
-        "math": "The feasible set contains states and actions satisfying dynamics, bounds, and path constraints. Optimization starts only after this set is nonempty.",
+        "run": "A car is 18 meters behind a stopped truck, moving 22 m/s, with a wet-road braking limit of 6 m/s^2. Even full braking needs roughly v^2/(2a), or about 40 meters, before the car stops. A lane change is also illegal because a truck is beside it with only 0.5 meters of side clearance. In that state, the question is not which plan is best. The feasible set may already be empty because no allowed braking, steering, or acceleration sequence avoids the blocked space. The controller should report the emergency boundary, not pretend that a slightly cheaper collision path is a plan.",
+        "math": "The feasible set contains states and actions satisfying dynamics, bounds, and path constraints. In symbols, a horizon plan is feasible only if each x_{k+1}=f(x_k,u_k), each u_k stays within actuator limits, and every clearance and speed constraint is satisfied. If the set F(x_0) is empty, optimization has no legal candidate to compare; the correct output is infeasibility, not a heroic best effort.",
     },
     "static-optimization": {
         "run": "Choosing one thermostat setting for the next hour is a static problem. Choosing a heater command every second while room temperature changes is control. Static optimization is the smaller grammar: decision, objective, constraint, and local improvement.",

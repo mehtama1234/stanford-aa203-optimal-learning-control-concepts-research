@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Calculus of Variations</h1>
 <p class="lede">Optimization where the unknown is an entire curve or trajectory, not a single number.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>A controller must choose a path through time, and changing one part of the path changes the total cost.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Optimize each point on the path independently.</p><p><strong>Why it fails:</strong> Neighboring points are linked by dynamics and smoothness, so a path must be varied as a connected object.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A functional that scores a whole curve.</p></article>
-  <article class="card "><h3>Operation</h3><p>Perturb the curve and require that no small admissible perturbation improves the cost.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>A controller must choose a path through time, and changing one part of the path changes the total cost.</p>
+    <p>The tempting shortcut is simple: Optimize each point on the path independently. But that shortcut breaks because neighboring points are linked by dynamics and smoothness, so a path must be varied as a connected object.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A robotic arm path is not a pile of unrelated positions; the arm must move continuously with limited velocity and torque.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The approach needs smooth variations and a meaningful path-level cost.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>Ignoring path coupling creates jerky or dynamically impossible motion.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Use this lens when the decision variable is a function of time.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a functional that scores a whole curve. This answers a practical question: use this lens when the decision variable is a function of time.</p>
+    <p>The operation is concrete: Perturb the curve and require that no small admissible perturbation improves the cost.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A robotic arm path is not a pile of unrelated positions; the arm must move continuously with limited velocity and torque. Start from the ordinary pressure: A controller must choose a path through time, and changing one part of the path changes the total cost. The shortcut is to optimize each point on the path independently. That fails because neighboring points are linked by dynamics and smoothness, so a path must be varied as a connected object. So the page introduces a functional that scores a whole curve. and uses it to perturb the curve and require that no small admissible perturbation improves the cost.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a functional that scores a whole curve. The operation is: Perturb the curve and require that no small admissible perturbation improves the cost. The boundary is: The approach needs smooth variations and a meaningful path-level cost.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The approach needs smooth variations and a meaningful path-level cost.</p>
+    <p>If that boundary is crossed, the visible failure is this: ignoring path coupling creates jerky or dynamically impossible motion.</p>
+    <p><strong>Recognize it in a new problem:</strong> Use this lens when the decision variable is a function of time.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-calculus-of-variations-01">

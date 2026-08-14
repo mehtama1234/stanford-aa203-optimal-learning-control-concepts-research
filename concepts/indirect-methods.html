@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Indirect Methods</h1>
 <p class="lede">Solve an optimal-control problem by first deriving equations that an optimal trajectory must satisfy.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>Instead of searching over all paths directly, use mathematical structure to reduce the search to conditions of optimality.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Discretize everything immediately and hand the whole problem to a numerical optimizer.</p><p><strong>Why it fails:</strong> Direct search can be large and blind to useful analytic structure.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>Necessary conditions such as state, costate, and stationarity equations.</p></article>
-  <article class="card "><h3>Operation</h3><p>Derive the boundary-value problem implied by optimality and solve those equations.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>Instead of searching over all paths directly, use mathematical structure to reduce the search to conditions of optimality.</p>
+    <p>The tempting shortcut is simple: Discretize everything immediately and hand the whole problem to a numerical optimizer. But that shortcut breaks because direct search can be large and blind to useful analytic structure.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>For a spacecraft transfer, the indirect method derives equations for both the state path and the shadow price of state errors.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>It depends on correct derivation and can be sensitive to boundary guesses.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The equations are hard to solve numerically or describe only a local candidate.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Choose this lens when the analytic necessary conditions are central to the method.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of necessary conditions such as state, costate, and stationarity equations. This answers a practical question: choose this lens when the analytic necessary conditions are central to the method.</p>
+    <p>The operation is concrete: Derive the boundary-value problem implied by optimality and solve those equations.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>For a spacecraft transfer, the indirect method derives equations for both the state path and the shadow price of state errors. Start from the ordinary pressure: Instead of searching over all paths directly, use mathematical structure to reduce the search to conditions of optimality. The shortcut is to discretize everything immediately and hand the whole problem to a numerical optimizer. That fails because direct search can be large and blind to useful analytic structure. So the page introduces necessary conditions such as state, costate, and stationarity equations. and uses it to derive the boundary-value problem implied by optimality and solve those equations.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is necessary conditions such as state, costate, and stationarity equations. The operation is: Derive the boundary-value problem implied by optimality and solve those equations. The boundary is: It depends on correct derivation and can be sensitive to boundary guesses.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>It depends on correct derivation and can be sensitive to boundary guesses.</p>
+    <p>If that boundary is crossed, the visible failure is this: the equations are hard to solve numerically or describe only a local candidate.</p>
+    <p><strong>Recognize it in a new problem:</strong> Choose this lens when the analytic necessary conditions are central to the method.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-indirect-methods-01">

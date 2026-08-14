@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Reachability</h1>
 <p class="lede">The set of states a system can get to, or must avoid, under allowed actions and disturbances.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>Before optimizing a path, the controller must know which futures are even possible or unsafe.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Assume the target is reachable because it is nearby in space.</p><p><strong>Why it fails:</strong> Dynamics, speed, actuator limits, and disturbances decide reachability, not visual distance alone.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A reachable set or backward reachable set.</p></article>
-  <article class="card "><h3>Operation</h3><p>Propagate sets through dynamics under allowed actions and possible disturbances.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>Before optimizing a path, the controller must know which futures are even possible or unsafe.</p>
+    <p>The tempting shortcut is simple: Assume the target is reachable because it is nearby in space. But that shortcut breaks because dynamics, speed, actuator limits, and disturbances decide reachability, not visual distance alone.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A fast car near a wall may be physically unable to stop before collision even if the wall is still several meters away.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>Reachability depends on a model of dynamics, controls, constraints, and disturbances.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>A safety controller trusts an escape route that the system cannot actually execute.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Ask whether the state can still reach safety under legal actions.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a reachable set or backward reachable set. This answers a practical question: ask whether the state can still reach safety under legal actions.</p>
+    <p>The operation is concrete: Propagate sets through dynamics under allowed actions and possible disturbances.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A car near a wall may still look safe because there is space in front of it. Reachability asks the sharper question: from this speed and steering limit, is there any legal sequence of controls that avoids the wall no matter what disturbance arrives? The answer is a set of states, not a single path.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>A backward reachable set collects states that can reach a target, or cannot avoid a bad target, under the allowed controls and disturbances. Safety means staying on the correct side of that set.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>Reachability depends on a model of dynamics, controls, constraints, and disturbances.</p>
+    <p>If that boundary is crossed, the visible failure is this: a safety controller trusts an escape route that the system cannot actually execute.</p>
+    <p><strong>Recognize it in a new problem:</strong> Ask whether the state can still reach safety under legal actions.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-reachability-01">

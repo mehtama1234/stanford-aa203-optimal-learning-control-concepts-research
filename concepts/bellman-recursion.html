@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Bellman Recursion</h1>
 <p class="lede">The rule that today&#x27;s value equals immediate cost plus the best value of the next state.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>A controller needs a local equation that accounts for the future without listing every full trajectory.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Judge actions only by immediate cost.</p><p><strong>Why it fails:</strong> A cheap action can move the state into a costly future.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A recursive equation for the value function.</p></article>
-  <article class="card "><h3>Operation</h3><p>For each action, add current cost to the next state&#x27;s value, then choose the best action.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>A controller needs a local equation that accounts for the future without listing every full trajectory.</p>
+    <p>The tempting shortcut is simple: Judge actions only by immediate cost. But that shortcut breaks because a cheap action can move the state into a costly future.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A car may brake now even if braking costs time because the next state&#x27;s value is safer.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The recursion depends on a correct state transition and cost decomposition.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>If the state omits hidden variables, the next-state value is not enough.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Use it when a decision can be split into now plus the best continuation.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a recursive equation for the value function. This answers a practical question: use it when a decision can be split into now plus the best continuation.</p>
+    <p>The operation is concrete: For each action, add current cost to the next state&#x27;s value, then choose the best action.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A warehouse robot choosing between two aisles does not need to list every possible path to the loading dock. For each aisle, it can count the cost of entering that aisle now, then look up the best remaining cost from the state at the end of that move. That is the Bellman split: pay now, then inherit the future value of the state you created.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>V(x) = min over u of cost(x,u) + V(f(x,u)) in the deterministic case. With uncertainty, the next value is averaged over possible next states.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The recursion depends on a correct state transition and cost decomposition.</p>
+    <p>If that boundary is crossed, the visible failure is this: if the state omits hidden variables, the next-state value is not enough.</p>
+    <p><strong>Recognize it in a new problem:</strong> Use it when a decision can be split into now plus the best continuation.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-bellman-recursion-01">

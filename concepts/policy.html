@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Policy</h1>
 <p class="lede">A rule that maps what the agent knows about the current situation to an action.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>The controller needs a repeatable decision rule, not a separate hand-picked action for every moment.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Store a fixed action sequence.</p><p><strong>Why it fails:</strong> Disturbances and uncertainty mean the state may differ from the planned path.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A deterministic or stochastic policy.</p></article>
-  <article class="card "><h3>Operation</h3><p>Given a state or observation, output an action or action distribution.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>The controller needs a repeatable decision rule, not a separate hand-picked action for every moment.</p>
+    <p>The tempting shortcut is simple: Store a fixed action sequence. But that shortcut breaks because disturbances and uncertainty mean the state may differ from the planned path.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A drone policy maps position and velocity errors to thrust commands.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>A policy can only react to information available in its input.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The policy cannot recover from unseen states or missing observations.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Look for the object that chooses actions during execution.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a deterministic or stochastic policy. This answers a practical question: look for the object that chooses actions during execution.</p>
+    <p>The operation is concrete: Given a state or observation, output an action or action distribution.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A drone policy maps position and velocity errors to thrust commands. Start from the ordinary pressure: The controller needs a repeatable decision rule, not a separate hand-picked action for every moment. The shortcut is to store a fixed action sequence. That fails because disturbances and uncertainty mean the state may differ from the planned path. So the page introduces a deterministic or stochastic policy. and uses it to given a state or observation, output an action or action distribution.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a deterministic or stochastic policy. The operation is: Given a state or observation, output an action or action distribution. The boundary is: A policy can only react to information available in its input.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>A policy can only react to information available in its input.</p>
+    <p>If that boundary is crossed, the visible failure is this: the policy cannot recover from unseen states or missing observations.</p>
+    <p><strong>Recognize it in a new problem:</strong> Look for the object that chooses actions during execution.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-policy-01">

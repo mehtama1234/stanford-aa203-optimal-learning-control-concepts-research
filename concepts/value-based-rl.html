@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Value-Based RL</h1>
 <p class="lede">Learn how good states or state-action pairs are, then choose actions using those learned values.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>Instead of directly learning the action rule, the agent can learn a future-return scoreboard.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Estimate immediate reward only.</p><p><strong>Why it fails:</strong> The best action may have low immediate reward but lead to high future return.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A state-value or action-value function.</p></article>
-  <article class="card "><h3>Operation</h3><p>Update value estimates from experience and act greedily or near-greedily with respect to them.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>Instead of directly learning the action rule, the agent can learn a future-return scoreboard.</p>
+    <p>The tempting shortcut is simple: Estimate immediate reward only. But that shortcut breaks because the best action may have low immediate reward but lead to high future return.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A maze agent learns that moving away from the goal now can be valuable if it avoids a dead end.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The value representation must generalize correctly across the visited state-action space.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>Function approximation error makes the agent overvalue bad actions.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Look for RL methods where action choice is derived from learned values.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a state-value or action-value function. This answers a practical question: look for rl methods where action choice is derived from learned values.</p>
+    <p>The operation is concrete: Update value estimates from experience and act greedily or near-greedily with respect to them.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A maze agent learns that moving away from the goal now can be valuable if it avoids a dead end. Start from the ordinary pressure: Instead of directly learning the action rule, the agent can learn a future-return scoreboard. The shortcut is to estimate immediate reward only. That fails because the best action may have low immediate reward but lead to high future return. So the page introduces a state-value or action-value function. and uses it to update value estimates from experience and act greedily or near-greedily with respect to them.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a state-value or action-value function. The operation is: Update value estimates from experience and act greedily or near-greedily with respect to them. The boundary is: The value representation must generalize correctly across the visited state-action space.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The value representation must generalize correctly across the visited state-action space.</p>
+    <p>If that boundary is crossed, the visible failure is this: function approximation error makes the agent overvalue bad actions.</p>
+    <p><strong>Recognize it in a new problem:</strong> Look for RL methods where action choice is derived from learned values.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-value-based-rl-01">

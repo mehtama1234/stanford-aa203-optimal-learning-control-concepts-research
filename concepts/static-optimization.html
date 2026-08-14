@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Static Optimization</h1>
 <p class="lede">Choosing the best point when the decision does not itself unfold through system dynamics.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>Many control methods reduce pieces of the course to ordinary optimization subproblems.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Assume static optimization is the whole control problem.</p><p><strong>Why it fails:</strong> Control decisions are chained; a good static decision can be bad once future states are included.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>An objective function and feasible set.</p></article>
-  <article class="card "><h3>Operation</h3><p>Search for a point with the smallest cost or largest reward.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>Many control methods reduce pieces of the course to ordinary optimization subproblems.</p>
+    <p>The tempting shortcut is simple: Assume static optimization is the whole control problem. But that shortcut breaks because control decisions are chained; a good static decision can be bad once future states are included.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>Choosing a single throttle setting for fuel use ignores that the rocket&amp;apos;s velocity changes after the throttle is applied.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>Static optimization is appropriate only when future dynamics have already been folded into the objective or constraints.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The solution is optimal for one snapshot and poor over the trajectory.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>If there is no state transition, start with static optimization; if there is, treat it as a component.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of an objective function and feasible set. This answers a practical question: if there is no state transition, start with static optimization; if there is, treat it as a component.</p>
+    <p>The operation is concrete: Search for a point with the smallest cost or largest reward.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>Choosing a single throttle setting for fuel use ignores that the rocket&amp;apos;s velocity changes after the throttle is applied. Start from the ordinary pressure: Many control methods reduce pieces of the course to ordinary optimization subproblems. The shortcut is to assume static optimization is the whole control problem. That fails because control decisions are chained; a good static decision can be bad once future states are included. So the page introduces an objective function and feasible set. and uses it to search for a point with the smallest cost or largest reward.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is an objective function and feasible set. The operation is: Search for a point with the smallest cost or largest reward. The boundary is: Static optimization is appropriate only when future dynamics have already been folded into the objective or constraints.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>Static optimization is appropriate only when future dynamics have already been folded into the objective or constraints.</p>
+    <p>If that boundary is crossed, the visible failure is this: the solution is optimal for one snapshot and poor over the trajectory.</p>
+    <p><strong>Recognize it in a new problem:</strong> If there is no state transition, start with static optimization; if there is, treat it as a component.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-static-optimization-01">

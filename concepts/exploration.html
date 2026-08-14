@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Exploration</h1>
 <p class="lede">Trying actions to discover consequences the agent does not yet know.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>An agent cannot improve only from familiar behavior if better actions have never been tested.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Always take the action that currently looks best.</p><p><strong>Why it fails:</strong> Early estimates are wrong or incomplete, so greed locks in mediocre behavior.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>An exploration strategy or stochastic policy.</p></article>
-  <article class="card "><h3>Operation</h3><p>Trade off exploiting known reward against collecting information from uncertain actions.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>An agent cannot improve only from familiar behavior if better actions have never been tested.</p>
+    <p>The tempting shortcut is simple: Always take the action that currently looks best. But that shortcut breaks because early estimates are wrong or incomplete, so greed locks in mediocre behavior.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A robot may need to try a different grasp angle to learn that it is more reliable.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>Exploration must respect safety and data-collection cost.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>Unsafe exploration damages hardware or learns from unrepresentative trials.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Ask what the learner must try before it can know which action is best.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of an exploration strategy or stochastic policy. This answers a practical question: ask what the learner must try before it can know which action is best.</p>
+    <p>The operation is concrete: Trade off exploiting known reward against collecting information from uncertain actions.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A robot may need to try a different grasp angle to learn that it is more reliable. Start from the ordinary pressure: An agent cannot improve only from familiar behavior if better actions have never been tested. The shortcut is to always take the action that currently looks best. That fails because early estimates are wrong or incomplete, so greed locks in mediocre behavior. So the page introduces an exploration strategy or stochastic policy. and uses it to trade off exploiting known reward against collecting information from uncertain actions.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is an exploration strategy or stochastic policy. The operation is: Trade off exploiting known reward against collecting information from uncertain actions. The boundary is: Exploration must respect safety and data-collection cost.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>Exploration must respect safety and data-collection cost.</p>
+    <p>If that boundary is crossed, the visible failure is this: unsafe exploration damages hardware or learns from unrepresentative trials.</p>
+    <p><strong>Recognize it in a new problem:</strong> Ask what the learner must try before it can know which action is best.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-exploration-01">

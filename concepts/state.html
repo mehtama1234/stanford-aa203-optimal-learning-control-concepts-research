@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>State</h1>
 <p class="lede">The information carried forward because it is enough to predict what the system can do next.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>A controller cannot remember every past detail, but it needs the pieces of the present that determine future motion.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Store whatever measurements are available.</p><p><strong>Why it fails:</strong> Some measurements are redundant, while missing velocity, battery charge, or contact mode can make the same position require different actions.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A state vector or structured state description.</p></article>
-  <article class="card "><h3>Operation</h3><p>Update the state through the dynamics after each action.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>A controller cannot remember every past detail, but it needs the pieces of the present that determine future motion.</p>
+    <p>The tempting shortcut is simple: Store whatever measurements are available. But that shortcut breaks because some measurements are redundant, while missing velocity, battery charge, or contact mode can make the same position require different actions.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A car&amp;apos;s lane position is not enough; speed and heading decide whether a steering command is safe.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The chosen state must contain the information needed by the dynamics and cost.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>A controller built on an incomplete state may take identical actions in situations that are physically different.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Ask what must be known now to predict the effect of the next action.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a state vector or structured state description. This answers a practical question: ask what must be known now to predict the effect of the next action.</p>
+    <p>The operation is concrete: Update the state through the dynamics after each action.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>Two cars can sit at the same point in a lane and need opposite controls. One is moving straight at 20 mph; the other is sliding sideways at 20 mph. Position alone hides the difference. Speed, heading, tire slip, and nearby cars are part of the state because they change what the next steering or braking command will do.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>A state is the smallest present-tense record that lets the model predict the next state from the next action. If two histories give the same state, the controller is claiming their future options are the same.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The chosen state must contain the information needed by the dynamics and cost.</p>
+    <p>If that boundary is crossed, the visible failure is this: a controller built on an incomplete state may take identical actions in situations that are physically different.</p>
+    <p><strong>Recognize it in a new problem:</strong> Ask what must be known now to predict the effect of the next action.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-state-01">

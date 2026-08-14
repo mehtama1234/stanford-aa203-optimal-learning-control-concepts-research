@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Reinforcement Learning</h1>
 <p class="lede">Learn a policy through interaction by using reward feedback from actions and their consequences.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>The designer may not know the best action labels, but the system can try actions and receive feedback.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Try actions randomly until reward improves.</p><p><strong>Why it fails:</strong> Feedback can be delayed, sparse, unsafe, or expensive, so exploration and credit assignment matter.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A policy, reward, value function, and transition process.</p></article>
-  <article class="card "><h3>Operation</h3><p>Collect experience and update the policy or value estimates to increase expected return.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>The designer may not know the best action labels, but the system can try actions and receive feedback.</p>
+    <p>The tempting shortcut is simple: Try actions randomly until reward improves. But that shortcut breaks because feedback can be delayed, sparse, unsafe, or expensive, so exploration and credit assignment matter.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A robot learns a manipulation strategy by trying motions and improving actions that lead to successful grasps.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>RL needs a reward signal and interaction process that match the real task.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The agent exploits reward loopholes or learns unsafe exploration behavior.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Use it when behavior is learned from trial, consequence, and reward rather than expert labels alone.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a policy, reward, value function, and transition process. This answers a practical question: use it when behavior is learned from trial, consequence, and reward rather than expert labels alone.</p>
+    <p>The operation is concrete: Collect experience and update the policy or value estimates to increase expected return.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>If no expert can label every action, the robot can try actions and learn from delayed reward. A grasp may look bad at first contact but succeed after a wrist turn. RL has to connect the later score back to earlier actions without letting unsafe exploration damage the system.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The learner adjusts a policy or value estimate to increase expected return. The hard parts are delayed credit, exploration, and whether the reward truly matches the task.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>RL needs a reward signal and interaction process that match the real task.</p>
+    <p>If that boundary is crossed, the visible failure is this: the agent exploits reward loopholes or learns unsafe exploration behavior.</p>
+    <p><strong>Recognize it in a new problem:</strong> Use it when behavior is learned from trial, consequence, and reward rather than expert labels alone.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-reinforcement-learning-01">

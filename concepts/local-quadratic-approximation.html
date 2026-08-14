@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Local Quadratic Approximation</h1>
 <p class="lede">Replace a hard problem near a point with a simpler curved bowl that is easier to optimize.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>Nonlinear control can be too hard globally, but near a candidate trajectory its local shape may be usable.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Trust the local approximation everywhere.</p><p><strong>Why it fails:</strong> A local bowl only describes nearby behavior; far away the real dynamics and cost may bend differently.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A Taylor approximation, linearized dynamics, or quadratic cost model.</p></article>
-  <article class="card "><h3>Operation</h3><p>Approximate locally, solve the easier problem, and update around a new point.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>Nonlinear control can be too hard globally, but near a candidate trajectory its local shape may be usable.</p>
+    <p>The tempting shortcut is simple: Trust the local approximation everywhere. But that shortcut breaks because a local bowl only describes nearby behavior; far away the real dynamics and cost may bend differently.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A walking robot can locally linearize around a planned footstep, but not around a fall.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The update must stay within the region where the approximation is credible.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The optimizer takes a step that is good for the approximation and bad for the real system.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Use it when a hard nonlinear problem is solved through repeated local models.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a taylor approximation, linearized dynamics, or quadratic cost model. This answers a practical question: use it when a hard nonlinear problem is solved through repeated local models.</p>
+    <p>The operation is concrete: Approximate locally, solve the easier problem, and update around a new point.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A walking robot can locally linearize around a planned footstep, but not around a fall. Start from the ordinary pressure: Nonlinear control can be too hard globally, but near a candidate trajectory its local shape may be usable. The shortcut is to trust the local approximation everywhere. That fails because a local bowl only describes nearby behavior; far away the real dynamics and cost may bend differently. So the page introduces a taylor approximation, linearized dynamics, or quadratic cost model. and uses it to approximate locally, solve the easier problem, and update around a new point.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a taylor approximation, linearized dynamics, or quadratic cost model. The operation is: Approximate locally, solve the easier problem, and update around a new point. The boundary is: The update must stay within the region where the approximation is credible.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The update must stay within the region where the approximation is credible.</p>
+    <p>If that boundary is crossed, the visible failure is this: the optimizer takes a step that is good for the approximation and bad for the real system.</p>
+    <p><strong>Recognize it in a new problem:</strong> Use it when a hard nonlinear problem is solved through repeated local models.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-local-quadratic-approximation-01">

@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Objective / Cost Function</h1>
 <p class="lede">The scoring rule that says which futures are better or worse.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>A controller needs a way to compare a fast route, a smooth route, a safe route, and a cheap route.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Optimize the most visible target, such as time or distance.</p><p><strong>Why it fails:</strong> The visible target can hide fuel, safety, wear, comfort, or constraint risk.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A stage cost, terminal cost, reward, or objective functional.</p></article>
-  <article class="card "><h3>Operation</h3><p>Accumulate cost across the trajectory and choose the action sequence with the best total.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>A controller needs a way to compare a fast route, a smooth route, a safe route, and a cheap route.</p>
+    <p>The tempting shortcut is simple: Optimize the most visible target, such as time or distance. But that shortcut breaks because the visible target can hide fuel, safety, wear, comfort, or constraint risk.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>An autonomous car can minimize travel time by tailgating unless the cost also prices safety margin.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The written cost is only as good as the values and tradeoffs it encodes.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The controller optimizes a proxy and produces behavior the designer did not intend.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Ask what future mistake the scoring rule would punish.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a stage cost, terminal cost, reward, or objective functional. This answers a practical question: ask what future mistake the scoring rule would punish.</p>
+    <p>The operation is concrete: Accumulate cost across the trajectory and choose the action sequence with the best total.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A car that reaches a parking spot fastest may scrape the wall. A car that never moves is safe but useless. The cost is the scoreboard that says which future is better: time, distance from the goal, steering effort, comfort, and collision risk all get counted in one place.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>A typical objective adds stage costs along the path and a terminal cost at the end. The weights are not decoration; they state the tradeoff the controller will actually obey.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The written cost is only as good as the values and tradeoffs it encodes.</p>
+    <p>If that boundary is crossed, the visible failure is this: the controller optimizes a proxy and produces behavior the designer did not intend.</p>
+    <p><strong>Recognize it in a new problem:</strong> Ask what future mistake the scoring rule would punish.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-objective-cost-function-01">

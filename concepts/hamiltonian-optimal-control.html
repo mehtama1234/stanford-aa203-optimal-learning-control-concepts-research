@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Hamiltonian for Optimal Control</h1>
 <p class="lede">A combined expression that packages immediate cost with how actions move the state into future cost.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>An action must be judged both by what it costs now and by how it changes the state that future costs depend on.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Choose the action with the smallest immediate cost.</p><p><strong>Why it fails:</strong> The cheap action now can steer the state into an expensive region.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>The Hamiltonian in an optimal-control necessary condition.</p></article>
-  <article class="card "><h3>Operation</h3><p>Combine stage cost, dynamics, and costate sensitivity, then choose controls that satisfy the necessary condition.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>An action must be judged both by what it costs now and by how it changes the state that future costs depend on.</p>
+    <p>The tempting shortcut is simple: Choose the action with the smallest immediate cost. But that shortcut breaks because the cheap action now can steer the state into an expensive region.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A rocket burn costs fuel immediately but may reduce future position error; the Hamiltonian puts both effects in one local calculation.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>It gives necessary conditions under model and smoothness assumptions, not automatic global optimality.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>A trajectory satisfies local equations but is not the best or violates practical constraints.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Use it when a local action must be priced by immediate and future state effects together.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of the hamiltonian in an optimal-control necessary condition. This answers a practical question: use it when a local action must be priced by immediate and future state effects together.</p>
+    <p>The operation is concrete: Combine stage cost, dynamics, and costate sensitivity, then choose controls that satisfy the necessary condition.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A rocket burn costs fuel immediately but may reduce future position error; the Hamiltonian puts both effects in one local calculation. Start from the ordinary pressure: An action must be judged both by what it costs now and by how it changes the state that future costs depend on. The shortcut is to choose the action with the smallest immediate cost. That fails because the cheap action now can steer the state into an expensive region. So the page introduces the hamiltonian in an optimal-control necessary condition. and uses it to combine stage cost, dynamics, and costate sensitivity, then choose controls that satisfy the necessary condition.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is the hamiltonian in an optimal-control necessary condition. The operation is: Combine stage cost, dynamics, and costate sensitivity, then choose controls that satisfy the necessary condition. The boundary is: It gives necessary conditions under model and smoothness assumptions, not automatic global optimality.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>It gives necessary conditions under model and smoothness assumptions, not automatic global optimality.</p>
+    <p>If that boundary is crossed, the visible failure is this: a trajectory satisfies local equations but is not the best or violates practical constraints.</p>
+    <p><strong>Recognize it in a new problem:</strong> Use it when a local action must be priced by immediate and future state effects together.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-hamiltonian-optimal-control-01">

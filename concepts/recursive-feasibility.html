@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Recursive Feasibility</h1>
 <p class="lede">The property that after applying today&amp;apos;s MPC action, tomorrow&amp;apos;s optimization problem is still feasible.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>Replanning is only useful if today&amp;apos;s legal move does not leave the controller with no legal move next time.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Check only that the current MPC problem has a solution.</p><p><strong>Why it fails:</strong> The first action of a feasible plan can lead to a state where the next problem is infeasible.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A recursively feasible set or terminal condition.</p></article>
-  <article class="card "><h3>Operation</h3><p>Design the MPC problem so feasibility propagates from one solve to the next.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>Replanning is only useful if today&amp;apos;s legal move does not leave the controller with no legal move next time.</p>
+    <p>The tempting shortcut is simple: Check only that the current MPC problem has a solution. But that shortcut breaks because the first action of a feasible plan can lead to a state where the next problem is infeasible.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A car must not enter a narrow lane unless it can still brake or steer safely in the next planning step.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The guarantee depends on model accuracy, constraints, and terminal set design.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The controller works for a few replans and then hits an infeasible optimization.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Ask whether solving now preserves the ability to solve later.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a recursively feasible set or terminal condition. This answers a practical question: ask whether solving now preserves the ability to solve later.</p>
+    <p>The operation is concrete: Design the MPC problem so feasibility propagates from one solve to the next.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A car must not enter a narrow lane unless it can still brake or steer safely in the next planning step. Start from the ordinary pressure: Replanning is only useful if today&amp;apos;s legal move does not leave the controller with no legal move next time. The shortcut is to check only that the current mpc problem has a solution. That fails because the first action of a feasible plan can lead to a state where the next problem is infeasible. So the page introduces a recursively feasible set or terminal condition. and uses it to design the mpc problem so feasibility propagates from one solve to the next.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a recursively feasible set or terminal condition. The operation is: Design the MPC problem so feasibility propagates from one solve to the next. The boundary is: The guarantee depends on model accuracy, constraints, and terminal set design.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The guarantee depends on model accuracy, constraints, and terminal set design.</p>
+    <p>If that boundary is crossed, the visible failure is this: the controller works for a few replans and then hits an infeasible optimization.</p>
+    <p><strong>Recognize it in a new problem:</strong> Ask whether solving now preserves the ability to solve later.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-recursive-feasibility-01">

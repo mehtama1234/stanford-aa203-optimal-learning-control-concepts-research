@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Collocation</h1>
 <p class="lede">A direct method that enforces dynamics at selected points along a discretized trajectory.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>The optimizer needs a finite way to ensure the path obeys continuous dynamics.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Check the dynamics only at the endpoints.</p><p><strong>Why it fails:</strong> A path can look valid at endpoints while bending through impossible motion between them.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>Collocation points and defect constraints.</p></article>
-  <article class="card "><h3>Operation</h3><p>Force the derivative implied by the path representation to match the dynamics at chosen points.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>The optimizer needs a finite way to ensure the path obeys continuous dynamics.</p>
+    <p>The tempting shortcut is simple: Check the dynamics only at the endpoints. But that shortcut breaks because a path can look valid at endpoints while bending through impossible motion between them.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A drone path spline is checked at interior points so acceleration and velocity stay physically consistent.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The polynomial or grid representation must resolve the motion between points.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>Too few collocation points let the optimizer exploit gaps between checks.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Use it when a continuous trajectory is represented by pieces and dynamics are enforced at sample points.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of collocation points and defect constraints. This answers a practical question: use it when a continuous trajectory is represented by pieces and dynamics are enforced at sample points.</p>
+    <p>The operation is concrete: Force the derivative implied by the path representation to match the dynamics at chosen points.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A drone path spline is checked at interior points so acceleration and velocity stay physically consistent. Start from the ordinary pressure: The optimizer needs a finite way to ensure the path obeys continuous dynamics. The shortcut is to check the dynamics only at the endpoints. That fails because a path can look valid at endpoints while bending through impossible motion between them. So the page introduces collocation points and defect constraints. and uses it to force the derivative implied by the path representation to match the dynamics at chosen points.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is collocation points and defect constraints. The operation is: Force the derivative implied by the path representation to match the dynamics at chosen points. The boundary is: The polynomial or grid representation must resolve the motion between points.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The polynomial or grid representation must resolve the motion between points.</p>
+    <p>If that boundary is crossed, the visible failure is this: too few collocation points let the optimizer exploit gaps between checks.</p>
+    <p><strong>Recognize it in a new problem:</strong> Use it when a continuous trajectory is represented by pieces and dynamics are enforced at sample points.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-collocation-01">

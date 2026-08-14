@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Costate / Adjoint Variable</h1>
 <p class="lede">A shadow quantity that measures how much future cost changes if the state is nudged now.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>An early state error matters because it changes every later possibility, but that downstream effect needs to be priced locally.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Only penalize the state error at the moment it appears.</p><p><strong>Why it fails:</strong> The same small error can be harmless or disastrous depending on how it propagates into later cost.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A costate or adjoint variable evolving backward in time.</p></article>
-  <article class="card "><h3>Operation</h3><p>Propagate future sensitivity backward so present actions can be judged by downstream consequences.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>An early state error matters because it changes every later possibility, but that downstream effect needs to be priced locally.</p>
+    <p>The tempting shortcut is simple: Only penalize the state error at the moment it appears. But that shortcut breaks because the same small error can be harmless or disastrous depending on how it propagates into later cost.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>Being one meter off course near the start of a spacecraft maneuver may require large later correction, so the costate prices that future burden.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The interpretation depends on the model and differentiability of the trajectory problem.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The controller underprices early deviations whose cost appears later.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Look for the variable that tells how valuable or dangerous a state change is because of the future.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a costate or adjoint variable evolving backward in time. This answers a practical question: look for the variable that tells how valuable or dangerous a state change is because of the future.</p>
+    <p>The operation is concrete: Propagate future sensitivity backward so present actions can be judged by downstream consequences.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>Being one meter off course near the start of a spacecraft maneuver may require large later correction, so the costate prices that future burden. Start from the ordinary pressure: An early state error matters because it changes every later possibility, but that downstream effect needs to be priced locally. The shortcut is to only penalize the state error at the moment it appears. That fails because the same small error can be harmless or disastrous depending on how it propagates into later cost. So the page introduces a costate or adjoint variable evolving backward in time. and uses it to propagate future sensitivity backward so present actions can be judged by downstream consequences.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a costate or adjoint variable evolving backward in time. The operation is: Propagate future sensitivity backward so present actions can be judged by downstream consequences. The boundary is: The interpretation depends on the model and differentiability of the trajectory problem.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The interpretation depends on the model and differentiability of the trajectory problem.</p>
+    <p>If that boundary is crossed, the visible failure is this: the controller underprices early deviations whose cost appears later.</p>
+    <p><strong>Recognize it in a new problem:</strong> Look for the variable that tells how valuable or dangerous a state change is because of the future.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-costate-adjoint-variable-01">

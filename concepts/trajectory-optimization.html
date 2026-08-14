@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Trajectory Optimization</h1>
 <p class="lede">Choosing an entire path of states and actions that obeys dynamics while minimizing cost.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>Many control tasks are not about one command but about a full motion plan.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Plan a geometric path first and worry about dynamics later.</p><p><strong>Why it fails:</strong> A short path may require impossible acceleration, torque, or contact transitions.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A state-action trajectory.</p></article>
-  <article class="card "><h3>Operation</h3><p>Optimize the path while enforcing dynamics and constraints.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>Many control tasks are not about one command but about a full motion plan.</p>
+    <p>The tempting shortcut is simple: Plan a geometric path first and worry about dynamics later. But that shortcut breaks because a short path may require impossible acceleration, torque, or contact transitions.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A robotic arm must move around an obstacle without exceeding joint torque or velocity limits.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The optimized model must represent the important dynamics and constraints.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The trajectory is visually plausible but cannot be executed.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Use this term when the solution is a whole planned motion, not just a feedback rule.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a state-action trajectory. This answers a practical question: use this term when the solution is a whole planned motion, not just a feedback rule.</p>
+    <p>The operation is concrete: Optimize the path while enforcing dynamics and constraints.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A robotic arm must move around an obstacle without exceeding joint torque or velocity limits. Start from the ordinary pressure: Many control tasks are not about one command but about a full motion plan. The shortcut is to plan a geometric path first and worry about dynamics later. That fails because a short path may require impossible acceleration, torque, or contact transitions. So the page introduces a state-action trajectory. and uses it to optimize the path while enforcing dynamics and constraints.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The mathematical object is a state-action trajectory. The operation is: Optimize the path while enforcing dynamics and constraints. The boundary is: The optimized model must represent the important dynamics and constraints.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The optimized model must represent the important dynamics and constraints.</p>
+    <p>If that boundary is crossed, the visible failure is this: the trajectory is visually plausible but cannot be executed.</p>
+    <p><strong>Recognize it in a new problem:</strong> Use this term when the solution is a whole planned motion, not just a feedback rule.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-trajectory-optimization-01">

@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Direct Transcription</h1>
 <p class="lede">Turn a continuous trajectory problem into a finite optimization problem over many time-grid variables.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>A computer cannot optimize over infinitely many points of a curve, so the curve must be represented by a finite set of decision variables.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Optimize only the start and end points.</p><p><strong>Why it fails:</strong> The path between them may violate dynamics, obstacles, or actuator limits.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A discretized trajectory with state and action variables at grid points.</p></article>
-  <article class="card "><h3>Operation</h3><p>Add constraints that force neighboring grid points to approximate the dynamics.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>A computer cannot optimize over infinitely many points of a curve, so the curve must be represented by a finite set of decision variables.</p>
+    <p>The tempting shortcut is simple: Optimize only the start and end points. But that shortcut breaks because the path between them may violate dynamics, obstacles, or actuator limits.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A robot arm path is represented by joint positions and torques at many time steps, with constraints tying each step to the next.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The discretization must be fine and accurate enough for the motion being planned.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>A coarse grid hides collisions, unstable transitions, or excessive actuator demands.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Use this when the path is the object and a nonlinear optimizer will solve the finite version.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a discretized trajectory with state and action variables at grid points. This answers a practical question: use this when the path is the object and a nonlinear optimizer will solve the finite version.</p>
+    <p>The operation is concrete: Add constraints that force neighboring grid points to approximate the dynamics.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A robot arm path is a smooth curve, but a solver needs a finite list of numbers. Direct transcription places dots along the path: joint angles, velocities, and commands at selected times. Then it adds constraints saying neighboring dots must be connected by the dynamics. The solver chooses the dots; the engineer checks whether the space between dots hid trouble.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The continuous path becomes decision variables x_0...x_N and u_0...u_N. Defect constraints enforce x_{k+1} minus the dynamics step from x_k and u_k.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The discretization must be fine and accurate enough for the motion being planned.</p>
+    <p>If that boundary is crossed, the visible failure is this: a coarse grid hides collisions, unstable transitions, or excessive actuator demands.</p>
+    <p><strong>Recognize it in a new problem:</strong> Use this when the path is the object and a nonlinear optimizer will solve the finite version.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-direct-transcription-01">

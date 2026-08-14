@@ -26,19 +26,36 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Model-Based RL</h1>
 <p class="lede">Learn or use a model of the environment so the agent can plan, simulate, or improve from imagined consequences.</p>
-<section class="wide-grid">
-  <article class="card "><h3>Ordinary Problem</h3><p>Real interaction can be expensive, so the agent benefits from predicting what actions would do before trying all of them.</p></article>
-  <article class="card "><h3>Naive Approach</h3><p>Learn only from real trial-and-error.</p><p><strong>Why it fails:</strong> Hardware, safety, and sample cost can make pure trial-and-error impractical.</p></article>
-  <article class="card "><h3>Mathematical Object</h3><p>A learned transition model, planner, and policy or value update.</p></article>
-  <article class="card "><h3>Operation</h3><p>Use the model to simulate futures, plan actions, or generate training targets.</p></article>
+<section class="fp">
+  <div class="kick">01 · the ordinary pressure</div>
+  <h2>Why this idea has to exist</h2>
+  <div class="essay">
+    <p>Real interaction can be expensive, so the agent benefits from predicting what actions would do before trying all of them.</p>
+    <p>The tempting shortcut is simple: Learn only from real trial-and-error. But that shortcut breaks because hardware, safety, and sample cost can make pure trial-and-error impractical.</p>
+  </div>
 </section>
-<h2>Worked Example</h2>
-<p>A robot learns a dynamics model from limited pushes and uses it to plan a manipulation sequence before executing.</p>
-<h2>Boundary And Failure</h2>
-<section class="wide-grid">
-  <article class="card "><h3>Assumption Boundary</h3><p>The learned model must be accurate enough in the states used for planning.</p></article>
-  <article class="card "><h3>Failure Mode</h3><p>The planner exploits model errors and chooses actions that work only in simulation.</p></article>
-  <article class="card "><h3>Recognize It</h3><p>Look for RL that learns or uses a predictive model rather than relying only on direct experience.</p></article>
+<section class="fp">
+  <div class="kick">02 · the object</div>
+  <h2>What the math keeps track of</h2>
+  <div class="essay">
+    <p>The controller keeps track of a learned transition model, planner, and policy or value update. This answers a practical question: look for rl that learns or uses a predictive model rather than relying only on direct experience.</p>
+    <p>The operation is concrete: Use the model to simulate futures, plan actions, or generate training targets.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">03 · one concrete run</div>
+  <h2>Work it through before naming the formula</h2>
+  <div class="explain-box"><p>A real robot should not need to crash into a shelf a thousand times to learn that shelves are hard. Model-based RL learns or uses a model, rehearses possible futures inside it, and spends real trials on the choices that look most informative or promising.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>The learned model predicts next states or rollout outcomes. Planning through that model reduces real trial count, but model errors can create plans that work only inside the model.</p></div></details>
+</section>
+<section class="fp">
+  <div class="kick">04 · boundary</div>
+  <h2>Where the idea stops working</h2>
+  <div class="essay">
+    <p>The learned model must be accurate enough in the states used for planning.</p>
+    <p>If that boundary is crossed, the visible failure is this: the planner exploits model errors and chooses actions that work only in simulation.</p>
+    <p><strong>Recognize it in a new problem:</strong> Look for RL that learns or uses a predictive model rather than relying only on direct experience.</p>
+  </div>
 </section>
 <h2>Transcript Evidence</h2>
 <section class="stack"><article class="evidence-card" id="ev-model-based-rl-01">

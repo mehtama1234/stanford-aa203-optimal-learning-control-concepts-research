@@ -342,11 +342,11 @@ def main() -> int:
             if len(words) < 980:
                 errors.append(f"stochastic DP concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "dynamic-programming":
-            for marker in ["V(G)=0", "V(A)=1", "V(R)=6", "1 + V(A) = 2", "3 + V(R) = 9", "V(M)=2", "2 + V(M) = 4", "1 + V(R) = 7", "V(S)=4", "V(s) = min_a [c(s,a) + V(next(s,a))]", "pi(M)=right", "pi(S)=east", "closed-loop policies", "100*5*4 = 2,000 state entries", "omits mud depth or battery health"]:
+            for marker in ["V(G)=0", "V(A)=1", "V(R)=6", "1 + V(A) = 2", "3 + V(R) = 9", "V(M)=2", "2 + V(M) = 4", "1 + V(R) = 7", "V(S)=4", "S-east-M-right-A-goal", "S-south-R-slow-goal", "does not reopen M", "feedback table", "V(s) = min_a [c(s,a) + V(next(s,a))]", "pi(M)=right", "pi(S)=east", "closed-loop policies", "100*5*4 = 2,000 state entries", "100*5*4*20*10 = 400,000 entries", "every entry may need an action comparison", "omits mud depth or battery health", "honest and small enough to cover"]:
                 if marker not in text:
                     errors.append(f"dynamic programming concept page missing backward-update marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"dynamic programming concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 980:
+                errors.append(f"dynamic programming concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "trajectory-optimization":
             for marker in ["1.2 seconds", "t = 0.0, 0.3, 0.6, 0.9, and 1.2 seconds", "foot height samples are 0.04, 0.18, 0.22, 0.12, and 0.00 meters", "box top is 0.16 meters", "torso lean is 17 degrees", "support limit is 12 degrees", "46 newton-meters", "40 newton-meters", "whole state-action history", "feedback tracker", "x_0...x_N and u_0...u_{N-1}", "J = sum_k [10*foot_error_k^2 + 0.01*torque_k^2]", "x_{k+1}=f(x_k,u_k)", "defect_k = x_{k+1} - f(x_k,u_k)", "defect_k = 0", "torso_lean_2 = 17 degrees", "torso_lean &lt;= 12 degrees", "torque_3 = 46", "torque &lt;= 40", "grid skips the instant", "contact model lies about foot slip"]:
                 if marker not in text:

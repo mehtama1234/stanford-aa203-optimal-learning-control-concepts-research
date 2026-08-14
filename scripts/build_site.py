@@ -943,6 +943,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <tr><th>Method Route</th><td>{esc(item['method_route'])}</td></tr>
   <tr><th>Failure Signal</th><td>{esc(item['failure_signal'])}</td></tr>
   <tr><th>Decision Pressure</th><td>{esc(item.get('decision_pressure', ''))}</td></tr>
+  <tr><th>Concrete Run</th><td>{esc(item.get('concrete_run', ''))}</td></tr>
   <tr><th>Method Boundary</th><td>{esc(item.get('method_boundary', ''))}</td></tr>
   <tr><th>Transfer Question</th><td>{esc(item.get('transfer_question', ''))}</td></tr>
 </table>
@@ -959,13 +960,13 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
         drill_cards.append(
             card(
                 item["title"],
-                f"<p>{esc(item['prompt'])}</p><p><strong>Wrong turn to avoid:</strong> {esc(item['wrong_turn'])}</p><p><strong>What a strong answer must include:</strong></p>{criteria}<p>{linked}</p>",
+                f"<p>{esc(item['prompt'])}</p><p><strong>Setup hint:</strong> {esc(item.get('setup_hint', ''))}</p><p><strong>Wrong turn to avoid:</strong> {esc(item['wrong_turn'])}</p><p><strong>What a strong answer must include:</strong></p>{criteria}<p><strong>Transfer variant:</strong> {esc(item.get('transfer_variant', ''))}</p><p>{linked}</p>",
             )
         )
         solution_cards.append(
             card(
                 f"{item['title']} Solution",
-                f"<p><strong>Prompt:</strong> {esc(item['prompt'])}</p><p><strong>Wrong turn:</strong> {esc(item['wrong_turn'])}</p><p><strong>Strong answer:</strong> {esc(item['strong_answer'])}</p><p><strong>Solution walkthrough:</strong> {esc(item.get('solution_walkthrough', ''))}</p><p><strong>Grading criteria:</strong></p>{criteria}<p>{linked}</p>",
+                f"<p><strong>Prompt:</strong> {esc(item['prompt'])}</p><p><strong>Setup hint:</strong> {esc(item.get('setup_hint', ''))}</p><p><strong>Wrong turn:</strong> {esc(item['wrong_turn'])}</p><p><strong>Strong answer:</strong> {esc(item['strong_answer'])}</p><p><strong>Solution walkthrough:</strong> {esc(item.get('solution_walkthrough', ''))}</p><p><strong>Transfer variant:</strong> {esc(item.get('transfer_variant', ''))}</p><p><strong>Grading criteria:</strong></p>{criteria}<p>{linked}</p>",
             )
         )
     write(SITE / "drills.html", page("Drills", f"<h1>Drills</h1><p class=\"lede\">Practice prompts that train setup, method choice, future-cost recognition, feasibility diagnosis, reward repair, and approximation boundaries.</p><section class=\"stack\">{''.join(drill_cards)}</section>", "drills"))
@@ -981,7 +982,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
         misconception_cards.append(
             card(
                 f"Repair: {item['weak']}",
-                f"<p><strong>Diagnosis:</strong> {esc(item['diagnosis'])}</p><p><strong>Failure consequence:</strong> {esc(item.get('failure_consequence', ''))}</p><p><strong>Stronger version:</strong> {esc(item['strong'])}</p><p><strong>Transfer prompt:</strong> {esc(item.get('transfer_prompt', ''))}</p>",
+                f"<p><strong>Diagnosis:</strong> {esc(item['diagnosis'])}</p><p><strong>Failure consequence:</strong> {esc(item.get('failure_consequence', ''))}</p><p><strong>Replacement rule:</strong> {esc(item.get('replacement_rule', ''))}</p><p><strong>Stronger version:</strong> {esc(item['strong'])}</p><p><strong>Transfer prompt:</strong> {esc(item.get('transfer_prompt', ''))}</p>",
             )
         )
     write(SITE / "misconceptions.html", page("Misconceptions", f"<h1>Misconceptions And Weak-Claim Repairs</h1><section class=\"grid\">{''.join(misconception_cards)}</section>", "review"))

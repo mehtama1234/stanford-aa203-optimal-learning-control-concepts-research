@@ -4,34 +4,39 @@
     "diagnosis": "This says nothing about time, feedback, constraints, or why repeated optimization is needed.",
     "strong": "MPC is useful when a controller needs to plan ahead under constraints but cannot trust one long open-loop plan; it repeatedly solves a finite-horizon problem, applies the first action, observes the new state, and replans.",
     "failure_consequence": "A learner who keeps this weak version will miss why MPC can fail even when every individual optimization solve returns a feasible answer.",
-    "transfer_prompt": "Ask what state is measured after the first action and whether the next optimization problem remains feasible."
+    "transfer_prompt": "Ask what state is measured after the first action and whether the next optimization problem remains feasible.",
+    "replacement_rule": "Replace praise with the loop: solve a short future, apply one action, measure the new state, and protect the next solve."
   },
   {
     "weak": "The value function captures the objective.",
     "diagnosis": "This hides what value actually stores and why it helps decisions.",
     "strong": "The value function stores the best future cost from a state, so the controller can judge a current action by the immediate cost plus the future burden of the state it creates.",
     "failure_consequence": "The phrase can make value sound like a restatement of the cost rather than a reusable estimate of future consequence from a state.",
-    "transfer_prompt": "Ask what future burden changes when the same action leads to two different next states."
+    "transfer_prompt": "Ask what future burden changes when the same action leads to two different next states.",
+    "replacement_rule": "Replace 'captures' with storage: value stores best future cost from the state now occupied."
   },
   {
     "weak": "Imitation learning copies expert behavior.",
     "diagnosis": "This misses the closed-loop distribution problem.",
     "strong": "Imitation learning fits a policy from expert demonstrations, but the learned policy can drift into states the expert data did not cover, so action prediction accuracy is not the same as robust control.",
     "failure_consequence": "This hides why high supervised accuracy can still produce poor closed-loop behavior after the learner visits off-demonstration states.",
-    "transfer_prompt": "Ask which states the learned policy will create that the expert data never labeled."
+    "transfer_prompt": "Ask which states the learned policy will create that the expert data never labeled.",
+    "replacement_rule": "Replace 'copies' with the data loop: fit actions on expert states, then test what states the learned policy creates."
   },
   {
     "weak": "LQR works for robotics because it is efficient.",
     "diagnosis": "Efficiency is not the mathematical reason LQR is appropriate.",
     "strong": "LQR is appropriate near a nominal robotic motion when dynamics can be locally linearized and the cost can be treated as quadratic, giving fast feedback for small deviations while leaving large nonlinear events outside the guarantee.",
     "failure_consequence": "Efficiency without the local model boundary can lead a practitioner to use LQR in contact, saturation, or large-deviation regimes where its assumptions are false.",
-    "transfer_prompt": "Ask what operating point was linearized and how far the current state has moved from it."
+    "transfer_prompt": "Ask what operating point was linearized and how far the current state has moved from it.",
+    "replacement_rule": "Replace speed claims with assumptions: linear dynamics, quadratic cost, and small deviations near the nominal motion."
   },
   {
     "weak": "Reward tells the agent what to do.",
     "diagnosis": "Reward does not describe behavior directly; it creates incentives that can be exploited.",
     "strong": "Reward is the scalar feedback the agent optimizes over time; if it omits safety, smoothness, or task constraints, the agent can get high return by doing something the designer did not intend.",
     "failure_consequence": "This wording hides the gap between intended task behavior and optimized scalar feedback, which is where reward hacking appears.",
-    "transfer_prompt": "Ask what behavior earns high reward while violating the real task."
+    "transfer_prompt": "Ask what behavior earns high reward while violating the real task.",
+    "replacement_rule": "Replace intention language with incentives: reward is the scalar signal the agent can exploit."
   }
 ]

@@ -129,17 +129,17 @@ def main() -> int:
                             errors.append(f"{path.relative_to(ROOT)} row {row.get('id')} missing field: {field}")
             if path.name == "worked-examples.json":
                 for row in rows:
-                    for field in ["decision_pressure", "method_boundary", "transfer_question"]:
+                    for field in ["decision_pressure", "concrete_run", "method_boundary", "transfer_question"]:
                         if not row.get(field):
                             errors.append(f"{path.relative_to(ROOT)} row {row.get('id')} missing field: {field}")
             if path.name == "drills.json":
                 for row in rows:
-                    for field in ["grading_criteria", "solution_walkthrough"]:
+                    for field in ["setup_hint", "grading_criteria", "solution_walkthrough", "transfer_variant"]:
                         if not row.get(field):
                             errors.append(f"{path.relative_to(ROOT)} row {row.get('id')} missing field: {field}")
             if path.name == "weak-claim-repairs.json":
                 for row in rows:
-                    for field in ["failure_consequence", "transfer_prompt"]:
+                    for field in ["failure_consequence", "replacement_rule", "transfer_prompt"]:
                         if not row.get(field):
                             errors.append(f"{path.relative_to(ROOT)} row {row.get('weak')} missing field: {field}")
     if not quality_audit_path.exists():
@@ -184,10 +184,10 @@ def main() -> int:
             errors.append(f"evidence anchor missing from evidence.html: {row['id']}")
     rendered_checks = {
         "derivations.html": ["Failure test", "Formula shape", "First-principles intuition", "Transfer check"],
-        "worked-examples.html": ["Method Route", "Failure Signal", "Decision Pressure", "Method Boundary"],
-        "drills.html": ["Wrong turn to avoid", "What a strong answer must include"],
-        "solutions.html": ["Strong answer", "Solution walkthrough", "Grading criteria"],
-        "misconceptions.html": ["Stronger version", "Failure consequence", "Transfer prompt"],
+        "worked-examples.html": ["Method Route", "Failure Signal", "Decision Pressure", "Concrete Run", "Method Boundary"],
+        "drills.html": ["Setup hint", "Wrong turn to avoid", "What a strong answer must include", "Transfer variant"],
+        "solutions.html": ["Strong answer", "Solution walkthrough", "Transfer variant", "Grading criteria"],
+        "misconceptions.html": ["Stronger version", "Failure consequence", "Replacement rule", "Transfer prompt"],
         "families.html": ["The move:", "A method family is a response", "drone", "rover", "warehouse robot"],
         "primitives.html": ["reusable pieces", "The action is the command", "Constraint says what cannot be crossed"],
         "formula-reader.html": ["A formula is a machine", "The operation:", "where it fails", "rocket", "rover"],
@@ -235,6 +235,10 @@ def main() -> int:
         "evidence.html": 6600,
         "completion-audit.html": 220,
         "provenance.html": 240,
+        "worked-examples.html": 1250,
+        "drills.html": 800,
+        "solutions.html": 1450,
+        "misconceptions.html": 650,
     }
     for filename, minimum in minimum_page_words.items():
         path = SITE / filename

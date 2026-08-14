@@ -13,13 +13,15 @@
       "constraints",
       "horizon"
     ],
+    "setup_hint": "Start with the smallest record that predicts the next few seconds. Do not list every sensor; list the variables that change how thrust and wind move the drone.",
     "grading_criteria": [
       "Separates physical state from command/action.",
       "Names wind as a disturbance in the dynamics rather than a generic difficulty.",
       "Includes hard safety constraints, not only soft costs.",
       "Chooses a horizon long enough to include approach, descent, and landing."
     ],
-    "solution_walkthrough": "Start by asking what must be known at one instant to predict the next few seconds: position, velocity, attitude, battery, payload condition, and wind estimate. Then name what can be commanded: rotor thrusts, attitude targets, or velocity setpoints depending on the control layer. The objective trades arrival time against energy, smoothness, tracking, and landing accuracy, while constraints protect no-fly zones, actuator limits, battery reserve, payload safety, and touchdown speed."
+    "solution_walkthrough": "Start by asking what must be known at one instant to predict the next few seconds: position, velocity, attitude, battery, payload condition, and wind estimate. Then name what can be commanded: rotor thrusts, attitude targets, or velocity setpoints depending on the control layer. The objective trades arrival time against energy, smoothness, tracking, and landing accuracy, while constraints protect no-fly zones, actuator limits, battery reserve, payload safety, and touchdown speed.",
+    "transfer_variant": "Now change the task to indoor delivery with no GPS and tight doorways. The state must include localization uncertainty and the constraints must include clearance margins."
   },
   {
     "id": "warehouse-method-choice",
@@ -34,13 +36,15 @@
       "behavioral-cloning",
       "model-based-rl"
     ],
+    "setup_hint": "Separate what is already trusted from what is missing. Known arm dynamics should not be relearned from scratch, but contact strategy may still need demonstrations or reward.",
     "grading_criteria": [
       "Uses the known model instead of discarding it.",
       "Uses demonstrations for initialization or task priors.",
       "Keeps constraints and safe exploration visible.",
       "Explains where RL or model-based RL adds value beyond cloning."
     ],
-    "solution_walkthrough": "The known arm model should handle motion constraints through trajectory optimization or MPC. Demonstrations should initialize manipulation behavior through imitation or behavioral cloning. Reinforcement learning is a later improvement tool where rewards can be measured and exploration can be made safe; model-based RL is especially useful if each physical trial is expensive."
+    "solution_walkthrough": "The known arm model should handle motion constraints through trajectory optimization or MPC. Demonstrations should initialize manipulation behavior through imitation or behavioral cloning. Reinforcement learning is a later improvement tool where rewards can be measured and exploration can be made safe; model-based RL is especially useful if each physical trial is expensive.",
+    "transfer_variant": "If demonstrations disappear but a simulator is reliable, the answer shifts toward model-based planning and safe RL rather than behavioral cloning."
   },
   {
     "id": "bellman-recognition",
@@ -53,12 +57,14 @@
       "value-function",
       "dynamic-programming"
     ],
+    "setup_hint": "Ask what the action changes about the next state. If that next state changes later choices, the decision has Bellman structure.",
     "grading_criteria": [
       "Compares actions by immediate cost plus future value.",
       "Identifies wheel damage as a state change affecting later options.",
       "Avoids reducing the problem to shortest path distance only."
     ],
-    "solution_walkthrough": "The rough crossing is not just a shorter segment; it may create a degraded rover state with lower future mobility. The Bellman structure appears because every current action creates a next state, and the quality of that next state is summarized by future value. The right comparison is immediate travel cost plus the value of the resulting mobility state."
+    "solution_walkthrough": "The rough crossing is not just a shorter segment; it may create a degraded rover state with lower future mobility. The Bellman structure appears because every current action creates a next state, and the quality of that next state is summarized by future value. The right comparison is immediate travel cost plus the value of the resulting mobility state.",
+    "transfer_variant": "Replace wheel damage with battery drain. The same Bellman logic applies if the short route leaves too little charge for later hills."
   },
   {
     "id": "mpc-feasibility",
@@ -71,12 +77,14 @@
       "recursive-feasibility",
       "reachability"
     ],
+    "setup_hint": "Do not stop at 'the current optimization was feasible.' Ask what state the first action hands to the next optimization.",
     "grading_criteria": [
       "Distinguishes current feasibility from recursive feasibility.",
       "Names the weak horizon or missing terminal condition.",
       "Proposes a concrete repair such as terminal set, backup policy, or reachability check."
     ],
-    "solution_walkthrough": "The optimizer is doing what the formulation permits: choosing a two-second collision-free maneuver. The failure is that the first action moves the car into a state from which the next constrained problem has no feasible continuation. A repair adds structure that prices or forbids those states: longer horizon, terminal invariant set, backup braking policy, or reachability safety envelope."
+    "solution_walkthrough": "The optimizer is doing what the formulation permits: choosing a two-second collision-free maneuver. The failure is that the first action moves the car into a state from which the next constrained problem has no feasible continuation. A repair adds structure that prices or forbids those states: longer horizon, terminal invariant set, backup braking policy, or reachability safety envelope.",
+    "transfer_variant": "For a drone, replace the traffic gap with a narrow window. A feasible pass-through command is bad if the next state leaves no safe stopping or turning room."
   },
   {
     "id": "reward-hacking",
@@ -89,12 +97,14 @@
       "reinforcement-learning",
       "constraints"
     ],
+    "setup_hint": "Treat reward as written law, not intention. Ask what high-return behavior the robot can find while violating the real task.",
     "grading_criteria": [
       "Names the missing objective terms or constraints.",
       "Explains why more training can worsen the exploit.",
       "Separates reward repair from dynamics repair."
     ],
-    "solution_walkthrough": "The reward values speed and target arrival but does not price object damage, contact force, smoothness, or forbidden impacts. The agent has found a high-return behavior under the written objective. The repair is to add missing costs or hard constraints, then test for remaining exploits rather than assuming the scalar reward captures the human task."
+    "solution_walkthrough": "The reward values speed and target arrival but does not price object damage, contact force, smoothness, or forbidden impacts. The agent has found a high-return behavior under the written objective. The repair is to add missing costs or hard constraints, then test for remaining exploits rather than assuming the scalar reward captures the human task.",
+    "transfer_variant": "If the robot is rewarded for opening a door quickly, it may slam the handle unless force, damage, and smoothness are priced or constrained."
   },
   {
     "id": "lqr-boundary",
@@ -107,11 +117,13 @@
       "local-quadratic-approximation",
       "dynamics"
     ],
+    "setup_hint": "Identify the operating point. Then ask whether the current state is still a small deviation from it.",
     "grading_criteria": [
       "States the local linear/quadratic assumption.",
       "Explains why impact and tumbling violate the operating region.",
       "Avoids claiming that LQR is universally inappropriate."
     ],
-    "solution_walkthrough": "The hover controller was designed around small deviations where dynamics can be linearized and the cost looks quadratic. After a branch strike, the drone may be rotating rapidly, saturating actuators, and experiencing contact or aerodynamic regimes absent from the local model. The issue is boundary violation, not that LQR has no place in control."
+    "solution_walkthrough": "The hover controller was designed around small deviations where dynamics can be linearized and the cost looks quadratic. After a branch strike, the drone may be rotating rapidly, saturating actuators, and experiencing contact or aerodynamic regimes absent from the local model. The issue is boundary violation, not that LQR has no place in control.",
+    "transfer_variant": "The same boundary appears for a car: lane-centering feedback may be fine near the lane center and wrong after a skid."
   }
 ]

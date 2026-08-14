@@ -444,11 +444,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"policy concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "state":
-            for marker in ["y = 0.20 meters", "v_y = 0.00 m/s", "psi = 0 degrees", "v_y = -1.50 m/s", "psi = -8 degrees", "u = +5 degrees", "dt = 0.2 seconds", "y_next = y + dt*v_y", "0.20 + 0.2*0.00 = 0.20 meters", "0.20 + 0.2*(-1.50) = -0.10 meters", "x_{t+1}=f(x_t,u_t)", "same action distribution over next states", "x=[y]", "x=[y,v_y,psi]", "hidden battery temperature, tire grip, load mass"]:
+            for marker in ["y = 0.20 meters", "v_y = 0.00 m/s", "psi = 0 degrees", "v_y = -1.50 m/s", "psi = -8 degrees", "u = +5 degrees", "dt = 0.2 seconds", "y_next = y + dt*v_y", "0.20 + 0.2*0.00 = 0.20 meters", "0.20 + 0.2*(-1.50) = -0.10 meters", "single camera frame", "y was 0.50 meters left 0.2 seconds ago", "v_y_est = (0.20 - 0.50)/0.2 = -1.50 m/s", "x_{t+1}=f(x_t,u_t)", "same action distribution over next states", "x=[y]", "x=[y,v_y,psi]", "observation o_t", "camera_frame_t", "x_t = [y_t, (y_t-y_{t-1})/dt, psi_t]", "(0.20 - 0.50)/0.2 = -1.50", "sliding Car B from steady Car A", "hidden battery temperature, tire grip, load mass"]:
                 if marker not in text:
                     errors.append(f"state concept page missing predictive-memory marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"state concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 980:
+                errors.append(f"state concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "static-optimization":
             for marker in ["one charging power z", "6 kilowatts", "4 kilowatts", "J(z) = (z - 6)^2", "0 &lt;= z &lt;= 4", "J(4) = (4 - 6)^2 = 4", "J(3) = 9", "J(0) = 36", "after 20 minutes at z = 4", "temperature rises from 30 C to 46 C", "above a 45 C limit", "z = 3 keeps it at 42 C", "time-coupled charging problem", "minimize_z J(z)", "g_i(z) &lt;= 0", "h_j(z) = 0", "dJ/dz = 2*(z - 6) = 0", "active outlet boundary z = 4", "g_heat(z)=temperature_after_20_min(z)-45 &lt;= 0", "g_heat(4)=46-45=1 &gt; 0", "z = 3 can become the best legal point", "temperature_after_20_min(z) is a fixed map", "temperature_next = f(temperature,z)", "change power after each 10 minute interval"]:
                 if marker not in text:

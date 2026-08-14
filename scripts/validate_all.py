@@ -480,11 +480,11 @@ def main() -> int:
             if len(words) < 1160:
                 errors.append(f"Hamiltonian concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "indirect-methods":
-            for marker in ["x(0)=0 meters", "x(2)=1 meter", "x_dot = u", "running cost is 0.5*u^2", "H = 0.5*u^2 + p*u", "dH/du = u + p = 0", "u = -p", "p_dot = 0", "initial costate", "p(0) = -0.3", "x(2)=0.6", "0.4 meters short", "p(0) = -0.7", "x(2)=1.4", "correct shot between -0.3 and -0.7", "p(0) = -0.5", "x(2)=1.0 exactly", "x(t)=0.5*t", "terminal miss", "partial H/partial p", "partial H/partial u = 0", "r(p0)=x(2;p0)-1", "r=-0.4", "r=+0.4", "sign change", "x(2;p0)=-2*p0", "r(p0)=-2*p0-1", "shooting method", "path limit such as x(t) &lt;= 0.8", "wrong sign"]:
+            for marker in ["x(0)=0 meters", "x(2)=1 meter", "x_dot = u", "running cost is 0.5*u^2", "H = 0.5*u^2 + p*u", "dH/du = u + p = 0", "u = -p", "p_dot = 0", "initial costate", "p(0) = -0.3", "x(2)=0.6", "0.4 meters short", "p(0) = -0.7", "x(2)=1.4", "correct shot between -0.3 and -0.7", "p(0) = -0.5", "x(2)=1.0 exactly", "x(t)=0.5*t", "final position is free", "phi(x(2))=10*(x(2)-1)^2", "p(2)=dphi/dx=20*(x(2)-1)", "p0 = 20*(-2*p0 - 1)", "41*p0 = -20", "p0=-20/41=-0.488", "x(2)=40/41=0.976", "trades effort against final error", "terminal miss", "partial H/partial p", "partial H/partial u = 0", "r(p0)=x(2;p0)-1", "r=-0.4", "r=+0.4", "sign change", "x(2;p0)=-2*p0", "r(p0)=-2*p0-1", "shooting method", "b(p0)=p(2)-20*(x(2)-1)", "b(p0)=p0-20*(-2*p0-1)=41*p0+20", "marginal effort price and marginal miss price balance", "path limit such as x(t) &lt;= 0.8", "wrong sign"]:
                 if marker not in text:
                     errors.append(f"indirect methods concept page missing boundary-value marker: {marker}")
-            if len(words) < 980:
-                errors.append(f"indirect methods concept page below core richness floor: {len(words)} < 980")
+            if len(words) < 1160:
+                errors.append(f"indirect methods concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "value-based-rl":
             for marker in ["battery 22 percent", "Q(x,turn_left) = 3", "Q(x,turn_right) = 7", "gamma = 0.9", "y = -1 + 0.9*10 = 8", "alpha = 0.5", "7 + 0.5*(8 - 7) = 7.5", "V_pi(x)", "Q_pi(x,u)", "policy evaluation", "policy improvement", "Q(x,u) &lt;- Q(x,u) + alpha*(y - Q(x,u))", "slick floors"]:
                 if marker not in text:

@@ -43,13 +43,22 @@
   </div>
 </section>
 <section class="fp">
-  <div class="kick">03 · one concrete run</div>
+  <div class="kick">03 · read it with your hands</div>
+  <h2>What to inspect first</h2>
+  <div class="essay">
+    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a state distribution induced by a policy. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Now apply one command or one update. Compare or correct the mismatch between expert data and learner rollouts. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>The world check is the example: A robot trained only on centered object grasps may fail when its first motion nudges the object aside. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
   <div class="explain-box"><p>A cloned driving policy may drift a little right of lane center. The expert data has few examples from that off-center state because the expert rarely made the mistake. The learned policy now has to act in a part of the world where it was not trained.</p></div>
   <details class="math"><summary>the actual math, one level deeper</summary><div><p>Training data comes from the expert&#x27;s state distribution, but deployment states come from the learned policy&#x27;s distribution. Small action errors can compound because those distributions differ.</p></div></details>
 </section>
 <section class="fp">
-  <div class="kick">04 · boundary</div>
+  <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>The issue matters most when actions affect future observations.</p>

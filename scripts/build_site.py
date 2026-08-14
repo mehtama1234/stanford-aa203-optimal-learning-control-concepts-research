@@ -1177,13 +1177,22 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   </div>
 </section>
 <section class="fp">
-  <div class="kick">03 · one concrete run</div>
+  <div class="kick">03 · read it with your hands</div>
+  <h2>What to inspect first</h2>
+  <div class="essay">
+    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is {esc(concept['mathematical_object']).lower()} Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Now apply one command or one update. {esc(concept['operation'])} After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>The world check is the example: {esc(concept['worked_example'])} A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
   <div class="explain-box"><p>{esc(run['run'])}</p></div>
   <details class="math"><summary>the actual math, one level deeper</summary><div><p>{esc(run['math'])}</p></div></details>
 </section>
 <section class="fp">
-  <div class="kick">04 · boundary</div>
+  <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>{esc(concept['assumption_boundary'])}</p>

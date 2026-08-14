@@ -43,13 +43,22 @@
   </div>
 </section>
 <section class="fp">
-  <div class="kick">03 · one concrete run</div>
+  <div class="kick">03 · read it with your hands</div>
+  <h2>What to inspect first</h2>
+  <div class="essay">
+    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a feasible set or recursively feasible set. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Now apply one command or one update. Check whether at least one trajectory obeys all dynamics and constraints. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>The world check is the example: If a car is too close to a wall at high speed, no braking command may avoid impact within the remaining distance. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+  </div>
+</section>
+<section class="fp">
+  <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
   <div class="explain-box"><p>A car boxed between two trucks may have no legal lane change, no legal stop, and no legal acceleration that avoids trouble. Feasibility asks this before arguing about best behavior: is there at least one legal future left?</p></div>
   <details class="math"><summary>the actual math, one level deeper</summary><div><p>The feasible set contains states and actions satisfying dynamics, bounds, and path constraints. Optimization starts only after this set is nonempty.</p></div></details>
 </section>
 <section class="fp">
-  <div class="kick">04 · boundary</div>
+  <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>Feasibility depends on the current state, constraint model, horizon, and actuator limits.</p>

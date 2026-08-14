@@ -259,9 +259,9 @@ def main() -> int:
         text = path.read_text(encoding="utf-8") if path.exists() else ""
         plain = re.sub(r"<[^>]+>", " ", text)
         words = re.findall(r"\b\w+\b", plain)
-        if len(words) < 430:
+        if len(words) < 520:
             errors.append(f"concept page below richness word floor: {path.relative_to(ROOT)} has {len(words)} words")
-        for marker in ["one concrete run", "the actual math, one level deeper", "Where the idea stops working"]:
+        for marker in ["read it with your hands", "What to inspect first", "The world check", "one concrete run", "the actual math, one level deeper", "Where the idea stops working"]:
             if marker not in text:
                 errors.append(f"concept page missing richness marker: {path.relative_to(ROOT)} -> {marker}")
     for path in SITE.rglob("*.html"):

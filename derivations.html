@@ -28,7 +28,10 @@
 <ol><li>For each legal action, compute the immediate cost of taking that action now.</li><li>Use the dynamics or transition model to identify the next state or distribution over next states.</li><li>Attach to that next state the best future cost already assigned by the value function.</li><li>Add immediate cost and future value so each action is judged by the same full-future accounting rule.</li><li>Choose the action with the smallest combined cost, or largest combined reward in reward notation.</li></ol>
 <p><strong>Formula shape:</strong> V(state) = best over actions of immediate cost plus value(next state).</p>
 <p><strong>Why it works:</strong> The future after the next state is itself a smaller instance of the same problem, so the controller does not need to enumerate every full trajectory from scratch.</p>
+<p><strong>First-principles intuition:</strong> The hard part is not the minimization symbol; it is the decision to make the state carry all information needed for the remaining future. Once that is true, every candidate action can be priced by the same ledger: what it costs now plus the best cost from the state it creates.</p>
+<p><strong>Common wrong turn:</strong> Trying to choose the whole future action sequence before defining a value function makes the problem explode combinatorially and hides the repeated subproblem.</p>
 <p><strong>Failure test:</strong> If the state does not contain the information needed to predict future consequences, the recursion prices the wrong future.</p>
+<p><strong>Transfer check:</strong> If a warehouse robot&#x27;s next move changes which shelves it can reach later, ask what state summary would let the future after that move be treated as another copy of the same problem.</p>
 <p><span class="pill"><a href="concepts/dynamic-programming.html">Dynamic Programming</a></span> <span class="pill"><a href="concepts/value-function.html">Value Function</a></span> <span class="pill"><a href="concepts/bellman-recursion.html">Bellman Recursion</a></span> <span class="pill"><a href="concepts/stochastic-dynamic-programming.html">Stochastic Dynamic Programming</a></span></p>
 </article><article class="card "><h3>Costates As Backward Prices On State Errors</h3>
 <p><strong>Problem:</strong> A small state error now can change later dynamics and later cost, so the controller needs a local price for that downstream effect.</p>
@@ -36,7 +39,10 @@
 <ol><li>Nudge the state at one time and ask how that nudge changes all later states through the dynamics.</li><li>Track how the changed later states alter future cost and terminal cost.</li><li>Move that future sensitivity backward through time so it can be attached to the current state.</li><li>Use the backward sensitivity together with immediate cost to judge whether a control perturbation helps.</li><li>Solve the resulting state, costate, and stationarity equations as necessary conditions for an optimum.</li></ol>
 <p><strong>Formula shape:</strong> Costate evolves backward as the derivative of future cost with respect to state.</p>
 <p><strong>Why it works:</strong> It turns a distributed future consequence into a local signal that can be combined with the current control decision.</p>
+<p><strong>First-principles intuition:</strong> A costate is the answer to a practical sensitivity question: if the system is slightly off in this state coordinate now, how much future objective damage does that create after dynamics carry the error forward?</p>
+<p><strong>Common wrong turn:</strong> Reading the costate as an extra physical state loses the point. It is not another sensor measurement; it is a backward-propagated price on violating the planned state history.</p>
 <p><strong>Failure test:</strong> If the model is wrong or the optimum is nonsmooth, the backward sensitivity can be misleading or undefined.</p>
+<p><strong>Transfer check:</strong> When a robotic arm is almost at the same endpoint but with a different velocity, use the costate idea to ask how that velocity error changes future braking effort and constraint risk.</p>
 <p><span class="pill"><a href="concepts/calculus-of-variations.html">Calculus of Variations</a></span> <span class="pill"><a href="concepts/costate-adjoint-variable.html">Costate / Adjoint Variable</a></span> <span class="pill"><a href="concepts/hamiltonian-optimal-control.html">Hamiltonian for Optimal Control</a></span> <span class="pill"><a href="concepts/indirect-methods.html">Indirect Methods</a></span></p>
 </article><article class="card "><h3>Direct Transcription As Finite Path Optimization</h3>
 <p><strong>Problem:</strong> A computer cannot choose infinitely many points of a continuous trajectory, but the path still has to obey dynamics and constraints.</p>
@@ -44,7 +50,10 @@
 <ol><li>Choose a time grid or collection of collocation points.</li><li>Create decision variables for states and actions at those points.</li><li>Write constraints that force neighboring points to satisfy an approximation of the dynamics.</li><li>Add path constraints, boundary conditions, and the discretized cost.</li><li>Solve the resulting finite nonlinear program and then check whether the grid was fine enough.</li></ol>
 <p><strong>Formula shape:</strong> Continuous trajectory problem becomes variables plus defect constraints plus discretized cost.</p>
 <p><strong>Why it works:</strong> The method converts a path problem into a finite optimization problem while keeping dynamics visible as constraints.</p>
+<p><strong>First-principles intuition:</strong> Direct transcription trades an infinite-dimensional path choice for a finite nonlinear program whose variables are samples of the path. The price of that convenience is that the grid becomes part of the modeling assumption.</p>
+<p><strong>Common wrong turn:</strong> Treating a feasible grid solution as automatically feasible between grid points can hide actuator spikes, missed collisions, or fast unstable motion.</p>
 <p><strong>Failure test:</strong> A coarse discretization can hide collisions, actuator spikes, or fast dynamics between grid points.</p>
+<p><strong>Transfer check:</strong> For a drone flying through a doorway, ask what events could happen between collocation points and whether the mesh is fine enough to see them.</p>
 <p><span class="pill"><a href="concepts/direct-transcription.html">Direct Transcription</a></span> <span class="pill"><a href="concepts/collocation.html">Collocation</a></span> <span class="pill"><a href="concepts/shooting-methods.html">Shooting Methods</a></span> <span class="pill"><a href="concepts/trajectory-optimization.html">Trajectory Optimization</a></span></p>
 </article><article class="card "><h3>LQR From Local Linear And Quadratic Structure</h3>
 <p><strong>Problem:</strong> Near a nominal state, the controller needs fast feedback without solving a full nonlinear problem at every small deviation.</p>
@@ -52,7 +61,10 @@
 <ol><li>Approximate the dynamics locally as a linear map from state and action to next state.</li><li>Approximate the cost locally as a quadratic bowl around the desired behavior.</li><li>Assume the future value also has a quadratic shape.</li><li>Propagate that quadratic value shape backward to compute feedback gains.</li><li>Apply the feedback only while the system remains inside the region where the local approximation is credible.</li></ol>
 <p><strong>Formula shape:</strong> Linear dynamics plus quadratic cost gives a quadratic value function and linear feedback.</p>
 <p><strong>Why it works:</strong> The quadratic form stores exactly the curvature needed to trade state error against control effort locally.</p>
+<p><strong>First-principles intuition:</strong> LQR works because linear dynamics and quadratic cost are closed under Bellman-style backward reasoning: a quadratic future value remains quadratic, so the best correction is a linear feedback law.</p>
+<p><strong>Common wrong turn:</strong> Calling LQR a general robot controller ignores that its guarantee is local to the model and cost approximation used to derive the feedback.</p>
 <p><strong>Failure test:</strong> Large deviations, saturating actuators, impacts, and contact changes can make the local model false.</p>
+<p><strong>Transfer check:</strong> If a car is near lane center with small heading error, local quadratic reasoning is plausible; if it is skidding sideways after impact, the local model boundary has been crossed.</p>
 <p><span class="pill"><a href="concepts/lqr.html">LQR</a></span> <span class="pill"><a href="concepts/local-quadratic-approximation.html">Local Quadratic Approximation</a></span> <span class="pill"><a href="concepts/value-function.html">Value Function</a></span> <span class="pill"><a href="concepts/dynamics.html">Dynamics</a></span></p>
 </article><article class="card "><h3>MPC As Planning Turned Into Feedback</h3>
 <p><strong>Problem:</strong> A long open-loop plan becomes stale when disturbances, modeling errors, or moving obstacles change the state.</p>
@@ -60,7 +72,10 @@
 <ol><li>At the current state, solve a finite-horizon constrained optimal-control problem.</li><li>Apply only the first action from the planned sequence.</li><li>Measure or estimate the new state after that action.</li><li>Shift the horizon forward and solve a new problem from the updated state.</li><li>Design terminal costs, terminal sets, or backup policies so repeated replanning preserves feasibility and stability.</li></ol>
 <p><strong>Formula shape:</strong> Solve horizon, apply first action, observe, shift, repeat.</p>
 <p><strong>Why it works:</strong> The optimizer looks ahead, while the repeated solve makes the plan responsive to what actually happened.</p>
+<p><strong>First-principles intuition:</strong> MPC uses optimization as a feedback mechanism. The plan is valuable, but the controller intentionally throws away most of it because the next measurement contains better information than the old prediction.</p>
+<p><strong>Common wrong turn:</strong> Assuming every feasible short-horizon plan is safe ignores the state that will be handed to the next optimization problem.</p>
 <p><strong>Failure test:</strong> A short horizon without terminal structure can make locally good moves that leave no feasible plan later.</p>
+<p><strong>Transfer check:</strong> In traffic, ask whether the first acceleration command leaves a future braking or steering maneuver available after nearby cars move.</p>
 <p><span class="pill"><a href="concepts/model-predictive-control.html">Model Predictive Control</a></span> <span class="pill"><a href="concepts/recursive-feasibility.html">Recursive Feasibility</a></span> <span class="pill"><a href="concepts/stability-under-replanning.html">Stability Under Replanning</a></span> <span class="pill"><a href="concepts/constraints.html">Constraints</a></span></p>
 </article><article class="card "><h3>Policy Gradients As Direct Policy Improvement</h3>
 <p><strong>Problem:</strong> The learner may not have a reliable model or action labels, but can observe returns after executing a parameterized policy.</p>
@@ -68,7 +83,10 @@
 <ol><li>Run the current policy to generate trajectories and returns.</li><li>Estimate which actions or action probabilities were associated with higher return.</li><li>Convert that estimate into a direction for changing policy parameters.</li><li>Update parameters so actions that led to higher return become more likely in similar states.</li><li>Control update size and exploration so noisy returns do not destroy useful behavior.</li></ol>
 <p><strong>Formula shape:</strong> Move policy parameters in the direction that increases expected return.</p>
 <p><strong>Why it works:</strong> It optimizes the decision rule directly when a value table or exact model is not the main object.</p>
+<p><strong>First-principles intuition:</strong> Policy gradients avoid building a full transition model by using sampled returns as evidence about how to change the decision rule. That evidence is noisy because each rollout mixes policy choice, environment randomness, and delayed reward.</p>
+<p><strong>Common wrong turn:</strong> Increasing the probability of every action in a successful rollout can reinforce accidents of noise unless credit assignment, baselines, and update size are handled carefully.</p>
 <p><strong>Failure test:</strong> Sparse rewards, unsafe exploration, or high-variance estimates can make the update unreliable.</p>
+<p><strong>Transfer check:</strong> For a robot learning a grasp policy, ask whether a high return came from the chosen grasp parameters or from an unusually easy object pose.</p>
 <p><span class="pill"><a href="concepts/policy-optimization.html">Policy Optimization</a></span> <span class="pill"><a href="concepts/policy.html">Policy</a></span> <span class="pill"><a href="concepts/reward.html">Reward</a></span> <span class="pill"><a href="concepts/exploration.html">Exploration</a></span> <span class="pill"><a href="concepts/reinforcement-learning.html">Reinforcement Learning</a></span></p>
 </article></section></main>
 </body>

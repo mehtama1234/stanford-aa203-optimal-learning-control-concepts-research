@@ -31,6 +31,9 @@
   <tr><th>Constraints</th><td>Thrust limits, no underground states, structural load limits, and safe touchdown velocity.</td></tr>
   <tr><th>Method Route</th><td>Start with trajectory optimization or direct transcription. Use MPC if disturbances or model mismatch require replanning.</td></tr>
   <tr><th>Failure Signal</th><td>A plan that saves fuel but reaches the ground too fast reveals a cost or constraint error.</td></tr>
+  <tr><th>Decision Pressure</th><td>The controller is balancing altitude loss, velocity reduction, and fuel burn under gravity. Waiting saves fuel now but can make the future braking problem impossible.</td></tr>
+  <tr><th>Method Boundary</th><td>Direct transcription is appropriate when the landing model and constraints are trusted. MPC becomes necessary when wind, mass estimation, or engine lag make the open-loop plan age quickly.</td></tr>
+  <tr><th>Transfer Question</th><td>What terminal condition would prevent a fuel-saving trajectory from technically landing while still destroying the vehicle?</td></tr>
 </table>
 <p><span class="pill"><a href="concepts/optimal-control-problem.html">Optimal Control Problem</a></span> <span class="pill"><a href="concepts/direct-transcription.html">Direct Transcription</a></span> <span class="pill"><a href="concepts/model-predictive-control.html">Model Predictive Control</a></span> <span class="pill"><a href="concepts/constraints.html">Constraints</a></span></p>
 </article><article class="card "><h3>Robot Arm Around An Obstacle</h3>
@@ -42,6 +45,9 @@
   <tr><th>Constraints</th><td>Joint limits, torque limits, collision constraints, and endpoint requirements.</td></tr>
   <tr><th>Method Route</th><td>Use trajectory optimization with collocation when the model is trusted; use imitation learning if expert demonstrations are easier than writing the contact-rich objective.</td></tr>
   <tr><th>Failure Signal</th><td>A visually short path that requires impossible torque shows why geometric planning alone is incomplete.</td></tr>
+  <tr><th>Decision Pressure</th><td>The short geometric path may pass through joint states that require impossible torque or create collision risk after dynamics are considered.</td></tr>
+  <tr><th>Method Boundary</th><td>Collocation is strong when contact is limited and geometry is known; demonstration learning becomes attractive when human strategy encodes contact-rich choices that are hard to write as a clean cost.</td></tr>
+  <tr><th>Transfer Question</th><td>Which part of the setup changes if the commanded action is joint torque rather than desired end-effector velocity?</td></tr>
 </table>
 <p><span class="pill"><a href="concepts/trajectory-optimization.html">Trajectory Optimization</a></span> <span class="pill"><a href="concepts/collocation.html">Collocation</a></span> <span class="pill"><a href="concepts/imitation-learning.html">Imitation Learning</a></span> <span class="pill"><a href="concepts/action-control-input.html">Action / Control Input</a></span></p>
 </article><article class="card "><h3>Autonomous Car In Traffic</h3>
@@ -53,6 +59,9 @@
   <tr><th>Constraints</th><td>Road boundaries, collision avoidance, acceleration limits, and traffic rules.</td></tr>
   <tr><th>Method Route</th><td>Use MPC for repeated constrained replanning and reachability for safety envelopes.</td></tr>
   <tr><th>Failure Signal</th><td>A legal plan now that leaves no legal braking or steering option next step is not recursively feasible.</td></tr>
+  <tr><th>Decision Pressure</th><td>A lane change is not judged only by the current gap. It is judged by whether the state after the first steering and acceleration command still admits a safe future.</td></tr>
+  <tr><th>Method Boundary</th><td>MPC handles routine replanning under constraints; reachability or invariant-set reasoning is needed when safety must be protected against worst-case nearby motion.</td></tr>
+  <tr><th>Transfer Question</th><td>What state variables must include other vehicles so the controller does not mistake a temporarily open gap for a safe one?</td></tr>
 </table>
 <p><span class="pill"><a href="concepts/model-predictive-control.html">Model Predictive Control</a></span> <span class="pill"><a href="concepts/reachability.html">Reachability</a></span> <span class="pill"><a href="concepts/recursive-feasibility.html">Recursive Feasibility</a></span> <span class="pill"><a href="concepts/stability-under-replanning.html">Stability Under Replanning</a></span></p>
 </article><article class="card "><h3>Warehouse Robot Learning</h3>
@@ -64,6 +73,9 @@
   <tr><th>Constraints</th><td>Shelf geometry, collision constraints, payload limits, and safe exploration boundaries.</td></tr>
   <tr><th>Method Route</th><td>Use imitation learning for initial behavior, RL for improvement from reward, and model-based RL if real trials are expensive.</td></tr>
   <tr><th>Failure Signal</th><td>A policy that works on demonstrated centered objects but fails after nudging an object sideways shows distribution shift.</td></tr>
+  <tr><th>Decision Pressure</th><td>The robot needs useful behavior before exhaustive real-world trial and error, but the learned behavior must survive shelf poses and object contacts outside the demonstrations.</td></tr>
+  <tr><th>Method Boundary</th><td>Behavior cloning is a starting policy, not a safety guarantee. Model-based refinement is useful when simulated or learned dynamics can reduce expensive hardware trials.</td></tr>
+  <tr><th>Transfer Question</th><td>How would you detect that failures come from distribution shift rather than from a bad low-level controller?</td></tr>
 </table>
 <p><span class="pill"><a href="concepts/behavioral-cloning.html">Behavioral Cloning</a></span> <span class="pill"><a href="concepts/distribution-shift-imitation.html">Distribution Shift in Imitation</a></span> <span class="pill"><a href="concepts/reinforcement-learning.html">Reinforcement Learning</a></span> <span class="pill"><a href="concepts/model-based-rl.html">Model-Based RL</a></span></p>
 </article><article class="card "><h3>Option Pricing As Dynamic Decision Accounting</h3>
@@ -75,6 +87,9 @@
   <tr><th>Constraints</th><td>Market rules, liquidity, budget, and admissible trading choices.</td></tr>
   <tr><th>Method Route</th><td>Use dynamic programming or stochastic dynamic programming when future value depends on uncertain transitions.</td></tr>
   <tr><th>Failure Signal</th><td>A decision rule that ignores rare but high-loss outcomes is a sign that the stochastic model or objective is incomplete.</td></tr>
+  <tr><th>Decision Pressure</th><td>Holding or exercising changes the future decision set under uncertain price motion, so a myopic payoff comparison can discard valuable optionality.</td></tr>
+  <tr><th>Method Boundary</th><td>Stochastic dynamic programming fits when the state captures the variables that determine future payoff distributions; if market impact or hidden information dominates, the state model is incomplete.</td></tr>
+  <tr><th>Transfer Question</th><td>What future value is lost when an option is exercised early?</td></tr>
 </table>
 <p><span class="pill"><a href="concepts/stochastic-dynamic-programming.html">Stochastic Dynamic Programming</a></span> <span class="pill"><a href="concepts/bellman-recursion.html">Bellman Recursion</a></span> <span class="pill"><a href="concepts/value-function.html">Value Function</a></span> <span class="pill"><a href="concepts/policy.html">Policy</a></span></p>
 </article><article class="card "><h3>Macroeconomic Policy</h3>
@@ -86,6 +101,9 @@
   <tr><th>Constraints</th><td>Institutional limits, budget constraints, delayed observability, and uncertainty.</td></tr>
   <tr><th>Method Route</th><td>Use optimal-control framing to expose the state, action, dynamics, and objective before arguing about a policy.</td></tr>
   <tr><th>Failure Signal</th><td>A one-period improvement that worsens later inflation or debt shows why horizon and dynamics matter.</td></tr>
+  <tr><th>Decision Pressure</th><td>A policy action can improve a visible metric now while moving inflation, debt, or expectations into a worse future state.</td></tr>
+  <tr><th>Method Boundary</th><td>The optimal-control frame clarifies tradeoffs, but the result is only as credible as the dynamics, objective weights, and uncertainty model.</td></tr>
+  <tr><th>Transfer Question</th><td>Which delayed state variable makes a one-period policy improvement potentially misleading?</td></tr>
 </table>
 <p><span class="pill"><a href="concepts/horizon.html">Horizon</a></span> <span class="pill"><a href="concepts/dynamics.html">Dynamics</a></span> <span class="pill"><a href="concepts/objective-cost-function.html">Objective / Cost Function</a></span> <span class="pill"><a href="concepts/optimal-control-problem.html">Optimal Control Problem</a></span></p>
 </article></section></main>

@@ -288,11 +288,11 @@ def main() -> int:
             if len(words) < 720:
                 errors.append(f"action concept page below core richness floor: {len(words)} < 720")
         if concept.get("id") == "dynamics":
-            for marker in ["20 m/s", "0.2 seconds", "p_next = p + dt * v", "yaw_rate(x,u,grip)", "dry-road plan can fail on ice"]:
+            for marker in ["speed 20 m/s", "theta = 0 degrees", "u = 5 degrees", "dt = 0.2 seconds", "yaw_rate = 0.30 rad/s", "theta_next = 0 + 0.2*0.30 = 0.06 rad", "yaw_rate = 0.05 rad/s", "v_y = -1.0 m/s", "theta_next = 0 + 0.2*0.05 = 0.01 rad", "y_next = y + 0.2*(-1.0)", "x_next = f(x,u)", "dx/dt = f(x,u)", "x=[y,theta,v_y,speed]", "f_dry", "f_ice", "model fidelity"]:
                 if marker not in text:
                     errors.append(f"dynamics concept page missing state-update marker: {marker}")
-            if len(words) < 720:
-                errors.append(f"dynamics concept page below core richness floor: {len(words)} < 720")
+            if len(words) < 900:
+                errors.append(f"dynamics concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "objective-cost-function":
             for marker in ["Path A", "Path B", "J = sum_k stage_cost(x_k,u_k) + terminal_cost(x_N)", "5.0*wall_risk", "free to choose damage"]:
                 if marker not in text:

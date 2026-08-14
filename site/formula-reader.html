@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Formula Reader · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="index.html">Overview</a>
+<a class="" href="lectures.html">Lectures</a>
+<a class="" href="transcripts.html">Transcripts</a>
+<a class="" href="concepts.html">Concepts</a>
+<a class="" href="course-spine.html">Spine</a>
+<a class="" href="families.html">Families</a>
+<a class="" href="primitives.html">Primitives</a>
+<a class="active" href="formula-reader.html">Formulas</a>
+<a class="" href="derivations.html">Derivations</a>
+<a class="" href="drills.html">Drills</a>
+<a class="" href="evidence.html">Evidence</a>
+<a class="" href="review-guide.html">Review</a></nav>
+  </header>
+  <main><h1>Formula Reader</h1><table><tr><th>Formula Shape</th><th>Plain Reading</th><th>Object</th><th>Operation</th><th>Failure Test</th></tr><tr><td>Dynamics</td><td>x next equals f of state and action</td><td>State transition</td><td>Propagate consequence forward</td><td>Wrong model, wrong future</td></tr><tr><td>Objective</td><td>sum of stage costs plus terminal cost</td><td>Cost functional</td><td>Compare whole futures</td><td>Proxy cost misses real task</td></tr><tr><td>Bellman Recursion</td><td>value equals min over action of cost plus next value</td><td>Value function</td><td>Split now from future</td><td>State is incomplete</td></tr><tr><td>Hamiltonian</td><td>stage cost plus costate times dynamics</td><td>Local future-price package</td><td>Price action by immediate and downstream effect</td><td>Only necessary, not global</td></tr><tr><td>MPC</td><td>solve finite horizon, apply first action, repeat</td><td>Receding-horizon problem</td><td>Turn planning into feedback</td><td>Future infeasibility</td></tr><tr><td>Policy Gradient</td><td>change policy parameters toward higher return</td><td>Parameterized policy</td><td>Improve the action rule directly</td><td>Noisy or unsafe exploration</td></tr></table></main>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Policy Optimization · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Policy Optimization</h1>
+<p class="lede">Directly adjust policy parameters to improve expected return.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>Sometimes it is more practical to tune the decision rule itself than to build a complete value table.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Change policy parameters blindly and keep lucky improvements.</p><p><strong>Why it fails:</strong> Random changes are sample-inefficient and can destroy useful behavior.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>A parameterized policy and objective over expected return.</p></article>
+  <article class="card "><h3>Operation</h3><p>Estimate a gradient or improvement direction and update policy parameters.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>A robot gait policy is adjusted so parameter changes that increase forward progress become more likely.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>Gradient estimates can be noisy and depend on exploration and reward quality.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>The update overfits noisy returns or collapses exploration.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Use it when the learning rule modifies the policy directly.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-policy-optimization-01">
+  <h3>ev-policy-optimization-01: Lecture 18 · RL Policy Optimization</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=a1g9U_5zO54">a1g9U_5zO54</a> · <code>raw-material/youtube/transcripts/clean/lecture-18-a1g9U_5zO54.txt</code> · needs_review</p>
+  <blockquote>learning namely value based methods On the other hand today we switch topics and we kind of complete and if you wish and start to discuss the second main family of methods that belong to the model free reinforcement learning family namely policy optimization And as we will see today in policy optimization differently from what we did in value based methods whereby the policy is implicitly defined through the value function itself in policy optimization we ll see how we ll be representing</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Policy Optimization or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-policy-optimization-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/imitation-learning.html">Imitation Learning</a></span> <span class="pill"><a href="../concepts/behavioral-cloning.html">Behavioral Cloning</a></span> <span class="pill"><a href="../concepts/distribution-shift-imitation.html">Distribution Shift in Imitation</a></span> <span class="pill"><a href="../concepts/reinforcement-learning.html">Reinforcement Learning</a></span> <span class="pill"><a href="../concepts/reward.html">Reward</a></span> <span class="pill"><a href="../concepts/policy.html">Policy</a></span></p>
+</main>
+</body>
+</html>

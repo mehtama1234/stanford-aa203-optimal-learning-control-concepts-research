@@ -1,0 +1,90 @@
+[
+  {
+    "id": "state",
+    "name": "State",
+    "plain_language": "The compact description carried forward because it decides what can happen next.",
+    "used_by": [
+      "state",
+      "dynamics",
+      "value-function",
+      "policy",
+      "reachability"
+    ]
+  },
+  {
+    "id": "action",
+    "name": "Action",
+    "plain_language": "The move the controller can legally choose.",
+    "used_by": [
+      "action-control-input",
+      "optimal-control-problem",
+      "policy",
+      "reinforcement-learning"
+    ]
+  },
+  {
+    "id": "dynamics",
+    "name": "Dynamics",
+    "plain_language": "The rule that turns state plus action into the next state.",
+    "used_by": [
+      "dynamics",
+      "trajectory-optimization",
+      "model-predictive-control",
+      "model-based-rl"
+    ]
+  },
+  {
+    "id": "cost",
+    "name": "Cost",
+    "plain_language": "The future consequence accounting that lets candidate actions be compared.",
+    "used_by": [
+      "objective-cost-function",
+      "value-function",
+      "bellman-recursion",
+      "lqr"
+    ]
+  },
+  {
+    "id": "constraint",
+    "name": "Constraint",
+    "plain_language": "A boundary that a solution must obey even when violation would lower cost.",
+    "used_by": [
+      "constraints",
+      "feasibility",
+      "recursive-feasibility",
+      "model-predictive-control"
+    ]
+  },
+  {
+    "id": "value",
+    "name": "Value",
+    "plain_language": "A compressed price for the future from a state or action.",
+    "used_by": [
+      "value-function",
+      "dynamic-programming",
+      "value-based-rl"
+    ]
+  },
+  {
+    "id": "policy",
+    "name": "Policy",
+    "plain_language": "The rule that selects actions during execution.",
+    "used_by": [
+      "policy",
+      "policy-optimization",
+      "imitation-learning",
+      "reinforcement-learning"
+    ]
+  },
+  {
+    "id": "uncertainty",
+    "name": "Uncertainty",
+    "plain_language": "The gap between what the controller expects and what may happen.",
+    "used_by": [
+      "stochastic-dynamic-programming",
+      "reachability",
+      "reinforcement-learning",
+      "model-based-rl"
+    ]
+  }
+]

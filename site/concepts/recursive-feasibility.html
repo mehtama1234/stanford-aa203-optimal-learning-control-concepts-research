@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recursive Feasibility · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Recursive Feasibility</h1>
+<p class="lede">The property that after applying today&amp;apos;s MPC action, tomorrow&amp;apos;s optimization problem is still feasible.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>Replanning is only useful if today&amp;apos;s legal move does not leave the controller with no legal move next time.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Check only that the current MPC problem has a solution.</p><p><strong>Why it fails:</strong> The first action of a feasible plan can lead to a state where the next problem is infeasible.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>A recursively feasible set or terminal condition.</p></article>
+  <article class="card "><h3>Operation</h3><p>Design the MPC problem so feasibility propagates from one solve to the next.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>A car must not enter a narrow lane unless it can still brake or steer safely in the next planning step.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>The guarantee depends on model accuracy, constraints, and terminal set design.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>The controller works for a few replans and then hits an infeasible optimization.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Ask whether solving now preserves the ability to solve later.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-recursive-feasibility-01">
+  <h3>ev-recursive-feasibility-01: Lecture 12 · Feasibility of MPC</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=8Elrw30y0tg">8Elrw30y0tg</a> · <code>raw-material/youtube/transcripts/clean/lecture-12-8Elrw30y0tg.txt</code> · needs_review</p>
+  <blockquote>about persistent physibility as one of the key properties we want to imbue in our MPC control pipeline and then we switch to the topic of uh stability So not only we want to make sure that the MPC loop has a feasible solution at each point in time but we also want to make sure that whatever action we optimize for does something useful in our problem setting Useful means we are stabilizing uh the system that is converting to zero We ll</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Recursive Feasibility or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-recursive-feasibility-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/model-predictive-control.html">Model Predictive Control</a></span> <span class="pill"><a href="../concepts/stability-under-replanning.html">Stability Under Replanning</a></span></p>
+</main>
+</body>
+</html>

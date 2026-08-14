@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reachability · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Reachability</h1>
+<p class="lede">The set of states a system can get to, or must avoid, under allowed actions and disturbances.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>Before optimizing a path, the controller must know which futures are even possible or unsafe.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Assume the target is reachable because it is nearby in space.</p><p><strong>Why it fails:</strong> Dynamics, speed, actuator limits, and disturbances decide reachability, not visual distance alone.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>A reachable set or backward reachable set.</p></article>
+  <article class="card "><h3>Operation</h3><p>Propagate sets through dynamics under allowed actions and possible disturbances.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>A fast car near a wall may be physically unable to stop before collision even if the wall is still several meters away.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>Reachability depends on a model of dynamics, controls, constraints, and disturbances.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>A safety controller trusts an escape route that the system cannot actually execute.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Ask whether the state can still reach safety under legal actions.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-reachability-01">
+  <h3>ev-reachability-01: Lecture 10 · Reachability Analysis</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=Fl5EjGhQjgs">Fl5EjGhQjgs</a> · <code>raw-material/youtube/transcripts/clean/lecture-10-Fl5EjGhQjgs.txt</code> · needs_review</p>
+  <blockquote>respect to all the different states since you know that at every step of this algorithm you are always going to strictly improve the value of a given policy There are so many times that you can improve the value until you reach the optimal value So indeed policy iteration converges a finite number of steps in the setting of uh fixed number of I mean um finite number of states and finite number of controls Of course what you should prove and again</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Reachability or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-reachability-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p></p>
+</main>
+</body>
+</html>

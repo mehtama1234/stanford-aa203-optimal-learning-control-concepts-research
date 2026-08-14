@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Optimal Control Problem · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Optimal Control Problem</h1>
+<p class="lede">A problem where you choose actions over time so a moving system reaches a better future without violating the rules.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>A rocket, car, arm, portfolio, or economy does not respond only once. Each action changes the next situation, so the planner must judge a whole chain of consequences.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Pick the action that looks best right now.</p><p><strong>Why it fails:</strong> A locally attractive action can make the later state expensive, unsafe, or impossible to recover from.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>A state, a control input, dynamics, a cost, constraints, and a horizon.</p></article>
+  <article class="card "><h3>Operation</h3><p>Search over action sequences while propagating the state forward and adding future cost.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>For a landing rocket, throttling hard now may reduce height error but waste fuel and leave too little authority near touchdown.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>The setup only says what should be optimized if the state, dynamics, cost, and constraints have been named correctly.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>The controller can satisfy the written objective while missing the real mission, such as saving fuel while arriving too fast.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>If today&amp;apos;s action changes tomorrow&amp;apos;s choices, write it as an optimal control problem before choosing a solver.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-optimal-control-problem-01">
+  <h3>ev-optimal-control-problem-01: Lecture 1 · Course Overview</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=Au2stLALZew">Au2stLALZew</a> · <code>raw-material/youtube/transcripts/clean/lecture-01-Au2stLALZew.txt</code> · needs_review</p>
+  <blockquote>you will see when I talk about the syllabus to be more in detail this class aims more at the breadth over depth So in a single class I want to give you a good overview of all the main techniques in optimal control and learning based control Of course optimal control is a field that is a 50 years um old So there is a very broad literature widely used And as it pertains to learning based control as you probably know this</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Optimal Control Problem or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-optimal-control-problem-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/state.html">State</a></span> <span class="pill"><a href="../concepts/action-control-input.html">Action / Control Input</a></span> <span class="pill"><a href="../concepts/dynamics.html">Dynamics</a></span> <span class="pill"><a href="../concepts/objective-cost-function.html">Objective / Cost Function</a></span> <span class="pill"><a href="../concepts/horizon.html">Horizon</a></span> <span class="pill"><a href="../concepts/constraints.html">Constraints</a></span></p>
+</main>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Value-Based RL · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Value-Based RL</h1>
+<p class="lede">Learn how good states or state-action pairs are, then choose actions using those learned values.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>Instead of directly learning the action rule, the agent can learn a future-return scoreboard.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Estimate immediate reward only.</p><p><strong>Why it fails:</strong> The best action may have low immediate reward but lead to high future return.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>A state-value or action-value function.</p></article>
+  <article class="card "><h3>Operation</h3><p>Update value estimates from experience and act greedily or near-greedily with respect to them.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>A maze agent learns that moving away from the goal now can be valuable if it avoids a dead end.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>The value representation must generalize correctly across the visited state-action space.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>Function approximation error makes the agent overvalue bad actions.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Look for RL methods where action choice is derived from learned values.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-value-based-rl-01">
+  <h3>ev-value-based-rl-01: Lecture 17 · RL Value-Based Methods</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=zanXSI7zSws">zanXSI7zSws</a> · <code>raw-material/youtube/transcripts/clean/lecture-17-zanXSI7zSws.txt</code> · needs_review</p>
+  <blockquote>and specifically we introduce some uh foundational learning mechanisms uh to do so and starting today and for the next uh lectures for the remaining lectures of this class we ll be looking at specific categories of algorithms uh today starting from value based methods that belong to the category of model free reinforcement learning methods Uh so uh briefly mention a couple of amazing references Of course you all know kind of probably Satan and Barto s textbooks on reinforcement learning but also</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Value-Based RL or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-value-based-rl-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/imitation-learning.html">Imitation Learning</a></span> <span class="pill"><a href="../concepts/behavioral-cloning.html">Behavioral Cloning</a></span> <span class="pill"><a href="../concepts/distribution-shift-imitation.html">Distribution Shift in Imitation</a></span> <span class="pill"><a href="../concepts/reinforcement-learning.html">Reinforcement Learning</a></span> <span class="pill"><a href="../concepts/reward.html">Reward</a></span> <span class="pill"><a href="../concepts/policy.html">Policy</a></span></p>
+</main>
+</body>
+</html>

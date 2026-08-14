@@ -12,29 +12,35 @@
     <nav><a class="active" href="index.html">Overview</a>
 <a class="" href="lectures.html">Lectures</a>
 <a class="" href="transcripts.html">Transcripts</a>
-<a class="" href="concept-seed.html">Concept Seed</a>
-<a class="" href="provenance.html">Provenance</a></nav>
+<a class="" href="concepts.html">Concepts</a>
+<a class="" href="course-spine.html">Spine</a>
+<a class="" href="families.html">Families</a>
+<a class="" href="primitives.html">Primitives</a>
+<a class="" href="formula-reader.html">Formulas</a>
+<a class="" href="derivations.html">Derivations</a>
+<a class="" href="drills.html">Drills</a>
+<a class="" href="evidence.html">Evidence</a>
+<a class="" href="review-guide.html">Review</a></nav>
   </header>
   <main>
 <section class="hero">
-  <p class="tag">Transcript-backed first-principles starter</p>
+  <p class="tag">Transcript-backed first-principles course companion</p>
   <h1>Stanford AA203 Optimal and Learning-Based Control | Spring 2026</h1>
-  <p class="lede">This repo turns the AA203 playlist into a control-course research workspace. The first build preserves source material and creates a browsable shell; the next build should deepen the concept atlas, evidence ledger, derivations, drills, and failure-mode pages.</p>
+  <p class="lede">Optimal control is the discipline of choosing actions whose consequences unfold through time. Learning-based control extends that discipline when the model, cost, environment, or feedback signal cannot be fully written down in advance.</p>
 
 <section class="stats">
   <div class="stat"><strong>19</strong><span>playlist lectures</span></div>
   <div class="stat"><strong>18</strong><span>local transcripts</span></div>
   <div class="stat"><strong>197,258</strong><span>transcript words</span></div>
+  <div class="stat"><strong>38</strong><span>concept pages</span></div>
+  <div class="stat"><strong>38</strong><span>evidence records</span></div>
 </section>
 
 </section>
-<h2>Course Throughline</h2>
-<p>Optimal and learning-based control studies how to choose actions over time when a system moves, constraints matter, and the future depends on earlier choices. The course starts with optimization and path methods, then moves through dynamic programming, reachability, MPC, imitation learning, reinforcement learning, and model-based RL.</p>
-<section class="grid"><article class="card"><h3>Optimization</h3><p>Choose actions by naming an objective, constraints, and a way to improve the candidate.</p></article>
-<article class="card"><h3>Dynamics</h3><p>Respect that today&apos;s action changes tomorrow&apos;s state, so decisions are chained through time.</p></article>
-<article class="card"><h3>Value</h3><p>Compress future consequences into a quantity that lets the next decision be compared.</p></article>
-<article class="card"><h3>Feasibility</h3><p>Keep planned actions inside real constraints, especially when replanning with MPC.</p></article>
-<article class="card"><h3>Learning</h3><p>Use data, demonstrations, or reward feedback when a hand-written model is incomplete.</p></article></section>
+<h2>Strongest Entry Points</h2>
+<section class="grid"><article class="card "><h3>Course Spine</h3><p>Read one coherent route from state and action through Bellman recursion, MPC, imitation learning, and model-based RL.</p><p><a href="course-spine.html">Open</a></p></article><article class="card "><h3>Concept Atlas</h3><p>Study every required concept with problem, naive failure, math object, operation, example, boundary, and evidence.</p><p><a href="concepts.html">Open</a></p></article><article class="card "><h3>Formula Reader</h3><p>Translate formulas into what is being controlled, what object carries the burden, and what operation is performed.</p><p><a href="formula-reader.html">Open</a></p></article><article class="card "><h3>Drills</h3><p>Practice setup, method choice, Bellman recognition, MPC feasibility, reward diagnosis, and repair.</p><p><a href="drills.html">Open</a></p></article></section>
+<h2>Current Build State</h2>
+<p>This is the first deepening pass beyond the transcript scaffold. Concept prose is present for the full minimum atlas, and evidence records point into local transcript windows with <code>needs_review</code> status until a manual timestamp pass deepens them.</p>
 </main>
 </body>
 </html>

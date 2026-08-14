@@ -1,0 +1,572 @@
+[
+  {
+    "id": "ev-optimal-control-problem-01",
+    "lecture": 1,
+    "lecture_title": "Course Overview",
+    "video_id": "Au2stLALZew",
+    "url": "https://www.youtube.com/watch?v=Au2stLALZew",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-01-Au2stLALZew.txt",
+    "local_transcript_window": "you will see when I talk about the syllabus to be more in detail this class aims more at the breadth over depth So in a single class I want to give you a good overview of all the main techniques in optimal control and learning based control Of course optimal control is a field that is a 50 years um old So there is a very broad literature widely used And as it pertains to learning based control as you probably know this",
+    "supports_concepts": [
+      "optimal-control-problem"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Optimal Control Problem or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-state-01",
+    "lecture": 1,
+    "lecture_title": "Course Overview",
+    "video_id": "Au2stLALZew",
+    "url": "https://www.youtube.com/watch?v=Au2stLALZew",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-01-Au2stLALZew.txt",
+    "local_transcript_window": "want to control the trajectory of a drone At an abstract level you have a system as again it could be physical it could be a digital sphere And you have a sensor that allows you to get some information about the state of the system So if this is a car for example the sensor might be a camera sensor that gets an observation about the surrounding environment plus maybe some additional sensor that allow you to uh measure for example your speed",
+    "supports_concepts": [
+      "state"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses State or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-action-control-input-01",
+    "lecture": 1,
+    "lecture_title": "Course Overview",
+    "video_id": "Au2stLALZew",
+    "url": "https://www.youtube.com/watch?v=Au2stLALZew",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-01-Au2stLALZew.txt",
+    "local_transcript_window": "All right so let s get started My name is Marco Pavone I ll be the instructor for AA203 optimal and learning based control I m a professor in the Department of Aeronautics and Astronautics I also have appointments in computer science and electrical engineering I run the autonomous systems lab and my work is broadly in the field of robot autonomy learning based control",
+    "supports_concepts": [
+      "action-control-input"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Action / Control Input or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-dynamics-01",
+    "lecture": 1,
+    "lecture_title": "Course Overview",
+    "video_id": "Au2stLALZew",
+    "url": "https://www.youtube.com/watch?v=Au2stLALZew",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-01-Au2stLALZew.txt",
+    "local_transcript_window": "home The beauty of control is that actually you can be quite judicious in terms of how you model uh the system and this model actually could be learned from data For example if this was a class in um computational fluid dynamics and then you pose the problem of how do you control or set the temperature of your shower they would say Well let s build a thermodynamic model about how the water affects the heat that propagates on your body In",
+    "supports_concepts": [
+      "dynamics"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Dynamics or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-objective-cost-function-01",
+    "lecture": 1,
+    "lecture_title": "Course Overview",
+    "video_id": "Au2stLALZew",
+    "url": "https://www.youtube.com/watch?v=Au2stLALZew",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-01-Au2stLALZew.txt",
+    "local_transcript_window": "stability But in general by stability we uh we say we mean that the system doesn t go out of whack So basically the system output is under control It stays bounded It doesn t do something crazy Uh we have an objective in general of tracking something We have a reference signal for example the setting for your thermostat We want to make sure that uh the uh home temperature uh tracks as as close as possible uh as possible that We want",
+    "supports_concepts": [
+      "objective-cost-function"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Objective / Cost Function or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-horizon-01",
+    "lecture": 1,
+    "lecture_title": "Course Overview",
+    "video_id": "Au2stLALZew",
+    "url": "https://www.youtube.com/watch?v=Au2stLALZew",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-01-Au2stLALZew.txt",
+    "local_transcript_window": "ll be using TF F stands for final uh is the final time of operations Let me give you a very simple example that you should already be familiar with a double integrator So we have a a cart moving on the horizontal plane We only have one state variable which is the displacement of the center of the cart from the origin So we assume that the origin is here So S is telling us how much we travel on the left or",
+    "supports_concepts": [
+      "horizon"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Horizon or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-constraints-01",
+    "lecture": 2,
+    "lecture_title": "Optimization Theory",
+    "video_id": "FbkNYklySak",
+    "url": "https://www.youtube.com/watch?v=FbkNYklySak",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-02-FbkNYklySak.txt",
+    "local_transcript_window": "If you re within the open set yes then if there is a local minimum then the derivative has to be equal to zero Yeah gt gt So when you say the open set does that mean the same thing as the constraint gt gt No So if um basically so here so you can have like an interval like this one right So the interval does have constraints So has a lower bound as an upper bound but does not contain its boundary",
+    "supports_concepts": [
+      "constraints"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Constraints or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-feasibility-01",
+    "lecture": 12,
+    "lecture_title": "Feasibility of MPC",
+    "video_id": "8Elrw30y0tg",
+    "url": "https://www.youtube.com/watch?v=8Elrw30y0tg",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-12-8Elrw30y0tg.txt",
+    "local_transcript_window": "about persistent physibility as one of the key properties we want to imbue in our MPC control pipeline and then we switch to the topic of uh stability So not only we want to make sure that the MPC loop has a feasible solution at each point in time but we also want to make sure that whatever action we optimize for does something useful in our problem setting Useful means we are stabilizing uh the system that is converting to zero We ll",
+    "supports_concepts": [
+      "feasibility"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Feasibility or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-static-optimization-01",
+    "lecture": 2,
+    "lecture_title": "Optimization Theory",
+    "video_id": "FbkNYklySak",
+    "url": "https://www.youtube.com/watch?v=FbkNYklySak",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-02-FbkNYklySak.txt",
+    "local_transcript_window": "Okay So as discussed uh on Monday for the next uh for this lecture actually we re going to go through some of the key concepts behind the classical optimization So nonlinear optimization problem where we solve over a finite amount of decision variables An idea here is not that this is a class about optimization This is a class about optimal learning based control But many of the insights from",
+    "supports_concepts": [
+      "static-optimization"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Static Optimization or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-gradient-first-order-condition-01",
+    "lecture": 2,
+    "lecture_title": "Optimization Theory",
+    "video_id": "FbkNYklySak",
+    "url": "https://www.youtube.com/watch?v=FbkNYklySak",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-02-FbkNYklySak.txt",
+    "local_transcript_window": "we know that if f is differentiable f of xar plus delta x where delta x is a small displacement So you re just moving a tiny bit out of xar in some direction is approximately equal to f of xar plus gradient of f evaluated at xar times uh delta x prime means transpose So you should be familiar with uh this notion Of course there are some error terms here but the idea is that as delta x gets closer and closer",
+    "supports_concepts": [
+      "gradient-first-order-condition"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Gradient and First-Order Condition or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-calculus-of-variations-01",
+    "lecture": 3,
+    "lecture_title": "Calculus of Variations",
+    "video_id": "duZJ2_ajLso",
+    "url": "https://www.youtube.com/watch?v=duZJ2_ajLso",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-03-duZJ2_ajLso.txt",
+    "local_transcript_window": "of at first hand And again what we re saying is that we want to find an admissible control u star which causes the dynamical system defined by a differential equation to follow an admissible trajectory x of stars that minimizes the functional j And what we saw last week and at the beginning today is that for a function we essentially defined optimality conditions that boil down to setting the gradient to 0 to find stationary points and then either using higher order",
+    "supports_concepts": [
+      "calculus-of-variations"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Calculus of Variations or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-costate-adjoint-variable-01",
+    "lecture": 4,
+    "lecture_title": "Indirect Methods",
+    "video_id": "7rejaoMWviw",
+    "url": "https://www.youtube.com/watch?v=7rejaoMWviw",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-04-7rejaoMWviw.txt",
+    "local_transcript_window": "dimensional optimization the constrained setting And specifically in finite dimensional optimization if you remember we introduced the concept of lrangen where essentially we took the constraint we added it to the objective function uh together with some lrange multipliers which we called lambda and then we treated the problem as if it was unconstrained So essentially this term represented like a penalty for violating those constraints And so here what we do is exactly the same thing in the sense that we uh posit",
+    "supports_concepts": [
+      "costate-adjoint-variable"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Costate / Adjoint Variable or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-hamiltonian-optimal-control-01",
+    "lecture": 4,
+    "lecture_title": "Indirect Methods",
+    "video_id": "7rejaoMWviw",
+    "url": "https://www.youtube.com/watch?v=7rejaoMWviw",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-04-7rejaoMWviw.txt",
+    "local_transcript_window": "a sketch of a proof of how we uh can derive these results So the optimality conditions are not nothing more than this slide nothing less than this slide over here So specifically um the optimality conditions state that we define the Hamiltonian meaning we augment the cost with the constraint So exactly how we did before through the kind of equivalent of the lrangen our co state variables p of t and then kind of define the optimality conditions uh whereby an optimal",
+    "supports_concepts": [
+      "hamiltonian-optimal-control"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Hamiltonian for Optimal Control or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-indirect-methods-01",
+    "lecture": 4,
+    "lecture_title": "Indirect Methods",
+    "video_id": "7rejaoMWviw",
+    "url": "https://www.youtube.com/watch?v=7rejaoMWviw",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-04-7rejaoMWviw.txt",
+    "local_transcript_window": "are right now Uh so over the last uh week or so we started approaching the this quadrant of the road map Specifically we started looking at uh openloop uh methods for optimal control uh last uh Monday we started looking at indirect methods for optimal control and we ll spend also today in this box over here and uh Monday then next week Wednesday we ll move to direct methods for uh open loop optimal control and then we ll move towards uh",
+    "supports_concepts": [
+      "indirect-methods"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Indirect Methods or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-direct-transcription-01",
+    "lecture": 6,
+    "lecture_title": "Direct Methods",
+    "video_id": "zX8raxUa2DE",
+    "url": "https://www.youtube.com/watch?v=zX8raxUa2DE",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-06-zX8raxUa2DE.txt",
+    "local_transcript_window": "So for today we will be first of all wrapping up the discussion on indirect methods uh and then we ll be introducing the another class of openloop control strategies which is the one of direct methods and so specifically remember that last time we basically were wrapping up the discussion indirect methods where uh kind of",
+    "supports_concepts": [
+      "direct-transcription"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Direct Transcription or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-shooting-methods-01",
+    "lecture": 6,
+    "lecture_title": "Direct Methods",
+    "video_id": "zX8raxUa2DE",
+    "url": "https://www.youtube.com/watch?v=zX8raxUa2DE",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-06-zX8raxUa2DE.txt",
+    "local_transcript_window": "transcribe that is uh discretize and remodel as a discrete optimization uh uh problem the original optimal control problem And so we have namely state and control parameterization methods also known as uh collocation methods and control parameterization methods also known as shooting So at a high level starting from the latter so the control parameterization methods is that we take the optimal control problem in continuous time and we will be discretizing time and assume that only the controls uh for us are",
+    "supports_concepts": [
+      "shooting-methods"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Shooting Methods or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-collocation-01",
+    "lecture": 6,
+    "lecture_title": "Direct Methods",
+    "video_id": "zX8raxUa2DE",
+    "url": "https://www.youtube.com/watch?v=zX8raxUa2DE",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-06-zX8raxUa2DE.txt",
+    "local_transcript_window": "each other is based on how we choose to transcribe that is uh discretize and remodel as a discrete optimization uh uh problem the original optimal control problem And so we have namely state and control parameterization methods also known as uh collocation methods and control parameterization methods also known as shooting So at a high level starting from the latter so the control parameterization methods is that we take the optimal control problem in continuous time and we will be discretizing time and",
+    "supports_concepts": [
+      "collocation"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Collocation or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-trajectory-optimization-01",
+    "lecture": 6,
+    "lecture_title": "Direct Methods",
+    "video_id": "zX8raxUa2DE",
+    "url": "https://www.youtube.com/watch?v=zX8raxUa2DE",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-06-zX8raxUa2DE.txt",
+    "local_transcript_window": "in real time when I m actually deploying I will probably have a closed loop module which basically tracks this plan This closed loop model will then be you know tasked with the pro the problem of say that this is the path that I decide but in reality I will be bounced off this path the closed loop will tend me to steer towards my nominal path gt gt Yes So this is one way uh one way is handling it through closed",
+    "supports_concepts": [
+      "trajectory-optimization"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Trajectory Optimization or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-dynamic-programming-01",
+    "lecture": 7,
+    "lecture_title": "Dynamic Programming",
+    "video_id": "hy-e9g4nugE",
+    "url": "https://www.youtube.com/watch?v=hy-e9g4nugE",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-07-hy-e9g4nugE.txt",
+    "local_transcript_window": "it seems true that closed loop control policies are more robust and better in general than open loop control sequences How do we solve for them So what we re going to do next is to discuss an algorithm referred to as dynamic programming that is a very procedural way to solve for optimal closed loop control policies Then you may say why don t you always use dynamic programming Well because dynamic programming is computationally much more intensive So the one hand you",
+    "supports_concepts": [
+      "dynamic-programming"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Dynamic Programming or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-value-function-01",
+    "lecture": 7,
+    "lecture_title": "Dynamic Programming",
+    "video_id": "hy-e9g4nugE",
+    "url": "https://www.youtube.com/watch?v=hy-e9g4nugE",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-07-hy-e9g4nugE.txt",
+    "local_transcript_window": "So I hope you enjoyed the lectures from Daniel Now I m back for the next few lectures I ll be your instructor So let me first recap where we are and then I m going to introduce the topic for today And to do so let s go back to our usual road map for this class So so far what we have been investigating is the left hand side branch of this complicated road map That is we have been looking at",
+    "supports_concepts": [
+      "value-function"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Value Function or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-bellman-recursion-01",
+    "lecture": 7,
+    "lecture_title": "Dynamic Programming",
+    "video_id": "hy-e9g4nugE",
+    "url": "https://www.youtube.com/watch?v=hy-e9g4nugE",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-07-hy-e9g4nugE.txt",
+    "local_transcript_window": "about how dynamic programming recussion has to be carried out for each possible value of the state If the state is continuous then we have to quantize it Dynamic programming actually is trying to find a global minimum for each dynamic programming recursion So it s going to give you the globally optimal solution If there are constraints that is typically constraints make the optimization problem much harder as you saw with direct methods and like range optimization but in this case constraints actually",
+    "supports_concepts": [
+      "bellman-recursion"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Bellman Recursion or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-stochastic-dynamic-programming-01",
+    "lecture": 9,
+    "lecture_title": "Stochastic Dynamic Programming",
+    "video_id": "C9mLpI8Td9g",
+    "url": "https://www.youtube.com/watch?v=C9mLpI8Td9g",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-09-C9mLpI8Td9g.txt",
+    "local_transcript_window": "belong to some set capital Q That is our set of controls is in general constrained within some set capital U Now the disturbance W are quantities that are computed by nature in a way And so they are modeled as uh random variables And we do place a key assumption on the distribution of such random variables W Specifically we assume that the random variables WK are distributed according to some general probability distribution It could be Gaussian it could be anything They",
+    "supports_concepts": [
+      "stochastic-dynamic-programming"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Stochastic Dynamic Programming or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-lqr-01",
+    "lecture": 8,
+    "lecture_title": "LQR-Style Algorithms",
+    "video_id": "1YdgSwEtf_s",
+    "url": "https://www.youtube.com/watch?v=1YdgSwEtf_s",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-08-1YdgSwEtf_s.txt",
+    "local_transcript_window": "and reachability theory And to do so we discuss uh some structure some key structure that the problem the optimal control optimal control problem as we formulate it has that we can leverage to derive dynamic programming equations and then I presented LQR as one example that allow me to show you how to apply the dynamic programming uh recussion and at the same time LQR is a problem that is of interest in its own right now in the second P set you",
+    "supports_concepts": [
+      "lqr"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses LQR or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-local-quadratic-approximation-01",
+    "lecture": 8,
+    "lecture_title": "LQR-Style Algorithms",
+    "video_id": "1YdgSwEtf_s",
+    "url": "https://www.youtube.com/watch?v=1YdgSwEtf_s",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-08-1YdgSwEtf_s.txt",
+    "local_transcript_window": "invariant Actually the mat the state matrix A and B can depend on time as denoted by the subscript K This will become relevant later Well actually this is a useful property of MQR And then we assume that we have a quadratic cost So last time we looked at uh the cost until here So we have a quadratic penalty on the terminal state plus a running cost that entails a penalty quadratic penalty on the state and quadratic penalty on the control",
+    "supports_concepts": [
+      "local-quadratic-approximation"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Local Quadratic Approximation or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-reachability-01",
+    "lecture": 10,
+    "lecture_title": "Reachability Analysis",
+    "video_id": "Fl5EjGhQjgs",
+    "url": "https://www.youtube.com/watch?v=Fl5EjGhQjgs",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-10-Fl5EjGhQjgs.txt",
+    "local_transcript_window": "respect to all the different states since you know that at every step of this algorithm you are always going to strictly improve the value of a given policy There are so many times that you can improve the value until you reach the optimal value So indeed policy iteration converges a finite number of steps in the setting of uh fixed number of I mean um finite number of states and finite number of controls Of course what you should prove and again",
+    "supports_concepts": [
+      "reachability"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Reachability or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-model-predictive-control-01",
+    "lecture": 11,
+    "lecture_title": "Introduction to MPC",
+    "video_id": "3_gxaB_Pp3k",
+    "url": "https://www.youtube.com/watch?v=3_gxaB_Pp3k",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-11-3_gxaB_Pp3k.txt",
+    "local_transcript_window": "So today we re going to continue our discussion about uh reachability and then we move on to the next topic which is that of model predictive control So as you remember from last time we discussed how a particularly useful application of uh continuous time closed loop optimal control is represented by uh reachability theory that essentially involves computing reachable sets through the lens of the",
+    "supports_concepts": [
+      "model-predictive-control"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Model Predictive Control or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-recursive-feasibility-01",
+    "lecture": 12,
+    "lecture_title": "Feasibility of MPC",
+    "video_id": "8Elrw30y0tg",
+    "url": "https://www.youtube.com/watch?v=8Elrw30y0tg",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-12-8Elrw30y0tg.txt",
+    "local_transcript_window": "about persistent physibility as one of the key properties we want to imbue in our MPC control pipeline and then we switch to the topic of uh stability So not only we want to make sure that the MPC loop has a feasible solution at each point in time but we also want to make sure that whatever action we optimize for does something useful in our problem setting Useful means we are stabilizing uh the system that is converting to zero We ll",
+    "supports_concepts": [
+      "recursive-feasibility"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Recursive Feasibility or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-stability-under-replanning-01",
+    "lecture": 12,
+    "lecture_title": "Feasibility of MPC",
+    "video_id": "8Elrw30y0tg",
+    "url": "https://www.youtube.com/watch?v=8Elrw30y0tg",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-12-8Elrw30y0tg.txt",
+    "local_transcript_window": "All right let s get started So today we re going to continue our discussion about MPC In particular we re going to wrap up our discussion about persistent physibility as one of the key properties we want to imbue in our MPC control pipeline and then we switch to the topic of uh stability So not only",
+    "supports_concepts": [
+      "stability-under-replanning"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Stability Under Replanning or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-imitation-learning-01",
+    "lecture": 15,
+    "lecture_title": "Imitation Learning",
+    "video_id": "udHX5Auj7ik",
+    "url": "https://www.youtube.com/watch?v=udHX5Auj7ik",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-15-udHX5Auj7ik.txt",
+    "local_transcript_window": "well on Monday we focused on more classical methods to learning based control So we looked at things such as system identification and adaptive control And then uh on last week Wednesday we started to introduce the general framework and terminology for imitation learning and reinforcement learning and kind of starting to build a bit of a mental model about how to see different methods and different algorithms within these two uh subasses And so specifically today we ll then zoom into the specifically",
+    "supports_concepts": [
+      "imitation-learning"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Imitation Learning or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-behavioral-cloning-01",
+    "lecture": 15,
+    "lecture_title": "Imitation Learning",
+    "video_id": "udHX5Auj7ik",
+    "url": "https://www.youtube.com/watch?v=udHX5Auj7ik",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-15-udHX5Auj7ik.txt",
+    "local_transcript_window": "mention on other paradigms that fall within the behavior cloning um hat and then we ll look at inverse enforcement learning So just to uh briefly recap in one slide the lecture from Wednesday we started by seeing behavior cloning essentially as supervised learning of behavior right so we introduced the general notation of supervised learning whereby we essentially want to learn a parametric mapping that maps some inputs x to some outputs y uh kind of uh prototypical example would be the classification",
+    "supports_concepts": [
+      "behavioral-cloning"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Behavioral Cloning or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-distribution-shift-imitation-01",
+    "lecture": 15,
+    "lecture_title": "Imitation Learning",
+    "video_id": "udHX5Auj7ik",
+    "url": "https://www.youtube.com/watch?v=udHX5Auj7ik",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-15-udHX5Auj7ik.txt",
+    "local_transcript_window": "is being used by the expert Uh concretely the object that we wish to learn will be something along the lines of a policy pi of theta uh for example a parameterized policy with some parameters theta that is essentially representing a distribution over controls given states and we want to approximate this from the examples that we get in our demonstrations We then also uh loosely introduce inverse reinforcement training whereby in this case the objective is to approximate the reward function or",
+    "supports_concepts": [
+      "distribution-shift-imitation"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Distribution Shift in Imitation or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-reinforcement-learning-01",
+    "lecture": 16,
+    "lecture_title": "Fundamentals of RL",
+    "video_id": "cqPbt3OfRK4",
+    "url": "https://www.youtube.com/watch?v=cqPbt3OfRK4",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-16-cqPbt3OfRK4.txt",
+    "local_transcript_window": "our um specific paradigm of interest where you know loosely speaking we uh pitched imitation learning as this idea of wanting to learn from demonstrations Uh and so we saw different types of ways of doing this specifically behavioral cloning and inverse reinforcement learning where the idea there is do we want to directly learn a policy that represents or mimics and approximates the behavior of our expert or do we want to learn the objective that is the underlying reward function that the",
+    "supports_concepts": [
+      "reinforcement-learning"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Reinforcement Learning or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-reward-01",
+    "lecture": 16,
+    "lecture_title": "Fundamentals of RL",
+    "video_id": "cqPbt3OfRK4",
+    "url": "https://www.youtube.com/watch?v=cqPbt3OfRK4",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-16-cqPbt3OfRK4.txt",
+    "local_transcript_window": "behavioral cloning and inverse reinforcement learning where the idea there is do we want to directly learn a policy that represents or mimics and approximates the behavior of our expert or do we want to learn the objective that is the underlying reward function that the expert is uh optimizing However we also recognized how imitation learning techniques at their core are essentially uh kind of capped in terms of performance by the performance of the expert demonstrations And so for today and for",
+    "supports_concepts": [
+      "reward"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Reward or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-policy-01",
+    "lecture": 16,
+    "lecture_title": "Fundamentals of RL",
+    "video_id": "cqPbt3OfRK4",
+    "url": "https://www.youtube.com/watch?v=cqPbt3OfRK4",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-16-cqPbt3OfRK4.txt",
+    "local_transcript_window": "imitation learning as this idea of wanting to learn from demonstrations Uh and so we saw different types of ways of doing this specifically behavioral cloning and inverse reinforcement learning where the idea there is do we want to directly learn a policy that represents or mimics and approximates the behavior of our expert or do we want to learn the objective that is the underlying reward function that the expert is uh optimizing However we also recognized how imitation learning techniques at their",
+    "supports_concepts": [
+      "policy"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Policy or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-value-based-rl-01",
+    "lecture": 17,
+    "lecture_title": "RL Value-Based Methods",
+    "video_id": "zanXSI7zSws",
+    "url": "https://www.youtube.com/watch?v=zanXSI7zSws",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-17-zanXSI7zSws.txt",
+    "local_transcript_window": "and specifically we introduce some uh foundational learning mechanisms uh to do so and starting today and for the next uh lectures for the remaining lectures of this class we ll be looking at specific categories of algorithms uh today starting from value based methods that belong to the category of model free reinforcement learning methods Uh so uh briefly mention a couple of amazing references Of course you all know kind of probably Satan and Barto s textbooks on reinforcement learning but also",
+    "supports_concepts": [
+      "value-based-rl"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Value-Based RL or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-policy-optimization-01",
+    "lecture": 18,
+    "lecture_title": "RL Policy Optimization",
+    "video_id": "a1g9U_5zO54",
+    "url": "https://www.youtube.com/watch?v=a1g9U_5zO54",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-18-a1g9U_5zO54.txt",
+    "local_transcript_window": "learning namely value based methods On the other hand today we switch topics and we kind of complete and if you wish and start to discuss the second main family of methods that belong to the model free reinforcement learning family namely policy optimization And as we will see today in policy optimization differently from what we did in value based methods whereby the policy is implicitly defined through the value function itself in policy optimization we ll see how we ll be representing",
+    "supports_concepts": [
+      "policy-optimization"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Policy Optimization or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-exploration-01",
+    "lecture": 16,
+    "lecture_title": "Fundamentals of RL",
+    "video_id": "cqPbt3OfRK4",
+    "url": "https://www.youtube.com/watch?v=cqPbt3OfRK4",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-16-cqPbt3OfRK4.txt",
+    "local_transcript_window": "s a valid point especially if you have these um maybe the generate cases where you know the policy is visiting the state over and over Um I would say in general this probably boils down to you want to have sufficient exploration right so you want the policy that basically explores your state space state action space uh well enough uh for uh for these tools to be efficient and effective in practice Um but yes so when you have these cases you",
+    "supports_concepts": [
+      "exploration"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Exploration or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  },
+  {
+    "id": "ev-model-based-rl-01",
+    "lecture": 19,
+    "lecture_title": "Model-Based RL",
+    "video_id": "ZXMThMHFD_w",
+    "url": "https://www.youtube.com/watch?v=ZXMThMHFD_w",
+    "local_transcript": "raw-material/youtube/transcripts/clean/lecture-19-ZXMThMHFD_w.txt",
+    "local_transcript_window": "lecture in for this quarter Today we will be completing our road map Specifically we ll be starting by wrapping up our discussion on model free reinforcement learning first where we re looking at policy optimization methods and then we ll discuss model based RL So if you recall basically what we re saying last time is that we started looking at policy optimization approaches for model free reinforcement learning whereby the main idea was to basically build these and compute these policy gradients",
+    "supports_concepts": [
+      "model-based-rl"
+    ],
+    "what_transcript_supports": "The lecture explicitly discusses Model-Based RL or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
+    "synthesis_beyond_transcript": "The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.",
+    "confidence_status": "needs_review"
+  }
+]

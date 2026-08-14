@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bellman Recursion · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>Bellman Recursion</h1>
+<p class="lede">The rule that today&#x27;s value equals immediate cost plus the best value of the next state.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>A controller needs a local equation that accounts for the future without listing every full trajectory.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Judge actions only by immediate cost.</p><p><strong>Why it fails:</strong> A cheap action can move the state into a costly future.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>A recursive equation for the value function.</p></article>
+  <article class="card "><h3>Operation</h3><p>For each action, add current cost to the next state&#x27;s value, then choose the best action.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>A car may brake now even if braking costs time because the next state&#x27;s value is safer.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>The recursion depends on a correct state transition and cost decomposition.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>If the state omits hidden variables, the next-state value is not enough.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Use it when a decision can be split into now plus the best continuation.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-bellman-recursion-01">
+  <h3>ev-bellman-recursion-01: Lecture 7 · Dynamic Programming</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=hy-e9g4nugE">hy-e9g4nugE</a> · <code>raw-material/youtube/transcripts/clean/lecture-07-hy-e9g4nugE.txt</code> · needs_review</p>
+  <blockquote>about how dynamic programming recussion has to be carried out for each possible value of the state If the state is continuous then we have to quantize it Dynamic programming actually is trying to find a global minimum for each dynamic programming recursion So it s going to give you the globally optimal solution If there are constraints that is typically constraints make the optimization problem much harder as you saw with direct methods and like range optimization but in this case constraints actually</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses Bellman Recursion or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-bellman-recursion-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/dynamic-programming.html">Dynamic Programming</a></span> <span class="pill"><a href="../concepts/value-function.html">Value Function</a></span> <span class="pill"><a href="../concepts/stochastic-dynamic-programming.html">Stochastic Dynamic Programming</a></span></p>
+</main>
+</body>
+</html>

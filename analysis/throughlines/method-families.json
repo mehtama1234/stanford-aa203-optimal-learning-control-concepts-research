@@ -1,0 +1,89 @@
+[
+  {
+    "id": "problem-setup",
+    "name": "Problem Setup",
+    "problem": "Name the moving system, legal choices, future score, and limits before choosing a method.",
+    "concepts": [
+      "optimal-control-problem",
+      "state",
+      "action-control-input",
+      "dynamics",
+      "objective-cost-function",
+      "horizon",
+      "constraints",
+      "feasibility"
+    ]
+  },
+  {
+    "id": "optimization-foundations",
+    "name": "Optimization Foundations",
+    "problem": "Use local and constrained optimization tools as the base grammar for control.",
+    "concepts": [
+      "static-optimization",
+      "gradient-first-order-condition"
+    ]
+  },
+  {
+    "id": "trajectory-optimization",
+    "name": "Trajectory Optimization",
+    "problem": "Choose a whole path while obeying dynamics and constraints.",
+    "concepts": [
+      "calculus-of-variations",
+      "costate-adjoint-variable",
+      "hamiltonian-optimal-control",
+      "indirect-methods",
+      "direct-transcription",
+      "shooting-methods",
+      "collocation",
+      "trajectory-optimization"
+    ]
+  },
+  {
+    "id": "dynamic-programming",
+    "name": "Dynamic Programming",
+    "problem": "Compress future consequences into value so decisions can be solved recursively.",
+    "concepts": [
+      "dynamic-programming",
+      "value-function",
+      "bellman-recursion",
+      "stochastic-dynamic-programming"
+    ]
+  },
+  {
+    "id": "local-structure",
+    "name": "Local Structure",
+    "problem": "Exploit linear and quadratic approximations when the system stays near a nominal plan.",
+    "concepts": [
+      "lqr",
+      "local-quadratic-approximation"
+    ]
+  },
+  {
+    "id": "replanning",
+    "name": "Replanning and Safety",
+    "problem": "Keep solving as the state changes without losing feasibility or stability.",
+    "concepts": [
+      "reachability",
+      "model-predictive-control",
+      "recursive-feasibility",
+      "stability-under-replanning"
+    ]
+  },
+  {
+    "id": "learning-based-control",
+    "name": "Learning-Based Control",
+    "problem": "Use data, demonstrations, rewards, or learned models when hand-written structure is incomplete.",
+    "concepts": [
+      "imitation-learning",
+      "behavioral-cloning",
+      "distribution-shift-imitation",
+      "reinforcement-learning",
+      "reward",
+      "policy",
+      "value-based-rl",
+      "policy-optimization",
+      "exploration",
+      "model-based-rl"
+    ]
+  }
+]

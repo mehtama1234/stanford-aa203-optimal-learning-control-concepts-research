@@ -10,6 +10,7 @@ from urllib.parse import urldefrag
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "raw-material/youtube"
 SITE = ROOT / "site"
+ANALYSIS = ROOT / "analysis"
 
 
 def main() -> int:
@@ -33,17 +34,97 @@ def main() -> int:
                 path = ROOT / row.get("clean_text", "")
                 if not path.exists():
                     errors.append(f"missing clean transcript: {row.get('clean_text')}")
+    concept_path = ANALYSIS / "concepts/concept-atlas.json"
+    evidence_path = ANALYSIS / "evidence/evidence-ledger.json"
+    primitives_path = ANALYSIS / "throughlines/primitives.json"
+    families_path = ANALYSIS / "throughlines/method-families.json"
+    concepts = []
+    evidence = []
+    if not concept_path.exists():
+        errors.append("missing analysis/concepts/concept-atlas.json; run concept builder")
+    else:
+        concepts = json.loads(concept_path.read_text(encoding="utf-8"))
+        if len(concepts) < 38:
+            errors.append(f"concept atlas should contain at least 38 concepts, found {len(concepts)}")
+        required_concept_fields = {
+            "id",
+            "name",
+            "plain_language_definition",
+            "ordinary_problem",
+            "naive_approach",
+            "why_naive_fails",
+            "mathematical_object",
+            "operation",
+            "worked_example",
+            "assumption_boundary",
+            "failure_mode",
+            "recognition_test",
+            "course_evidence_ids",
+        }
+        for concept in concepts:
+            missing = sorted(field for field in required_concept_fields if not concept.get(field))
+            if missing:
+                errors.append(f"concept {concept.get('id', '<missing>')} missing fields: {', '.join(missing)}")
+    if not evidence_path.exists():
+        errors.append("missing analysis/evidence/evidence-ledger.json; run concept builder")
+    else:
+        evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+        evidence_ids = {row.get("id") for row in evidence}
+        for row in evidence:
+            for field in [
+                "id",
+                "lecture",
+                "lecture_title",
+                "video_id",
+                "url",
+                "local_transcript",
+                "local_transcript_window",
+                "supports_concepts",
+                "what_transcript_supports",
+                "synthesis_beyond_transcript",
+                "confidence_status",
+            ]:
+                if not row.get(field):
+                    errors.append(f"evidence {row.get('id', '<missing>')} missing field: {field}")
+            transcript = ROOT / row.get("local_transcript", "")
+            if row.get("local_transcript") and not transcript.exists():
+                errors.append(f"evidence {row.get('id')} points to missing transcript: {row.get('local_transcript')}")
+        for concept in concepts:
+            for evidence_id in concept.get("course_evidence_ids", []):
+                if evidence_id not in evidence_ids:
+                    errors.append(f"concept {concept['id']} references missing evidence: {evidence_id}")
+    for path in [primitives_path, families_path]:
+        if not path.exists():
+            errors.append(f"missing {path.relative_to(ROOT)}; run concept builder")
     required_pages = [
         SITE / "index.html",
         SITE / "lectures.html",
         SITE / "transcripts.html",
-        SITE / "concept-seed.html",
+        SITE / "concepts.html",
+        SITE / "course-spine.html",
+        SITE / "families.html",
+        SITE / "primitives.html",
+        SITE / "formula-reader.html",
+        SITE / "derivations.html",
+        SITE / "worked-examples.html",
+        SITE / "drills.html",
+        SITE / "solutions.html",
+        SITE / "misconceptions.html",
+        SITE / "evidence.html",
+        SITE / "review-guide.html",
+        SITE / "quality.html",
+        SITE / "completion-audit.html",
         SITE / "provenance.html",
         SITE / "assets/styles.css",
     ]
+    required_pages.extend(SITE / "concepts" / f"{concept['id']}.html" for concept in concepts)
     for path in required_pages:
         if not path.exists():
             errors.append(f"missing site artifact: {path.relative_to(ROOT)}")
+    evidence_html = (SITE / "evidence.html").read_text(encoding="utf-8") if (SITE / "evidence.html").exists() else ""
+    for row in evidence:
+        if f'id="{row["id"]}"' not in evidence_html:
+            errors.append(f"evidence anchor missing from evidence.html: {row['id']}")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:
@@ -71,4 +152,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

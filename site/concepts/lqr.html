@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LQR · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../lectures.html">Lectures</a>
+<a class="" href="../transcripts.html">Transcripts</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../course-spine.html">Spine</a>
+<a class="" href="../families.html">Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../formula-reader.html">Formulas</a>
+<a class="" href="../derivations.html">Derivations</a>
+<a class="" href="../drills.html">Drills</a>
+<a class="" href="../evidence.html">Evidence</a>
+<a class="" href="../review-guide.html">Review</a></nav>
+  </header>
+  <main>
+<p><a href="../concepts.html">Back to concept atlas</a></p>
+<h1>LQR</h1>
+<p class="lede">A control method for linear dynamics and quadratic costs that produces a structured feedback law.</p>
+<section class="wide-grid">
+  <article class="card "><h3>Ordinary Problem</h3><p>Near a nominal operating point, the controller needs fast feedback that trades state error against control effort.</p></article>
+  <article class="card "><h3>Naive Approach</h3><p>Re-solve a full nonlinear trajectory problem at every tiny deviation.</p><p><strong>Why it fails:</strong> That is too slow when the system only needs local corrections.</p></article>
+  <article class="card "><h3>Mathematical Object</h3><p>Linear dynamics, quadratic cost, Riccati recursion, and feedback gain.</p></article>
+  <article class="card "><h3>Operation</h3><p>Use quadratic value structure to compute how the control should respond to state error.</p></article>
+</section>
+<h2>Worked Example</h2>
+<p>A drone hovering near level flight can use local feedback to correct small position and velocity errors.</p>
+<h2>Boundary And Failure</h2>
+<section class="wide-grid">
+  <article class="card "><h3>Assumption Boundary</h3><p>The local linear-quadratic approximation must be valid for the deviations seen.</p></article>
+  <article class="card "><h3>Failure Mode</h3><p>Large nonlinear motion breaks the local model and the feedback becomes unsafe.</p></article>
+  <article class="card "><h3>Recognize It</h3><p>Look for small deviations around a nominal trajectory with quadratic penalties.</p></article>
+</section>
+<h2>Transcript Evidence</h2>
+<section class="stack"><article class="evidence-card" id="ev-lqr-01">
+  <h3>ev-lqr-01: Lecture 8 · LQR-Style Algorithms</h3>
+  <p class="muted"><a href="https://www.youtube.com/watch?v=1YdgSwEtf_s">1YdgSwEtf_s</a> · <code>raw-material/youtube/transcripts/clean/lecture-08-1YdgSwEtf_s.txt</code> · needs_review</p>
+  <blockquote>and reachability theory And to do so we discuss uh some structure some key structure that the problem the optimal control optimal control problem as we formulate it has that we can leverage to derive dynamic programming equations and then I presented LQR as one example that allow me to show you how to apply the dynamic programming uh recussion and at the same time LQR is a problem that is of interest in its own right now in the second P set you</blockquote>
+  <p><strong>Transcript supports:</strong> The lecture explicitly discusses LQR or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.</p>
+  <p><strong>Synthesis boundary:</strong> The first-principles prose turns the transcript cue into a learner-facing explanation and still needs manual timestamp-level review.</p>
+  <p><a href="../evidence.html#ev-lqr-01">Open evidence record</a></p>
+</article></section>
+<h2>Nearby Concepts</h2>
+<p><span class="pill"><a href="../concepts/local-quadratic-approximation.html">Local Quadratic Approximation</a></span></p>
+</main>
+</body>
+</html>

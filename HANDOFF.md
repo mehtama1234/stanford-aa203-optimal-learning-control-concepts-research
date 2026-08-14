@@ -11,8 +11,11 @@ Completed locally:
 - Downloaded flat playlist metadata with `yt-dlp`.
 - Downloaded and cleaned transcripts for 18 of 19 lectures.
 - Captured 197,258 transcript words.
-- Built a starter static HTML site with overview, lectures, transcript index, concept seed, and provenance pages.
-- Added validation for manifest shape, transcript file references, generated pages, and local links.
+- Built a first-pass concept atlas with 38 required concepts.
+- Built a first-pass evidence ledger with 38 local transcript-window records marked `needs_review`.
+- Built method-family and primitive throughline artifacts.
+- Generated 57 HTML pages, including individual concept pages plus course spine, families, primitives, formula reader, derivations, worked examples, drills, solutions, misconceptions, evidence, review guide, quality rubric, and completion audit.
+- Added validation for manifest shape, transcript file references, concept fields, evidence fields, evidence-to-transcript links, generated pages, concept pages, evidence anchors, and local links.
 
 ## Known Gap
 
@@ -26,6 +29,7 @@ Retry later:
 
 ```bash
 python3 scripts/download_youtube_course_transcripts.py
+python3 scripts/build_first_principles_atlas.py
 python3 scripts/build_site.py
 python3 scripts/validate_all.py
 ```
@@ -35,7 +39,8 @@ python3 scripts/validate_all.py
 The next phase should follow the stronger course repos:
 
 - Use `GOAL.md` as the acceptance target.
-- Build a first-principles concept atlas.
-- Add transcript-backed evidence records with local quote windows.
-- Generate individual concept pages for value functions, Bellman recursion, costates, direct transcription, LQR, reachability, MPC feasibility, imitation learning, value-based RL, policy optimization, and model-based RL.
-- Add derivation walkthroughs, formula readers, failure modes, drills, and a review guide.
+- Retry Lecture 13 transcript capture after YouTube rate limiting clears.
+- Deepen the `needs_review` evidence records into manually reviewed timestamp-level evidence.
+- Expand derivation walkthroughs and worked examples from compact first-pass entries into full teaching-grade pages.
+- Add richer drill solutions and weak-claim repair cases.
+- Add a stricter editorial audit for concept word depth, forbidden filler, evidence coverage, and page completeness.

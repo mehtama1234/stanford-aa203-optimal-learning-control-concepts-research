@@ -449,6 +449,12 @@ def main() -> int:
                     errors.append(f"gradient first-order condition page missing local-slope marker: {marker}")
             if len(words) < 900:
                 errors.append(f"gradient first-order condition page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "calculus-of-variations":
+            for marker in ["1 meter rail in 2 seconds", "u(t) from t = 0 to t = 2", "0.5 m/s", "x(2) = 1 meter", "0.8 m/s", "0.2 m/s", "J[u] = integral_0^2 u(t)^2 dt", "2*(0.5^2) = 0.5", "1*(0.8^2) + 1*(0.2^2) = 0.68", "epsilon*eta(t)", "d/depsilon J[u + epsilon*eta]", "x_dot = u", "integral_0^2 eta(t) dt = 0", "smooth admissible perturbations"]:
+                if marker not in text:
+                    errors.append(f"calculus of variations concept page missing curve-perturbation marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"calculus of variations concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "value-based-rl":
             for marker in ["battery 22 percent", "Q(x,turn_left) = 3", "Q(x,turn_right) = 7", "gamma = 0.9", "y = -1 + 0.9*10 = 8", "alpha = 0.5", "7 + 0.5*(8 - 7) = 7.5", "V_pi(x)", "Q_pi(x,u)", "policy evaluation", "policy improvement", "Q(x,u) &lt;- Q(x,u) + alpha*(y - Q(x,u))", "slick floors"]:
                 if marker not in text:

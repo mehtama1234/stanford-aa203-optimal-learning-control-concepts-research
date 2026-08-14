@@ -1,0 +1,2082 @@
+So, welcome to the last week of
+1023.
+So, from our usual road map,
+we're always in the for the last few
+weeks we've been in the top right
+quadrant of our road map, specifically
+looking at learning based methods for
+optimal control. And over the last
+couple of weeks we've basically been
+introducing the reinforcement learning
+setting where we are looking at ways to
+estimate value functions,
+specifically we introduced Monte Carlo
+and temporal difference learning as like
+really fundamental
+model free learning strategies.
+And last week we also looked at one of
+the kind of families of methods for
+model free reinforcement learning,
+namely value based methods.
+On the other hand, today we switch
+topics and we kind of complete, and if
+you wish, and start to discuss the
+second main family of methods that
+belong to the model free reinforcement
+learning family, namely policy
+optimization.
+And as we will see today, in policy
+optimization, differently from what we
+did in value based methods, whereby the
+policy is implicitly defined through the
+value function itself, in policy
+optimization we'll see how we'll be
+representing the policy explicitly,
+namely through a parametric
+representation of the policy, and then
+tune or adjust the parameters of this
+parametric representation of the policy
+to directly maximize the reinforcement
+learning objective. But long story
+short, today we'll be looking at policy
+optimization methods.
+Specifically, we'll start by introducing
+and defining policy gradients.
+Which will lead us into kind of the very
+first algorithm, which will be the
+reinforce algorithm, and we'll discuss
+some
+kind of we'll do some discussions on the
+role of variance of these policy
+gradient estimators. Then we'll be
+looking at actor-critic methods, which
+are extremely popular
+instantiation of a policy optimization,
+and then conclude with some mention to
+kind of recent reinforcement learning
+algorithms and and applications.
+Okay, so let's start from if you recall
+at the beginning of our discussions on
+reinforcement learning, we loosely
+introduced kind of reinforcement
+learning as this
+as a problem where we have an agent that
+interacts with the environment.
+Through this interaction, we generate
+some trajectories style which are
+nothing else than a kind of sequences of
+states and controls that we observe over
+time.
+And we through this we defined kind of
+the formalism for reinforcement learning
+as a Markov decision process whereby we
+defined a trajectory distribution
+P of tau
+where P of tau essentially encodes all
+the stochasticity that we have in the
+environment.
+Namely, we could have an initial state
+X0 which is sampled from a distribution
+over X states.
+Concretely, this could be like the dot
+reset method in our gym environments for
+example.
+We have uncertainty that comes from the
+policy itself.
+So we are defining a policy pi as a
+distribution over controls given states.
+And so this is in itself is also a
+random process.
+And then we obviously discuss also the
+stochasticity that comes from the
+transition function itself which is a
+distribution over next state XT + 1
+given the current state XT and the
+control UT.
+Right, so by taking all of these sources
+of stochasticity
+and factorizing them as was shown here
+on the slide, we basically derived the
+probability distribution over all
+possible trajectories style
+as this factorized distribution over
+here.
+Why was this important? It was important
+because this enabled us to define the
+reinforcement learning objective,
+essentially as a maximization problem
+where we want to take the basically pick
+the policy pi that maximizes a certain
+objective.
+And this objective is the sum of
+discounted cumulative rewards.
+Uh but the sum of discounted cumulative
+returns is in expectation where the
+expectation is under this trajectory
+distribution. Right? So, this is
+basically where we started a couple
+weeks back.
+How does policy optimization go for
+solving this problem? As we were briefly
+mentioning before, in policy
+optimization,
+um what we do is
+we essentially define our policy to be a
+parametric policy pi of theta with some
+parameters theta.
+And therefore, kind of the reinforcement
+learning objective can and the
+trajectory distribution itself can
+essentially be written with respect to
+these parameters uh theta. Right? So,
+the initial state distribution and the
+traject and the transition distribution
+do not depend on theta directly, but our
+policy does indeed uh inform the uh
+evolution of the trajectory. And
+therefore, what we want to pick
+essentially is the values of the
+parameters theta that maximize the RL
+objective.
+So, long story short, at at face value,
+in policy optimization, we take the
+reinforcement learning objective as it
+is,
+and we uh
+basically define it as a optimization
+problem with respect to the parameters
+of our policy.
+Again, going forward to simplify the
+notation, we'll assume that this is an
+undiscounted environment, but everything
+still holds uh when we actually account
+for for discounting.
+So, um
+let us start solving this
+um this problem in practice. Right? So,
+we saw how
+um
+well, in value-based methods, if you
+remember, we were I you know, ideally
+solving this exact same problem, but we
+were doing this in an indirect way
+because we were doing essentially fixed
+point iteration on Q values and value
+functions.
+And then we saw that that convergence
+kind of we derived some theory or at
+least mentioned some theory for which um
+kind of the algorithms that we proposed
+would converge to the optimal value
+function and therefore to the optimal
+policy. In reinforcement learning, now
+we want to solve all these uh this kind
+of explicit optimization problem.
+&gt;&gt; [snorts]
+&gt;&gt; So, we know that you know, before in
+this class, we mentioned as a good idea
+when we want to solve um optimization
+optimization problems that gradient
+ascent or gradient descent is a good
+approach for solving general class of
+numerical optimization problems.
+Fundamentally, if we were to approach
+this problem through gradient ascent
+because we want to maximize this
+objective function, we would need to
+first of all estimate the gradient of
+the objective you're interested in.
+And then basically cast learning or
+learning the policy as doing gradient
+ascent on the objective that we care
+about. That is
+iteratively take steps in parameter
+space following the direction that is
+given to us by this this gradient,
+right?
+So, pictorially, hill climbing our our
+our objective.
+Kind of our first question here is uh
+already kind of we see how our objective
+that we wish to optimize
+is a non-trivial object, right? Because
+we have this expectation under the
+trajectory distribution, which is
+something which we we don't really know
+about because the trajectory
+distribution as we said before kind of
+has these three sources of
+stochasticities, so we can assume that
+we know our policy
+and we can evaluate the
+distribution under our policy, but we
+don't really know the transition
+dynamics, for example, right? Because
+this is the the whole point.
+So,
+you know, first question is how can we
+even evaluate this expectation in the
+objective?
+And the answer here is by basically
+leveraging
+the same tools that we'll discussed over
+and over of the last couple of weeks,
+which is essentially sampling, right?
+So, in reinforcement learning, whenever
+we don't know some quantity, for
+example, the transition functions, we
+kind of go around it by sampling in the
+environment.
+What did we mean by sampling so far?
+It's essentially taking rollouts and
+interacting with our environment over
+time.
+So, in other words, we have this
+objective that we wish to optimize,
+which entails
+uh computing the expectation under the
+trajectory distribution.
+We don't know how to compute this
+expectation, and so we can approximate
+it by running our policy n times in the
+environment and just taking the
+empirical mean.
+Right? So, in practice, you could
+imagine indeed following n possible
+rollouts of our policy.
+These rollouts will have some rewards.
+We will be observing different quality
+of the of these rollouts, and then we
+simply average out all of the rewards
+that we observe over time. And this
+would be a valid approximation of this
+expectation.
+Okay. But so, we mentioned that we want
+to approach this through stochastic
+gradient ascent or gradient ascent.
+Um
+the first thing that we need to do is
+compute the gradient, right? So, what
+we'll do right now is basically derive
+uh the policy gradient,
+uh and specifically derive um actionable
+um
+kind of
+uh expression of the policy gradient,
+and then see how we can use this
+expression within a kind of working
+algorithms.
+Any any questions so far?
+Great.
+Okay, so for uh compactness, let us
+define uh
+R of tau uh of the trajectory tau as the
+sum of rewards that we observed in a
+specific trajectory. So, simply the the
+sum of all the rewards observed from
+time one until time T within that
+trajectory tau.
+So, by um
+So, we can use this R tau to basically
+rewrite the RL objective that we were
+introducing before, right? So, J of
+theta, uh which we introduced before as
+being the expectation under the
+trajectory distribution of the sum of
+rewards, we can just write it as uh
+small R of tau.
+And by definition of expectation, we can
+write this expectation as the integral
+of uh P tau times R tau
+in the tau.
+So, what we said is what we we want to
+take the gradient of this objective
+function and use this to hill climb. So,
+given this definition or kind of
+rewriting of the objective J of theta,
+the gradient uh of J of theta with
+respect to theta is the integral of the
+gradient with respect to theta of uh P
+tau times R tau in the tau, right? So,
+nothing special here. We just we rewrote
+our uh RL objective.
+Um and then we're taking the gradient at
+face value of that uh objective.
+So, here, of course, in
+this would not be actionable, right?
+Because we would like to evaluate this
+gradient and basically take a step in
+the direction of the gradient. But, the
+problem here is that the how we define
+it right now, uh basically the gradient
+depends on uh unknown dynamics and the
+initial state distribution through this
+the probability
+uh over trajectories P tau, right? So,
+this is still the object that we don't
+really know how to compute.
+So, here will be essentially what we'll
+be doing in this slide in the next is
+that we'll be basically massaging this
+definition of the policy gradient until
+we derive an
+analytically retractable and actually
+computable expression of that same
+gradient.
+So, the first thing that we do is we So,
+we are realized that this is the, you
+know, the object that is creating
+problems for us. And so, we leverage
+that identity on the right of this
+slide. Specifically, the identity
+whereby the
+probability P tau times the grad log P
+can be rewritten as the grad P
+essentially, right? So, we know that the
+grad of the logarithm of function can be
+essentially written as the grad the
+gradient of the function divided by the
+function itself.
+And so, the two terms cancel out. And
+so, we get that
+kind of useful identity on the right.
+So, specifically, now we could we can do
+this substitution in our expression of
+the policy gradient. And what we get is
+that we get the integral of the P tau
+times the grad log P times R tau.
+Always in the tau, of course.
+Now again, we can use the definition of
+expectation.
+And we can basically rewrite this
+integral as the
+expectation under the trajectory
+distribution
+of this part over here,
+right?
+Now, this is
+not
+actionable yet because still we have
+this expectation and this term here is
+not
+something we know how to deal with.
+But you can probably start to see that
+we are somehow on the right track
+because we we know that whenever we have
+some quantity that is defined as
+expectations under the trajectory
+distribution, we can just approximate
+this expectation through interactions
+with the environment and through
+something.
+So this is one step in the right
+direction, but still not completely
+actionable because we have this grad log
+piece in the equation, which is still
+something we don't know.
+Okay, so let's keep going.
+&gt;&gt; [snorts]
+&gt;&gt; So let us recall
+as we from you know previous slide the
+definition of the trajectory
+distribution, right? Which is basically
+this factorization of what for us is the
+trajectory distribution.
+If we take the logarithm of the
+trajectory distribution, we products
+become sums.
+Each individual terms becomes the of
+course we take the logarithm.
+And basically what we get is the log
+piece is equal to these the sum of these
+three terms over here, right? So the
+logarithm of the probability of the
+initial state plus plus the sum over
+time of the log pies essentially the
+logarithm of the distribution induced by
+our policy and the log piece. That is
+the transition dynamics.
+So we just substitute this in into our
+equation of the policy gradient.
+And we get this object over here where
+Yes, so we are taking the gradient with
+respect to theta of this entire term
+here, which we derived as the logarithm
+of the
+probability distribution of trajectories
+multiplied by the sum of rewards in that
+trajectory.
+Now of course notice that since we're
+taking the gradient with respect to
+theta,
+the first the first and the third term
+here don't depend on theta directly, so
+they don't contribute to our gradient.
+Um
+And notice that
+the only term that remains is actually
+something that we know how to compute.
+Right? Because the policy is an object
+we define.
+For example,
+the policy for us might be a Gaussian
+over
+one-dimensional continuous action.
+Right? So we could have our U of T.
+And so our
+policy
+pi of U T given X T might be a Gaussian,
+where the parameters theta might
+represent maybe the mean and the
+variance of that Gaussian.
+And so basically the log pi's as
+are completely specified, and so we can
+actually evaluate them.
+And so this means that if we take that
+expression over there and just rewrite
+it compactly over here,
+where the only thing that changes that
+we re-expanded our terms small R of tau,
+we see that we we get an expression of
+the policy gradient, which is something
+where first of all everything inside
+this expectation is known. So this is
+just a sum of rewards that we observe
+according to some trajectory style.
+This is the sum of the log pi's
+according to our policy, which again is
+something we know how to compute. And so
+everything inside this expectation is
+known.
+Do these steps make sense or any
+questions
+until now?
+Okay.
+So we said that everything inside this
+expectation is known.
+Um how do we evaluate this in practice?
+We use the same trick, right? So, we
+have this expectation under the
+trajectory distribution. We know that we
+can approximate this as the empirical
+mean
+by basically sampling N rollouts uh in
+our environment.
+We did this before for the objective, so
+we can do exactly the same with the
+policy gradient, right?
+Which basically mean that
+uh we can now completely evaluate the
+policy gradient that we're interested in
+by taking N
+um
+rollouts or
+um trajectories, basically taus in the
+environment,
+computing this quantity for all of these
+trajectories and taking the the mean.
+And this will be a valid approximation
+of the policy gradient.
+Okay. And so, basically,
+if this is clear,
+through this derivation of
+um the policy gradient, this leads us
+directly into, if you wish, kind of the
+the very first policy optimization
+algorithms uh that we will see in the in
+this class, which is also known as the
+reinforce algorithm.
+So, as you can probably imagine, the
+the derivations that we derived so far
+basically give us an actionable because
+now what we can do is something along
+the lines of these three steps over
+here. So, we will be sampling N
+trajectories from the environment by
+basically just letting our policy
+interact with the environment itself.
+Through these trajectories, we can now
+always evaluate these gradients
+uh or the policy gradient, or at least
+approximate it.
+And once we have this um estimate of the
+policy gradient, we can take a step in
+the parameter space according to this to
+this gradient to improve the, uh,
+basically the quality of our parameters
+pi, uh,
+theta that represents our policy pi.
+&gt;&gt; [snorts]
+&gt;&gt; So, taking the bird's-eye view on this
+reinforce algorithm according to our
+usual skeleton, kind of we have our
+usual three components whereby we are
+generating samples by interacting with
+the environment.
+We are estimating a return through Monte
+Carlo because we're basically running
+our policy in the environment and
+explicitly summing up all of the rewards
+that we observe at the end of our
+episode.
+And then we're using those estimates of
+the returns to improve the policy,
+namely taking a step in parameter space.
+Of course, kind of this is, if you wish,
+like
+one,
+uh, step of an inner loop whereby we
+would then have to repeat this over
+time, right? So, here we're taking one
+gradient step, but then you can imagine
+that we have,
+uh,
+outer for loop that is kind of wrapping,
+uh, these three steps where we repeat
+this process because now we would have
+an improved policy with some new
+parameters theta, which we'll collect
+new experience and we'll use this
+experience to re-estimate the gradient
+and keep iterating over time.
+Okay, but let's stop for a second and
+kind of try to build some intuition
+into, uh, what policy gradient is
+actually doing under the hood and indeed
+get some intuition behind the, uh, the
+math, which I think it's always useful.
+So, we did all of those
+kind of algebraic steps to basically
+derive
+this estimator for the policy gradient.
+Right?
+Um we explained before how the log pies
+essentially represent the
+um
+log probabilities of uh of the action
+according to our policy. And we saw
+before how this could be represented
+either in the continuous space, exactly
+as we were doing here on the slide, but
+this is
+equally holds if we're looking at the
+discrete action space. Uh whereby namely
+the policy will be expressing a
+categorical distribution over a finite
+elements a finite set of actions that we
+could pick.
+And so this this is basically the term
+that we derived.
+But let's I think it's useful to compare
+it with the expression of the gradient
+that we would get when we try to perform
+uh max maximum likelihood, or if you
+wish kind of behavior cloning for us in
+the for the purpose of control.
+So, remember the setting of behavior
+cloning. In behavior cloning we have
+some demonstrations of an expert doing
+uh something and executing a task, which
+for us namely means uh data sets of
+uh tuples of states and action pairs,
+uh which basically are examples of this
+mapping that we wish to approximate.
+Right? So, we want to
+uh in maximum likelihood estimation or
+behavior cloning, what we wanted to do
+is we wanted to maximize the probability
+of the actions that we observed from our
+expert given
+uh given the state.
+Right?
+And so formally, the gradient in the
+maximum likelihood case would
+essentially be comprised of this term,
+where we're trying to maximize the
+probability of the actions in our data
+set,
+uh because this would essentially mean
+be equivalent to uh uh approximating the
+behavior of the expert, right?
+If you compare this equation of the
+gradient
+to what we just derived for the policy
+gradient, you see that this this is
+essentially uh
+a weighted version of the gradient that
+you would get from maximum likelihood
+estimation.
+Where the weight is specifically the sum
+of rewards in that trajectory.
+So, what does this mean is that in
+behavior cloning, we kind of taking a
+step in the direction of the gradient
+essentially means upweighting the
+probability of all the actions in my
+data set.
+In policy gradient, we are upweighting
+the probability of the actions according
+to their performance in the in those
+rollouts, right? So, those actions that
+led to higher reward
+are more upweighted in my policy
+gradient term. And so, we're upweighting
+that probability, if that makes sense.
+Is this
+Is this clear? Does it make sense?
+Indeed. And so, the policy gradient is a
+weighted version of the maximum
+likelihood estimation gradient.
+So,
+again, kind of to to hammer down this
+this idea,
+if we take a step in the direction of
+the policy gradient, what we're doing is
+that we're changing the parameters theta
+such that trajectories with higher
+reward have higher uh probability,
+right? And so, you could imagine if we
+have like this fictitious landscape of
+rollouts,
+where the width of the
+uh lines here represents the probability
+mass that my policy is allocating to
+those trajectories.
+Then here we what we want is we want the
+good trajectories to be more likely than
+the bad trajectories, right? And so
+in a way policy gradient really
+formalizes this idea of learning by
+trial and error because we will
+we are running out uh
+kind of getting rollouts in our uh of
+the policy in the environment. So we're
+try trying out different strategies.
+And then through uh
+basically updates in parameter space, we
+are
+learning what is more effective and
+making it more likely.
+And we're learning what is less
+effective and making it less likely.
+Yeah.
+&gt;&gt; In an imitation context, we couldn't use
+this approach because we don't have an
+explicit formulation of the reward. Is
+that kind of why or
+&gt;&gt; Uh
+I would say
+So yes, for example, you might not have
+an explicit measure of the reward.
+I mean, [snorts] you could construct it
+and then maybe reweight your uh
+behavior cloning loss, for example. So
+this is is something that if you recall,
+we did discuss towards the end of the
+behavior cloning class where we looked
+at uh
+So we referred to them as reinforcement
+uh via supervised uh methods where we
+did have a notion of reward and maybe we
+used that to filter the
+demonstrations or whatnot. Uh but so at
+face value, yes. So this is the the
+reason why.
+&gt;&gt; [snorts]
+&gt;&gt; Okay.
+And so I would say this is
+probably the most kind of fundamental
+idea uh uh for this lecture. So we
+started saying we want to um
+approach the reinforcement learning
+problem from a slightly different angle,
+that is the one of policy optimization.
+So, we parameterize our policy, and then
+we cast reinforcement learning as an
+optimization uh problem
+with respect to these parameters of the
+policy.
+And to do this, we do gradient ascent,
+and so everything that we've done so far
+is derive the expression of the
+gradient.
+So, of course, this is not uh
+this is not it. There is much more uh to
+policy optimization in the sense that
+what we discussed so far is great, and
+from an intuition intuitive standpoint,
+it also makes a lot of sense, at least
+uh to me personally. Um
+but, I would say that kind of if you
+look at this gradient, there are some
+clear uh limitations. And I would say
+the main one is the fact that this
+gradient uh
+so, the our estimate of the gradient
+uh has extremely high variance. And so,
+this is an extremely
+uh if you wish, unstable learning signal
+uh to follow.
+But, so let us
+now uh spend a few minutes on uh this
+problem of high variance of the policy
+gradient. And so, what we'll do now is
+we'll first uh
+briefly build some intuition to why this
+high variance might be happening, and
+then we'll look at two strategies for
+reducing the variance of the policy
+gradient.
+So,
+um [snorts] so, consider this uh again,
+kind of fictitious example here on the
+slide. Specifically, here we are uh
+kind of visualizing, if you wish, like
+on the x-axis, the space of uh
+trajectories. So, all possible
+trajectories that we may follow
+according to our policy.
+Um
+and this Gaussian here is represent
+basically represents uh distribution
+over trajectories induced by our policy
+pi.
+Now, say that we get we basically run
+our policy in the environment and we
+observe three trajectories and these
+three trajectories have some associated
+return, right? So, we have these three
+trajectories, we sum up all of the
+rewards and we obtain these three
+specific performances.
+Uh now, out of these three, two of them
+were positive
+in this direction and one of them was
+actually negative.
+Now,
+from everything that we've said so far
+on policy gradient, well,
+we would expect to policy gradient to do
+is that if we then use these
+trajectories, estimate the gradient and
+take a step in the parameter space, what
+we're doing is that we're making this
+behavior more likely than this behavior
+here, right? Because this is exactly
+what we've been discussing so far.
+And this is actually what would happen.
+But now, let's suppose that we take
+those same three trajectories
+and simply add
+uh
+kind of the same positive constant to
+the returns
+uh to get these three new values, right?
+So, the relative gap is always the same,
+but what changes is the kind of absolute
+numbers of those rewards.
+The catch here is that if we now would
+do the exact same thing, that is policy
+gradient on these trajectories,
+uh what we will get is is something
+slightly more dispersed. So, because
+this is also kind of a positive number
+in this case, policy gradient will still
+try to
+uh
+well, it will try to of course give more
+likelihood to the better ones, but it
+will still try to cover um kind of this
+trajectory over here.
+And so, of course, this is, if you wish,
+like an extreme example, but the main
+idea that I'm trying to convey here is
+that because we're estimating the true
+value of the policy gradient through
+samples. Depending on the samples that
+we observe, [clears throat]
+uh the policy gradient can vary also
+quite substantially. Right? And so, this
+is exactly what we mean that the
+estimator that we came up with of the
+policy gradient has a high variance.
+Why do we care about this? It's because
+in practice, if our
+estimator of the gradient that we follow
+for learning has high variance, uh this
+will essentially lead to worse
+performance, slower convergence, and
+potentially more unstable um training
+curves, essentially.
+So, within kind of this framing, uh kind
+of I would say that a lot, if not the
+majority, of the research in policy
+optimization essentially revolves around
+finding ways to lower the variance of
+these uh estimators.
+And so, different algorithms uh
+essentially boil down to instantiating
+the policy gradient in different ways.
+Any Any questions on this?
+Yeah.
+&gt;&gt; So, rewards can be discrete or they can
+be continuous. And the primary
+difference between discrete and
+continuous like reward gradient
+decrease the variance of the policy
+gradient? Is that a fair assumption?
+&gt;&gt; Uh sorry, could
+&gt;&gt; Like if you have like
+uh compared like you have like a goal to
+play in the setting and then like reach
+the goal, you get five points.
+&gt;&gt; Yeah.
+&gt;&gt; Um versus like uh you get five points
+for each step you take towards the
+&gt;&gt; Okay.
+&gt;&gt; continuous setting.
+Um
+does supplying a continuous reward
+signal decrease the variance
+&gt;&gt; Uh
+&gt;&gt; of the
+&gt;&gt; Yes. I would say that in general, like
+um
+the more kind of the more dense your
+reward is,
+uh the better it is for
+uh like for propagating the learning
+throughout the algorithm, in general.
+Yeah.
+Uh now, it's not only because of the
+variance of the policy gradient, but I
+would say in general also for
+uh kind of credit assignment, right? So,
+if uh it basically it encodes learning
+to be more granular throughout your
+entire trajectory, if that makes sense.
+But yes, your intuition is correct.
+Okay. So, let's look at a couple of
+strategies to reduce the variance of
+policy gradients.
+So, the first one
+I would say it's more than a simple
+trick than an actual strategy. In the
+sense that if we look back at what we
+were doing to define the policy
+gradient, we essentially defined it as,
+you know, of course, the empirical mean
+because we want to approximate the
+expectations. Uh, we have this first
+term, which is the log pies, great,
+something we can compute, and we were
+waiting the log pies by the sum of
+rewards throughout the entire
+trajectory.
+Now, if you look a little bit more
+closely into what this is doing, is that
+well, it may happen that for time T
+prime greater than T
+kind of the log pies of this T prime
+would still be weighted by the sum of
+all the Ts
+before T prime.
+Which is something counterintuitive,
+right? Because
+uh, basically the the policy at time T
+prime cannot really affect the reward
+uh, for the time steps before that
+action, right?
+And so, this is what I mean by uh,
+causality here on the slide. And so, the
+first trick essentially entails
+leveraging this intuition for the fact
+that actions at time T prime cannot
+affect the rewards that happened before
+it, and simply encode this into how
+we're defining the policy gradient.
+So, [snorts] rather than
+uh, so right now, kind of here I'm just
+taking out the this summation to make it
+more explicit.
+Um, but so, rather than summing from T
+equals 1
+what we would be doing here is summing
+from
+uh, T prime equals T,
+specifically.
+So, this makes sense intuitively, but
+why does this lower the variance? So,
+first of all, of course, we're not
+including a lot of terms
+on which the action doesn't really have
+any influence on.
+And then also, I would say quite
+intuitively,
+we're summing less terms in our policy
+gradient, right? Less terms of the
+reward. And remember that the reward is
+essentially something that depends on
+a number of stochastic elements
+throughout the trajectory, right? So,
+again, throughout the trajectory, we
+will be sampling repeatedly from our
+policy, which is indeed something
+stochastic. We'll be sampling repeatedly
+from the transition function, which is
+also something stochastic. And so,
+simply put, here we're summing less
+terms, and so the there is less variance
+associated with this policy gradient
+overall.
+Does this make sense? This is pretty
+pretty simple trick, I would say. But it
+does indeed measurably improve things.
+The second strategy, which I would say
+is
+very important for
+kind of for the space of policy
+optimization methods, is the one of
+introducing the concept of baselines.
+So, to understand exactly what we mean
+by baseline, let's reconsider kind of
+the intuition we were discussing before
+regarding policy gradient
+when we were saying that policy gradient
+makes good behavior more likely.
+And so,
+uh and specifically, what we're
+discussing is that policy gradient will
+only do kind of {quote}
+the right thing
+if the returns, that is the sum of all
+the rewards that we're observing
+were centered, right? So, we
+specifically consider this counter
+example on the right where the relative
+difference was the same, but simply
+those returns were not centered. And so,
+the policy gradient was actually doing
+something that we didn't want it to do.
+Intuitively, what we would like to have
+instead is that we would like to use
+some mechanism to center our returns
+such that the the policy gradient
+essentially becomes something whereby
+the probability of behavior that is
+better than average gets increased and
+the probability of behavior that is
+worse than average gets decreased.
+So, in other words, we want to have a
+mechanism to re-center the returns from
+our interactions with the with the
+environment.
+The way we'll do this is through
+something that is referred to as a
+baseline, here referred to as B, which
+is basically a quantity that we are
+subtracting to the sum reward, to the
+return R of tau.
+&gt;&gt; [snorts]
+&gt;&gt; So, before we get into
+kind of actionable ways of using the
+baseline,
+I think kind of a
+a valuable sanity check here is we're
+introducing something in the policy
+gradient.
+We don't want to change the expectation
+of the policy gradient, right? Because
+we derived kind of our
+equations analytically and we know that
+in expectation the policy gradient will,
+you know, to the limit of infinite
+samples from our
+distribution over trajectories will get
+the correct object. But now, if we
+subtract this baseline B, do we still
+get the same the same expectation,
+right? Is the estimator still unbiased,
+essentially?
+And so, the the claim here as a as a
+spoiler is that adding this baseline
+does not change the value of the
+expected gradient.
+And so let's [snorts] look at at this
+more and more closely.
+So to
+understand [snorts] this, let's consider
+the following expectation. So
+um
+specifically let's look at
+the part of the policy gradient which
+only takes [snorts] into account the
+baseline. So the grad log P is times the
+baseline B.
+&gt;&gt; [snorts]
+&gt;&gt; Again, from the definition of the
+expectation, we can rewrite this as the
+integral
+of
+P tau times the grad log P times the
+baseline B.
+Right? So here just a definition of
+expectation again.
+&gt;&gt; [snorts]
+&gt;&gt; And now we can use the exact same
+identity that we used before in the
+derivation of the policy gradient, but
+now in the reverse direction, if you
+wish.
+So we can basically take the
+uh P times grad log P's
+uh
+which is
+equal to the grad P's over here, right?
+&gt;&gt; [snorts]
+&gt;&gt; And so this entails to grad P's times
+the baseline B.
+Now we can take the
+uh B because this is just a constant out
+of the integral.
+Uh we can do the same with the gradient
+operator.
+And so what we get is the
+um B multiplied by the gradient of the
+integral of the probability over tau in
+the tau.
+Since [snorts] the probability
+distribution over trajectories is a
+valid probability density, we know that
+the integral has to be equal to one.
+&gt;&gt; [snorts]
+&gt;&gt; And so what we get is we get B times the
+gradient of a constant, which is equal
+to zero.
+&gt;&gt; [snorts]
+&gt;&gt; And so this basically makes the estimate
+of the gradient
+with the additional baseline term still
+unbiased in expectation, right? Because
+here we basically verified that the
+&gt;&gt; [snorts]
+&gt;&gt; expected value of the term that we are
+subtracting is equal to zero.
+And so we're not really changing the
+actual expectation of our estimator.
+&gt;&gt; [snorts]
+&gt;&gt; Okay, which I think is something pretty
+neat, right? Because basically now we
+have this mechanism through which we can
+re-center the returns in our policy
+gradient
+and therefore reduce the variance
+uh basically for free, right? Because
+we're not really losing anything in
+terms of uh bias uh of our estimator.
+&gt;&gt; [snorts]
+&gt;&gt; Since we what we say is that, you know,
+the goal here is to center the returns.
+Um a pretty
+effective and popular choice of the
+baseline is actually to define the
+baseline as the average return, right?
+So
+uh
+remember again, here we are interacting
+n times with our environment, so we have
+n trajectories tau.
+Uh for all of these trajectories, we
+will have some return. And so we just
+define b as the average return
+over our trajectories.
+We'll see how this idea of average
+returns basically motivates many popular
+reinforcement learning algorithms, but
+for now uh I would say this is uh kind
+of the intuition that we are trying to
+capture, right? So
+remember what we're doing here, we are
+interested in using policy gradient-like
+algorithms.
+We recognized that the policy gradient
+is a high-variance object.
+And so we want to reduce this variance
+through baselines. And here we basically
+showed one way of of doing so.
+Any any on this?
+Okay.
+What does it mean in practice to have a
+baseline? Again, this is just a kind of
+a simple example of training curves, but
+to give you an idea is that in practice
+what this would mean is that even for
+very simple environments,
+uh you would get
+much faster kind of training
+for the same exact same algorithm when
+you're just changing the expression of
+the policy gradient, right? Um So, here
+we're basically looking at it from the
+perspective of maybe sample efficiency,
+so you converge faster. But in some
+cases, this actually makes the
+difference between converging or not
+converging to a good solution.
+So, basically this is what I mean when I
+say that
+uh
+the quality of the estimator of the
+policy gradient actually influences
+uh training quite substantially.
+Okay. So, let's take a step back and
+think about what we're doing, right? So,
+everything that we've done so far today
+is basically defining
+a different way of solving the
+reinforcement learning objective.
+First of all, we
+express it as a function of the
+parameters theta of our policy.
+We evaluate the gradient of that
+objective. We saw how to do it. And we
+take a a step in parameter space
+according to this gradient.
+Now, given basically this high-level
+structure,
+if you recall last week we're discussing
+the differences between on- and
+off-policy algorithms.
+Specifically, we mentioned that an
+on-policy algorithm is an algorithm that
+uses
+experience collected under the policy
+that we are using to explore the
+the environment to improve.
+Uh would you say that this is an
+on-policy or off-policy algorithm in
+this case?
+Yeah.
+Yeah, exactly. So, this is uh
+in this specific framework as we've seen
+it so far,
+uh
+policy gradient algorithms are indeed uh
+naturally on-policy. Because
+the estimate of the gradient depends on
+basically the rollouts that we did uh in
+the environment according to the current
+policy uh pi theta.
+The moment we update the policy, we'll
+have to collect new experience in order
+to re-evaluate the policy gradient for
+that policy.
+&gt;&gt; [snorts]
+&gt;&gt; Of course, there are extensions of
+policy optimization. So,
+the takeaway here is not policy
+optimization algorithms are on-policy,
+uh but there are uh for the way we
+derived it so far, these are indeed
+on-policy algorithms.
+&gt;&gt; [clears throat]
+&gt;&gt; And indeed, exactly as we as we said, it
+is on-policy because we need uh samples
+from the current policy to estimate the
+gradient.
+So, let's look a little bit uh more
+closely at a couple of pros and cons of
+uh policy uh gradient methods.
+First of all,
+um
+I think it's it's nice to point out how
+policy gradient methods naturally handle
+uh continuous action spaces.
+And this is because we basically all we
+have to do is we have to define an
+appropriate representation of our
+policy.
+Phi of u t given x t. For example, this
+could be a Gaussian, and we parameterize
+the parameters of the Gaussian. So,
+same thing if we were to use a discrete
+uh
+distribution, so a categorical
+distribution, we would be essentially
+able to leverage the exact same
+formalism regardless if the action space
+is continuous or discrete.
+On the other hand, in value-based
+methods, if you recall, kind of the
+policy for us was basically implicitly
+defined
+as an argmax over you
+of, for example, a Q function.
+Right?
+Doing this argmax is obviously easy in
+the moment in which this is a the action
+space is discrete. So, we have a finite
+set of values for our actions you.
+The moment you is a continuous object,
+then this in itself is an optimization
+problem, right? So, which might or might
+not be trivial.
+&gt;&gt; [snorts]
+&gt;&gt; Same caveat here. There are, of course,
+methods that allow value-based methods
+to be applied for
+continuous action spaces, but at face
+value, this is a clear distinction,
+right?
+A second pro is that
+by how we derived it,
+policy optimization methods directly
+optimize the objective we care about,
+which is the discounted sum of rewards
+over time, right? So, we are
+clearly differentiating between policy
+optimization methods that take the RL
+objective and optimize it
+this objective at face value. So, we
+literally do gradient ascent on that
+objective
+from value-based methods such as
+Q-learning, which derive a mechanism,
+for example, the Bellman optimality
+equations to enforce a kind of
+fixed-point iteration scheme
+that at convergence will also lead to
+optimizing that same objective.
+But for intermediate solutions, it's not
+really clear if there is a partial
+ordering, right? So, for policy
+optimization methods, since we're doing
+hill climbing,
+if we stop halfway, we probably have a
+good estimate of how much we have been
+improving over time.
+On the other hand, with Q-learning,
+we know that we have guarantees of
+convergence, but if we stop halfway, we
+don't really know uh
+kind of how we are with respect to
+previous versions of uh of the policies
+we computed.
+Yes.
+&gt;&gt; For Q-learning, if we stop halfway,
+&gt;&gt; Yes, so uh in both cases, remember that
+we're looking at like
+uh sequential iterative algorithms,
+right? So, here, this is basically
+gradient ascent, which we take
+sequential steps.
+Uh in Q-learning, we are basically doing
+fixed-point iteration. So, we are
+recursively enforcing maybe the Bellman
+optimal integration.
+In both cases, you might
+stop before convergence.
+Uh in policy optimization case, I would
+argue it's pretty clear to understand
+progress because you're maximizing uh an
+objective. In Q-learning, it's less
+clear how to value uh to compute or
+evaluate progress in between
+uh before you reach convergence,
+right?
+But I would say kind of the bottom line
+here is that in value-based learning, we
+are introducing kind of an intermediate
+objective to achieve the same thing,
+while in policy optimization, we say we
+want to optimize the RL problem, and we
+just do that.
+The con is that
+at face value, at least the kind of
+algorithms we just discussed are
+on-policy uh compared to, for example,
+uh Q-learning, which might be prone to
+uh off-policy learning as well. And so,
+on-policy in this case can be extremely
+sample inefficient.
+Whereby
+we essentially mean that we might have
+to interact with the environment many,
+many times before we actually converge.
+Okay, any any questions so far before we
+we move on to actor-critic methods?
+Okay.
+And so let's now look at actor-critic
+methods which build
+uh
+I would say quite substantially on all
+of the ideas we introduced so far,
+namely the policy gradient.
+But I I would say at their core
+actor-critic methods try to
+blend and
+kind of leverage the best of both worlds
+between
+policy gradient methods and value-based
+methods. And we'll see we'll see shortly
+how.
+So specifically consider again the
+policy gradient expression we just
+derived, right? Which is again kind of
+the sum, so the average of the sum of
+the log log pies times the sum of the
+reward
+of our trajectory.
+The sum of rewards from time T up until
+capital T is also referred to as the
+reward to go because essentially encodes
+all of the rewards that we will be
+seeing in the future of our trajectory.
+&gt;&gt; [snorts]
+[sighs]
+&gt;&gt; And in a way basically all of the
+discussions of
+the high variance of the policy gradient
+that we were doing before essentially
+boil down that to the fact that
+um
+this reward to go is indeed the part
+whereby
+we have that is basically contributing
+to this high variance, right? Because
+this reward to go we only have
+kind of a limited sample estimate of
+what the expected reward to go is.
+And the and when we actually sample from
+the environment, this might only be
+kind of a noisy estimate of the ground
+truth expectation we are we are
+interested in.
+&gt;&gt; [snorts]
+&gt;&gt; Why is this
+a noisy estimate? It's because again, as
+we were saying before, we have we are
+basically repeatedly sampling from
+various sources of noise. And so even if
+we were to take the exact same sequence
+of actions over time, we might end in
+slightly different rollouts of our in
+our environment.
+So kind of I would say actor-critic
+methods at
+kind of fundamentally
+say the following. So
+rather than estimating these expected
+rewards to go through sampling
+whereby sampling basically entails just
+evaluating rollouts of our policy in the
+environment
+why don't we try to estimate the actual
+expectation by fitting
+um
+for example, a parametric representation
+of that a parametric function to
+basically estimate this ground truth
+expectation that we that we care about.
+And
+so at a high level, what actor-critic
+methods do is that they define two
+parametric functions that we are
+interested in in learning. The first one
+is the actor, basically our policy. So
+our policy pi of theta. So we have some
+parameters theta that we wish to
+estimate as we were doing so far.
+But they also introduce a critic that is
+basically a mechanism to estimate more
+accurately the expected reward to go
+that we would like to have.
+How do we do this? This is something
+that This is basically everything that
+we have been doing so far in the last uh
+couple of weeks. Which is basically we
+want to estimate the value uh value
+functions. Right?
+Uh and so we saw before already how we
+can use uh for example parametric
+approximations to estimate and
+approximate uh value functions.
+Right? So, very high level
+uh what actor critic methods do is that
+they recognize that part of this high
+variance problem that we see in policy
+gradients
+basically is uh caused by
+approximating the reward to go through
+samples.
+And so instead of approximating this
+reward to go to samples, let's fit uh
+parametric approximator of the ground
+truth expectation.
+Which assuming we're able to do
+correctly, then this will reduce the
+variance of my uh policy gradients.
+So, putting this together, instead of
+multiplying my log pies by the sample
+return as we were doing over there, so
+our reward to go
+let's replace the reward to go with an
+uh estimator of uh for example uh a
+value function with some parameters phi.
+&gt;&gt; Does this make sense?
+&gt;&gt; Okay.
+And so
+if this is clear
+so this is you know if this is a good
+idea, so let's just fit um
+uh a parametric function to our uh value
+functions.
+Can we combine what we're doing uh so
+this idea with
+the discussion on baselines that we did
+before.
+Well, the answer is yes.
+So, let us try to reduce even further
+the value the variance of our policy
+gradients
+by basically taking
+our new
+estimate of the policy gradient where we
+are using our fitted Q function and let
+us add the baseline again.
+Exactly as we were saying before, kind
+of the intuition that we tried to
+leverage in the baseline is that we
+wanted to center our returns.
+And so, in this case to
+center kind of the the our our value
+function here, we could pick a
+state-dependent baseline B of XT that
+depends on states XT
+which is the basically the expected Q
+function value.
+Right? So, here we're basically doing
+the same thing. We're sent We want to
+center this quantity.
+How do we center this? Well, we could
+pick B as the expected Q function where
+this expectation is taken under the
+distribution over controls UT according
+to our policy.
+Right? So,
+even if the exact details here are
+slightly unclear, I would kind of I
+would say the main idea here that we
+want to take over is that
+actor-critic methods introduce an
+estimate of the value function to better
+approximate the reward to go. This is
+great. Can we combine this idea with
+baselines?
+Yes,
+we can do that.
+We said that with baselines we wanted to
+re-center our reward to go term.
+We can centering We can center this by
+picking the baseline in this way
+essentially.
+&gt;&gt; Now, let's look at this term a little
+bit more closely.
+The expected Q function under our policy
+is basically nothing else that the value
+function itself.
+So, this is something that can be
+somewhat confusing at first,
+uh but let us
+try to look a little bit more closely
+with an example. So,
+consider a discrete environment, again,
+for example, our grid world, where
+we can take maybe one of a finite number
+of of actions.
+Right?
+So,
+we know that the Q function in this case
+uh under some policy pi
+is basically the
+expected reward that we expect to have
+in state X
+taking action UT
+and then following the policy pi uh for
+all the state the time steps that come,
+right? So, this is the the definition
+that we had so far of the Q function.
+Whereas, specifically, you see that here
+we are basically picking the action UT
+because the Q function is defined over
+uh this tuple, right? States and
+controls.
+How can we connect the Q function with
+uh the value function for that same
+policy?
+Is that the
+intuitively, the value of a state
+is the
+average
+value that we will get of the
+future states, where this average is
+taken under the
+ex- kind of the probability distribution
+that decides which action I'm picking
+right now, if that makes sense.
+So,
+this
+value function here is basically
+averaging out the future values
+according to all the possible controls
+that I might pick in that state.
+Does this make sense?
+Yeah.
+&gt;&gt; Like looking over all possible states or
+like up actions in the future and then
+like you just said averaging them out.
+Okay.
+&gt;&gt; Yes, I would say the the intuition is
+very similar. So, maybe one other way to
+see this is temporally, right? So,
+basically, the only thing that changes
+is the one-step reasoning that we're
+doing. Because in the from t + 1
+onwards, we're still sampling from our
+policy. So, we're averaging out over all
+possible things that could happen over
+our policy.
+In the one-step, so from t to t + 1, the
+Q function is basically do has one
+information more, which is we are
+specifying what control we're taking
+right now, right? So, we're basically
+committing to one specific action,
+right?
+On the other hand, the value function is
+a function only of the state.
+And so, what we're basically saying is
+that the value of this state,
+if we don't know which action we're
+picking in this state, will basically
+depend on the average action that we're
+picking in this state. And so, the
+average action is
+sampled according to our policy.
+Does that make sense?
+Okay. So, this is just basically a small
+detour, but I think useful to figure out
+what we're saying here.
+So, here we're looking at introducing
+the baselines.
+We mentioned that this was a reasonable
+choice of a baseline. [snorts]
+We now just saw how the expected Q
+function is nothing else than the value
+function.
+And so we can then rewrite the
+expression of the policy gradient as
+again the average over N trajectories of
+the grad log pies multiplied by our
+critic estimator of the reward to go
+minus the value function, which in this
+case is the policy is the baseline.
+And if you look at this term a little
+bit more closely, what this term is
+saying is that
+uh if this is essentially quantifying
+how much the action UT
+uh is better than the average action in
+that same state XT.
+And so following this gradient
+essentially increases the probability of
+actions that are that have returns
+better than average.
+And decreases the probability of the
+actions that have return uh worse than
+average.
+So this is one way of kind of
+recentering um the returns.
+This quantity is actually uh kind of so
+important in practice that it has its
+own name and it is referred to as the
+advantage function.
+Because it is as if this quantity is
+encoding the advantage of taking action
+U with respect to uh the average
+uh action that I could take.
+Questions here?
+Yeah.
+&gt;&gt; The critic is like agnostic with the
+actor. Like you could
+like it's like a model of like actions
+that you can take in these states. It's
+like you can swap out the but I don't
+know what
+the Q secret is.
+&gt;&gt; [clears throat]
+&gt;&gt; I know it's similar to something
+like a problem. Is that the right
+definition?
+&gt;&gt; Uh I would say so.
+So, functionally, this is a is a just a
+separate parametric function. So, there
+are two different objects. Of course,
+the way we fit the parameters of the
+critic, phi in this case, depend on the
+policy. Because you can imagine that the
+we will be fitting the
+our critic depending on the experience
+that we have in our environment. And
+this experience is dictated by the
+policy.
+So, I would say this is not independent
+because here we're still fitting the
+uh value function of that policy, which
+for us is the actor.
+Does that make sense?
+Yeah.
+&gt;&gt; Can you give an example on how policy
+might give you an average action and
+what that might look like
+for the function?
+&gt;&gt; Um so, remember that the policy for us
+is just a distribution of actions,
+right?
+So, in this case, in the continuous
+case, could be a Gaussian over a
+continuous action UT or in the discrete
+case
+it might be say we have the four
+kind of cardinal directions again and
+this is our these are our actions.
+The policy might just be a categorical
+distribution over
+over these actions.
+Right?
+So, what I meant by average action in
+all our discussions of value functions
+and so on on the slide was basically
+mean we could since this is a valid
+these are valid
+distributions or actions, we could take
+the expectations under these
+distributions if that makes sense.
+&gt;&gt; Okay, so
+this is like they're kind of like just a
+classic environment.
+&gt;&gt; Uh this is what we call a stochastic
+policy.
+&gt;&gt; Okay, yeah, okay.
+&gt;&gt; Yeah.
+&gt;&gt; Going back to question, but um
+even if it will be a different critic
+based on like the actor, can you like
+use like a pre-trained critic so you
+don't have to like have it start from
+scratch at the beginning of training or
+do you always train them kind of
+together?
+&gt;&gt; Mhm.
+Uh
+So, I think I I have to answer. This one
+answer is the kind of theoretically
+grounded answer. I would say no, you
+cannot do that. Because this is
+uh
+So, here we're estimating the value
+function. And remember the value
+function is an object that refers to a
+specific policy.
+So, here we want to use the value
+function of the policy that we're
+learning.
+Uh at least for these algorithms that
+we're looking at right now. In practice,
+as long as
+the, you know, this quantity here is
+something useful and aligned for
+policy updates for grading up uh
+updates, then you might get some benefit
+in using a pre-trained uh critic. Yeah.
+Yeah.
+&gt;&gt; What's the like specific mechanism that
+you're using to update the the phi
+parameters? What is it similar to like
+Q-learning or is it something
+&gt;&gt; Yeah, great. It's a great question. It's
+coming, I think, in one of two slides.
+Um
+short answer is, if you recall what we
+were doing last week with uh fitted
+Q-learning or using function
+approximators to estimate the value
+functions, this is exactly the same
+thing.
+Yeah, but it's coming in in a couple of
+slides.
+Okay, and so
+uh let's look at uh
+So, we mentioned we introduced
+actor-critic methods as strategies to
+uh try to blend the best of both worlds
+between
+uh policy optimization and value-based
+uh approaches. So, let us even just
+visually uh look at an example of a
+value-based methods in the top left, so
+fitted Q-learning.
+And the kind of
+kind of V0 version of a policy
+optimization algorithm that is
+reinforce.
+And compare it with
+what we're doing here with actor-critic
+methods. So in fitted Q-learning, if you
+remember, we were well, of course,
+running policy in the environment to
+collect
+trajectories. And then we were
+fitting
+a parametric function of our value
+function, Q-phi,
+in order to basically solve our
+regression problem, right? So we're
+specifying some targets, which could be
+either the Monte Carlo targets or the TD
+target.
+And then we were trying to minimize the
+prediction error from our
+parametric approximation and the ground
+truth target.
+In
+And this is exactly what we will find in
+actor-critic methods. So we still run
+the policy in our environment to
+generate trajectories.
+And here, in actor-critic methods, we
+are fitting either a value function or a
+Q function or advantage function. It
+it'll depend. This is a choice. But we
+are ideally doing exactly the same
+thing. Right? So in a way this is
+exactly the same thing we're doing with
+fitted Q-learning here we're doing in
+actor-critic methods.
+At the same time, while in fitted
+Q-learning, we were using the learned Q
+function to implicitly define the
+policy,
+in actor-critic methods, we're doing the
+same thing that we're doing in the
+reinforce. That is, we are leveraging
+our computations here to define policy
+gradient expression and use this to take
+a step in parameter space.
+But so I hope that at least
+intuitively you're starting to see how
+we're here we're trying to
+stitch together different individual
+components of of different families of
+of algorithms.
+Okay.
+Now, a question here is um
+So, first of all, we, you know, we had
+many examples of using value functions
+V, using Q functions, or advantage
+functions.
+What quantity should we estimate and
+what are the trade-offs?
+I would say in general, there are no
+right or wrong answers. I would say
+different algorithms might just have
+different implementations of the same
+underlying idea.
+Um
+But, for example, one thing that you
+might consider is just the complexity of
+the estimate value function estimation
+problem.
+So,
+uh for example, the the value function
+might be easier because it only depends
+on states as the inputs. On the other
+hand, if we were to learn a Q function
+or an advantage function,
+we would have to learn a
+a mapping from states and controls
+rather than just states.
+I would say probably the most um
+popular implementation of um
+an actor-critic algorithm,
+which uses the advantage, also referred
+to as A2C or advantage actor-critic, is
+something that has this specific choice
+of
+what we're fitting.
+&gt;&gt; [snorts]
+&gt;&gt; So, in principle, we want to use the
+advantage, which is the Q function minus
+the value function V.
+Uh of course, what we want to do is we
+want to avoid to have to estimate two
+objects, right? We don't want to fit
+two separate networks, one for the Q
+function and one for the value function.
+And [snorts] so, the
+uh
+kind of the the trick that is typically
+being used is that we can approximate
+the Q function
+as the instantaneous reward plus the
+value function at the next state.
+And so, according to this approximation,
+now you can see how the advantage can
+uh
+&gt;&gt; [snorts]
+&gt;&gt; be rewritten as a function only of the
+value function V, of the state value
+function.
+And so, this basically through this kind
+of uh reparameterization here, this
+enables us to basically fit the
+advantage or use the advantage in our
+policy updates
+while only having to fit the value
+function,
+if that makes sense.
+And so, indeed kind of the advantage
+actor-critic algorithm or A2C
+uh is indeed something that
+runs the policy in the environment, uses
+those interactions to fit a value
+function,
+uh
+use that uses that value function to
+compute the advantage according to this
+uh approximation,
+and then uses the advantage to
+um
+uh in the policy gradient uh ex- um
+expression.
+&gt;&gt; [snorts]
+&gt;&gt; Okay, so now to answer also to your uh
+colleague's question,
+so here we're talking about estimating
+different quantities and different value
+functions.
+Um
+how do we do this, right? And the main
+idea is that we simply
+uh
+leverage exactly what we're doing in
+value-based uh methods with function
+approximation.
+Um specifically, you could do this
+through uh Monte Carlo learning.
+That is, we collect a data set of state
+and return pairs.
+And basically build uh do supervised
+learning on these uh tuples on these
+pairs.
+Or we could use equivalently uh TD
+learning by similarly collecting a data
+set of state and TD target pairs and fit
+um and basically solve solve a
+regression problem that fits a value
+function that approximates and minimizes
+the error with respect to this target.
+Does this uh clarify?
+Yeah.
+&gt;&gt; [snorts]
+&gt;&gt; Okay. So,
+now just as a
+brief detour,
+I wanted to
+briefly go through the AlphaGo paper.
+Um
+First of all, to show you that you know,
+this is now maybe a few This is like 10
+2014 or something along those
+those times, but uh uh
+you know, for it it is one of the
+biggest successes of reinforcement
+learning, arguably. And I definitely
+invite you to check out the paper
+because I would say that through
+everything that we discussed today, we
+actually can understand, I would say,
+the entire the entire paper, most
+likely.
+Um So, starting from uh and I just want
+to highlight a couple of I think
+interesting points. So, remember kind of
+AlphaGo is uh basically this um
+uh project where they wanted to learn
+through reinforcement learning how to uh
+play Go, which is uh
+extremely high-dimensional board game,
+if you wish.
+Um
+The idea here was to leverage uh first
+of all, define
+um
+you already start seeing a policy
+network and value network. So, here they
+use an actor critic method for
+for this problem, whereby the policy is
+basically something that maps states,
+that is board configurations, to
+actions,
+which is distribution over
+a finite amount of next moves in the
+board.
+And the value the value network is
+basically a parametric representation of
+the state value function, which
+similarly maps from
+current configuration of the board or
+the state to
+scalar number that represents the value
+of that board configuration.
+Now, if we
+skim to how the actual algorithm is
+implemented,
+so you will see how
+So, of course, we train the policy
+network by policy gradient reinforcement
+learning.
+The
+It was uh
+learned through self-play. So, you could
+imagine having the policy kind of
+pitched against itself or previous
+versions of itself in a simulated
+environment.
+And so, the games were replayed to
+determine the policy gradient update,
+which is defined
+exactly as we were doing today. Again,
+the notation slightly changes, but here
+we are basically discussing our
+This is the update that you do in
+parameter space as the empirical mean
+1/M times step size alpha
+of the Here we have the grad log pies,
+so the probability distribution of
+reaction given states, times the
+Z here represents the return, so the
+return that they observed in the
+environment, minus
+the value function of the state V.
+And here they say that indeed so they
+use the reinforce algorithm with a
+baseline
+V of S T which is basically the value
+function as a baseline. And they use
+this for for a variance reduction.
+Um
+again I definitely invite you to check
+this kind of the details of this this
+paper because I would say that vast
+majority of the concepts here we we did
+indeed cover today. Yeah.
+&gt;&gt; Was there a reward signal to this?
+&gt;&gt; Win lose at the end of the episode?
+&gt;&gt; Yes.
+&gt;&gt; Okay.
+&gt;&gt; Yeah.
+Uh of course here we kind of glossed
+over
+kind of one of the main contributions
+which is the search element of
+of this
+of this approach meaning in order to
+sample from the policy they weren't just
+sampling from a categorical distribution
+over action but they were using that
+distribution to guide an explicit search
+process. Uh specifically Monte Carlo
+tree search. Um
+but I would say high level intuitions
+from the respective of the reinforcement
+learning side of things are exactly the
+the topics we we covered today.
+Yeah.
+&gt;&gt; Was what they called the policy they
+found theoretically to be
+better or was it like a human could not
+use?
+&gt;&gt; No it is of course the moment you go for
+kind of deep reinforcement learning
+algorithms
+there's no theory that kind of can back
+any any of this
+in terms of proofs or guarantees of
+convergence.
+Uh
+they were able to beat the world
+champion of Go and so
+they claim this as a good enough
+result for for this policy. Yeah.
+&gt;&gt; Why
+do you think the human could
+&gt;&gt; [snorts]
+&gt;&gt; Yeah.
+Yeah. Anytime. Um kind of the full
+picture here is that at the time um,
+they worm started learning through
+behavior cloning.
+Uh, and then they but they basically
+collected data sets of expert
+demonstrations and then they fine-tuned
+this through reinforcement learning.
+Uh,
+jump-starting this work, uh, they
+actually showed that the behavior
+cloning part was detrimental to final
+performance.
+Uh, and they just learned everything
+through self-play. Yeah.
+&gt;&gt; For the final week just as far as
+possible.
+&gt;&gt; Um,
+they mentioned that every
+[clears throat] 500 steps, like every
+500 iterations, it re-updated itself one
+that it was training itself off of with
+the parameters that it got for the best.
+Is there Do you know if there's a way
+that they avoided it like converging on
+some policy that it just like went over
+those parameters that the other one was
+playing with, if that makes sense?
+&gt;&gt; Um, I don't know.
+&gt;&gt; like a normal self-play policy?
+&gt;&gt; They were doing
+&gt;&gt; Okay.
+&gt;&gt; Um,
+I mean, the [snorts] intuition there is
+that you want
+uh,
+increasing level of proficiency also for
+your
+uh, kind of adversary, if that makes
+sense.
+Uh,
+I don't think I'll have to double-check,
+but I think that uh, just by the fact
+that you are updating your adversary and
+you have kind of this learning loop that
+goes around this update, you'll always
+be incentivized to find strategies that
+are better with respect to your previous
+version. And so you're kind of improve
+hill climbing in that sense. Uh, but
+maybe they did something slightly more
+sophisticated. Yeah.
+All right, so finish this uh, lecture on
+Wednesday. Uh, we'll be also start
+discussing uh, model-based reinforcement
+learning methods.
+Thank you.

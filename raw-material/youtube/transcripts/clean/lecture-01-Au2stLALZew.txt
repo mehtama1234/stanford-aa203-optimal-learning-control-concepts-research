@@ -1,0 +1,1954 @@
+All right, so let's get started. My name
+is Marco Pavone, I'll be the instructor
+for AA203, optimal and learning-based
+control. I'm a professor in the
+Department of Aeronautics and
+Astronautics. I also have appointments
+in
+computer science and electrical
+engineering.
+I run the autonomous systems lab and my
+work is broadly in the field of robot
+autonomy, learning-based control for
+robotic systems, system architecting,
+reasoning models for robotics. So,
+essentially decision-making autonomy for
+robotic systems. I also have a bit of a
+dual role. I am a faculty here at
+Stanford. I also lead autonomous system
+research at Nvidia.
+So, in this class, we're going to have a
+four graded problem sets, more or less
+evenly distributed throughout the
+quarter, which will entail a mixture of
+theoretical
+questions and coding questions.
+Put them out in Python.
+And then we have a final exam that is
+scheduled for June 8th from 3:30 to
+6:30. The homework will make up the
+majority of your grade, 80% with each
+homework accounting for 20%. The final
+exam will account for 20% of your grade.
+And then we're going to give a bonus
+points up to 5% depending on your
+participation on Ed. For example, if you
+answer a question of your colleagues in
+a meaningful way.
+It's important that you keep up with the
+homework, but stuff happens.
+So, we are providing a six free late
+days
+that can be used throughout the quarter,
+and a maximum of two late days will be
+allowed on a given assignment.
+So, try to be a bit strategic in how you
+use your late days.
+All the material
+that is needed in order to understand
+this class uh
+will be provided on the website. In
+particular, what you really need are the
+lecture slides and then attending the
+lectures and then doing the homework.
+But, we also provide a set of uh course
+notes that are available at the website
+listed here. In the syllabus, we also
+provide a list of books and references
+that might be helpful. They're not
+necessary to study for this class, but
+if you want to get deeper in some
+topics, at least you have some handy
+references.
+During the first 4 weeks, we're going to
+have recitations on Fridays from 1:30 to
+2:30.
+So, those uh
+can be attended in person. I would
+encourage you to attend those in person,
+but they will be recorded as well in
+case that you cannot make uh the time.
+&gt;&gt; [snorts]
+&gt;&gt; So, the goal of um
+um
+these recitations is to give you some
+um
+uh foundational knowledge on some of the
+tools that we will be using throughout
+this class. Such as, for example, Jax or
+regression models. If you're already
+familiar with those topics, then no need
+to attend the recitations, but in
+general, it should be uh a good overview
+of important tools.
+So, what do you need to know in order to
+succeed in this class? Well, you have to
+be quite uh comfortable with uh
+calculus. We'll see quite a bit of uh
+multivariable uh calculus. So, the
+vector calculus, ordinary differential
+equations.
+You won't need particularly
+sophisticated knowledge in terms of
+solving for differential equations, but
+at least a good understanding of what a
+differential equation uh is.
+You need a strong familiarity with
+linear algebra. I'm providing here some
+course numbers to give you a reference
+in terms of the material uh we expect
+you to be
+knowledgeable
+with.
+And then it would be great if you have a
+some familiarity with the optimization.
+It's not necessary in the sense that the
+class is going to be self-contained. It
+would just make the class a bit easier
+for you.
+Same [snorts] goes for machine learning
+and course and control. You don't need
+to have taken these classes necessarily,
+but it will basically ease the
+understanding of this course and will
+allow you to get a bit deeper.
+In order for you to gauge to what extent
+you're ready for this class, we provide
+a homework zero. So, homework zero is
+not graded.
+So, it's there just for you to gauge
+whether your knowledge level is
+appropriate for taking this class or
+not.
+We'll be providing solutions, of course.
+The homework zero is already on the
+website. So, at your convenience in the
+next few days, just look at those
+problems, try to see whether you can
+solve those problems. Don't use ChatGPT.
+Most likely they're solvable by ChatGPT.
+Use it as a standalone test for
+yourselves.
+If you're a bit rusty, that's okay. At
+least you understand in which area
+you're rusty and then you know what to
+strengthen your knowledge.
+If you find those exercises extremely
+difficult, then probably it's good for
+you to take some of the other courses
+here and then consider this class maybe
+next year.
+So, as you will see when I talk about
+the syllabus to be more in detail,
+this class aims more at the breadth over
+depth. So, in a single class I want to
+give you
+a good overview of all the main
+techniques in optimal control and
+learning-based control.
+Of course, optimal control is a field
+that is a 50 years
+um old. So, there is a very broad
+literature, widely used. And as it
+pertains to learning-based control, as
+you probably know, this is one of the
+hottest topics in the field of AI. So,
+how to control robots with the learning
+based techniques. So, a lot of
+techniques, I will try to give you a
+good taxonomy of these techniques and
+then
+good understanding of the main
+techniques out there. But, we'll be
+covering a lot of stuff and necessarily
+we'll be trading off a little bit depth
+with
+breadth.
+Uh which means that if you want to get
+deeper in some of the techniques, some
+self-study is necessary.
+Now, the class is in general considered
+uh quite challenging. It's not extreme,
+but definitely because of the variety of
+topics we are going to going to look at,
+you're going to be challenged in
+different dimensions in terms of your
+knowledge of calculus, your knowledge of
+uh statistical analysis, and so on and
+so forth. So, be prepared.
+All right. So, any questions so far
+about the mechanics of the course?
+Pretty straightforward.
+Yeah.
+&gt;&gt; What is the
+uh schedule for
+&gt;&gt; They're going to be released on
+uh Fridays.
+&gt;&gt; Yes, Fridays.
+&gt;&gt; Yeah, they're due on Fridays.
+&gt;&gt; Oh, yeah, it's impossible to get them
+all done in
+Yeah, for all of us.
+&gt;&gt; You can do it in three weeks.
+&gt;&gt; Um
+&gt;&gt; But, yeah, they are going to spread out
+uniformly throughout the quarter.
+All right. So,
+now that we have a good understanding of
+the mechanics, so that's the boring part
+of the class, let's talk about the
+motivation for this course
+and the syllabus.
+So, this is a class about control. So, I
+assume that all of you are knowledgeable
+about the concept of a control, but
+essentially you have a system, a
+physical system, but could also be a
+financial system,
+and you want to act on the system to
+make sure that this system has some
+desired response. For example,
+uh
+you may want to control the stability of
+financial market, or you want to control
+the trajectory of a drone.
+At an abstract level,
+you have a system, as again, it could be
+physical, it could be a digital sphere.
+And you have a sensor that allows you to
+get some information about the state of
+the system. So, if this is a car, for
+example, the sensor might be a camera
+sensor that gets an observation about
+the surrounding environment, plus maybe
+some additional sensor that allow you to
+uh measure, for example, your speed.
+And then, based on the measurement that
+you get about the state of your system,
+and based on some high-level goal,
+referred to as a reference, but for
+example, you want to your vehicle to
+change lane, or going straight at a
+given desired speed, you use these two
+information pieces of information
+to uh synthesize a control action
+through a function referred to as a
+controller,
+that is then exerted on the system, and
+then the system produces an output. For
+example, the control could be the
+steering angle and the throttle of a
+car, and then you have a response, so
+the acceleration of the car. And then,
+the key idea here is that you keep
+iterating on this process, so you
+compute an action, you observe the
+response of the system, you measure that
+response, and then you recalculate your
+control action.
+As a human, obviously, you do close loop
+control uh since the time you were born.
+Your eyes are your sensors, you perceive
+the environment, you use that
+information to decide how to move your
+joints. Your high-level reference will
+be, for example, I want to go to that
+door.
+And then I try to
+uh plan my actions and execute those
+actions accordingly.
+So, that's the standard setup of uh a
+control problem. So, if you're taking a
+class in
+uh frequency domain uh control, so
+essentially PID controls,
+that's the plot the diagram you should
+be familiar with.
+Another example is, for example, is if
+you want to
+control um
+uh your room temperature. In that case,
+your home is the system, the room
+temperature will be the output, that's
+what you measure through a thermometer.
+Your thermostat setting will be the
+reference, then you use that information
+to
+um decide on the gas flow rate, the
+goal, and that signal goes into the
+furnace that then causes a response from
+the home.
+The beauty of control is that actually
+you can be quite judicious in terms of
+how you model uh the system, and this
+model actually could be learned from
+data. For example,
+if this was a class in um computational
+fluid dynamics,
+and then you pose the problem of how do
+you
+control or set the temperature of your
+shower,
+they would say, "Well, let's build a
+thermodynamic model about how the water
+affects the heat that propagates on your
+body." In control, we try to be a little
+more pragmatic. So, that model could be
+something much more simplified. Or we
+could bypass a model
+uh itself. Uh for example, when you
+control the shower, basically, what is
+your rule?
+If you move the
+knob right, it's warmer. If you move the
+uh
+knob left, that's colder. And that's
+your model. So, there is a lot of,
+uh uh, judicious reasoning that goes
+into modeling, and we'll see some of
+that, too.
+Now, of course, life is hard. So, you
+are setting up your control system, but
+then, uh, you have to face a number of
+challenges. For example, there might be
+disturbances that affect the evolution
+of your system. Like, for example, an
+aircraft that is flying, and then there
+is a wind gust that is perturbing your,
+uh,
+trajectory from the desired or nominal
+trajectory.
+Or your sensor may not be perfect, so
+you might have a, uh, measurement noise.
+So, these are all challenges that are
+well tackled by classical controls or
+frequency-based control systems, PD
+controllers.
+And in general, what are the control
+desiderata that you would state in a
+basic control course? Like, for example,
+engineering 105, uh, here at Stanford.
+Well, you want to see your system to be
+stable. There are a few different
+definition of stability, like internal
+stability, external stability. But, in
+general,
+by stability we,
+uh, we say, we mean that the system
+doesn't go out of whack. So, basically,
+the system output is under control. It
+stays bounded. It doesn't do something
+crazy.
+Uh, we have an objective, in general, of
+tracking something. We have a reference
+signal, for example, the setting for
+your thermostat. We want to make sure
+that, uh,
+the, uh, home temperature,
+uh, tracks as as close as possible, uh,
+as possible that
+We want to reject disturbances, so we
+are, you know, piloting our, I mean, we
+have an autopilot that is controlling
+the aircraft. Uh, there is a wind gust.
+We want to make sure that this wind gust
+doesn't perturb
+the trajectory of the aircraft too much.
+And we want the controller to be robust.
+Robust means that the controller should
+be able to perform well even if
+your model is, uh, inaccurate. Of
+course, your model is always inaccurate.
+It's never like a, perfect perfect
+replica of the physical system. Or
+simply, maybe your model is very
+accurate,
+but your system is changing through
+time.
+Because, for example, the temperature
+changes and then the response of your
+actuator might change, too. So, you want
+to make sure that the controller is
+controller is robust to those changes.
+So, you take a class in
+classical control, such as engineering
+105,
+and
+actually, you have tools to address all
+of these desiderata. So, what is
+missing?
+Well, there are two things that are
+missing here.
+First,
+we haven't discussed at all how much we
+care about the performance. There are
+many different ways to achieve uh
+uh the objective of stability, but is
+there a best way to do so? Like, for
+example, the way that is most economical
+in terms of how much control effort
+we spend.
+Second of all,
+in this plot here,
+I'm saying that the someone is giving
+you a reference, but where is this
+reference coming from?
+I mean, maybe if you want to control the
+temperature of a room, it is obvious,
+but if you want to control the path of
+an aircraft, where is that path coming
+from?
+This is the so-called element of
+planning, where you want to come up in
+the first place with that reference
+signal.
+And third, learning. So,
+everything we've discussed so far
+essentially assumed that uh
+um a model of the system is known, but
+what if that is not the case? Or maybe
+it's the case, but as I said,
+the system might change during
+operation. So, how do we adapt with
+respect to those changes?
+So, these considerations lead to the
+core of this class. How we go beyond
+classical control in such a way that we
+can broadly address these the key
+considerations. What is the best way to
+control the system? How do we do so if
+we don't have [snorts] a a perfect model
+uh or acquiring that model is
+excessively complicated and so we want
+to learn it from data. And then how we
+make sure that all of the components of
+our closed loop, also the reference
+signal, is accounted for in our control
+analysis.
+So, that's really the objective of uh
+optimal and learning-based control.
+Optimality speaks to the performance
+objective. Learning speaks to the desire
+of learning a model from data, adapting
+the controller based on the data that
+you acquire.
+As I said, optimal learning-based
+control based control has a long
+history.
+It dates back about 50 years.
+It uh it started actually during the
+Cold War.
+Uh
+the motivation was to
+optimize the trajectory of a ballistic
+missiles both ways and accordingly there
+was a a pioneer in the United States and
+a pioneer in the Soviet Union. The
+pioneer in the United States, his name
+is Richard Bellman.
+If you have taken a class in
+decision-making and so on, you might
+have heard
+of the Bellman equation. So, it's that
+Bellman.
+And in the Soviet Union,
+uh the pioneer was uh Pontryagin, which
+was a blind Soviet mathematician.
+And they developed their theories in a
+fairly independent way. Of course, there
+was not a lot of knowledge sharing at
+that time, but interestingly,
+there are a lot of commonalities. I
+mean, the theories and the methods are a
+bit different, but there are a lot of
+commonalities between uh
+the two.
+So,
+this is how our class is going to be
+structured.
+So, first of all,
+there is a difference between the notion
+of open-loop optimal control and a
+closed-loop optimal control. We'll
+discuss this a bit more formally later,
+but basically in open-loop optimal
+control, we compute a a sequence of uh
+control actions, and we assume that
+we're going to blindly follow those
+execute those control actions without
+acquiring further information from
+the
+uh from the world. Essentially, I want
+to go to that door, I plan my
+trajectory, I close my eyes, and then I
+hope for the best. So, that's open-loop
+control.
+Of course,
+yeah, it has its challenges. So, for
+example, if he uh stands up, and I have
+my eyes closed, I might crash into him.
+So, that motivates closed-loop control,
+that yeah, sure, you plan your action,
+but with understanding that you're going
+to constantly close the loop, so
+measuring and re-optimize your actions.
+So, we're going to first look at methods
+uh
+where we assume
+an open-loop control framework. So, why
+It seems that open-loop is less powerful
+than closed-loop, and that's true.
+The advantage of open-loop is that it's
+though extremely efficient
+computationally.
+So, it does have an advantage.
+So, it's useful to start looking at
+these methods, and for some applications
+actually uh open-loop, as we will
+discuss, is um
+a useful control methodology.
+Within the open-loop class of methods,
+we have a two different class of
+methods, indirect methods and direct
+methods. I'll explain the differences
+later on. But essentially, the first 2
+weeks, 3 weeks of the quarter, we will
+focus on open-loop control
+methodologies. Roughly speaking,
+very efficient computationally,
+but potentially uh not robust to changes
+in environment, like for example, your
+colleague standing up standing up.
+Closed-loop,
+much more powerful, account for
+disturbances natively,
+but computationally more complicated
+because of course you have to account
+for different contingencies that might
+occur during the execution of your
+control loop.
+Within the closed-loop branch, there are
+two sub-branches, dynamic programming
+DP. Those of you that have taken classes
+in decision-making may already be
+familiar with dynamic programming. And
+the Hamilton-Jacobi-Bellman and
+Hamilton-Jacobi-Isaacs
+equations that are basically
+continuous-time formulation of dynamic
+programming, useful because they provide
+uh so-called
+uh reachability control paradigms that
+are useful to build a safety guard rails
+around controllers. We'll see all of
+this stuff later. Here, I just want to
+give you a high-level overview of what
+we're going to do. So, about 3 weeks
+here,
+couple of weeks here.
+So, we said open-loop, computationally
+very efficient, but potentially
+uh brittle as a control optimal control
+strategy. Closed-loop, powerful, but
+also computationally expensive. Is there
+a best of both worlds? Yes, that is
+called MPC, model predictive control.
+We'll So, we will see we'll use MPC,
+which after PID control, I would claim
+is the most uh
+widespread control methodology. We will
+frame it as a bridge between a
+closed-loop control and open-loop
+control.
+Roughly what you do, you solve a problem
+in open-loop,
+and then uh you execute the first chunk
+of your control sequence, and then you
+close the loop, and you recompute your
+open-loop control sequence. So, at any
+point in time, you solve an open-loop
+control problem. But, the way that the
+MPC gets executed is by iteratively
+taking measurements. I mean, this will
+become a clearer later. And of course,
+there are variations
+uh on the theme, but this is at a high
+level what's happening with MPC. So,
+we'll spend about uh two, three lectures
+here.
+So, everything here on the bottom side
+assumes that we know a model of the
+system, at least an approximate model.
+In the second part of the class, we will
+forego that assumption.
+And we won't assume anymore that we have
+direct knowledge of the model of the
+system. So, we have to use data
+in order to infer that model.
+So, we'll be using
+well-known ideas from the field of a
+control where, for example, the model
+has to be identified from data.
+And use that ideas to set up the
+data-driven version of optimal control
+or adaptive version of the optimal
+control.
+So, basically, optimal control when the
+model is not known exactly.
+And we will look at the three
+broad methods to solve the problem. So,
+the first one is uh
+uh imitation learning. So, roughly
+speaking,
+we just get some demonstration of what
+an optimal policy looks like, and we try
+to mimic it.
+That's a possible way to compute an
+optimal policy.
+And then we're going to look at
+reinforcement learning. So, instead of
+just mimicking like an expert like a
+teacher [snorts] such as myself,
+you try to learn by trial and error.
+And there are couple of ways to do so,
+model-based and model-free.
+In general, nothing is in uh
+uh dichotomy with each other. So, there
+are many different ways to blend all
+these techniques. In fact, it's quite
+common, for example, to learn a driving
+policy in autonomous driving through
+imitation learning to bootstrap a good
+policy, and then improve on that uh
+policy through reinforcement learning.
+That is also true, for example, for
+reasoning models for autonomy. You start
+first with a supervised fine-tuning
+training pipeline, and then you try to
+further improve your model with
+different instantiation of reinforcement
+learning. So,
+uh
+I will highlight different ways of
+hybridizing these concepts, but please
+keep in mind that you shouldn't view
+each concept in competition with each
+other. There are a lot of ways to blend
+all these techniques together. So,
+first half of the course, we assume that
+we know the model. We're going to look
+at the two broad techniques. One are
+open-loop optimal control, closed-loop
+control, and then we'll look at MPC as a
+bridge between the two. Then in the
+second half of the class, we'll move
+into data-driven optimal control, and
+we'll be looking at the three main
+methodologies, imitation learning, and
+then reinforcement learning through its
+model-based and model-free
+uh implementation.
+Any questions here?
+The beauty of this class
+is that you have a a very holistic
+overview
+of all the methods. And that's important
+because in practice, these methods get
+uh hybridized.
+So, it's important that uh you
+understand model-free reinforcement
+learning, but you do also understand the
+what more what more more classical
+direct methods for optimal control
+entails.
+In modern robotic systems, we use all of
+those.
+Despite the hype that
+visual instruction models are solving
+everything.
+Right? Great.
+So, what are what is the course's goal?
+Is to learn the theoretical
+implementation aspects of main
+techniques in optimal learning-based
+control. So, that's why this course,
+you're going to have both a theoretical
+exercises, but also practical exercises,
+mostly through uh Python.
+And second, I want to do so by providing
+a unified framework. So, not just uh
+uh
+classical optimal control, or not just
+decision the decision-making version of
+optimal control, which will be dynamic
+programming, not just reinforcement
+learning, but actually overarching theme
+that connects all these methodologies.
+So that you as a designer know uh
+when to use the best tool.
+Never get in love too much with a given
+tool. It's very common for a
+technologist to really get in love with
+uh
+you know, some version of imitation
+learning and then use the tool for every
+possible problem in the world. That's
+not how robotics or optimal control
+works.
+Any questions?
+Are you excited?
+Yeah?
+Yeah.
+Yeah. And uh uh
+Let Give me 10 minutes and we'll talk a
+little more about the performance index.
+Performance index, yes. It's up to you.
+It's up to the designer to decide. But
+definitely can take into account the
+desire that your system doesn't go out
+of whack, for sure. But in addition,
+might also take into account uh
+uh
+control effort. So you want to do so by
+minimizing your control effort as much
+as possible. You might take into account
+uh time.
+You want to do something as quick as
+possible. But by the way, that is
+typically at odds with uh minimizing
+control effort. Typically, if you want
+to do something very fast, you have to
+spend more fuel. So then is there is a
+question of uh how you do do you trade
+off uh
+potentially conflicting objectives. So
+we we'll see in a second how for the
+sake of this class, but in general, the
+field of optimal control uh the
+performance index is derived.
+And is a fairly
+uh
+general formulation that allows you to
+encode many of these considerations.
+Which is a good segue into
+how do we define an optimal control
+uh problem? So, I talked at length about
+it. What is it?
+Interestingly enough, so all the
+methodologies that uh I've shown you
+before in that crowded slide, by the
+way, that will be the agenda that will
+stay with us
+for the rest of the quarter.
+So, all those methodologies solve
+exactly the same problem.
+And the same problem that uh I'm going
+to show to you in a second,
+uh
+its formulation entails three main
+ingredients.
+So, mathematical description of the
+system to be controlled,
+that either we know it or maybe we don't
+know it, but we assume that there is
+some
+uh
+underlying uh system with a mathematical
+model that uh is being controlled.
+The second ingredient is constraints,
+that is that are typically not
+explicitly discussed in
+classical feedback control, but in
+optimal control we want to account for
+them.
+Which is crucial, for example, in
+autonomous car, you don't want to crash
+uh
+you know, on another car. So, that's a
+constraint.
+And then,
+as your colleague was alluding to, the
+specification of a performance
+criterion.
+So, what do we mean by mathematical
+model? Nothing particularly fancy or
+new here. For us, the mathematical model
+of a system
+is a set of ordinary differential
+equations.
+So, here X1, X2, Xn represent the state
+of the system.
+So, basically, the set of variables that
+together with the notion of the
+control allow us to predict what the
+system will do in the future.
+The use U1 to UN, which are the control
+inputs. In general, you may have a
+multiple control inputs, throttle
+command and steering command in the case
+of a car.
+And then uh
+functions F1, F2, all the way to FN that
+tells us how the state will evolve in
+the future as a function the current
+value of the state variables and current
+value of the control
+uh variables. So, for us
+the
+notion that allow us to map the present
+in the future is the notion of an
+ordinary differential equation.
+Now, if you see an ODE, it may seem a
+bit cryptic. Why I'm saying that an
+ordinary differential equation is the
+mechanism we use in order to reason
+about how a future how a system will
+evolve in the future.
+Well, my pragmatic view of a
+differential equation is as follows.
+So, you have x.t
+equal A of xt
+ut
+and t.
+Well, by the way, in this in this in
+this class, a dot means uh derivative
+with respect to time.
+Two dots means uh double derivative with
+respect to time.
+So, when I'm saying oh, instead of
+calling A, let me call it F. So, this is
+a simplified case where we have one
+state variable, one control variable
+and then one function F that tells us
+how the state will evolve in the future.
+So, why I'm saying that an ordinary
+differential equation for the
+perspective of optimal control is the
+mechanisms that allow us to claim that
+we understand how the system will evolve
+in the future.
+Well, remember that x.
+is equal to by definition
+derivative with respect to time of xt.
+And a derivative can be approximated as
+xt + delta t
+- x of t
+divided by delta t
+where delta t is a small time increment,
+say 0.5 0.1 seconds.
+So, if you put this back in here,
+what you get
+Oops.
+Let me put it here. So,
+you put this one back in here.
+So, what you get is that the x
+t plus delta t minus x t
+over delta t
+is equal to a of x I don't know f
+f of x t
+u t t
+which implies
+that x of t plus delta t
+equal
+x t
+plus delta t
+of f of x t
+u t
+and t.
+So, you see that if you know the value
+of the state x and the value of the
+control u
+and you know the function f
+then you also know what the value of the
+state will be delta t
+time steps in the future.
+So, that's why when a mathematician sees
+an ODE, he sees a beautiful mathematical
+object. When I see an ODE,
+I see a mechanism to predict the future.
+&gt;&gt; [clears throat]
+&gt;&gt; Does that make sense?
+So, that makes it basically
+all of this mathematical stuff a little
+bit less cryptic.
+And in this class in general, we're
+assuming that the f can be
+anything. So, we're not assuming
+linearity. So, we're already moving
+quite a bit away
+from the more standard control setup
+where we make a linear assumption into
+your system.
+Just for notational purposes, we
+typically
+define a a bold vector X. So, this bold
+as the set of state variables X1T
+XNT
+and the set of U variables UT
+which is also bold.
+U1T UM
+T. And if you do so,
+we can write the set of ordinary
+differential equation in more compact
+form
+as in here, where now F is the
+concatenation of all the functions F1,
+F2, all the way to FM.
+One thing I'd like to note here is that
+sometime
+this mechanism to predict the future, so
+what the next state will be,
+might not only be in a function of time
+or of state and control, but also
+an explicit function of time.
+Which means that in some systems, given
+the same state and control, depending on
+when you hit the specific value of the
+state and for the same value of control,
+you might get a a different response
+depending on time.
+For example, maybe it could be
+day or night, your system might respond
+to quite differently whether you are
+during the day or during the night
+even for the same state and control.
+A history of control input values is
+called a control history. So, this is
+just terminology, but we'll be using
+this terminology quite a bit.
+A history of state values during the
+interval T0 to TF is called a
+trajectory.
+T0 is typically referred to as the
+initial time of operations, that's the
+symbol we'll be using. TF, F stands for
+final,
+uh is the final time of operations.
+Let me give you a very simple example
+that you should already be familiar
+with, a double integrator. So, we have a
+a cart moving on the horizontal plane.
+We only have one state variable,
+which is the displacement of the center
+of the cart from the origin. So, we
+assume that the origin is here. So, S is
+telling us how much we travel on the
+left or to the right of the origin.
+So, we assume that we are just
+controlling the acceleration of this
+cart.
+So, the equations of motion is that the
+acceleration of the system, so the
+double derivative, is equal to the input
+we apply, so essentially the force we
+apply to it.
+Or
+basically, we're assuming that here the
+mass of this cart is equal to one.
+So, this is our dynamical model. The
+only point that I want to make here is
+that sometimes dynamical models come in
+the form of a second second order
+differential equations. I mean, all
+dynamical systems should be second-order
+systems since you, you know, uh
+evolve at the basic level at the level
+of accelerations.
+So, now you might say, well, this is a
+second-order system, but you're saying
+that in this class
+we focus on models where we have a
+system of first-order differential
+equations.
+Can we reconcile the two?
+And the answer is yes, as you may
+already know, you can always map a
+higher higher order differential
+equation into a system of first-order
+differential equations. And this is a
+one-to-one mapping.
+So, for example, here, how does that
+work?
+It works by adding
+one state variable,
+which in this case would be denoted by
+B, and then codes the notion of speed.
+So, we reason in terms of
+two state variables. So, we augment the
+state vector with a new state variable
+V.
+And then
+S dot
+is equal to V. I mean, this is by
+definition, the time derivative of the
+displacement
+is equal to velocity.
+And then the time derivative of the
+velocity is equal to the acceleration.
+That is what
+uh
+what uh our input represents.
+So, you see how we went from a
+second-order
+differential equation describing our
+system into a set of two first-order
+differential equations. And we are back
+to our basic setup.
+So, bottom line is that if you have a
+system that is described by
+a higher-order [snorts]
+differential equations, before you apply
+the techniques explained in this class,
+first you translate it into a set of a
+first-order differential equations, and
+uh and then we're back to the standard
+formalism. And that that can be always
+be done
+by using the trick of adding states.
+This case specifically is an interesting
+one, because this is uh
+a linear system.
+So, if you're familiar with linear
+systems, typically you present them in
+matrix format,
+where you have a state matrix and an
+input matrix.
+Not important now, but just to uh link
+this back to what you may already know
+from uh classical control theory. So,
+you can write the system
+in terms of a matrix A times the state
+vector plus a matrix B times the input
+vector.
+In this case, the input vector is just
+one control variable, so it's just uh A.
+A is referred to as the state matrix, B
+is referred to as the input matrix.
+Okay. That's what I wanted to say about
+models.
+Constraints.
+Clearly
+in general when you control a system, we
+have to reason about
+constraints. For a physical system, we
+don't want to hit a wall.
+Of course, the amount of control we have
+available is bounded. We cannot have a
+thrust level that is above a certain
+quantity. Sometimes it can be below a
+certain quantity.
+So, there are accordingly different ways
+of setting constraints. Typically, we
+have a constraint on our initial
+condition. So, we know where we start
+from.
+Sometimes we might have a constraint on
+our desired final condition. We want to
+hit a very precise point. Like, for
+example, you want to
+send a spacecraft to Mars
+and you want to land on a Gale crater. I
+mean, just to make it up. I before
+joining Stanford, I was an employee of
+JPL. So, that's the problem that I was
+looking at. So, you know, landing on a
+specific point on Mars is your um
+terminal constraint.
+Sometimes you have it, sometimes you
+don't have it.
+Typically, you want your state to avoid
+some bad regions of the state space,
+which could be formulated as a lower
+bound and upper bound for the state
+variables. But, there are also more
+creative uh
+ways of setting up state constraints.
+For example, you want to stay outside of
+a circle. A circle could be a person,
+and you want your robot to stay outside
+of uh
+the physical envelope of that person.
+You want your control input to satisfy
+lower bound and input and lower bound
+and upper bound constraints and so on.
+So, that's pretty
+um
+intuitive. There is a lot of freedom in
+optimal control in terms of how you
+state
+your constraints. With some caveats, of
+course. If you have a very convoluted
+expressions of your constraints, then
+the mathematical procedures we're going
+to see later on might get to be more
+complicated.
+A control history that satisfies the
+control constraints are referred to as
+an admissible control if they satisfy
+the constraints at all time.
+And a state trajectory that satisfies
+the constraints at all times is referred
+to as an admissible trajectory.
+Three, performance measure.
+Optimal control stands for the fact that
+we're trying to find a control sequence
+or control policy that
+uh is the best possible one you can come
+up with.
+But best with respect to what? I mean,
+that's the role of the performance
+measure.
+There are different ways you can set up
+a performance measure. In this class, we
+look only
+at this performance measure here.
+Which might sound a bit cryptic. So, my
+point now I'm going to spend 3 minutes
+to show you that this is not cryptic at
+all. It's actually very intuitive.
+It's not the most general way of
+defining a performance measure,
+but
+it provides a good trade-off between
+what
+at the end of the day
+uh is computationally feasible
+in terms of synthesizing a control law
+and also being general.
+That's always a little bit a tension in
+optimal control.
+You want to be as sophisticated as you
+can in how you express the problem, but
+to the point that you can solve the
+problem. If you make it too complicated,
+then
+if you can't solve it in a reasonable
+amount of time, then it's useless.
+Okay. So, what does this performance
+measure really mean?
+So, this performance measure has two
+main
+components. [snorts]
+This component here with the H function
+and this component here with the
+integral.
+So, first let's start with the H
+of XTF.
+H of X TF
+TF.
+So, this is referred to as the
+terminal cost.
+TF is the final time. As a reminder, we
+assume that we solve the problem between
+time T0
+to the final time TF, say 10 seconds
+from now.
+And so, this measures how unhappy we are
+if, after applying the control sequence
+we have decided, we end up in state X TF
+at time TF.
+For example, say that we want to do
+tracking.
+Ideally, we want to arrive at a very
+specific location at the final time.
+In which case,
+the function H X TF TF could take the
+form of X
+evaluated at the final time, so X TF,
+minus XF, which is your desired position
+at the final time, squared.
+So that if your state, under your
+control,
+hits the state X TF that is equal XF,
+that is what you want, then this is
+zero.
+But the moment there is a deviation,
+this cost starts growing.
+So, this is an example of how you might
+use the terminal cost to promote a
+control
+strategy that brings you as close as
+possible at your desired destination XF
+at the final time.
+Any questions here?
+That's the most intuitive part.
+This part is a little bit less
+intuitive. You have an integral, it's a
+little bit unclear what that means, but
+basically what this means
+view G
+as the cost that you incur per unit of
+time. And then, view the integral as
+essentially a summation from uh time T0,
+when you start operations, to time TF.
+So, basically this models a cumulative
+cost
+along your state trajectory.
+G
+of XU
+is the state that you incur at a
+specific time, at a specific rate at uh
+which you incur that cost.
+Uh if you're in a state X of T and you
+use control U of T.
+Of course, you don't care about just the
+cost that you incur at time 0.1. You
+care about the cumulative cost in
+general.
+So, that's why you take an integral.
+So, this first term here
+models how unhappy you are at the end of
+operations. This term here is uh a
+cumulative cost term that puts together
+all the costs that are incurred
+throughout the execution of your control
+trajectory.
+So, for example
+typical
+um
+So, G is referred to as the stage-wise
+cost. It's basically the cost that you
+accrue per unit of time. Typical cost
+could be
+UT
+squared.
+So, this models control effort.
+U squared often times has the notion of
+energy.
+So, that's how much how much energy
+you're spending per unit of time. You
+take an integral, you have the overall
+fuel that you have spent.
+Of course, many other formulations are
+possible.
+If you're familiar with dynamic
+programming, that's not too different
+from your dynamic programming cost.
+Well, simply because you're solving the
+same problem.
+So, this becomes a summation, if you
+remember from dynamic programming. So,
+your cost is basically a summation of
+stage-wise cost.
+So, the framework is exactly the same.
+Yeah.
+&gt;&gt; Um is that all squared?
+&gt;&gt; All of them there. So, for example,
+um
+your G
+could be
+Your G could be X of T
+minus X reference
+at time T
+square. So, this is your
+desired trajectory that you want to hit,
+and this is your actual trajectory.
+And then your X X D F D F, for example,
+could be equal to T F squared.
+You are also penalizing how long it took
+to get it to a given
+Which brings to an interesting point.
+So, T0 in general is given, is the
+initial time operations. TF might be
+given or might be subject of
+optimization, too.
+So, in some cases, you know that you
+want to optimize your operations within
+a time window of 10 seconds, in which
+case TF is equal to 10. But in some
+other cases, as you're saying, you want
+to track a trajectory and get to some
+point,
+uh but you're not specifying the final
+time. You're saying, I just want to do
+it as fast as possible, but at the same
+time, I want to keep the trajectory
+error small. So, in that case, TF will
+be free, and so you would need also to
+account for some cost
+for the final time, so that you encode
+the notion of minimizing time.
+So, great question.
+So, all of this to say that what is the
+optimal control problem is the problem
+of finding an admissible control U star.
+Admissible means that we are satisfying
+the control constraints,
+which causes the system X. = f of X U T
+to follow an admissible trajectory X
+star such that U star and X star jointly
+minimizes this cost cost functional.
+Note that once you select U, X is
+uniquely determined by the ODE. But, of
+course, the final cost depends on both
+the value of X and the value of U.
+Your optimization variable variable
+variable is U T.
+As you will see, we can
+I'll get to your question.
+As you will see, this is an optimization
+problem. We are optimizing over the
+space of control sequences U T.
+So, it has a strong connection to the
+field of optimization, but there is a
+catch.
+In optimization, if you're familiar with
+optimization,
+you typically have uh
+a finite number of decision variables,
+you know,
+minimizing over X1 and X2
+uh X1 squared plus X2 squared.
+So, you pick two numbers that minimizes
+this thing.
+You have two decision variables. You
+have to decide what is the value of X1,
+what is the value of X2.
+Here,
+you're in a much more challenging
+situation.
+U T
+is a function of time. So, essentially,
+you want to uh pick the optimal values
+for U T zero,
+U T zero plus epsilon,
+U T zero plus two epsilon,
+and so on with epsilon arbitrarily
+small. So, indeed,
+you don't have a very large number of
+decision variables. At least in the
+continuous time formulation, you have an
+infinite amount of variables.
+So, through this class, you expand your
+mindset, go from
+finite
+dimensions to infinite dimensions.
+So, that's why this problem is also
+referred to as an infinite dimensional
+optimization problem.
+So, that sounds scary, but we'll see
+that actually we have tools at our
+disposal. Many of those actually
+recycled from the
+more classical finite dimensional
+optimization literature.
+And of course, I will uh highlight these
+bridges in the next uh couple of
+lectures.
+Now, you might say, "You're giving us
+this very specific performance
+criterion." Well, a couple of comments.
+First of all, this is quite general.
+There are a lot of uh
+uh desiderata we can fold into this
+general formulation.
+But second of all, if you go even more
+general, you could,
+but then it would be very uh very
+difficult to find solving algorithms.
+Why? The integral is essentially a
+summation.
+So, roughly speaking, I know that I'm
+recorded, so I hope that you don't quote
+me, but roughly speaking, what is what
+does the summation gives you? Especially
+essentially it allows you to chop the
+problem into pieces and find a smart
+ways to chopping it.
+For example, this idea of chopping leads
+uh in the case of uh
+a discrete time formulation, but it's
+also analogous for the continuous time
+formulation, to the principle principle
+of optimality. You might have heard of
+it if you study decision making, which
+allows which allows to dramatically
+decrease the number of solutions that
+you have to search over. The moment you
+break this kind of additive assumption
+uh additive structure in your
+performance criterion, all this
+structure goes out of the window,
+and so, you can't really use it anymore.
+Computation becomes uh extremely
+challenging.
+We'll see that a little better when we
+talk about principle of optimality and
+dynamic programming recursions and so
+on. But for now, trust me
+that this is a general formulation.
+There is certainly some structure, and
+the reason why we put some structure is
+to make sure that actually we can solve
+these problems.
+&gt;&gt; I was wondering if there was any
+specific reason we chose this
+or write h separately because if we
+didn't distinguish between only include
+the final state and so on.
+&gt;&gt; Yeah, you're right. In some cases
+actually the cost can be represented
+both in the final and here.
+Uh it depends also a little bit on
+convenience.
+So, a few comments.
+Here, at least in this formulation, the
+uh
+we're trying to find a global
+minimum.
+Even though sometimes we have to be
+happy with a local minimum.
+We do have challenges. So, in addition
+to the fact that it is an
+infinite-dimensional problem,
+it is not guaranteed that actually uh a
+solution exists. And if it exists, it's
+not guaranteed to be unique. So, this
+poses some challenges that we'll see in
+terms of how we solve these problems.
+Another point is that even though we
+solve this problem as a minimization,
+uh if you have a maximization problem,
+you can always convert it to this
+formalism because every maximization
+problem can be written as a minimization
+problem with a a minus sign in front of
+the objective.
+Interestingly, does that make sense?
+So, if you don't want to maximize
+something, it's equivalent to minimizing
+the minus thing that you want to
+maximize.
+And here you start seeing a little bit
+of uh a shift. So, in the control
+theoretic the control theoretical
+community
+and the computer science communities
+have developed slightly different
+terminologies.
+So, for example, in control
+we refer to the performance index as J
+and we call it cost.
+In computer science, it is referred to
+as the reward. It is referred to R and
+the goal is to maximize.
+I leave it to you the psychological
+considerations about why a community
+looks at maximizing thing and another
+one minimizing things. But my point is
+is the same.
+Or for example, in terms of uh
+notation
+in control, we refer to the state as X.
+In computer science, it is referred to
+as S.
+In control, we refer to control as U. In
+computer science, it is referred to as
+A, action.
+Yeah, I'm I'm iterating through all of
+them.
+And this is the start of the quarter, so
+who knows what happens at the end. Okay,
+so.
+Anyways,
+uh we'll mostly be using
+uh
+this notation, especially for the first
+2/3 of the class.
+But for the last third
+we switch to this notation.
+Just to be a little bit more
+uh similar to, you know, papers and uh
+publications.
+But I just want to make sure that you
+don't get tripped. I mean, we're talking
+about the same things. X S U A
+R and or J.
+So,
+couple more things before um we switch
+to the first real topic of this course.
+Forms of optimal control. This is
+something that already have alluded to.
+And here we have to be careful. This
+seems to be a fairly nuanced difference
+but extremely important and people get
+tripped over and over. So, I mean, there
+are even senior researchers that
+sometimes do not really properly
+appreciate the difference between open
+loop control and a closed loop control.
+So, as I mentioned, [snorts]
+uh
+you can do control in two ways. You can
+either think of optimizing you
+purely as a function of a time and
+initial condition,
+or you
+as a function of uh
+the current state and the initial
+condition.
+As explained, is more almost impossible
+to understand what I'm saying.
+But again, let me do
+um
+an example. So, it's same example as
+before. You I want to go to that door.
+Optimizing a a function of only time is
+equivalent to uh this time here,
+I optimize a a sequence of uh steps. So,
+basically the sequence of uh
+uh steps for my legs.
+And then I close my eyes.
+So, I do not allow myself to measure
+anything about uh the current state of
+the world.
+And at time t, I'm going to use the
+precomputed action u star of x 0 x 0 t,
+no matter what happens around me.
+So, if your colleague stands up, I'm
+going to just crash into him.
+So, that's open loop control. Open
+because no you don't have this notion of
+loop closure feedback.
+Closed loop control, you try to optimize
+over you over broader class of uh
+possible trajectories.
+Of course, this is a a subset of this,
+right?
+Not only those that map a time into a
+given control,
+but also take into account any possible
+states that you might uh visit.
+So, this is a much more powerful way of
+uh parameterizing
+uh a control trajectory because it's
+telling you not only what to do if
+anything goes nominal, so you don't
+stand up, but also what I should be
+doing if something goes off nominal, so
+you stand up.
+Of course, to do so, I have to keep my
+eyes open in order to measure the state.
+Pi is referred to also as policy. The
+policy is the notion of
+uh
+a function that maps the state into an
+optimal control action.
+Pi is super common.
+E is somewhat arbitrary. Different
+people have slightly different notation.
+I would say that pi is the gold standard
+for a closed-loop policy. For open-loop,
+um
+no, also because typically
+the initial condition
+the dependence on initial condition is
+just assumed, so it's not even made
+explicit. Here, I'm just doing it to be
+pedantic. And so, people just write uh
+uh
+u star of t period
+to denote an open-loop control
+trajectory, and then pi of x t and t
+to denote a closed-loop. So, this will
+be the more standard. But here, I want
+to be pedantic, and so I come up with
+this additional letter e for lack of a
+better term.
+It seems to be nuanced. It seems to be
+that academic, but it is very
+consequential. So, we will see over and
+over throughout this class uh
+methods that aim at computing open-loop
+control sequences, methods that are
+aimed at computing the more general
+concept of a closed-loop policy, and
+what are the tradeoffs there are in
+terms of a computational efficiency,
+um
+robustness, and so on.
+One more thing.
+I presented the formulation in
+continuous time,
+but there is uh
+an equivalent in discrete time, which is
+essentially identical,
+is
+you can derive it simply by discretizing
+having a set. So, basically, the
+ordinary differential equations
+or the cost function in discrete time,
+this this the evolution of the system is
+no longer described in terms of
+differential equations, but rather
+um discrete update equations.
+K is the discrete time stage.
+time step
+K + 1 is the next time step.
+The cost function is exactly the same,
+but now the integral has been replaced
+by a summation.
+You have uh
+control constraints, meaning that your
+control variables have to belong to some
+set capital U of desired or allowed
+control variables.
+And then you want to find a set of
+controls such that your cost is
+minimized.
+So, the concept is exactly the same and
+the same notion of closed-loop and
+open-loop control applies.
+You're probably more familiar uh about
+this formulation when extended to the
+stochastic setting, which is the setting
+of Markov decision processes. So, we
+look at that formulation a little bit
+later on in the class.
+But for now, for the start, we'll focus
+more on
+&gt;&gt; [snorts]
+&gt;&gt; deterministic formulation.
+Any questions?
+Yeah.
+&gt;&gt; On the previous slide you talked about
+open-loop control,
+you mentioned
+the
+uh
+open-loop version
+is for a particular state value.
+&gt;&gt; Yeah.
+&gt;&gt; What exactly does that mean?
+And would open or closed-loop have a
+similar
+relation?
+&gt;&gt; I mean, the closed-loop is also a
+function of initial state value.
+But in addition to that, is also
+function of all the future state values.
+So basically it's telling you how to
+optimally
+from all possible state of the worlds.
+Keep in mind that the state of the
+worlds may not just be modeling where
+you are, but also where you are with
+respect to everyone
+in here
+and a control action.
+The open loop control
+does not take into account what happened
+in the future. So once you fixed your
+initial condition and you have computed
+your control sequence, you're going to
+blindly execute on it no matter what
+happens.
+Does [snorts] it make sense?
+Which sounds crazy, but for example
+um
+if you want to optimize the trajectory
+of
+a spacecraft that goes to the moon
+maybe it's fine actually to consider an
+open loop control sequence. In any case
+uh
+in general you don't really just
+optimize an open control control
+sequence and then just blindly execute
+it. You typically executed it in a
+receding horizon manner, meaning that
+you will execute the first uh
+uh 10%
+and then you open your eyes, you see
+what happens, and then you recompute a
+new open loop control sequence. That's
+what will lead us to model predictive
+control.
+So basically you compute your control
+sequence, you close your eye, you move a
+little bit you open it, you recompute a
+new open control sequence. So you're
+doing in a way closed loop control, but
+at every point in time you're only
+solving open loop control problem, which
+is computationally more advantageous.
+It's not too difficult, but as I said
+there's a bit of nuance there one can
+easily get confused. So throughout this
+class you'll see a lot of examples, so
+by the end of this class uh
+will become super obvious. Yeah.
+&gt;&gt; What if you have a disturbance
+&gt;&gt; Initial conditions are modeled.
+We can model it in different ways.
+We can model it
+indirectly, directly deterministically,
+and then directly stochastically. So,
+for example, in this formulation here
+your
+F can also depend on the disturbance WK.
+Then we can assume to be generated
+randomly
+according to some stochastic model
+or deterministically, maybe in a game
+theoretical setting. So, we assume that
+the nature, for whatever reason, is
+trying to within some bounds
+maximally perturb you. So, this is sort
+of a protecting yourself from the worst
+case.
+Or in general, you can also develop a
+control policy
+neglecting disturbances explicitly
+and just making sure that for example,
+you allow enough buffer for your state
+trajectory in between state constraints
+so that even if there is a little bit of
+disturbance, you don't hit anything.
+So, there are different ways of modeling
+disturbances. But yes, if you want to do
+so explicitly
+you add a disturbance variable here and
+then you have to add a disturbance
+model. It could be deterministic, like
+worst case, that nature is going to
+damage you as much as possible. So, it's
+solving the central optimization problem
+itself. Or stochastically, it could be
+just a random. And we'll see some
+variations that are of
+throughout the class. So, for example,
+we're going to see worst case
+disturbances when we talk about
+differential games.
+And then and then Markov decision
+processes. We're going to look at a lot
+of
+cool problems. Like, have you heard of
+the homicidal chauffeur?
+Okay, so that's a problem.
+I let I let you think about it and then
+in a few weeks we'll solve it.
+So, you are a car
+and you want to get from some initial
+condition
+to some final condition.
+But or actually
+you have a pedestrian. You're a
+pedestrian.
+So, this is you. You want to get from
+some initial condition
+to some final condition.
+But you have a disturbance.
+The disturbance is that there is a car.
+And the car wants wants to hit you.
+So, you might say the situation is
+desperate because the car
+can go faster than you.
+But you're taking this class and you
+know how to exploit the dynamics. So,
+what's the difference between a car and
+a pedestrian?
+That a car can go faster than you.
+But a pedestrian is omnidirectional. So,
+basically you can turn you can turn
+uh
+uh over yourself, right? So, instead a
+car cannot move diagonally. So, at best
+you compute this type of trajectories.
+So, the problem would be what is the set
+of initial conditions
+that allow you to get to the final
+condition without a car hitting you.
+That's one way of solving it. That's one
+famous optimal control problem.
+There are also some others like the lady
+in the lake
+where
+you are swimming there is a lady that is
+trying to swim to the fence but then
+there is a monster that is trying to
+chase her and there are a lot of things
+that we're going to see.
+That's a worst case but then there is
+also the
+We'll see how to solve uh all these
+problems.
+Great. So,
+uh just a few minutes left. So, what
+we're going to do in the next
+uh
+couple of lectures or so
+is to take a step back
+and recognize that uh
+optimal control at the end of the day is
+an optimization problem.
+Very difficult one because in general we
+are solving a either a very high
+dimensional problem or even
+infinite-dimensional problem, but still
+an optimization problem. So, we take a
+step back.
+We look at the
+uh
+topic of classical optimization. So,
+optimization with uh
+uh uh
+you know, reasonable number of
+variables. We look at what are the main
+tools available there
+in terms of necessary optimality
+conditions, computational methods to
+solve an optimum.
+And then through that uh throughout the
+rest of the class, we'll see how we can
+leverage to that intuition to develop
+approaches that are tailored to our more
+general optimal control problem.
+Does it make sense?
+Seems a reasonable approach. Let's first
+look at the easier problem first, and
+then see if there is anything we can use
+to solve the problem we care about.
+So, what do I mean about uh
+a classical optimization problem?
+The simplest possible ver- Well, not the
+simplest, but one of the simplest
+possible version is referred to as
+unconstrained nonlinear programming.
+You're given a function f.
+You're given a vector x that belongs to
+Rn. So, this is a vector
+of n decision variables, so n numbers
+that you get to pick.
+I lost the red one. That was the only
+one that was working.
+Did you steal it? Where is it?
+The red one.
+So,
+x1, x2, dot dot dot xn.
+So, this is your vector of decision
+variables. You have to assign a number
+to each one of these terms, like 0.3
+here,
+0.6, and up.
+And so, you want to find the assignment
+to those n decision variables that
+minimizes the function f(x).
+This is referred to as unconstrained
+optimization.
+Typically, we assume that F is
+continuously differentiable, so we can
+take derivatives. And sometimes it is
+twice
+continuously differentiable.
+So, what does it mean for a point to be
+an optimum? First of all, we have two
+types of optima.
+Local minima and global minima.
+Local minima means that
+a point X star
+is a local minimum if when you move
+around that point, the function F has a
+higher value, larger value.
+A point is a global minimum if a point X
+star is a global minimum if there is no
+other point
+or no other assignment for the state
+variables that will achieve a lower cost
+for F.
+More mathematically, we say that a point
+is a local a point or a state or
+assignment of of variables X star is a
+local minimum
+if there exists a in neighborhood of X
+star
+referred defined by
+uh the distance between X star, so this
+symbol is the same the symbol of a norm,
+so the distance.
+So, there is a neighborhood around X
+star, so all points that uh
+are
+uh are
+displaced by X star no more than
+epsilon.
+Within that neighborhood,
+the cost of the function uh the the
+value of the function F is lower than F
+of X star.
+So, this is X star.
+This is for a square norm,
+the set of point
+whose distance from X star is less than
+epsilon.
+We are saying that X star is a global is
+a local minimum if if I pick any point
+from here,
+so let's call it this X,
+f of X is greater than or equal to f of
+X star.
+It may be the case that if I pick a
+point here,
+f of X is less than f of X star. So,
+that's why f of X star might just be a
+local minimum, but not a global minimum.
+If it is a global minimum if no matter
+which point I pick
+in Rn
+or R2 in this case since I'm working on
+a plane,
+the function f of X is greater than or
+equal to f of X star.
+So, what we'll see next time is
+the notion of a
+a necessary optimality conditions. So,
+necessary optimality conditions are
+conditions that tells you
+that tell you if X star is a local
+minimum,
+then something has to happen.
+Then something has to happen. In this
+case means that the gradient of f
+evaluated at that point should be equal
+to zero.
+So, why are necessary optimality
+conditions useful? Well, for a variety
+variety of reasons. One of them being
+that they can be used as filters for
+candidate for optimality. You just look
+at all the points
+that satisfy those necessary optimality
+conditions.
+Hopefully there are not too many. And
+then you brute force them. You compute
+the value for each one of them. The one
+that you choose
+lowest value has to be a minimum.
+That's one way of of, you know,
+looking at the necessary optimality
+conditions. So, we derive those. It'll
+take us about 15 minutes.
+Uh we'll see that actually for this
+class of problems the necessary
+optimality condition is that the
+gradient of f has to be equal to zero.
+Later on in the class, we'll see that
+this notion of necessary optimality
+condition
+holds over to the optimal control
+problem.
+Unfortunately, the condition will be a
+bit more complicated, but the notion is
+going to be uh the same.
+So, we're going to do that, and then
+we're going to look at still, uh,
+classical optimization,
+but where we also account for
+constraints. So, we want to
+compute a point that is a minimum of F
+subject to some function A H be less
+than or equal to a number, which bring
+us closer to the optimal control
+formulation. All right. So, see you on
+Wednesday.

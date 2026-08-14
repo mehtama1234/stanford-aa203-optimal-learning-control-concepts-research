@@ -1,0 +1,1711 @@
+Okay. And so um getting getting to this
+this weeks and today's lecture. So from
+a usual road map over the last few
+weeks, we started looking at kind of uh
+modern ways to approach learning based
+control. We started from imitation
+learning where the idea there was to
+learn to mimic um the behavior of an
+expert. And then last week we started to
+introduce reinforcement learning which
+is this idea of learning through trial
+and error and specifically we introduce
+some uh foundational learning mechanisms
+uh to do so and starting today and for
+the next uh lectures for the remaining
+lectures of this class we'll be looking
+at specific categories of algorithms uh
+today starting from value based methods
+that belong to the category of model
+free reinforcement learning methods.
+Uh so uh briefly mention a couple of
+amazing references. Of course you all
+know kind of probably Satan and Barto's
+textbooks on reinforcement learning but
+also this course by David Silver which
+is which is great and also some some of
+the slides today are indeed inspired uh
+by that course.
+So uh to briefly um pick up what we were
+saying uh last week. So remember that in
+in previous lectures we basically
+starting started to make the distinction
+between uh what we refer to as
+prediction whereby given a policy that
+was given to us uh we wanted to estimate
+the value for that policy and uh control
+whereby the goal which is actually what
+we deeply care about is to learn the
+policy that optimizes some measure of of
+performance. And specifically we started
+looking at um uh algorithms motivated by
+dynamic programming which we refer to as
+exact methods specifically policy
+iteration and value iterations as ways
+to solve uh mark of decision processes
+um which is indeed the mathematical
+formalism we are using also for
+reinforcement training.
+And we also highlighted how these models
+despite being great at solving macro
+decision processes had one main
+limitation which is the one that we in
+order to use them we assumed we have the
+a perfect knowledge of the system
+dynamics. Specifically we have knowledge
+of the uh transition function t which is
+the probability of going in state xt
+plus one given in state xt given action
+ut.
+And so uh basically last time last week
+we started to introduce two really
+fundamental uh learning paradigms to
+which really encompass this idea of
+reinforcement learning which is learning
+from interaction. Right? So we don't
+have access to a dynamical model. We
+want to learn uh without it through
+interactions from the environment. And
+we saw specifically Monte Carlo learning
+and temporal distance learning as two
+key instantiations of these learning
+paradigms.
+we started building out even visually
+kind of a mental map of different
+approaches to learning from interaction
+whereby we were looking at these um
+diagrams uh which essentially represent
+rollouts in our environments. So if you
+recall in these diagrams white nodes
+represent states and black nodes
+represent possible actions that we could
+take in that specific state. And so
+these basically uh kind of visualize
+this idea of the possible futures that
+we could have in our environment. And
+ideally when we look at estimating the
+value of a state given a policy we are
+potentially ultimately interested in
+estimating the expected value over all
+the leaves in our possible rollouts.
+Right? So this is the actual quantity
+that we're interested in in estimating.
+Of course, kind of one uh way assuming
+we have infinite compute would be to
+just simulate our uh environment
+infinitely many times forward collect
+the actual expectations of all of the
+leaf nodes and estimate the values like
+this. But then we saw how dynamic
+programming gave us uh through the
+principle of optimality gave us a
+practical way of approximating and
+calculating actually these um these
+values through uh basically a one-step
+uh calculation whereby the value of a
+given state uh was essentially defined
+as the expectation uh of the reward that
+we observe in the onestep transition
+plus the discounted future value at our
+next state.
+The catch here is that to compute those
+expectations exactly, we needed the
+knowledge of the transition function or
+our dynamics. And so this is where Monte
+Carlo and temporal difference learning
+came in place whereby we used sampling
+that is we simulated some rollouts in
+our environment.
+And in Monte Carlo, we update our guess
+of our value function by taking a step
+in the direction of the return GT
+where we calculate this GT simply by
+having a roll out in our environment
+until we reach a terminal state and
+summing up all of the rewards that we
+observed uh in this roll out.
+In TD uh on the other hand we define the
+uh target uh by basically getting
+leveraging ideas from both Monte Carlo
+that is the sampling and dynamic
+programming that is the bootstrapping by
+defining the target as this one-step
+estimate of the of the final return.
+And so we saw how um compared to dynamic
+programming which has no need to sample
+because we have the underlying dynamics,
+Monte Carlo and temporal difference
+learning both sample because we do have
+interactions in our environment.
+And we saw how uh TD and dynamic
+programming bootstrap because they
+update the guess towards another guess
+which is our estimate at the next time
+step t plus one. Uh well Monte Caro does
+not bootstrap because it actually rolls
+out until the end of the episode. Of
+course, we introduced everything in this
+slide for the purpose of estimating
+value functions or state value functions
+V. But everything that we just said
+holds equally for state action value
+functions or Q functions.
+Uh for control, yes
+or like is there anywhere you go and you
+take like five steps and then reevaluate
+that you always need to reach a terminal
+state. uh which is indeed if you wish
+one of the limitations of of Monte Carlo
+uh but we discussed trade-offs between
+bias and variance of these estimators
+but yeah
+uh but so this is great for the purpose
+of prediction that is estimating values
+given a policy but what we actually care
+about is uh finding those optimal
+policies themselves right so we care
+about control and so we discussed kind
+of a general paradigm for um for control
+which is the one of generaliz policy
+iteration whereby uh the main idea here
+is that we are alternating between two
+different processes. So we're given
+arbitrarily initialized value function
+and a policy and we alternate between
+policy evaluation step that is given the
+policy we estimate the value function of
+that policy and a policy improvement
+step which given the updated value
+function uh kind of uses it to carve out
+a better policy out of it. And by
+iterating through these two processes,
+we hopefully converge to the optimal
+value function and associated policy.
+Specifically, we saw kind of a vzero uh
+version of a working control algorithm
+which we refer to as Monte Carlo
+control, which is basically alternating
+between two specific instantiations of
+these of the policy evaluation uh
+process and the policy improvement
+process. For policy evaluation, we are
+essentially using a Monte Carlo estimate
+of a Q function.
+Well, for policy improvement, we assume
+to do an epsilon greedy policy if you
+recall. So again, we saw this general
+formalism and then we had like a vzero
+RL algorithm which we denoted as Monte
+Carlo control where we had two specific
+instantiations of uh policy evaluation
+and policy improvement.
+&gt;&gt; [snorts]
+&gt;&gt; Okay. So today what we'll essentially be
+doing is we'll be building on top of
+these concepts uh by first of all
+introducing two very popular algorithms
+uh of like falling between the family of
+value based methods which is SARSA and
+Q-learning. Uh we'll use the discussion
+on these two algorithms to deep dive and
+explore a bit more in depth the
+difference between on policy and off
+policy algorithms. we'll see more
+shortly. Um, and then we'll introduce
+value function approximation as a way to
+scale these algorithms to higher
+dimensional state and action spaces.
+And we'll conclude with a brief mentions
+to some deep reinforcement learning
+methods and and applications.
+All good with the plan.
+Nice.
+Okay. So
+we basically discussed Monte Carlo and
+TD learning and we and last week we
+mentioned how temporal difference
+learning essentially has if you wish
+several advantages over Monte Carlo
+learning uh to some extent. The first
+one is that uh we saw how TD learning is
+a lower variance estimate of the ground
+truth uh return. So remember that we
+were making this even visual distinction
+whereby assuming we have a roll out in
+our environment until we reach some
+terminal state at time t
+um in Monte Carlo to estimate the
+expected return for for our policy we
+would essentially be rolling out the
+entire um episode until we estimate we
+until we're able to compute our target
+return GT which is simply the uh
+discounted sum of all the return rewards
+that we observed over time.
+Um and we saw how this target which in
+Monte Carlo is simply the return for TD
+we basically used
+the kind of a dynamic programming
+estimate whereby
+our target becomes the instantaneous
+reward plus the discounted future value.
+And we last time we basically
+highlighted the fact that by looking at
+the amount of stoasticity that is
+involved uh TD learning is a lower
+variance estimator because simply put
+we're sampling only once while in Monte
+Carlo in order to estimate all the way
+down here in our episode we would have
+to account for the added stoasticity
+that comes by sampling in our
+environment uh for further further along
+the way essentially.
+Not only that, we also discussed that
+since in TD learning we are working with
+onestep uh updates, we can use this
+update online. That is as we progress in
+our uh rollout, we could keep updating
+our estimates of the value function and
+because we don't need a terminal episode
+um we can work with incomplete sequences
+essentially.
+So
+uh long story short uh we have a number
+of advantages from TD learning. So kind
+of a natural idea would be how do we why
+why don't we just replace in our Monte
+Carlo control algorithm that is our V0
+RL algorithm um TD learning where we
+previously had Monte Carlo learning of
+our Q function
+and basically this is essentially the
+the step that leads us from our Monte
+Carlo control algorithm to what is known
+as SARSA.
+So let us look a little bit more closely
+at what it means to update action value
+functions or Q functions uh within this
+algorithm known as SARS. So specifically
+we referred before to the temporal
+difference backup as updating our guess
+of our value function by taking a step
+towards the TD target. Of course this
+holds for um value functions V but
+equally for Q functions uh in the same
+way. [snorts] Of course, the moment we
+want to define this uh TD backup for Q
+functions, we need a few specific
+elements, right? Uh which are
+essentially the we need the current
+states and control XT and UT. Uh we need
+the reward that are obtained from those
+uh by taking that control on that state.
+Uh and then we need the future state XT
+and the future uh the future control
+that we take uh at t + one.
+But once we have this, this is
+essentially what defines the um Q
+function update uh in uh in this
+algorithm. So specifically now just a
+note on on notation in reinforcement
+learning literature al uh the this
+squint of events is usually expressed
+with uh states represented as s and
+actions represented as a. And so if you
+take this quintuple of events which are
+the ones that we need in order to define
+this update, this literally spells out
+SARSA. And so this is also where the
+name of the algorithm comes from. But
+again kind of kind of simply put at a
+high level what we're doing is that now
+we took our Monte Carlo control
+algorithm. We replaced um Monte Carlo
+evaluation of the Q function with TD uh
+TD updates of the Q function. And we're
+doing this at every time step because
+this is something that TD allows us to
+do.
+And so indeed you see that the kind of
+the step from what we're doing to
+arguably one of the most famous
+algorithms out there SARSA is indeed
+pretty small, right? And so uh I think
+it's useful to go through pseudo code to
+really uh ground uh our our intuition.
+And so this is uh if you wish how SARSA
+is loosely defined. So we initialize a Q
+function again this could be all zeros
+at the beginning um
+and we start our learning loop. So we
+are initially uh initialized in our
+environment at some state xt.
+At that state xt we choose an action
+according to our greedy policy or
+epsilon greedy policy. So remember that
+we
+discussed how our policy pi if we choose
+an epsilon greedy policy is something
+that for with probability epsilon we'll
+choose a random action
+and with probability 1 minus epsilon
+we'll instead choose the arg max
+over u of our uh q function.
+So we are in a in a given state. We act
+according to our epsilon greedy policy
+and pick an action U. Um this will lead
+us into will basically give us a reward
+for that action and next state from
+which we repeat kind of the set the
+selection of our control UT plus1
+according to our epsilon GD policy. And
+now we basically collected all of our
+five elements that we need for our uh
+update. Right? So we have the initial
+state and control XT UT. We have the
+reward associated with this control and
+the following XT plus1 UT plus1.
+And so here we just simply compute this
+update rule that we defined previously
+which is nothing else than the uh TD
+backup for uh Q functions.
+Of course, here the clock ticks and we
+kind of repeat until uh until we
+converge.
+Any questions here? Does it make sense?
+&gt;&gt; Yes.
+&gt;&gt; Uh yes, indeed. So here we're using kind
+of a TD version of our update for the Q
+functions where we are updating our
+value functions according to the
+basically one step look ahead you might
+say right so we're taking one step in
+our environment and as we were showing
+here in our you know pictorial diagrams
+we're essentially using only this oneep
+update to update our values.
+Okay.
+Okay, so let's uh dig a little bit
+deeper and let's build some intuition
+into what we're actually doing here and
+what are the results from the
+perspective of the policy that we
+actually learned. And so let's go
+through this uh what I'm referring here
+as a windy grid world example. So here
+we are in a grid world where we the goal
+is as usual to go from a starting cell
+to a gold cell G. Um the policy uh or
+the action space is basically uh the
+four cardinal directions.
+And in this grid world kind of the catch
+is that we assume we have some kind of
+fictitious wind that is coming from
+below which basically pushes uh the
+agent uh x cells up depending where x is
+the value encoded here below each of
+these columns. So for example, if we
+were in this column here in the third
+third one, we would have no wind. If we
+were in the fourth, we will be pushed
+one up and so forth.
+As usual, the goal that we want to solve
+is to basically come up with the policy
+that uh reaches the goal in the minimum
+time possible. And we encode minimum
+time through a stage wise reward that is
+negative one for each uh tick every time
+our clock ticks essentially. And we have
+some specific hybrid parameters. Uh
+epsilon refers to our epsilon greedy
+policy. Alpha is the step size of our
+update. And we pick a gamma of one.
+Okay. So now even just by eyeballing
+this uh uh this uh example, how would
+you describe the optimal policy here?
+&gt;&gt; Yeah.
+part of the thing or you turn around.
+[snorts]
+&gt;&gt; This is a good intuition. It's actually
+not correct in this case. Um, can anyone
+spot why?
+&gt;&gt; Yeah.
+&gt;&gt; You can't move over and up in the same
+bottom push
+by there.
+&gt;&gt; Yeah. Yeah. Exactly. Because if you look
+closely at the kind of the intensity of
+the window here, if you're way all the
+way to the bottom here, you'll basically
+go up here, then you take one step and
+you go up again. You take one step and
+you go up again and then here you'll be
+taking two steps, right? So you you
+won't be able to reach. So actually it
+turns out that the optimal thing to do
+will be to just push yourself uh to the
+ceiling and then go back and so here go
+back here and then ultimately go to your
+goal.
+So here you know here's where I ask you
+to do a leap of faith but if you
+actually implement this in practice uh
+what you will see is something that
+looks very similar to what is here on
+the slide uh whereby the first of all
+SARSA indeed does converge to the
+optimal policy which is similar to how
+we described it. Um, and by looking at
+the training dynamics, we will see
+something similar to this plot on the
+slide. Specifically, this plot is
+showing on the x-axis the time steps of
+interactions with the environment. So,
+literally how many time steps we are
+observing in our environment and on the
+yaxis we have the number of successful
+uh episodes meaning how many times do we
+actually reach the goal. [snorts] So you
+will see that initially our Q function
+is and therefore our policy is randomly
+initialized. So we'll basically be
+succeeding zero times. So we never reach
+the goal until at some point even just
+by random exploration. Um we will reach
+the goal. And here's where kind of the
+magic the magic of the uh TD backups
+start to happen because through those
+backups we're basically starting to back
+propagate the uh basically positivity
+and the goodness of our decisions all
+the way back to the starting point. And
+so you will see that over time kind of
+the performance of the policy improves.
+Does the do the graphs here make sense?
+Now would you say that the so would this
+within this environment would you say
+that Monte Carlo methods would also
+easily apply
+and in either case uh why do you think
+so?
+This is kind of a a more subtle question
+but I think it's it's a good one to uh
+to think about. Yes,
+&gt;&gt; it wouldn't be the case because it would
+try and accommodations and you only
+terminate it once you reach your goal.
+So the goal is that you spend a lot of
+down time just having to kind of wander
+around until eventually go.
+&gt;&gt; Yeah. Yeah. I would say this is
+definitely the right intuition. Uh
+because in in Monte Carlo methods
+remember we require terminating
+episodes. Well, in this case terminating
+episodes is only when we reach the goal,
+right? So uh we might be lucky in the
+sense that we end up into uh you know
+some random exploration that does reach
+the goal but in the general case it is
+not guaranteed that we'll be able to to
+do so right so I think like um
+a nice counter example to think about is
+um
+say that in our
+grid world example we have a situation
+whereby for some uh you know behavior of
+our learning dynamics, we converge to a
+temporary policy that is uh something
+like this,
+right? Something where we have kind of a
+a circle loop uh in our policy. Then in
+Monte Carlo, this will essentially never
+update the Q function and it will be
+stuck in this loop. On the other hand,
+if we are in the same situation with
+TDarning, TDarning allows us to uh
+update online, right? So at each step,
+we are actually updating the values in
+our Q function. And so this means that
+if we were to be stuck in this circle of
+loops, at some point we are basically
+acrewing negative rewards over time. And
+so this would mean that these specific
+behaviors at some point will be actually
+worse than doing something else. indeed
+and so it's exactly as we said in the
+sense that termination is not guaranteed
+for all policies here and therefore uh
+kind of success of MC Monte Car learning
+is not guaranteed as well.
+Okay. So
+we now introduce if you wish one of the
+kind of kind of one of the first
+complete reinforcement learning
+algorithms namely SARSA. Let's use SARSA
+as a kind of grounding algorithm to
+start discussing the differences between
+onpolicy and off policy learning. So we
+mentioned it briefly before but let us
+briefly revisit also the definitions of
+what we mean by uh on policy and off
+policy learning. We'll dig more uh later
+on this but this is kind of at at high
+level how I would describe on policy and
+off policy learning. So for on policy we
+mean that we are interested in
+evaluating or improving
+the policy that is currently used to
+make decisions in the environment.
+On the other hand, for off policy, we
+are interested in evaluating or
+improving or improving a policy that
+might be different from the one that is
+used to generate data. That is the one
+that is actively interacting with the
+environment.
+Again, we'll formalize this a little bit
+shortly, but I think this is intuitively
+kind of the main difference.
+Now with these two kind of loose
+definitions,
+in which of these two buckets would you
+place SARSA? And and and also and again
+here uh why would you do that?
+[snorts]
+So we are
+modifying it. Um but I would argue that
+we are modifying the policy that is
+actively being used in the environment.
+Right? So I'm I'm kind of giving away
+the answer a little bit. uh but in this
+case and in general SARSA is to be
+considered an on policy algorithm
+because if you look at the pseudo code a
+little bit more closely we are defining
+our policy as the epsilon greedy policy
+and we are indeed improving this same
+epsilon greedy policy right so the
+policy will change over time and you're
+correct uh but we are indeed going to be
+improving the same policy that is being
+used to interact with the environment
+&gt;&gt; [snorts]
+&gt;&gt; So yeah, SARSA is indeed an policy
+algorithm. But so let us now dig a
+little bit deeper into uh of policy
+learning. Uh how do we define it
+slightly more formally and also why do
+we ultimately care about of policy
+learning. [snorts] So in general of
+policy learning is the can be seen as
+the mechanism through which we want to
+evaluate uh target policy pi
+that is we want to compute the
+associated value functions for this
+target policy pi while following a
+behavior policy mu uh that is a
+different policy specifically the data
+we'll use to define our update equations
+will basically be sampled by
+interactions in the environment that are
+collected by following the behavioral
+policy mu.
+Right? So the data here is obtained uh
+by observing a different policy.
+So why would
+being able to do something like this be
+useful? So first of all um in some cases
+for example you know robotics to be uh
+to be one uh it might we might not have
+the luxury of uh actually interact with
+the real world or with the environment
+infinitely many times right maybe in
+some cases we can only learn through
+either observations of uh humans or
+other agent doing things and therefore
+kind of having this framework whereby we
+are able able to evaluate and learn
+about a different policy from the one
+that is the one that generated the
+observations is actually a nice thing to
+have.
+kind of a second reason uh is that so
+far so remember our generalized policy
+iteration scheme we described these
+alternating processes where we are
+gradually improving our policy over time
+right and so if you see this now a
+little bit more holistically in the
+environment we are generating data
+according to changing and hopefully
+sequentially improving uh policies
+versions of the same policy Right. And
+so far we were basically saying that we
+have some uh interactions with the
+environment and we only use the most
+recent versions of those interactions to
+update our values. Right? So all of the
+previous data that was generated from
+the previous versions of my policies, we
+were basically throwing it away, right?
+And so I hope it's uh you know it's
+pretty evident that this might be
+wasteful, right? So maybe there is some
+information to be gained from uh
+previous data
+and lastly so this is slightly more
+subtle point but also I think the reason
+why off policy methods are also best
+known for um and it is because by
+decoupling if you wish the behavior
+policy from the target policy we're
+essentially able to posit the problem
+where we want to learn about the optimal
+policy
+that is likely to be you know an an
+exploiting policy typically
+deterministic from the exploratory
+policy which is the one that is maybe a
+little bit more random and free of
+exploring our environment
+but so I think these are all great
+reasons for which uh of policy learning
+is actually uh is actually very
+important
+so now let's look back at what we were
+doing for SARSA where we were basically
+updating our Q functions in an on policy
+way and let's see how we could modify
+what we were doing in SARSA in order to
+basically follow this off policy uh
+paradigm.
+So remember that in Sarsa we were using
+um behavior policy mu. So here we're
+already using the new notation to
+generate um our quintuple of events
+right specifically the state and control
+at time t the reward and the next state
+and then we're also using it to generate
+the the next control.
+However, now let's consider an
+alternative successor action U t +1
+prime which is generated from our target
+policy. All right, if we were to use now
+this quintuple of events in defining the
+update, this was essentially represent
+a way in which we are updating our Q
+function Q towards the value of the
+alternative action. Right? So if you
+look a little bit more closely at what
+we're saying here is that we are
+updating our Q function
+for XTUT by taking a step in the
+direction of the TD target defined by
+the the value of the alternate action UT
+prime T + 1 prime.
+Now basically the formalization of this.
+So how do we kind of if we want to now
+instantiate this idea into a working
+algorithm this would directly lead us
+into defining Q-learning. Right? So
+specifically in Q-learning we would
+define the target policy pi [snorts] as
+the greedy policy with respect to Q.
+Again the target policy is the policy we
+wish to learn and we are interested in
+learning the optimal policy. So we want
+to learn the greedy policy with respect
+to Q. So the target policy for us is the
+argmax over Q
+and we define the behavior policy to be
+the epsilon greedy policy. So in this
+case we are acting in some cases
+randomly with respect to our Q function.
+But you see how we are formally defining
+these two different policies. The one
+that we use to interact with the
+environment and the one we actually care
+about uh learning.
+So by basically taking uh looking at the
+TD target in this case. So remember that
+the from the in the previous slide we
+basically said that in this formalism
+where we have a behavior policy and a
+target policy the update and
+specifically the TD target essentially
+looks at the reward plus the discounted
+value Q function evaluated in the
+alternative action UT plus one prime.
+So if we just take this same TD target
+which is basically this term over here
+and apply our definition of how we
+compute the uh alternative actions
+according to our target policy. We
+basically get uh we only would modify
+this term inside the Q function namely
+the argmax over our Q function.
+And by just doing some you know
+algebraic manipulations we would
+basically get that this is equivalent to
+uh defining the TD target as the reward
+plus the discounted maximum Q value uh
+where the maximum is taken under the
+action U.
+Right? So here we're evaluating the Q
+value
+under the arg max where the control is
+taken under the arg max over Q and so
+this means that the overall value will
+be maximized right because we're taking
+U in order to maximize Q and so this is
+just can just be written as the max over
+Q
+all of this to say is that we by
+following this formalism we basically
+redefine our TD target
+in this way over here. Meaning we're
+just replacing our TD target by
+defining it according to the uh
+alternative successor action. In this
+case, the alternative successor action
+action is the argmax policy. And so this
+is what it leads to essentially.
+any any questions here?
+Okay.
+And so basically now if you put this
+together into a working algorithm you
+would basically get uh what is referred
+to as Q-learning. Exactly. So again we
+initialize our policy. Um we start our
+learning loop whereby we we are
+initialized in some state XT. Um we take
+we we basically choose a control UT in
+this state XT according to an epsilon
+greedy policy. This is our behavior
+policy which we chose.
+Um and we observe the reward and the
+next state according to this control.
+Now we basically have all of our
+elements in order to define the update
+which we derived in the previous slide.
+Right?
+And so we can just repeat over time
+until we uh converge. Yes.
+&gt;&gt; The behavior policy only
+sorry
+behavior policy first.
+Okay. Sorry.
+&gt;&gt; Oh yes. Yes. So
+&gt;&gt; yeah. Yeah. So in this case we are using
+the behavior policy in our environment.
+Specifically we this generates the first
+and then we are kind of fictitiously
+assuming that we would take this uh this
+this action over here.
+&gt;&gt; Yeah.
+&gt;&gt; Sorry. Where does this
+where does this come from? What policy?
+&gt;&gt; Uh so this is so here we're defining uh
+two different policies. one is a
+behavior policy which interacts with the
+environment and one is a target policy
+which we which is the one we care about
+learning essentially. So in this case
+the this U T+1 prime is sampled from
+this target policy. So here this is in
+general [clears throat] terms. So we are
+arbitrarily talking about behavior
+policy mu and target policy pi. Uh but
+in specifically when we look at
+Q-learning the target policy is the
+greedy policy. So taking the argmax and
+the behavior policy is the epsilon
+greedy policy. So we randomly act uh we
+act randomly epsilon% of the time.
+So putting this together we indeed
+follow the epsilon greedy policy in our
+environment but then in our updates we
+are basically
+updating our Q functions towards the
+value of the successor action.
+Does this clarify?
+So there is some of course there's
+theory that have been developed for all
+of these algorithms SARSA included. Um I
+I I thought it would have been nice to
+just mention the fact that uh it can be
+proven that uh according under some
+regularity assumptions uh Q-learning
+does indeed converge to the optimal
+action value function and therefore that
+this process essentially uh leads to
+learning the optimal policy accordingly.
+Okay. So
+I think that basically these differences
+and these discussions that we're doing
+between behavior policies and uh target
+policies can be a little bit confu
+confusing at first. So let's try to
+uh build some intuition into by looking
+at the difference in a simple
+environment between what we did before
+with SARSA and what we're doing right
+now with uh Q-learning.
+So let's look at this modified version
+of the grid world whereby again we want
+to go from a start position to a goal
+position. Um no wind in this case so no
+disturbance but now we are assuming we
+have this basically failure region uh
+which is the cliff over here which is
+basically something extremely negative
+for our agent. Right? So the reward here
+is again encoding minimal time so
+negative one at all time steps. But if
+you do end up falling in the cliff, then
+that's that's then then you're doomed.
+Uh so negative 100 specifically and with
+a specific choice of hyperparameters.
+So as a spoiler um if you wish here we
+are com comparing the
+policies that we would be converging to
+if we followed uh SARSA in blue or uh
+Q-learning in red.
+However, kind of the if you look at the
+kind of training dynamics over here, you
+would basically again here we're looking
+at on the x-axis the episodes and on the
+y-axis we're now looking at the sum of
+rewards that we acrew over episodes.
+And from here you would actually say
+that SARSA is indeed performing better
+than curate. Right? So
+the catch here is that if you think back
+at our discussion on on policy and off
+policy algorithms, SARSA being an on
+policy algorithm is essentially learning
+the best version of its u kind of
+exploratory policy if you wish right so
+uh as we defined it we were following
+this epsilon greedy policy and so SARSA
+indeed converges to the optimal epsilon
+greedy policy.
+On the other hand, Q-learning because we
+are kind of detaching our behavior from
+the target of learning uh converges to
+the optimal policy by style. So this is
+kind of if you wish kind of by induction
+a property of one being on policy and
+one being off policy.
+Now why would this explain this behavior
+over here?
+The reason is that in our environment,
+remember that both algorithms act
+epsilon greedily, right? So
+if you act according to the red policy
+and you're epsilon greedy, then
+sometimes you will actually be doing
+some random things and fall in the
+cliff, right? And so this is why
+Q-learning
+when we kind of log what we're doing
+over training, we have a lower score. On
+the other hand, SARSA because it in
+order to account for this uncertainty of
+its epsilon greediness
+kind of converged to the optimal epsilon
+greedy policy which in this case is a
+safer one that basically would would
+travel more closer to the ceiling.
+&gt;&gt; Yeah.
+&gt;&gt; Is it generally the case that SARS will
+converge to a quote safer?
+So I I would say this is specific of
+course to this specific choice of
+hyperparameters and how we are
+discussing it in general. Of course you
+can modify the algorithm of SARSA for
+example by having a decay schedule of
+your epsilon greediness and then you can
+also converge to uh to the optimal
+policy.
+So of I mentioned theory for Q-learning
+that this converges to the optimal
+policy. There's theory de developed also
+for SARSA in the fact that according to
+indeed some specific choice of uh your
+epsilon DK strategy or more generally um
+some specific property of your
+randomness in your policy and some
+conditions on your step size also
+converges to the optimal policy.
+&gt;&gt; Yeah.
+Why does
+really converging
+lower
+despite taking a shorter path? And why
+does the I mean both are not passing
+through the clips. So why does
+&gt;&gt; No, I think it's worth looking at this
+uh closer and making sure we we're all
+on the same page. So here we're just um
+visually depicting kind of the optimal
+kind of strategies that both algorithms
+converge to right so we learn some Q
+functions and if we act greedily with
+respect to those Q functions this is how
+the two algorithms would behave now at
+training time we're not acting greedily
+with respect to those Q functions but
+we're acting epsilon greedily right so
+with some epsilon percent we're doing
+some random action
+If you consider the fact that Q-learning
+is actually going closer to the cliff in
+some epsilon percent of the time we
+would be landing in the cliff and so
+this is giving it some negative uh
+reward during training right so these
+logs are measuring the performance of
+the epsilon greedy application of the
+two Q functions that we're learning
+&gt;&gt; this also reward
+the first step or it's just the reward
+that's
+&gt;&gt; uh you mean what is being tracked here
+&gt;&gt; that's reward
+&gt;&gt; yes so here we are assuming that for
+every time step in our environment we
+whatever we do it's minus one until we
+reach the goal
+&gt;&gt; and then if we fall in the cliff we get
+negative 100 and it it terminates and we
+respond back to the start
+&gt;&gt; okay so even though during the training
+the some of the rewards in the service
+is a little tricky learning cuz it it's
+the more often during
+those policy
+the actual pack that converges to the is
+I guess higher in reward the path
+&gt;&gt; yeah this is very important doesn't it
+make sense why these two paths are
+visualizing
+we so these forget what happens during
+training training is done and we
+converge to two different Q functions is
+this path is visualizing being greedy so
+argmax over those Q functions and this
+is what you would do
+now
+here what we're saying is during
+training time so before doing this
+visualization what you would see is is
+this u basically this plot over here why
+would you see this difference is because
+at training time you're not acting
+greedily with respect to your Q function
+but you're acting epsilon greedy
+Oh, sorry. Yeah.
+&gt;&gt; Did you do the epsilon?
+&gt;&gt; No. So, here is just fixed
+hyperparameters.
+&gt;&gt; And if you did have
+uh
+&gt;&gt; Yeah. So, SARSA would converge to the
+optimal policy as well.
+&gt;&gt; Yeah.
+Okay. Any any other questions on uh on
+what we discussed so far before we move
+on to uh function approximation?
+Okay, great.
+So until now um
+we discussed algorithms that were
+basically deployed on these smaller
+scale uh you know toy- like uh worlds
+right on the other hand uh I'm sure kind
+of most of you or or some of you at
+least might have heard about uh kind of
+the great successes of reinforcement
+learning both in the realm of games for
+example Alph Go and kind of the
+successes in Go are one of the peaks of
+the successes at least with respect to
+games. Um,
+but these are all environments where if
+you think about the state space, uh,
+these are incredibly large and
+incredibly high dimensional, right? So,
+for example, in the game of Go, you
+could have 10 to the^ 170 different
+configurations of the board, which is, I
+think, more than the atoms in the
+universe or something like that. So, uh,
+this is an incredibly high number,
+right? And you could argue that games
+are actually among the easier things to
+solve compared to, you know, having
+things deployed in the real world,
+right? Where things that could happen
+are are much more uh highdimensional
+even.
+And so the question is how can we scale
+what we're saying with u with this model
+free uh reinforcement learning
+approaches um to these more
+highdimensional systems.
+And the culprit here in scaling will
+essentially be to move away from our
+tabular expression of value functions.
+Again remember that we are essentially
+in everything that we did so far we were
+assuming that the value functions or Q
+functions
+equally were essentially represented as
+lookup tables. Right? So essentially for
+each value of our state or state action
+pair we will have a specific entry which
+represents the value of that state or
+state action pair. On the other hand
+and and and this is of course
+problematic as I'm sure you can imagine
+for two main reasons. The first one is
+memory. So if you know if you have 10 to
+the^ 170 states then you know even just
+storing this is an issue. But then for
+the perspective of learning there is a
+clear curse of dimensionality issue that
+comes up uh because to update values in
+our lookup tables we have to visit those
+uh entries in the lookup tables. And so
+you can imagine how this becomes uh
+problematic.
+So this is where um kind of value
+function approximation comes uh comes in
+play and this is because and basically
+where the main idea is that rather than
+defining these lookup tables um we want
+to define a parametric function with
+some parameters theta that basically
+approximates uh our values. Right? So we
+will be moving from these tabular
+representations to something where the
+value function is basically a parametric
+function parameters theta that in this
+case maps from states to uh a real value
+and you can imagine something very
+similar for the Q function right again
+this is a
+[snorts] uh it's just a function that
+basically maps
+from uh states and controls to real
+values. Right?
+So first of all, how does these this
+idea address these two issues? First of
+all, um we are
+um compressing or if you wish amortizing
+the memory storage cost in storing only
+the parameters, right? So we're not
+storing one value for each state action
+pair but we're only storing the values
+of our parameters.
+And also in terms of addressing the
+course of dimensionality to some extent
+we can hope that these value uh
+approximations can generalize across
+states and state action pairs. Right?
+So, so far even in our grid world
+examples, we were assuming that we had
+like a goal state G
+and that
+uh even very nearby states if we wish to
+estimate the value of this nearby state
+to the goal, we would have to visit this
+state. On the other hand, you can
+probably hope that in the general case,
+as long as your representation of your
+environment is correct, this kind of
+knowing something about the goal state
+could also inform your estimate of the
+value uh close by the gold state. And so
+this is something that we can hope to
+have uh when we look at a function
+approximation.
+Okay, how does function approximation
+look in practice for uh value functions?
+Here is where there could be uh many
+different ways of instantiating uh value
+functions through a function
+approximation. At the high level um I
+think most implementations pick between
+one of these three representations. Uh
+in general we are assuming that we have
+a black box that it basically represents
+our function approximation with some
+parameters theta. But in general we
+could have these three main classes. The
+first one is if you're estimating value
+state value functions V, it will be
+something that takes as input a state X
+does some computation and then uh spits
+out a value for that state. Similarly,
+uh the a Q function could be something
+that takes as input a state and a
+control and spits out the specific Q
+function for the state and control pair.
+Or another interpretation of this uh
+second um approach would be something
+that we still want to estimate the Q
+function but now we take as input only
+the state and rather than generating one
+output we would be generating uh
+multiple outputs one for each possible
+control in that state.
+Can you imagine why? I'm not saying this
+is better in general, but can you
+imagine why this might be desirable
+compared to the second one?
+&gt;&gt; Yeah.
+&gt;&gt; Include in your function kind of or
+maybe use inputs that you could define
+the function in terms of you natively
+maybe.
+&gt;&gt; So I think your your intuition is
+correct. Now doing this for continuous
+um action spaces is challenging right uh
+depending on discretization but I would
+not go for this when you have a
+continuous uh control space uh but I
+think you're correct in the sense that
+this could lead to some simplification
+in how you represent Q right but can you
+so assume both both X and U are discrete
+in our case can you think of a reason
+why yeah
+want to have multiple functions like if
+you were looking at driving a car
+somewhere
+gas
+um I would argue probably not know at
+least at face value because remember
+that we will be positing this as a
+learning problem or as a regression
+problem right so either here you are
+assuming that you have different target
+Q functions that you're willing to
+wanting to estimate and then maybe
+indeed this could be helpful. Um but
+let's assume for now that we have one a
+value function of one policy that we
+that we wish to estimate but I think
+yours is a good intuition but not what I
+was uh looking here right now.
+&gt;&gt; Yeah.
+&gt;&gt; I mean sort of let's just probe in one
+specific state and then we can take the
+artifacts over all the cues that output
+to get the
+&gt;&gt; Yes. Exactly. Exactly. So I think these
+are all all great points but here I was
+more thinking about indeed kind of more
+of a computational aspect if you wish.
+So remember that we are defining our
+policy generally or at least the greedy
+policy once we have learned the Q
+function as an argmax over u. Now say
+that we have again u is discrete. So we
+have a finite number of u we want to
+iterate over. If we had now a function
+approximation for our uh Q function,
+this becomes an optimization problem if
+you wish, right? So before it was just
+basically looking up in a table, now
+it's an optimization problem. So um if Q
+our Q function is something that given a
+state only gives us the value of um
+given a state and a control gives us one
+value we would have to do
+n queries where n could be very high
+right on the other hand if q is an
+object that given an x gives us all the
+values of u of of qxu for all u's then
+this becomes again uh kind of a lookup
+in a finite number of elements if I'm
+with only one call.
+Again, I'm not saying this is the best
+way for going for it, but you know,
+these are um
+kind of insights behind these these
+choices.
+And then not only is there of course
+flexibility in how you define these
+function approximations at the high
+level but also within the uh blackbox
+you know you know creativity is is king
+here right. So in some sense you could
+go with something very simple such as a
+linear model or something very complex
+such as an extremely deep uh neural
+network but the uh high level
+understanding remains the same.
+Okay. Okay, so I hope I have convinced
+you about the benefits of uh value
+functions approximations. How do we
+instantiate
+um what we've been saying so far in
+terms of uh Monte Caro learning and TD
+learning when we have uh value functions
+where we have um parametric functions
+that represent our uh value functions.
+So remember that now what we want to do
+is essentially learn the parameters
+theta of our uh value functions
+approximators that is we want to
+minimize the error between the estimated
+value for example v theta of x. Um so
+the error we want to minimize this error
+between v theta of x and the true value
+v pi of x.
+Seeing this from a regression
+perspective, this would mean potentially
+positing this objective function J or
+cost function J. And we want to minimize
+the expected value of this error, right?
+So we want to minimize like the mean
+squared error for example.
+How do we solve this? We have done this
+multiple times. For example, by taking
+gradient descent, right? So um where we
+want to define
+essentially
+some delta some displacement in our
+parameters of our function
+approximations which goes in the
+direction of the negative gradient.
+Now if we
+were to pick this choice of uh of
+displacement delta t what we would
+basically get doing some some math is
+something such as we are basically
+taking one step where we choose some
+step size alpha
+um in the direction of u basically our
+uh negative gradient multiplied by this
+uh error over here right
+and I definitely suggest you to
+basically go through the derivation of
+how we go from from here to here. But
+this is not very insightful. It's just
+basically applying gradient descent
+stoastic gradient descent to this
+objective.
+But at the high level, it's important to
+basically fix in your mind that the form
+of our updates in our parameters is
+something that looks like this.
+Now, how we described it so far, it's
+kind of a chicken and egg and an egg
+problem, right? Because we're saying we
+want to minimize the error between our
+prediction and our true value function,
+but we don't have the true value
+function, right?
+And so in in practice uh what we do here
+is we basically leverage everything that
+we said so far in um when we talked
+about TD targets and Monte Carlo targets
+in order to define what is our target
+for regression essentially. So similar
+to how we did in tabular methods, we
+would have like a version of the Monte
+Carlo update where now we are taking
+we're updating the parameters of our
+function in the direction of minimizing
+the prediction error where this
+prediction error is between our
+prediction and the ground truth return
+estimated as we were doing through Monte
+Carlo.
+And in TD learning, what we would get is
+the same thing, but now instead of
+pointing at the ground uh the observed
+return, we're basically pointing at the
+TD target, right? Where we're using our
+estimate of future values as well.
+Okay. So what are we really saying here?
+So we
+are basically saying two different
+versions of uh a very similar intuition
+right. So we said um in the tabler
+dimension where value functions are
+lookup tables, we were using
+interactions with our environment to
+estimate either a return simply the sum
+of all the rewards that we saw or a TD
+target, right? [snorts] So the immediate
+return reward plus the estimate future
+value.
+In the tabular case, we were then simply
+using these two quantities to update
+individual entries in our lookup table
+according to our um update equations.
+When we're looking at function
+approximation at the high level, we're
+doing exactly the same thing, but now
+instead of updating entries in lookup
+tables, we're using those same
+quantities. the return GT and the TD
+target to basically
+uh define
+um input output pairs for our regression
+problem,
+right? And so this means that we will be
+able to define some updates to our
+parameters theta in a very similar way.
+Does this make sense?
+Any questions here?
+Yeah.
+&gt;&gt; Yes. So this is a is a great intuition
+because indeed um
+as you say kind of the quality of my
+target evolves over time the more this
+is getting better and so uh I you are
+actually pointing at I would say one of
+the key
+engineering breakthroughs if you wish
+that enable deep like deep reinforcement
+learning to actually work in practice uh
+basically stabilizing learning exactly
+for this reason um and I think we'll
+mention it in uh in a couple of sites.
+Yeah, but this is a great intuition.
+Okay, of course again here we mentioned
+everything um in looking at state value
+functions. Uh but everything holds
+exactly the same when we look at Q
+functions. So again the kind of
+underlying regression problem that we
+would like to solve is basically
+minimizing the error between the
+predicted uh Q function and the ground
+truth Q function uh which leads to
+defining a specific update in parameter
+space. We are of course uh not able to
+observe the ground truth Q function and
+so we define uh the target of our
+regression either through Monte Carlo or
+TD learning. In this case, if we were to
+use a TD target, we would get what is
+referred to in eliciter as fitted Q
+iteration.
+And so kind of indeed implementing this
+uh in within our uh kind of generalized
+policy iteration scheme could look like
+something where at the policy evaluation
+stage, we basically approximate uh the Q
+function of our policy by uh using these
+update equations in parameter space that
+we just defined. Namely, we interact
+with the environment, collect some data
+and fit that data, fit the Q function
+that better estimates those TD targets.
+And so this is what policy evaluation
+looks like for us. And then we use the
+updated um Q function to basically
+define our epsilon greedy policy
+improvement step.
+Again, I hope that even through
+the repetition of very similar versions
+of those same algorithms, you're
+starting to see how different RL
+algorithms are all built around uh
+different instantiations of Monte Car
+learning and TD learning and basically
+swapping or mixing different elements in
+those updates.
+But this would indeed be um a working uh
+reinforcement learning algorithm with um
+value function approximation.
+How does this look like in our
+reinforcement learning skeleton?
+Remember that last time we were starting
+to introduce this bird's eye view on
+basically all reinforcement learning
+algorithms out there defined as a first
+stage where we generate samples. A
+second stage where we either fit a model
+of our dynamics or estimate some return
+and use this to improve the policy.
+Indeed, if we look at fitted Q-learning,
+which is what we just uh described, we
+would run the policy and observe our
+usual transitions.
+We would then use this data to uh define
+a target for our uh Q function
+regression problem if you wish.
+Specifically here we're using the TD
+target
+and then use this to um basically update
+our estimate of the Q function
+and then we use the newly learned Q
+function to improve the policy according
+to an ARGMAX policy improvement.
+Okay, any any questions here?
+Okay. So then the last thing that I
+wanted to discuss today relates with um
+basically taking these ideas but now
+looking at kind of modern instantiations
+of these ideas specifically in the field
+of like deep reinforcement training that
+is using deep neural networks within the
+same algorithms uh that we just
+discussed today.
+And one of the I would say
+groundbreaking results uh I think this
+dates back to roughly 2014 is uh is
+known as deep Q networks or DQN for
+short. Uh and we saw this uh I think a
+couple of times before we saw these
+videos of these Atari games. But the
+point here is that indeed the goal of
+where these algorithms were developed
+was solving uh basically learn how to
+play optimally different versions of the
+Atari family of games. Uh specifically
+kind of the interesting side of this is
+that we were basically using deep
+neuronet network specifically at the
+time convolutional neuronet networks to
+learn how to control these games
+directly from images. And so this is
+where the power of if you wish deep
+learning and reinforcement learning was
+starting to be combined. And at a high
+level kind of the
+architecture of these methods looked
+something like we have kind of raw
+images of our environment which we are
+processing through multiple layers of
+convolutional neural networks and then
+we are outputting here at least in the
+original instantiation
+um one value for each of the possible
+actions that we could do in this state.
+So if you wish the image for us is a
+proxy or observation of what the state X
+is and so we have the state coming in in
+the form of an image and we have the Q
+value for all of the use all of our
+controls in this state. So if you
+remember from our three different
+categories of value function
+approximation this would be the last the
+third one.
+So in some way this work indeed used uh
+deep neuron nets to represent uh our Q
+functions and as we will see in the next
+slide this introduced a number of tricks
+that uh basically helped to stabilize
+learning when we look at uh deep neural
+networks exactly as your colleague was
+assuming before.
+Is this uh picture clear more or less
+what the algorithm is doing?
+Yeah. Okay. So, let's look more
+specifically at these two um um kind of
+these two solutions that that were I
+would say extremely important for
+actually uh the the success of these
+methods. And we're specifically talking
+about experience uh replay and uh what
+is known as uh using fixed uh Q targets.
+So indeed these two ideas turned out to
+be extremely uh important to stabilize
+uh training uh because they basically
+addressed two main issues. The first one
+is that
+right now if we're looking at uh
+function approximation uh in our of our
+Q functions we basically have this inner
+loop which is the basically regression
+of our Q function. Right? So as we
+explore in our environment, we basically
+are iteratively fitting the estimates of
+our Q function to the targets that we
+are observing.
+However, in this case, um because we are
+active agents in our environments, kind
+of samples over time in our rollouts are
+highly correlated with each other,
+right? And and this is of course uh very
+bad from a perspective of um regression
+and supervised learning because we know
+that kind of statistical learning theory
+usually assumes that data is iid from a
+target distribution.
+And so the one big issue is that because
+we are now in a interactive um
+engagement with our environment um the
+targets and the samples that we observe
+are highly correlated with each other.
+The second problem is indeed uh what
+your colleague was referring to which is
+that the target that we are aiming
+towards to that we are regressing
+towards to is indeed the moving target
+because as we update the parameters
+theta then the target of our regression
+also changes and so this creates some
+some problems and uh in terms of
+stability.
+So let us look at uh how these two
+issues were solved in in in practice.
+So at a very high level I would say the
+learning loop of DQN goes as follows.
+So as usual we are you know in a
+specific state XT and we take an action
+UT according to the epsilon BD policy.
+Again the policy initially might be a
+randomly initialized neural net
+as we are doing kind of classically in
+Q-learning. We store this transition of
+uh xt ut reward and next state and we
+store it in a replay memory uh
+calligraphic.
+Now part so here is where the kind of
+the solution to the first problem
+actually comes in place which is
+arguably very simple but it's
+essentially saying that we know that the
+problem that we are we want to fix is
+that data and individual transitions are
+highly correlated between each other. So
+let's decorrelate transitions by storing
+them in a buffer and then rather than
+using only the most immediate
+transitions let us s sample these uh
+individual transitions from that buffer.
+Assuming the buffer is large enough then
+this would you the more this the buffer
+grows the more the individual
+transitions are um decorrelated with
+each other
+right? So what we're saying is that if
+we were to look at a single rollout,
+we would generally observe a situation
+where we have XT UT and the associated
+reward and we have the next state XT +
+one which gives us like the first
+transition
+and then and so we could use this to
+make one update. in our algorithm,
+right? But then as we move along in our
+episode, we would basically be observing
+some new transitions
+which are highly correlated with the
+previous one, right? And so if we were
+to take these transitions online and
+sequentially, these would be highly
+correlated with each other. What we're
+saying at least with this experience
+replay idea is that rather than using
+these transitions directly, we observe
+them uh store them in a buffer which is
+something that you know it's just a you
+know large data set of uh of transitions
+right something that is is a collection
+of these
+um transitions
+and XT + one
+and by sampling from this buffer we are
+basically decorrelating uh the
+transitions that we that we use to fit
+our networks.
+So again very simple idea but I think
+quite quite powerful in accomplishing
+what it was trying to do.
+Now the second trick entails stabilizing
+this [snorts] moving target uh issue
+that we were highlighting before right
+and the idea here is to basically
+leverage two copies of the same uh value
+function network. So instead of having a
+single network Q theta we're basically
+working with two different networks Q
+theta and uh Q fi. So we have two copies
+of the parameters.
+The point in
+in this uh solution is essentially that
+we will have one copy of the parameters
+that we are updating uh over time and
+one copy that is basically a delayed
+version of that um of that function that
+we're updating. So we start with some
+randomly initialized to the same thing
+uh policy. So two copies of the same
+initialized network.
+Now imagine that we have uh this is like
+a time axis over training. We would have
+a phase where we are initially updating
+theta and we are updating theta on fixed
+uh right. So over here five is actually
+fixed.
+Now
+fi is could be horribly bad at
+estimating the values at the beginning
+but from the perspective of stability of
+the target this is actually stable
+because it's consistent over time.
+Right?
+Of course over time we will be kind of
+defining some regular cadence where we
+are basically
+updating the parameters fi to the
+potentially most recent version of theta
+right and so we repeat this so then we
+have a new phase where we are updating
+theta but now towards a slightly better
+version of the target network again fi
+here remains fixed
+And then we repeat over time. So you see
+that in general we basically instantiate
+this delayed version of the same Q
+network um which stabilizes the um the
+target through this um kind of delayed
+uh update.
+Of course different versions vary of the
+algorithm vary in how this update is
+done. This is a very
+uh deterministic way of updating the um
+target policy Q5.
+It's been shown that this specific
+version could uh is probably not the
+best choice because there could be a
+jump a too harsh jump in updating those
+the parameters of our target file. So I
+would say probably right now the most
+popular version is referred to as polyac
+averaging where it's basically a moving
+average of the parameters. So if you
+wish exact same iterations apply but the
+update of our target network QI is not
+done in a so kind of harsh kind of step
+fashion way but it's fi will be a moving
+average of previous versions of of steer
+but this this is exactly the idea and so
+you see that
+I would say these two contributions were
+basically key in uh making deep
+reinforcement learning algorithms work
+in practice.
+Does this make sense? Any any questions
+here?
+Okay. So, this wraps up concludes our
+discussion of value based methods. Um
+next week uh we'll be discussing uh
+policy optimization based methods again
+model 3 and then we'll move for our last
+lecture on uh model based reinforcement
+learning methods. See you next week.

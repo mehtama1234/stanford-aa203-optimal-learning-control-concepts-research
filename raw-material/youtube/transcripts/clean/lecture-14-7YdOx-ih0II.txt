@@ -1,0 +1,1729 @@
+So um going to spend a few minutes just
+uh finishing up the lecture from Monday.
+Uh and specifically as a you know
+extreme recap of what we're saying um
+we started to introduce the learning
+based control setting uh whereby kind of
+the under underlying assumption for all
+this and motivation for all this is that
+we wanted to relax our assumption that
+we know exactly the um the system that
+we're trying to control. So we might
+have even unknown dynamics or some
+parameters that we wish to estimate. And
+so we started essentially to introduce
+on Monday kind of if you wish the
+classical approaches to learning based
+control where specifically we started
+looking first at uh system
+identification or CIS ID where the idea
+of system identification is broadly
+speaking let's collect a data set of
+rollouts or experience in our system. uh
+these might look like you know different
+trajectories that we have while we
+experience the evolution of our system.
+Let's take this data set frame this as a
+regression problem if you wish and let's
+try to approximate the uh the model of
+our dynamics. We saw this through the
+perspective of linear regression in
+particular uh but this is a general
+concept where we want to approximate
+some unknown dynamics from data.
+We then introduced another class of
+method namely adaptive control
+where we looked specifically at MRAC or
+model reference adaptive control where
+the idea here is that we wanted to
+consider the coupled system comprised of
+the
+controller
+an adaptive component
+that basically is a mechanism to
+basically adapt or adjust some maybe
+unknown parameters that we wish to
+estimate
+and the system dynamics.
+So we consider this joint or coupled
+system and the overall goal of adaptive
+control is to study the stability of
+this system and so we use leapon of
+stability as our tool of reference for
+measuring for estimating or analyzing
+the stability. But this is loosely
+speaking what we were doing. Model
+reference adaptive control we saw is a
+direct method where we wanted to use the
+adaptive component specifically to
+directly improve our controller. And the
+term reference relates to the fact that
+we want to adapt our controller to track
+a reference signal. And now we're going
+to spend maybe just a couple of slides
+on mobile identification adaptive
+control which is kind of another
+approach that falls under the category
+of adaptive control methods. But before
+we get there, so just a few
+clarifications on model reference
+adaptive control. Uh remember that we
+went through a couple of examples which
+are in some way contrived from the
+perspective of the analysis and
+stability uh and and tools and analysis
+on from the respective of stability. Uh
+and we did this in kind of a mental
+model was was essentially assuming that
+we had you know a a few things coming in
+at different stages of our analysis.
+Right? So we assume that somebody was
+giving us a smart way of defining the
+control law U. Uh someone was giving us
+a smart way of defining the the function
+V. Uh the same thing for the adaptive
+component. And so kind of our point here
+was that in reality we would have to
+come up ourselves with these components
+and then you do this stability analysis.
+For the purpose of this course we just
+wanted to focus on showing the kind of
+analysis that would come from model
+reference control. [clears throat]
+And so the first reference is a good one
+if you want to wish if you wish to see
+the kind of the forward direction. So
+deriving these things
+a couple of notes on the reference
+signal itself. So we introduce this
+reference signal as again something that
+came from outside for the purpose of our
+analysis. But in general if the
+reference signal is very simple such as
+either zero or a constant throughout
+[snorts] throughout time then it is
+possible that we might have many
+different uh values of our parameters
+that we wish to estimate that enable us
+to perfectly track this reference
+signal. And so in a way this uh comes
+with um an identifiability issue with
+respect to the actual parameters that we
+wish to estimate because again here in
+MRA we typically only care about the
+overall performance with respect to
+reference tracking and so we don't
+really care necessarily about parameter
+estimation.
+On the other hand, if the signal is too
+complex or at least complex enough such
+that the only way to actually track it
+is to estimate the true value of those
+unknown parameters, then this creates a
+problem in the sense that we or at least
+it creates a tension towards caring
+about parameter estimation, right?
+because we and so this kind of brings up
+again all our discussions that we did on
+persistent exitation in the sense that
+if we wish to estimate the true
+parameters then we might want to um
+probe the system in meaningful ways in
+order to converge to the true
+parameters.
+Okay, any questions on this general
+recap and on uh on the overall picture
+here?
+&gt;&gt; Yes.
+&gt;&gt; Yeah, indeed it's a good point. Um
+let's see. Uh well no these ones. Oh
+let's quickly mention a couple of things
+on uh model identification adaptive
+control. Um specifically I mean the
+discussion on model identification is
+very case dependent because at the high
+level what uh MAK is doing is basically
+using system identification. So
+estimating a model of our dynamics as an
+inner loop for control. So what we do is
+that Mayak essentially combines model
+estimation with a controller that uses
+this estimated model as if it was the
+true one.
+So in a way this is extremely
+customizable because it you know you
+could pick your own model that you're
+trying to estimate. You you could pick
+your own uh controller that uses this
+model and these two things are fairly
+independent the one from the other. One
+distinction that typically
+differentiates between uh different
+methods is whether we are using kind of
+working under a certainty equivalent
+assumption. That is we are you know for
+the purpose of modeling we assume that
+uh we are estimating some parameters
+theta
+and these parameters theta uh are
+obviously you know the goal of our uh
+estimation process and so there's
+uncertainty on our current estimate of
+theta and so in the certainty equivalent
+what we're typically assuming is that
+our guess so theta hat is a point
+estimate so we are currently estimating
+one value of theta and we trust it
+fully. On the other hand, in the
+cautious approach, we are trying to
+estimate a distribution over the unknown
+parameters theta where the distribution
+essentially is a mechanism to express
+our uncertainty on the estimate itself.
+So we have some data that maybe leads us
+into thinking that theta hat is the more
+plausible value for theta, but we have
+some uncertainty on it. And so in the
+cautious uh approach we're basically
+trying to maintain uh these uh this
+metric this estimate of uncertainty uh
+and keep this also potentially for uh
+for control.
+So at a high level kind of mrak and mak
+kind of arise from two different
+perspectives. So the in MRAC the
+parameters are updated directly to
+minimize tracking error with respect to
+our reference signal.
+On the other hand in Mayak uh parameters
+are updated so such as to minimize data
+fitting error. So we have this
+intermediate objective which is the one
+of parameter estimation
+and as uh we were saying my controllers
+are generally more flexible because one
+can couple different models and
+controllers more easily. uh but at the
+same time my controllers typically rely
+on having a good estimate of what the
+unknown parameters are. Uh and
+guaranteeing kind of the performance and
+stability of my controllers is typically
+harder because of uh this reliance on
+having to estimate the the true
+parameters.
+On the other hand for MRAC stability and
+convergence are usually uh achieved by
+by definition because we are designing
+the full system such as to guarantee
+stability.
+Okay. And so this concludes the content
+that I wanted to um discuss about
+adaptive control. And so we switch into
+the content for today's lecture which is
+basically an introduction to imitation
+learning and and reinforcement learning.
+And from the perspective of our usual
+road map, we are basically moving from
+uh being in the top left uh quadrant
+that is more classical approaches to
+learning based control to the top right
+where we are essentially starting to
+introduce uh what I think is probably
+one of the most active uh areas of
+research right now when looking at um
+control and autonomous systems. Uh
+namely because uh there has been a push
+towards end-to-end approaches and
+learning based methods. uh to allow kind
+of robots and autonomous systems to to
+be deployed in practice.
+And so in this sense um you you might
+have you know stumbled and you might
+have seen a lot of different videos and
+you might have been following the recent
+progress that is happening in robotics.
+Uh at the you know there are different
+reasons for for why this pro progress is
+being happening. Uh one of this is
+obviously the uh strong progress in the
+from the perspective of foundation
+models leveraging large language models
+or vision language models for control.
+But at the high level all of these
+different end to- end pipelines that are
+coming up over the last 3 to four years
+are really at the end of the day being
+learned through either imitation
+learning or enforcement learning. So
+these are the ground truth learning
+signals that all of these methods and
+architectures are are leveraging. And of
+course their impact is not only for the
+purpose of u robot manipulation. They
+are being used a lot also in uh
+autonomous driving. So you can see here
+on the left this is a pretty recent um
+uh autonomy stack from Nvidia the Alpha
+Mayo which is using indeed both
+imitation learning so supervised
+learning and reinforcement learning to
+to train part of the stack and also the
+these methods namely uh reinforcement
+learning are used for the alignment of
+uh large language models and visual
+language models nowadays where the idea
+here is that we want to take these you
+know large neural networks represent
+large dogid models and fine-tune them to
+be useful assistance and so typically
+this alignment phase happens in
+different ways but the main bulk of the
+work is typically done through
+reinforcement training in current
+stacks.
+So all of this to say is that these
+models are these mechanisms are highly
+relevant uh in uh current in current
+industry and and research. uh and
+therefore I think they are extremely
+exciting
+but for the purpose of our class what do
+kind of what is the usual what is the
+setting that we're interested in and
+specifically kind of I would say that
+basically all of the methods that we
+have been focusing on so far are
+essentially trying to uh define a
+mechanism in which from which we can go
+from some representation of the state uh
+which could be more or less uh
+structured to uh the definition of an
+optimal control. Right? So this is
+basically the gold standard that we're
+aiming for when whenever we are devising
+all of the methods that we looked at in
+this class.
+And so far I would say most of the
+methods or actually all of the methods
+that we have been looking at fall under
+this option one category which is
+basically entails having to um
+acquire a deep understanding of the
+problem setting. for example, in the
+form of uh the an equation of the system
+dynamics and then design a solution that
+leverages this deep understanding of our
+system. Right? You can think of indirect
+methods that we looked at the beginning
+of the class as the extreme canonical
+example of this where we used our uh
+understanding of the system to derive
+optimality conditions for for control.
+On the other hand, uh what the tools
+we'll start to see today and for the
+rest of this class uh belong to um
+either option two or option three here
+on the slide where at a high level we
+want to set uh basically this problem of
+going from a state representation to an
+action as a learning problem and we'll
+be doing this in two ways. So one way
+will be through imitation learning where
+the idea is that quote kind of um in in
+some way or as the quote is seeing here
+on the slides we want to learn from
+demonstrations and the idea will be that
+we'll be collecting data sets of
+experience which are then represented as
+if you want tuples of states and
+decisions that were taken in those
+states and we want to try to estimate
+and approximate this mapping.
+So in this case the demonstrations are
+essentially relating to the fact that we
+have an example of what is hopefully a
+good behavior to take in a specific
+state.
+For the case of reinforcement learning
+on the other hand, we want to learn by
+trial and error. That is we'll be
+learning from data that is uh basically
+trying to pair states of we find
+ourselves in with a score or metric that
+basically tells us how good a specific
+action or control is in that state. So I
+hope that you're seeing already the kind
+of philosophical distinction between
+these two approaches because on one hand
+we have a teacher that tells us what is
+a good action to take. On the other
+hand, for the case of reinforcement
+learning, we don't have uh an entity
+that tells us what is a good behavior to
+take, but we have a measure that tells
+us how good a specific action is. And so
+the overall goal of reinforcement
+learning will be to try out different
+strategies and figure out which one is
+the most rewarding in practice.
+&gt;&gt; Yes. when you're doing this might be
+sort of question what you're doing.
+&gt;&gt; Is the data that you're feeding into
+your algorithm always going to be
+treated as like the perfect model or is
+there a way to inform the algorithm
+you're working with this is an example
+of something good but it could be done
+better.
+&gt;&gt; [clears throat]
+&gt;&gt; M yeah this is a good question and I
+think it touches on I would say one of
+the main u limitations if you wish of
+imitation learning because at at face
+value imitation learning assumes that
+the mapping that you're trying to
+approximate from your data is actually
+representative of good solutions right
+so here in a way imitation learning is
+kind of bounded by the performance of
+the behaviors that you have your data um
+this is a statement that you know has
+you know an asterisk in a way because
+there are different ways of
+instantiating the imitation learning
+problem to maybe uh favor uh high
+performance behavior with respect to
+others in the data set. Um but in
+general this is the case where uh your
+performance that you can get out of your
+data is typically bottlenecked by the
+performance of your teacher if that
+makes sense.
+&gt;&gt; Yeah. Yes.
+learning to learn like like the basics I
+guess and then move to reinforcement
+learning to like tune it more like it's
+easier to make it possible once you know
+you're completely.
+&gt;&gt; Yeah. So this is one of the points we'll
+be doing in a few slides from now. Uh
+but the idea is that I would say current
+autonomy stacks and kind of the training
+of current autonomy stacks is typically
+a layered process where you have
+different phases of training. uh I would
+say this has been inherited mostly by
+the large language model community and
+the NLP community where these things
+these large models have stages of
+training. So you have maybe a vast
+pre-training stage where you're just
+learning how to you know the system and
+general rules of the world and then
+you're trying to distill more and more
+high quality data in along the way and
+so usually yes I think you have a good
+intuition where supervised learning and
+imitation learning could be a way to get
+a good starting point and then
+reinforcement learning could be used to
+fine-tune. Yeah.
+Okay. And so in this context what we'll
+be doing today is we'll start by just
+fixing kind of our notation
+understanding on supervised learning and
+then we'll go into kind of a discussion
+on imitation learning and reinforcement
+learning where the idea for today is to
+basically
+fixate and understand I would say the
+fundamentals of what imitation learning
+and reinforcement learning are in
+general kind of the distinction and
+similarities between these two
+approaches and how they relate with each
+other. So I would say at a high level uh
+I I think that you should see this
+lecture as trying to build a mental
+model of how these different tools are
+organized and should be seen. Um and in
+the following weeks starting on Monday
+we'll then start to actually introduce
+concretely different methods that belong
+to these uh to these families.
+And of course as I said this is one of
+the most active areas of research right
+now. So there are plenty of great um
+references out there. uh apart from the
+textbook uh from the class definitely
+the Saturn embarto for reinforcement
+learning is a is a great reference and
+there are also a number of classes both
+here at Stanford for example DRL uh and
+the kind of equivalent on it in at
+Berkeley
+but so starting from supervised learning
+I would say in general uh supervised
+learning described this tasks where uh
+where we want to learn a mapping here
+represent denoted as f on the slides
+from some input set X to an output set
+uh Y. And this represents kind of a
+general formalism where most kind of
+regression and for example
+classification tasks can be uh
+understood.
+For example, uh we might want to learn
+an image classifier. So something that
+maps from images of animals or uh
+different scenes to a class category of
+the object that is present in that
+scene. And so here in this case the
+mapping would essentially be learning in
+this function that takes an input X here
+represented for example as an RGB image
+to the class that represents the object
+present in that image. But more
+generally this is uh essentially the
+problem of learning a mapping that goes
+from some input representation denoted
+usually as a vector X to an output
+representation which could also be
+another vector Y.
+And when we say learning this typically
+involves uh data in the form of input
+output pairs so xy and we want to
+approximate this mapping uh by uh
+typically kind of methods along the
+lines of maximum likelihood estimation
+and to um really set down the notation
+we'll be using going forward let us go
+quickly through a simple example. So
+consider this uh simple regression where
+we have some input data X uh and some
+output data Y and we have some examples
+and examples of these mappings
+represented by the red dots here on the
+slide. Our problem in the in this case
+supervised learning problem might be
+essentially trying to fit uh a candidate
+kind of parabolic function to this data.
+And so in this case our mapping that we
+wish to learn will be a parametric
+function f of theta with parameters
+theta. And the supervised learning
+problem will be to learn these
+parameters theta that minimize some
+notion of of error. And so we saw this
+last time already could be for example
+in the form of minimizing some squared
+error loss.
+Of course equivalently this can be
+written from the perspective of
+maximizing likelihood. So instead of
+seeing this as an error minimization
+when we want to minimize the discrepancy
+between our predictions and the actual
+uh realizations of some mapping that we
+wish to estimate um we might be positing
+this as a probabilistic learning problem
+where our function might we basically
+hypothesize that our data is distributed
+according to some uh distribution. For
+example, here the probability of a point
+Y given X might be represented by a
+Gaussian distribution where our function
+could represent the mean of this gausian
+distribution given some known uh
+variance. So pictorially here is as if
+we were placing some you know small
+gausians on top of each point and the
+overall learning problem will be to
+maximize the joint probability of all
+our uh data points.
+And so learning through maximum like
+through likelihood maximization can be
+written as basically taking the argmax
+of the product of all the uh conditional
+uh probability distributions of our
+observed data yis given our prediction f
+of x i
+mathematically this is uh typically not
+very well behaved object because we have
+the product of a bunch of terms that are
+between zero and one and so what people
+do in practice This is that rather than
+maximizing the likelihood we would tend
+to minimize the negative log likelihood.
+So we are taking the logarithm of this
+and the logarithm is a monotonic
+transformation. So it basically
+preserves the uh the extrem points. So
+the maximum are preserved. So in
+practice you know you would go from a
+situation where maybe the uh your
+maximum likelihood point would be with a
+very narrow or peaked. So this is the
+objective function that we wish to
+maximize. If we take the so this would
+be the
+maybe the probability of given x. If we
+take the log of this this would
+typically boil down to basically
+smoothing out uh this uh this uh loss
+function uh landscape while preserving
+the the same point. So this might be the
+same uh mu hat for example.
+Okay, but this is uh I hope this is uh
+mostly repetition and uh and background
+for for most of you guys.
+So, but why do we care about um about
+supervised learning and the point is
+that supervised learning as we will see
+is basically the cornerstone of uh
+imitation learning. And this is because
+imitation learning essentially refers to
+uh a class of methods that enable uh
+skills to be transferred from an expert
+to a learner. And in the context of
+robotics, this expert is typically a
+human operator or some pre-existing uh
+control policy. And the learner is
+basically our policy that we wish to uh
+approximate. Right? So in this case you
+could think as um basically we have this
+uh bimmanual
+uh manipulation system where we have a
+human teleoperator that is controlling
+this robot. And so for us the human kind
+of logging these uh actions would be the
+teacher or the kind of the the skilled
+expert. We would then be collecting
+these data sets of controls that the
+humans is taking and then the learning
+problem will then be basically figuring
+out how to map from the states of this
+manual uh by by manual manipulator to
+the controls. So basically minimizing
+for example the error with respect to
+what the humans would have done in that
+case.
+And so imitation learning uh at a high
+level assumes access to a data set as we
+were saying before of essentially pairs
+of states X and controls U uh that are
+corrected by collected by observing some
+some expert that is uh behaving in the
+world and imitation learning should be
+interpreted as an umbrella term that
+broadly speaking u
+comprehends two families of approaches.
+The first one is behavior cloning that
+is in a way also the most intuitive of
+the two whereby in behavior cloning what
+we want to learn or at least the goal of
+learning is directly learning this
+policy that maps from states to
+controls. So in behavior cloning our
+kind of objective of learning will be to
+learn a parametric representation of our
+policy pi that basically minimizes some
+some notion of error between the uh true
+x and new pairs that we have in our data
+set and the one we are predicting.
+The other class of methods is known as
+reinforcement learning or also often
+known as inverse optimal control where
+on the other hand
+the objective here is to approximate the
+reward or objective that the expert is
+currently optimizing. So in some way the
+main goal or output of an inverse
+reinforcement learning algorithm will be
+to estimate a reward function R that
+maps pairs of states and controls to a
+measure of success or performance.
+So you see how these two families and
+categories of approaches are in a way
+nicely complimentary to each other
+because here we're directly
+approximating the mapping that leads us
+from uh states to controls. Well, here
+we're approximating the kind of
+objective that we think the expert is
+optimizing and then use this for
+control.
+&gt;&gt; Yes. So
+that means
+&gt;&gt; a [clears throat] policy for like for
+example if I'm picking up something like
+back out the policy for what I'm
+thinking kind of.
+&gt;&gt; Mhm.
+&gt;&gt; Yeah. Exactly. So it would be as if
+maybe I don't know like an example could
+be
+in a navigation task, right? So say we
+have some task where we have a starting
+point here and like a goal point here.
+Uh in the behavioral cloning route we
+would be collecting examples of
+trajectories of how to get to the goal
+and we would be imitating those. In the
+case of inversion learning, what we
+might be interested in doing on the
+other hand is learning maybe a sort of
+vector field where the cost is basically
+lower at the goal state and increases
+uh in other states, right? So it's
+basically something that tells us how to
+behave in that sense from the
+perspective of the util operation. Yes,
+this is what you were saying.
+Yeah,
+I guess inverse reinforcement learning
+you still have to be optimization to
+find the best control given the current
+state like some
+&gt;&gt; Yes. Yes, indeed. So at the end of the
+day, this is not something that
+practically leads to a rule of how to
+behave. So there will be an additional
+step which is having to derive a policy
+that optimizes this objective. But this
+is something that we have many tools to
+to do, right?
+um
+maybe to give you some understanding to
+when inversion reinforcement learning
+might be useful. So take the example of
+maybe learning how to drive autonomous
+driving right um it is I would say hard
+to specify numerically what good driving
+means. First of all it's hard in general
+but also because every each and every
+one of us has a different interpretation
+of what good driving means. And so in
+this way what we would be doing is would
+be collecting
+examples of people driving. And this is
+actually easy to collect because we just
+let people drive. And then from that you
+would be deriving a sort of analytical
+expression that tells us what these
+people thought it was relating with good
+with good driving and then optimize for
+that.
+Okay. And so looking at the first of the
+two, so behavior cloning, um I would say
+the main idea of behavior cloning is in
+some way particularly simple. So the
+main idea is that we want to train a
+policy through supervised learning. So
+the skeleton of an imitation learning
+algorithm typically goes that we have a
+data set of expert demonstrations.
+Again, we have someone teleoperate our
+our robot
+and then we basically just train our
+policy to mimic this expert through any
+of our favorite uh kind of supervised
+learning methods, right? So maybe
+minimizing or doing maximum likelihood
+estimation on that data set.
+And uh I would say one of the very first
+examples of working behavior cloning in
+practice dates back to the late 1980s.
+Um, if I remember correctly, this is a
+study from uh CMU. And the goal here was
+to basically learn how to drive from uh
+examples of of uh of humans driving. So
+there was this military vehicle and the
+problem that they set up was in some way
+kind of resembling to what I would say
+mo many of the also recent approaches
+are doing. So they're basically
+recording some images, maybe a front
+camera images on the vehicle or other
+cameras around the vehicles and they're
+try basically mapping those cameras to
+the steering angle for for the vehicle
+in spec and specifically at the time
+they were doing this by learning a small
+neural network to to do this. And you
+know for for the times this was actually
+a pretty amazing result because they got
+the the vehicle to drive on fairly easy
+roads and controlled environments. uh
+but still kind of this I think
+kind of really maps out also kind of
+this the skaton of what many of the most
+current methods are doing that is trying
+out to to set the behavior cloning
+problem as something that goes from a
+highdimensional input for example image
+space to a control that we care about
+and so you might ask like you know this
+was happening in the 1980s 1990s so is
+this all that there is to it to
+imitation machine learning or is there
+is there more? And in particular, is
+this simple recipe guaranteed to work?
+And the spoiler is of course no. There
+are a number of of details that that
+come with uh with these uh techniques.
+And I would say the main factor here is
+that imitation learning is fundamentally
+different from plain supervised learning
+for a number of different ways.
+Specifically, we saw before how
+supervised learning at its core is
+basically a mechanism to learn a mapping
+from input data to output labels based
+on a data set of examples of this
+mapping.
+On the other hand, imitation learning
+while it does build heavily on or
+specifically uh behavior cloning builds
+heavily on supervised learning, it has
+some key differences. And specifically
+one is that in the case of deploying an
+autonomous system in the real world,
+even small prediction errors will
+compound over time, right? And so you
+can imagine a situation where
+we have uh maybe a data set that was
+showing us a certain behavior of our
+system, right? So going from x0 taking
+uh u 0, x1,
+u1 and so forth.
+At deployment time, if we were to start
+from the same X0,
+regardless of how good our model is, we
+there will always going to be most
+likely some prediction error, right? And
+so maybe this will lead us into defining
+kind of a U0 hat that is slightly
+different from the original U0, which
+leads us to a slightly different X1.
+And now we are in a way that is you know
+in in a state that is potentially
+slightly outside of the support of our
+data distribution which will lead to
+having a following prediction that is
+even slightly more off. Right? And so
+you can see how this compounding effect
+is basically getting exponentially worse
+over time. Right? Because we are since
+in the context of autonomous systems and
+imitation learning we are active agents
+in the environment. Our errors will lead
+to denote um kind of the distribution of
+states that we observe
+and this is something that is not
+present in in plain supervised learning.
+Another reason for does this make sense?
+Yeah.
+So another reason for for why imitation
+learning is also a difference is that in
+general since here we're we might be
+dealing with physical systems. There
+might be some physical constraints or
+dependencies that are that are basically
+unique to the fact that we're dealing
+with some real world embodied system.
+Right? So if you're just learning a
+mapping from camera images to uh object
+classes, then we literally have no
+limits to what those object classes uh
+can be within that vocabulary. On the
+other hand, if we're trying to learn to
+predict the joint angles of a robot
+manipulator, we have some constraints
+that we have to adhere to, right? So we
+cannot output any joint angle
+along this line. in in general the
+domain the source domain may may
+different from the one we have at
+deployment. So say that we are trying to
+learn how to control a humanoid by
+looking at videos of humans doing
+different uh different actions. There is
+of course an embodiment gap
+and I would say kind of most of these
+problems boil down to uh what is known
+as coari shift and we'll talk more about
+this on on Monday but the idea is that
+the state distribution that is induced
+that is observed through the expert by
+state distribution I mean the set of
+states that we are observing while kind
+of seeing the expert behave will be
+different from the set of states that
+we're observing as we ourselves are
+taking decisions.
+And so this leads to a a distribution
+shift that is uniquely not there in the
+plain supervised learning setting. And
+last but not least, if collecting more
+data of images might be extremely cheap,
+we just scrape the internet. Collecting
+demonstrations or useful demonstrations
+in the case of robotics is usually quite
+more expensive because you have to maybe
+drive your car around.
+Okay. And so on Monday we'll basically
+start looking at these challenges and
+mechanism to uh to approach them.
+Any any questions so far?
+Okay.
+So let's also say a couple of words on
+inverse reinforcement learning. So as we
+were saying before in inverse
+reinforcement learning uh we should
+basically see this as an orthogonal
+approach to imitation learning uh where
+we are trying to recover our reward
+function from de demonstrations of a
+policy right and as an example this just
+to to ground the intuition we could for
+example consider the fact where we have
+a warehouse robot that must navigate
+from a starting point to a goal point
+similar to what we're saying here And in
+the case of behavior cloning, we would
+be collecting demonstrations of uh
+examples of how to go from A to B uh and
+then train a policy that can imitate
+that behavior. Now, this policy will
+probably be quite effective in similar
+scenarios. For example, going from the
+same state and goal uh combination, but
+in the moment where we might be maybe
+reassembling the configuration of the uh
+of the warehouse, then this might find
+some uh some limitations. On the other
+hand, if we understand the overall goal
+of the expert from which we have um
+demonstrations, then we have a basically
+a representation in this case the reward
+function that can be potentially much
+more generalizable.
+For example, something along the lines
+of moving closer to the goal is good and
+moving closer to the obstacles is is
+bad, right? something that is can be
+seen as a sort of vector field in the
+space of a possible path.
+Now this is not to say that reinforce
+reinforcement learning is generally
+better uh but just to highlight a
+potential kind of dissimilarity between
+these two these two methods
+and we will see again kind of a number a
+couple of specific instantiations of
+reinforce reinforcement learning.
+Okay. So let's now introduce um some key
+terminology and notation for uh for
+reinforcement learning.
+And
+at a high level kind of fundamentally I
+would say that reinforcement learning
+can be seen as a formalism for learning
+based decision-m where it is basically
+an approach for learning how to make
+decisions from from experience and this
+happens by basically following a basic
+learning loop an interaction between two
+agents. The first one is uh what our
+policy or here referred to as the agent
+and then we have an environment which is
+basically the world we are or our system
+that we're interacting with and the
+interaction between these two elements
+usually goes such that we have the agent
+observing some state. The agent will
+take the state in order to compute an
+action or control UT. This action will
+be kind of acted on the in the
+environment which on the other hand will
+return to us with a an updated state of
+the system and a scalar measure of
+performance our reward RT. And if you
+see this loop kind of unrolling over
+time. This leads to the definition of a
+trajectory to which is nothing else than
+the kind of unrolled sequence of states
+and controls and rewards that we are
+observing over time.
+And the point in reinforcement learning
+is that basically all reinfor
+reinforcement learning algorithms out
+there will basically use these um
+trajectories in order to improve the
+policy.
+And so when we were we're referring to
+as learning by trial and error, this is
+what we meant because we reinforcement
+learning essentially defines this uh
+interaction where we have an agent that
+is an active agent in our system tries
+out different strategies and will use
+the trajectories that result from its
+exploration to maximize some notion of
+score and performance.
+And so in reinforcement learning
+literature which generally originates
+from the computer science uh literature
+there are a number of terminologies that
+I think uh is good to to set in place.
+So we'll refer to as policy as a mapping
+from state to actions. Uh that basically
+defines the agents behavior and this
+typically is expressed at least in the
+area literature as a distribution over
+controls given states.
+So so far we were mostly assuming that
+the policy was a deterministic policy.
+So something that basically led to
+a control given a state. But in the RL
+literature, this is usually seen as a
+distribution over
+uh over controls given states.
+So in practice,
+if we have our kind of grid world
+example for navigation, our possible
+actions might be, you know, the four
+cardinal directions.
+And in this case the policy will then be
+representing
+uh a distribution over
+these four cardinal directions right in
+the case of a discrete action space in
+this case.
+Similarly, if we were um
+representing a continuous action space,
+we could potentially use a gausian
+distribution, right?
+Over candidate action z.
+Okay. When we refer to as environment,
+we will basically refer to as the system
+the agent interacts with.
+Mathematically, this is represented as a
+again conditional distribution over the
+next states given the current states and
+the current actions.
+The reward is a scalar measure of
+immediate success. So something that
+lead gives us that given a state and a
+control will give us a scalar measure of
+how good that control was in that
+specific state.
+And we will be very often talking about
+uh value functions. So if on one hand
+the year reward measures immediate
+success. So again how good was this
+action in a specific state
+a value function represents a measure of
+performance in the long run. That is
+specifically it will define how much the
+agent can expect to achieve in the
+future. So I would say again visually um
+say that we have our usual kind of p
+pictorial trajectory here kind of the
+reward function is something that is
+defined over the immediate transition.
+So given a state and a control [snorts]
+but at this state depending on the
+uncertainty that might come from the
+policy. So here we might sample
+different actions or the state
+transition might also be stoastic. So
+given the same action we might also end
+up in different states. So there is if
+you wish like a whole set of possible
+evolutions of the state that we could
+have. So the value function is something
+that is interested in the expected value
+of the reward that we that we can expect
+to have given uh policy.
+And the reason why I would say basically
+most or almost all the algorithms in
+reinforcement learning really focus a
+lot on the estimating value functions is
+because this is really the uh kind of
+the golden standard that we wish to work
+with when taking decision right we don't
+really care about immediate success most
+likely but we care about the overall
+success of uh in our task.
+Does this make sense?
+And optionally, we'll be talking about
+models. Namely, the models for the agent
+will essentially be representing its
+understanding of the environment or for
+us, it will be basically an approximate
+model of the of the system dynamics,
+right? Mathematically this will be
+represented as also a distribution over
+next states given current states and
+current actions but this will basically
+represent our understanding of the
+environment. [snorts] This model might
+is might be learned namely we might
+choose or not to approximate this this
+model meaning we might want to design a
+strategy that leverages this approximate
+understanding of our environment or
+simply choose to ignore it. And so in
+the case of reinforcement learning, this
+is basically what differentiates between
+what are called as model free
+reinforcement learning algorithms and
+model based reinforcement learning
+algorithms.
+Okay. But then the question is why
+should we uh go for reinforcement
+learning and what are the kind of
+redeeming characteristics of of these
+techniques? And I would say one clear
+kind of winner in terms of reinforcement
+learning for me is the fact that u
+reinforcement learning can discover new
+and unexpected solutions. So along the
+lines of what your colleague was also
+alluding to in the case of imitation
+learning we're basically at least in
+principle bounded by the quality of the
+demonstrations that we have. Right? So
+we're basically trying to distill some
+knowledge or behavior that we think is
+good enough or optimal in the form of a
+learned mapping by trying to approximate
+this mapping explicitly. In
+reinforcement learning, we want to
+discover what are good solutions by
+maximizing some notion of performance.
+And so this is potentially unbounded by
+any teacher simply because there is no
+teacher, right? And so I think a good
+example here is you know kind of some of
+the most recent successes in
+reinforcement learning started uh in the
+mid2010s
+uh with uh kind of game playing.
+And here the uh agent was essentially
+trying to to solve this this pong game
+in the Atari family. And you know it
+started basically trying around
+different strategies. At the beginning
+it was not that good. But then by where
+the goal here was essentially to um
+learn how to control this while trying
+to maximize the score as a notion of
+reward. But then over over time by
+basically trying out different
+strategies is it was starting to become
+more and more professional
+until I think after some time kind of
+the interesting aspect that turned out
+is that the model kind of found an
+interesting strategy which is basically
+the one of digging a tunnel here on the
+side of the screen. uh because it turned
+out that this is an optimal way to or a
+very smart way to easily get a lot of
+points, right? And so um this is
+obviously in the case of games. Uh but
+you might have heard about one of the
+you know famous successes of
+reinforcement training is the case of
+Alph Go where it basically there was a
+model trained to play the game of Go. uh
+and it ultimately you know defeated the
+world champions Liido in a in a in a
+famous in a famous match and there was
+this move 37 I really advise you to
+check there's a full documentary on this
+about about this uh this project where
+move 37 was one that really stunned even
+most of the experts that couldn't really
+have would have never thought about this
+uh this this uh this move and so this is
+really what I mean by discovering ing
+new solutions because here we're only
+we're not really bounded by
+demonstrations but we are in the case of
+reinforcement learning trying to
+maximize some some notion of score.
+Another reason for why I think
+reinforcement learning is particularly
+powerful is that reinforcement learning
+algorithms are very effective at
+optimizing complex objectives or kind of
+complex reward functions definitions.
+Um and this makes it appealing for
+complex physical tasks. So in this case
+uh you know doing locomotion of a
+quadriped on rough terrain is an
+extremely hard problem to solve through
+maybe analytical tools or kind of
+optimal optimization based control
+tools. But on the other hand,
+reinforcement turning is now I would say
+the de facto standard for uh basically
+robot locomotion because you can
+basically leverage these highly
+paralyzable simulation environments. Let
+the the robots learn how to navigate in
+these environments um without having to
+rely on assumptions on contact dynamics
+and trying to estimate the models of of
+your system and so forth. And so this is
+really a field where reinforcement
+learning is turning out to be extremely
+extremely powerful.
+&gt;&gt; Yes.
+&gt;&gt; Having to kind of model the contact
+dynamics anyway for the model that gets
+trained in.
+&gt;&gt; Uh so the simulator internally is you
+know is a physics based simulator. So
+they do have some uh some at the very
+least very accurate model of the of the
+physics. uh but these might be very
+expensive right so here you're basically
+trying to distill these uh this physics
+knowledge into a policy so the policy
+itself is just a neuron net right that
+basically maps inputs to outputs most
+likely um and it's not really taking
+into account the physics but it's
+learned them implicitly through the
+simulator if it makes sense
+when you deploy it it's just a yes
+exactly
+And so when we look at reinforcement
+learning um I think it's nice to
+highlight how it it is different from
+other machine learning uh paradigms. So
+first of all we highlighted this
+already. So in reinforcement learning we
+don't have a supervision signal right we
+only have a reward function. There is
+nobody that teaches us what is a good ex
+uh action to take. We only have a
+measure that tells us
+how good is an action we try to take.
+In general, depending on the task,
+feedback can be delayed. Um, take the
+example of learning how to play chess
+through reinforcement learning. It is
+kind of hard to give credit to one
+specific move in a chess game until we
+reach the end. Right? So we actually
+what we actually the the only grounded
+reward signal that we get is whether we
+win or not the game. But then
+accrediting this to any specific moves
+becomes challenging. And so this is what
+I mean by delayed rewards which creates
+this problem of credit assignment which
+is one of the fundamental problems in
+reinforcement learning. And so we'll see
+how different algorithms basically try
+to approach this through the notion of
+value functions most likely.
+And then we also hinted at this uh
+briefly but in reinforcement learning
+data is not uh iid. So the iid
+assumptions I would say is one of the
+most fundamental assumptions in
+statistical learning theory. Basically
+any theorem out there assumes that the
+data is uh independent and identically
+distributed and we can basically sample
+from the same data generation process.
+However, when we work with reinforcement
+learning, we are indeed in this setting
+where the actions we take now influence
+the states we will see in the future,
+right? And so this clearly breaks this
+assumption because the data is not
+independent.
+And so this creates for typically much
+more instable learning uh problems. And
+many of the algorithms that we will see
+uh in the next week essentially will
+have some mechanism in order to
+regularize uh the learning problem
+partially also because of this uh
+misalignment.
+Formally reinforcement learning kind of
+builds on top of the formalism of markup
+decision processes which we introduced
+before and specifically we I would say
+here is where it's also important that
+you all build kind of a uh plasticity in
+dealing with different notation because
+uh until now we have been following the
+notation that comes from the optimal
+control literature for example states
+are x and controls are u But in the
+reinforcement learning literature, this
+typically builds out from the computer
+science community which applies just a
+different notation for the same objects.
+Right? So uh instead of being x's and u
+for example in reinforcement learning
+you will most likely be finding states
+as s and actions as a um but in general
+in order to be consistent throughout
+this course we will keep dealing with uh
+the denotation that comes from the
+controls community. And so we'll be
+defining a state space X uh that belongs
+to kind of calligraphic X. State space
+is just the state the the set of states
+that we can be in. Again take this
+navigation uh example. This would be all
+of the cells where we could be in. Same
+thing for the actions. This could be a
+set all the set of all possible actions
+that we can take in our environment.
+Uh we have a transition function or
+dynamics. Usually in the RL community,
+this is expressed as a conditional
+distribution. So the distribution over
+next states given current states and
+controls. We'll have a reward function
+as we discussed before and we will have
+a discount factor which is used as a
+mathematical trick if you wish to um
+highlight how much we care about
+uh immediate reward against long-term
+reward.
+So I think this is more clearly
+explained here in this uh in this
+objective
+where specifically given a mark of
+decision process that is typically
+expressed as a uh tupole of elements.
+The goal of reinforcement turning will
+be to maximize the RL objective which is
+the expected reward future reward or
+specifically the expected discounted
+future reward under the trajectory
+distribution. Now what is this
+trajectory distribution? Loosely
+speaking this is nothing else than the
+distribution over all possible
+trajectories that we could ever observe.
+Again kind of along the lines of what
+we're saying here, we have some
+environment with which we're interacting
+with. The trajectory distribution is a
+distribution that assigns probability to
+each and every one of these possible
+trajectories.
+Mathematically, this is uh derived uh
+through these uh conditional
+independencies. So the probability over
+a trajectory to is basically the
+probability of starting from an initial
+state x0
+multiplied by the product of basically
+the two sources of randomness that we
+have where one is just the randomness
+over the next state and one is the
+randomness given by our policy.
+So given this trajectory distribution
+the RL objective will be to maximize the
+discounted sum of rewards
+the expected sum of discounted sum of
+rewards where the expectation is taken
+under this trajectory distribution.
+The discounting here as you might notice
+is basically
+a mechanism for which we can give more
+or less weight to immediate or future
+rewards.
+Also mathematically this is something
+that allows us to deal with infinite
+horizon problems because if this were to
+be an infinite sum then you know good
+luck optimizing this. Uh but if we have
+this uh scalar uh discount factor then
+this actually becomes tractable.
+Any questions on uh on this uh
+formulation?
+Okay.
+And so I would say whenever you will be
+setting up also in your pet sets um some
+reinforcement learning problems, I think
+kind of the very first uh decision to
+take will be to basically uh define what
+an MDP is for our problem. And so some
+examples here take the case of chess.
+The state base might be uh defined by
+all the possible positions of the pieces
+on the board. The actions will be
+basically all the feasible next moves.
+Uh the dynamics here are deterministic.
+So given a position of the board and a
+action then the next state will just be
+the conse the next position of pieces on
+the board. uh and the reward function
+might be something as simple as negative
+one if we lose the game or plus one if
+we win the game.
+Similar thing for a quadriped.
+The state might be the robot's pose and
+we might be controlling kind of the
+joint torque commands for each of the
+legs of the quadripeds. And then the
+dynamics here might be kind of where we
+think these the the quadroet will be
+given uh some specific choice of of
+torqus. And the reward function if we
+wish for the quadro to basically learn
+how to walk fast it will be something as
+you know a positive if we're taking a
+forward step uh something negative if
+we're falling and then uh kind of zero
+if we're still standing but again these
+are just toy examples but the the the
+intuition here is that whenever we posit
+our problem as a reinforcement learning
+problem we will have to necessarily
+define the elements that define uh an
+MDP
+Okay. And so we mentioned before how
+value functions are really key in
+defining uh reinforcement learning
+algorithms. So we will often be dealing
+with different versions of or different
+instantiations of the concept of a value
+function. Specifically, let's start from
+I would say the most intuitive one which
+is the state value function also
+expressed as uh B of X which kind of um
+intuitively represents the expected
+total reward that we expect the agent to
+have if we start in a specific state and
+act according to a particular policy. So
+first of all let's note that the value
+functions are conditioned on a specific
+policy. Right? So the future values that
+we expect to have depend inherently on
+how we think we will behave. Right? So
+the value function is an object that
+depends on a policy.
+In particular, the state value function
+is a
+concept that relates with a specific
+state. So in this case the value
+function of state X1 will essentially be
+the expectations of all my discounted
+rewards that I expect to have given the
+well the uncertainty of the environment
+itself but also the uncertainty that
+comes from the current policy that I'm
+following.
+Similarly, the action state value
+function also known as Q function is on
+the other hand something that still
+measures this expected future total
+reward. But this time is not only uh uh
+something that depends on the state but
+it depends on the state and the action
+that we take in that state. So it will
+be essentially the expected to the
+reward that we expect the agent to
+observe. If we start in a state, take an
+action and then act according to a
+particular policy.
+Now you might think that the distinction
+here is not too drastic. Seems as they
+are basically approximating the same
+thing apart from the uncertainty on the
+one-step action. But can you think of a
+reason why Q functions might be in a way
+more practical for the purpose of of
+control?
+&gt;&gt; Yes.
+current policy.
+&gt;&gt; Sorry.
+&gt;&gt; If you want to explore outside your
+current policy,
+&gt;&gt; uh what do you mean by that?
+&gt;&gt; Policy is right.
+&gt;&gt; Mhm.
+&gt;&gt; DV
+in that sense. Yes, I agree. So I think
+you're capturing something that will be
+we'll discussing it on
+uh next week Wednesday. I think
+specifically in value based methods uh
+when we we talk about off policy
+algorithms here this will be the
+mechanism through which we can basically
+try actions that do not depend on our
+policy so in this way yes uh but this is
+not exactly what I was referring to here
+any other any other ideas
+&gt;&gt; is it something along the lines of it
+allows you to predict for like the next
+move like if you're playing chess it's
+not just like is is moving my knight
+here going to put me in a good position
+for my knight? It's like how will this
+set up the board?
+&gt;&gt; Mhm. Yes, I think you're capturing
+exactly the the point here in the sense
+that uh ultimately what we care about is
+having a mechanism to choose what our
+next action is. If we can estimate the u
+optimal act Q function meaning the the
+value function that represents what the
+future estimate of my cost is for the
+optimal function. I basically have uh
+a function that I can easily basically
+optimize over. Right? So basically I
+could taking an action would basically
+entail doing an Rmax over my Q function.
+Right? So here is something where
+imagine that this is just a lookup
+table. I have an object that for each
+state and each action gives me an
+estimate of what the future reward is.
+Right? So basically what I could do is I
+could basically iterate over all
+possible actions in that state and then
+pick the one with the highest uh value.
+And so these basic Q functions are
+critical because they give us a
+practical mechanism through which uh to
+learn how to behave.
+Does this make sense?
+Okay. And so we so here we are saying
+how the value functions depend on a
+specific policy
+because of this value functions follow a
+specific ordering. So there is a partial
+ordering across value functions right.
+So depending on um how good the policy
+is then a value function could be grow
+kind of greater or smaller than uh than
+others. And so we can define the concept
+of optimal uh state value functions and
+Q functions as basically the value
+functions that uh relate with the policy
+that makes for the maximum expected uh
+reward.
+And these optimal state value function
+and Q functions are basically the golden
+standard we would be ideally aiming to
+and what most of the algorithms try to
+converge to because once you have this
+the optimal Q function then picking the
+optimal action is basically entails
+doing an argmax over Q.
+And so again we'll dig into details next
+week. uh but in general I I definitely
+advise you to fixate these concepts in
+your in your mind because these are
+really kind of at the the foundation of
+I would say most reinforcement learning
+algorithms out there
+and so we mentioned kind of
+reinforcement learning algorithms you
+know as a plural because there are many
+of them and in general RL algorithms can
+be differentiated in a number of
+subasses. So the first distinction we
+already mentioned it it basically
+divides model free from model based
+algorithms. So are we using the dynamics
+or are we interested in using dynamics
+known or approximate for our algorithms
+or are we just not interested in them.
+So we try to learn a policy without even
+trying to approximate our dynamics.
+Within the model free algorithms, we
+will see policy optimization methods
+which basically are algorithms that try
+to directly optimize for the RL
+objective that we introduced before. So
+we will see how we are going to try to
+directly cast the RL problem as a
+maximization of the RL objective
+and then we will have value based
+methods which on the other hand will
+basically optimize for this objective
+implicitly. So we won't be doing facing
+this taking this at face value but we
+will be trying to estimate the optimal
+value functions and then defining our
+policy pi as an argmax over the optimal
+value function.
+On the other side of the spectrum in
+modelbased algorithms we will either try
+to estimate the model so we don't know
+what the dynamics are but so we try to
+estimate it along the lines of system
+identification and then use these
+estimate models to improve our policies
+or we might just know the model and then
+this basically boils down to many of the
+tools we saw in the previous weeks in
+this class.
+And so you might ask yourself kind of
+why so many reinforcement learning
+algorithms? Kind of how do we even
+navigate choosing between different
+reinforcement learning algorithms? And I
+would say the reality is that there are
+a number of trade-offs. So we'll talk a
+lot about sample efficiency and
+stability. So by sample efficiency means
+how many interactions with the
+environment do I have to do before I
+actually converge to something that is
+useful. And so we will see how different
+algorithms will be more or less sample
+efficient.
+Typically
+we also see how different algorithms are
+more or less stable. So uh is it easier
+to learn how to estimate the optimal
+value function or is it easier to
+directly optimize for the RL objective
+and so different algorithms will be in
+different side of the spectrums here. Of
+course also the assumptions in our
+environment will play a role. So are we
+in an episodic setting that is can we
+easily restart our chess game or are we
+in an infinite horizon setting where
+there are no resets and so depending on
+this what is the right algorithm
+are we dealing in a kind of with a
+continuous state or action space or a
+discrete one right so more different
+algorithms will be more or less um
+tailored for these cases and then I
+would say more fundamentally when we
+talk about model based methods is it
+easier to represent the policy directly
+or is it easier to represent the model
+or again doing a simple example take
+kind of the case where we're trying to
+balance uh a pole the usual cart pole
+example right where we want to keep this
+pole upright by controlling the cart.
+Now if we wish wanted to estimate the an
+approximate model of our system dynamics
+kind of this depending on where the pole
+is might be an extremely non kind of a
+nonlinear model to approximate right
+well and so potentially difficult. On
+the other hand if we simply look at how
+to behave the behavior rule is not that
+hard to encode. Right? So if the pole is
+going left, I might also want to go left
+to counterbalance for that movement. If
+the pole is going, you know, I kind of
+controlling the pole the cart based on
+the position of the pole is actually a
+pretty easy thing to do.
+Or a more mundane, you know, whenever
+we're all taking a shower, we don't
+really model the thermodynamics of where
+the heat uh propagation is and how the
+heat and the water is propagating to our
+body, but simply we feel something is
+hot and we turn the knob, right? So that
+is actually easier to control compared
+to estimating the full model of the
+system.
+And with sample efficiency, we'll look
+at off policy and off and on policy
+algorithms. We'll see how there is a
+spectrum of algorithms from the less
+efficient to the more efficient.
+And so the question there could be why
+even bother using less efficient
+algorithms? And the point is that wall
+clock time is not the same as
+efficiency. So typically more kind of
+less sample efficient algorithms are
+also the ones that are more stable. And
+so if we are in a setting where we can
+easily paralyze or simulate in a cheap
+way then we don't really need to go
+through the effort of having complex and
+unstable algorithms because of
+efficiency. But actually we can use less
+efficient algorithms. Uh but because for
+us experience is very cheap
+and we'll look at different kind of
+stability and convergence properties of
+of different methods.
+But so to um to conclude so I one thing
+that I want you all to take out of this
+of this lecture today is that so we have
+been introducing and hopefully building
+this mental model in which we can
+navigate uh different algorithms
+starting next week and but I don't want
+that the key takeaway here is that
+algorithms in belonging into different
+buckets should be seen as alternatives
+specifically I don't want that uh
+imitation learning and reinforcement
+learning are seen seen as alternatives.
+So along the lines of what your
+colleague was alluding to before, I
+would say that nominally kind of uh
+frontier uh pipelines and architectures
+for autonomous systems typically rely
+more and more on end to end frameworks.
+So these tools are more and more used.
+So there is a lot of uh learning going
+on. But this learning is not done in
+either through imitation learning or
+through reinforcement learning. But
+typically frontier uh pipelines and
+autonomy stacks are essentially built as
+scaffolded training pipelines whereby
+different algorithms and different
+techniques play roles at different
+elements of the stack. So for example
+this is taking again the example of uh
+Alameo R1 from Nvidia which is an
+autonomous driving uh reasoning VLA
+model. We are basically seeing how for
+each of these stages we have different
+algorithms that are going on. So we will
+have at a high level this is a model
+that uses kind of vision language models
+in order to compute actions for the car.
+So there is a general pre-training phase
+that happens and this is kind of
+internet scale pre-training. So just
+supervised learning. Then we will have
+some SFT or supervised fine-tuning which
+is basically imitation learning. And
+then we'll have a final stage where we
+use reinforcement learning to either
+align the performance with human
+understanding and human values but also
+just to squeeze out the last bit of
+performance. And so I think it's really
+important that you see these tools as
+different elements that all together
+build up for for autonomy stacks.
+Great. Any any questions?
+Okay, then see you on on Monday.

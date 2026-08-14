@@ -1,0 +1,1686 @@
+So today we're going to wrap up the
+lecture from uh last time on uh
+stochastic uh uh stoastic dynamic
+programming and in particular the
+infinite horizon extension to it and
+then we're going to move to the next
+topic which is that of closed loop
+optimal control in continuous time which
+should be a pretty interesting lecture
+as we as you would see. Now going back
+to the discussion from last time, the
+place where we left it off is we define
+the extension of stoastic optimal
+control to an infinite horizon. What
+happened? I want to know about a joke.
+&gt;&gt; I said four restaurants on my
+&gt;&gt; four restaurants and I hope that at
+least one of those is Italian. [snorts]
+&gt;&gt; Is it? No.
+Minus five. So yeah, you can minus five
+points. Anyways, all right. So we set up
+the infin
+uh optimal control problem, infinitizen
+mdp problem and then we discussed how
+the notion of a bellman equation extends
+to that setting in a specific form
+represented by the fixed point infinite
+horizon of Bellman equation whereby now
+the optimal value function. We talked
+how influence setting typically people
+uh reason in terms of rewards as opposed
+to costs. So now the object we are
+trying to compute is not the optimal
+cost but the optimal reward also
+referred to as optimal value function.
+So the optimal value function satisfies
+a fixed point equation whereby v star x
+the optimal value for the problem that
+starts at state x is equal to the
+maximum over use of the immediate reward
+plus the average
+optimal uh reward to go where the
+summation over tx prime xu is
+essentially averaging the optimal value
+function from the perspective of the
+next stage with respect to the all
+possible realization of the state at the
+next stage given that we are in state X
+and we choose control U. And then we saw
+that if you are interested not in the
+optimal value function but in the value
+of a given policy pi. So basically how
+much reward a given policy pi occurs
+over an infinite horizon starting from
+state x. Well, uh this quantity referred
+to as v subscript pi of x can be
+computed as a solution to uh the
+equation portrayed here which in the
+case of a finite state space amounts to
+solving a linear system of equations
+into the components of the value
+function vector. Remember that V of
+X is the value for a specific state X
+and if you have a 10 possible states
+then you will have 10 different values
+one for each possible value of the
+state. Does it make sense?
+And then the additional twist that we
+introduced last time is
+what if we introduce the notion of a Q
+function that conceptually takes on the
+capture the concept of starting at X
+using control Q and then using the
+optimal policy from the next stage
+onward.
+If that is the case, so if we reason in
+terms of the Q function, Qstar function,
+then the QST star function actually
+satisfy
+um an equation that is very similar to
+the BMAN equation
+whereby the optimal Q function is equal
+to the reward, the current reward plus
+the average of the uh maximum Q function
+maximized over U prime.
+We've uh we derived this um equation
+last time so I'm not going to go through
+it again
+but the bottom line is that if you have
+an infinite horizon MDP then we have an
+analog of the Bman equation in the
+infinite horizon setting which is
+represented by a fixed point equation
+either for the value function or the for
+the Q function. We discussed last time
+the notion of a Q function is part
+particularly useful in learning
+settings. We'll come back to it in three
+four lectures.
+So now the next question is uh how do we
+solve the fixed point equation? So this
+is an equation in which the unknown is
+the function B of X. We know R because
+we specified we are in a setting whereby
+we assume that we know the transition
+probabilities. So we know R and T but we
+don't know V star. So how do we solve
+for v star or
+how do we solve for the optimal policy?
+I mean in general you are interested in
+the value function but most importantly
+you are interested in the optimal policy
+because that's the object you use in
+order to control your system.
+So
+at a very high level there are two
+settings that we we're going to address
+in this class and both are extremely
+important. The first setting which is
+the setting of the remainder of this
+lecture is the setting where we know the
+transition function t it has been given
+to us and we know the reward function.
+So in this setting where all the problem
+data is known the only unknown is the
+value function and the optimal policy.
+There are two broad classes of
+algorithms. One referred to as value
+iteration and the other one referred to
+as policy iteration.
+It's important you familiarize with
+these two concepts because they become
+especially important as we move to the
+learning setting. Specifically, in the
+learning setting, some of the problem
+data is not assumed to be known. For
+example, we may not know or have the
+right access to the transition
+probabilities t.
+So, how do we solve for the value
+function
+and how do we solve for the optimal
+policy? There are essentially two types
+of methods. The first type is referred
+to as model based. The idea is that you
+infer from data all the problem data for
+example the transition probabilities and
+once you've done so then you're back
+into
+this setting where all the problem data
+is known and then you can use value
+iteration or policy iteration or you
+just go directly
+to the quantity that you care about to
+the optimal value function and the
+optimal policy those are meth those
+methods are referred to as model three.
+So in this class we will cover both
+modelbased and model free methods. They
+have different pros and cons. Uh we'll
+cover those in two to three weeks from
+now.
+But for now we focus on the first
+setting the one where all the problem
+data is known.
+And the algorithms as we will see are
+relatively simple conceptually. So let's
+start from with the value iteration
+algorithm. The very iteration algorithm
+is quite intuitive. The idea is that you
+set up an iteration where you
+iteratively
+reoptimize the fix and point Bman
+equation in a style that is very similar
+to the Bellman equation we saw in
+discrete time setting. You start from an
+initial condition for the value
+function. Maybe just a zero vector. So
+you assume that the value for each
+possible state is equal to zero. You
+apply one step belman equation for many
+many many times and then you hope that
+you will converge to something.
+It turns out that this algorithm is
+indeed guaranteed to converge to the
+optimal value function v star. So for
+any initial condition
+the iterates VKS will converge to the
+optimal vstar of X.
+If you have no clue about uh what the
+value function is, you can just start by
+assigning zero to all possible states.
+Of course, if you have some guess about
+what the
+uh optimal value function is, you should
+use that guess. You're guaranteed to
+converge anyways. But of course, the
+convergence rate is much faster if you
+start from a good guess. So what is the
+intuition behind the value iteration?
+Remember that we are in infinite horizon
+setting. So let's assume that you start
+at infinity
+and then so assume okay let me rephrase
+it. Let's assume that you instead of
+having an infinite horizon problem you
+have a finite horizon problem but where
+the horizon is very very long like three
+trillion years. Then you start from
+three trillion years in the future and
+then you start doing backward recussion
+many many times until today.
+Well, that really approximate the
+infinite horizon setting and that's
+intuition behind the value iteration
+algorithms for the infinite horizon
+problem. And it turns out that in the
+stationary setting once you apply the
+Bman equation many many times you
+converge to a steady state solution
+which is the solution to the fixed point
+equation that I showed before.
+Does it roughly make sense?
+Of course, there should be a proof to
+prove this statement. It's not entirely
+obvious. I'm just giving you you had an
+intuition. Yeah.
+&gt;&gt; So are you saying that this is like
+essentially analogous to a kind of like
+dynamic program but like a very long
+&gt;&gt; Yeah. So we spent half an hour to
+explain the infinite horizon setting by
+the end of the day we're still doing
+finite horizon computations. Yes.
+But if you do it many many times then
+you're guaranteed to converge to the
+solution for the infinite horizon
+setting.
+Yep. That's exactly right.
+And of course once you have computed the
+optimal value function then you can
+backtrack the optimal control by just
+solving for the maximization over the
+use and now you know v star. So actually
+this optimization problem can be solved.
+&gt;&gt; In advance how many times we have to
+repeat to that will actually
+&gt;&gt; no unfortunately it's a synthetic we'll
+come with I'll show you another
+algorithm that in some cases actually
+has a finite uh horizon convergence
+guarantees. So then you're raising a
+good point though. When do we stop
+um
+where is it
+when [snorts] do you stop value
+iteration? In a way it's similar to
+uh
+it's similar to the situation where
+we're doing a gradient based methods for
+optimization. So for example, if the
+difference between a VK and VK plus one
+across all of the states is not too
+large, that could be a good termination
+criterion or maybe after an arbitrary
+number of iterations, say 20,000, just
+call it a day. So there are different um
+uh ways to terminate the algorithm.
+There are there are of course a bunch of
+much more sophisticated analysis that
+also give you an error bound in terms of
+how much you might be far off the
+optimal value function after a certain
+number of steps. But in general
+termination is not obvious. But you are
+guaranteed that if you do it many many
+times you converge to the value function
+optimal function.
+And there is an analog of it also for Q
+functions is essentially taking the
+fixed point equation for the optimal Q
+function and then iterate
+analogous intuition
+policy iteration. I'm not spending too
+much time in iteration policy iteration
+because we will revisit these two
+algorithms through a learning based lens
+which is ultimately what we are mostly
+interested in in this class. For now,
+I'm just giving you the overarching uh
+ideas and concepts and terminology.
+Policy iteration takes a different
+approach. Rather than operating in value
+space, that is optimizing over the value
+functions themselves. It operates in
+policy space that is optimized directly
+in the space of policies, which kind of
+makes sense because at the end of the
+day, we're mostly interested in the
+optimal closed loop policy. The value
+function is more of an intermediary
+concept that allow us to compute the
+optimal policy.
+So the idea of a policy evaluation is as
+follows. It's still an iterative
+algorithm. So you start from initial
+condition and then you apply your
+insight into MDP and optimal control and
+you come try to come up with a better
+policy and then you continue iterating
+until after you get to a good policy.
+Specifically, how does it work? Let's
+assume that you start from a given
+policy pi k. So here k does not refer to
+the time stage
+but is the iteration counter.
+So k stands for the k iteration in the
+policy iteration algorithm. So you start
+from a policy pk.
+Then what the policy iteration algorithm
+does is uh a two-step procedure where
+first we compute the value of the policy
+pi k for each possible state x by using
+the uh bellman equation that allows you
+to derive the value of for the val
+function for a given policy pi k.
+[snorts] So you compute the V
+of pi K.
+This is the same equation I had in the
+previous slides. Note that here I'm
+computing the value associated to
+specific policy. So there is no
+optimization. There is no maximization
+with respect to U. So this equation at
+least notionally is easy to solve. We
+know R. We know the transition
+probabilities. This is just numbers. So
+this is just a linear equations in the
+uh value function v pi. So you could
+solve it as a large scale linear system
+in the unknowns that are represented by
+the value of the policy when starting
+from each possible state x= 1 x2 and so
+on and so forth.
+&gt;&gt; Yeah
+on the right side pan
+you mean?
+&gt;&gt; Yeah.
+&gt;&gt; Yeah. Absolutely. That's a typo
+&gt;&gt; here. No. So here, that's not a typo.
+Here exactly what we had here. So if
+you're given a policy pi the value so
+the cumulative sum of rewards discounted
+with the discounting factor gamma is
+given by solving the equation here.
+&gt;&gt; How can the looks like the right hand
+side depend on the left hand side?
+&gt;&gt; Yeah this is a linear system of
+equations. So you would collect
+everything on the left hand side. Here
+you'll have your constant terms and then
+you you will solve for the vector v. V
+of x is essentially a vector is v of 0 v
+of I mean assume that x can take on four
+values 0 1 2 and three. It will be v of
+uh v of 0 v of 1 v of 2 v of three.
+Make sense? This makes it a bit more
+explicit.
+So, so after you have done that, then
+you have a big step. So, the first step
+is referred to as policy evaluation
+because we are evaluating the value
+associated to given policy pi. The
+policy improvement step is where the
+magic happens.
+So, now that we have
+computed the value for a given policy
+pi. We try to come up with a better
+policy and to do so we apply a one step
+of the bellman equation. So we set the
+value we set the control for the
+revised policy P of K + one. This will
+be iteration k + one as the control that
+minimize the sorry the maximizes since
+we're in the reward setting the stage
+wise reward. So the current reward plus
+the
+um reward starting from the next
+stage
+approximated by vp v pi k.
+So basically we take a one step bman
+equation to try to improve the action
+that I should be taking a state x.
+[snorts]
+So this is not the optimal action. The
+optimal action will be the one that you
+would be computing if you were to plug
+in bar star the optimal value function.
+But you use VPK as a sort of placeholder
+that awfully allows you to derive a
+better action. The optimal action is the
+one that you will compute if you were to
+use Var. We are not using Var because we
+know Var yet. We use a surrogate which
+is VPK.
+So the key result and of course there
+should be there should be a proof here
+is not entirely obvious is that the
+value for the new policy is that greater
+than or equal to the value for the
+previous policy. So actually you are you
+are getting into a policy that is
+better. Remember that we're in reward
+setting. So the higher the value the
+happier you are.
+[snorts] And even better the inequality
+is strict if by k is suboptimal is not
+the optimal policy.
+If you found the optimal policy great if
+you not found the optimal policy you
+know the policy the next iteration is
+going to be better.
+So going back to the question from your
+colleague about finite finite
+time guarantees assume that you have a
+finite number of states. So x can take
+on the value 0 1 2 3 4 and a finite time
+a finite number of controls.
+Do you think that this algorithm knowing
+this property do you think that this
+algorithm is going to converge in a
+final number of steps?
+Yes. No.
+Yes. Because essentially if you have a
+finite number of states and finite
+number of controls there are finitely
+many policies different ways that you
+can permute the control with respect to
+all the different states since you know
+that at every step of this algorithm you
+are always going to strictly improve
+the value of a given policy. There are
+so many times that you can improve the
+value until you reach the optimal value.
+So indeed policy iteration converges a
+finite number of steps in the setting of
+uh fixed number of I mean um finite
+number of states and finite number of
+controls.
+Of course what you should prove and
+again all these proves proofs are
+provided in great detail in the books
+from Bertikas is the monotonic
+improvement property we have here.
+So in a nutshell with value iteration we
+estimate the optimal value function and
+we then compute we can compute the
+optimal policy [snorts] through the Bman
+equation once uh we know the optimal
+value function. In policy iteration we
+start with a random policy and we
+interly improve it until convergence to
+an optimal policy. Of course all of this
+requires the model NDP to be known. In
+particular, it assumes that we know
+the transition probabilities here.
+Otherwise, for example, you wouldn't be
+able to solve for the V by K quantities.
+&gt;&gt; Yeah.
+&gt;&gt; Explain why you believe the policy
+should improve each step.
+Well, I mean you are making essentially
+a more informed decision that exploit
+the structure of uh the problem where
+you not only look at the immediate gains
+but also the the future gains and is
+essentially a surrogate of what those
+future gains could look at. So it's not
+100% clear what that necessarily brings
+to an improvement but I think that
+intuitively stands to reason.
+Great. So this is all I want to say
+about the infinite horizon MDPS. We will
+revisit them at great length when we
+talk about learning based control. So my
+main goal here was just to set the
+terminology for the infinite pro
+infinite horizon instantiation of uh
+stoastic optional control problems and
+really fix some foundational ideas in
+terms of uh how the bellman equation
+applies into an infinite horizon setting
+and how we can solve for it through two
+main methodologies namely very iteration
+and policy iteration. We'll come back to
+all of these in um three weeks or so.
+So what we're going to do now is we go
+back to the deterministic setting
+but we explore
+the complimentary dimension whereby
+instead instead of reasoning in finite
+time we reason in continuous time.
+So going back to our agenda. So we have
+uh discussed at length this branch.
+So finite horizon closed loop optimal
+control through the lens of the uh Bman
+equation and dynamic programming. We've
+looked at specific instantiations of uh
+the DS of uh dynamic programming
+including RQ LQRQ.
+So now we are moving to the setting
+where by now time is a continuous
+variable. So this is useful because
+sometimes problems are more naturally
+framed in continuous time and sometimes
+the policies that are derived from the
+continuous time formulation are a bit
+cleaner and also a bit easier to
+implement. So we'll see.
+And so what we will derive is the
+continuous time extension of the dynamic
+programming equations referred to as
+Hamto Yakobi Belman and Hamyakcomi E is
+equation and then we're going to use
+those techniques to solve the two
+problems of importance LQR and
+continuous time. This looks like all
+this class there is one problem we can
+solve is LQR. I mean LQR is also a
+pedagogical is important is also a
+pedagogical tool.
+And then another very interesting class
+of problems related to rechibility
+analysis. Actually this is a I mean MQR
+is very important. Ribility analysis is
+also quite important uh is what we use
+for example to deise
+um collision avoidance policies for
+autonomous cars or for airplanes and so
+on and so forth.
+All right. So the previous lecture we
+focus on the discrete time setting. In
+this lecture, we focus on the continuous
+time uh setting. We will discuss how the
+dynamic programming approach leads to
+its continuous time counterpart referred
+to as the Hamakobi Bman equation and
+Hamington is equation. We'll use the
+Hamito Yakobi Belman equation to solve
+the LQR problem in continuous time and
+then we'll use the Hamito Yakobi is
+equations to address the rich analysis
+problem that I will define later on.
+So just to make sure that we are uh on
+the same page. So so far this is the pro
+problem formulation we've been focusing
+on in the context of closed loop optimal
+control discrete dynamics and a discrete
+cost.
+Now we go back to the continuous time
+formulation. And it is actually the one
+we started with when we were talking
+about direct optimization. Uh when we
+were talking about open loop optimal
+control where now the dynamics are
+written in terms of a differential
+equation x dot= f of x
+and the cost is now still an additive
+cost but instead of summation we have an
+integral.
+So this lecture will be quite
+interesting.
+It's also quite deep. So stay you know
+attentive and also there will be some uh
+changes of notation across the lecture
+for very specific reasons that I will
+discuss. So uh be focused. The plus
+though is that actually this is a pretty
+interesting I mean all lectures of
+course are super interesting but this
+one I mean personally I find it
+particularly interesting.
+In particular, we're going to look at a
+more general setting that will become
+clear later why we do so. Uh
+that is interesting in its own right and
+also quite kind of complimentary to what
+we've done so far. Specifically, we now
+assume that in addition to everything I
+said so far,
+our dynamics are also influenced by a
+disturbance term DT.
+So when we were talking about discrete
+time stoastic formulation, D was just a
+random variable
+generated according to some probability
+distribution. Here we're in
+deterministic setting.
+But D
+encodes the notion of another player.
+Think of it as nature that is trying to
+interfere with our objectives.
+These are the so-cal adversarial
+formulations for optimal control that
+are very useful to come up with control
+policies that are really robust. No
+matter what nature throws at you within
+some limit, you're still guaranteed if
+you use techniques that we're going to
+explain to achieve your objectives. Of
+course, the price for it is that
+sometimes this policies can be quite
+conservative because they had to protect
+you from the worst case that nature can
+throw at you.
+But you see that all these things are
+complimentary, right? So in many
+settings you prefer a more stoastic
+formulation. Uh average realization of
+uh what happens is fun enough with you.
+But for example, when your life is at
+stake, probably you take a more
+pessimistic view of what could happen.
+So you're not happy anymore. We're just
+reasoning about averages. Actually, you
+want to protect yourself on the worst
+case. So that's what formulation is
+doing. Player one,
+we control you to is you. So you're
+controlling you to maximize J. So here
+is a little bit of a difference in
+objective. So now J even though it's
+written as J plays the role of a reward.
+So you want to maximize J. You want to
+make J as large as possible. Think of it
+about your wealth.
+Player two
+which use control DT will aim to
+minimize J subject to the joint system
+dynamics. So U and D are coupled through
+the joint system dynamics. So the the
+state the revolution of the state depend
+depends on both u and d through the
+function f and a cost g also depends on
+u and d. We'll see some examples later.
+But does this make sense? We have
+generalized a setting where now we have
+a disturbance
+which is not just uh uh any disturbance
+is actually an active player that is
+trying to damage you.
+One example that we will release later
+and I also mentioned it before
+is that of the
+homicidal chauffeur.
+So this is a person. So that's you
+player one.
+And here there is a car.
+Well, I mean my drawing skills are quite
+limited. Anyway, this is a car. Okay.
+And so the the pedestrian
+can move in any direction,
+but the speed is in general lower. So it
+top speed is in general lower than the
+top speed of the car.
+The car
+is faster than a pedestrian but it has
+constraints on its motion. Particularly
+a car cannot move laterally. That's why
+parking is annoying. If you can move
+laterally, I mean for most cars you
+cannot move laterally.
+So that's player two.
+So UT
+is essentially the sequence of controls
+for your legs. in order to get out of
+the way for the car. DT is the sequence
+of controls for the car in terms of
+throttle and steering to try to hit you.
+Now the question is
+what is the set of joint states? of
+initial conditions for the pedestrian
+and initial condition for the car so
+that uh
+you can survive no matter how hard the
+car is trying to hit you
+just to have a little bit of intu
+distance is not it matters but it's not
+the only thing that matters geometry and
+curvature also matter quite a bit so if
+you want to save yourselves intuitively.
+What is the best way to initialize your
+position? So the car is here and there's
+a top down view. So this is the car.
+Okay. So here there are the wheels
+and can maneuver in this plane, right?
+And can go backward
+and you want to survive. Where should
+they drop you?
+here
+&gt;&gt; or here.
+&gt;&gt; Here. Exactly. Exactly. So now you
+understand the differential games
+because
+even though you are slower since the car
+it's it's faster but it's also carvature
+constraint. uh what we end up doing will
+be start to constantly trying to circle
+around you but you're smart enough to
+keep the car going around you. Of course
+if you are unfortunately dropped here
+most likely there is not much you can do
+and no matter how you maneuver you at
+some point it's going to the car is
+going to hit you. Then the question is
+how do we formulate all of that in a
+mathematical form so that we can
+actually find the controls use D and
+then the state the subset of the state
+space with a guarantee that if you start
+there then nothing is going to happen to
+you. Why are this problem formulation
+useful and then I'll get to you is for
+example for collision avoidance uh
+scenario say that uh you want to develop
+a collision avoidance policy for an
+aircraft and you want to be absolutely
+sure that other aircraft are not going
+to collide with you. I mean in reality
+the other aircraft most likely are not
+trying to kill you intentionally but you
+know the other pilot maybe are
+distracted. So uh if you lack a better
+model for them, you just model them as
+adversarial. You know that if you really
+have a policy that allow you to save
+yourself under the worst possible
+action, then if the other pilot is
+distracted, is drunk or maybe is really
+trying to hit you, then you're going to
+survive. Yeah.
+&gt;&gt; Oh yes.
+So it turns out and this will become
+clear later
+that uh
+when we reason about uh closed loop
+optimal control and continuous time
+particularly with disturbances these are
+problems referred to as differential
+games they're games because there are
+two players differential because the
+actions between the two players are
+constrained by the differential
+dynamics.
+In those settings, we like to think
+about the final time as zero and the
+initial time t0 as some negative time in
+the past. So view of t0 as - 5 - 6. This
+is really notation and this is a typical
+notation used in the differential game
+literature. So it's really notation.
+There is nothing deeper here. But it's
+good that you point it out. So for this
+lecture, the final time will be denoted
+by zero.
+So the terminal condition will be at
+zero and we start in the past. Yeah.
+&gt;&gt; Use this formulation to modelic
+environments. Why do we assume that um
+the stoastic element is univers
+like
+could be distracted in a way that goes
+farther away from us and therefore
+&gt;&gt; yeah I mean this is just an adversarial
+formulation and the problem remains
+deterministic. So there is no
+stoasticity here. But you could also
+consider a stoastic formulation.
+Actually ax which is the next generation
+collision avoidance system is built upon
+um a stoastic formulation. And then of
+course you can capture some notion of
+adversal behavior through the
+probability distribution that defines
+the realization of the random variable.
+These are different modeling choices.
+What I'm telling you is g I'm giving you
+a menu. I mean that's the point of this
+class of different control methodologies
+and how to solve for them but then I
+mean you're still the agentic agent that
+has to decide uh what to do at least for
+the foreseeable future.
+Now what interesting part and here is
+when you have to apply your brain is the
+problem as described here is not fully
+specified meaning what type of
+information does player two have access
+to in order to respond to what you do
+what you what you do and there are a few
+formulations
+the most intuitive one but also a very
+bad one is that I as player one declare
+my full control sequence from time t0
+all the way to the final time zero.
+Player two gets to see that and then it
+optimize it optimizes its own optimal
+control sequence dt. Of course, this
+gives an enormous advantage to player
+two because it it knows exactly what
+you're going to do between now and the
+final time. So this formulation
+typically make the problem uh very
+simple because essentially uh the nested
+optimization between what the player
+does and the player one gets very easily
+decoupled. So you just uh look at all
+possible control actions that uh uh you
+could entail and then I look how to
+optimally respond to them and then I
+solve the optimization problem and done
+computationally cheap but very realistic
+very conservative because you need you
+give an enormous advantage to the other
+player. The one we look into is a bit
+more sophisticated.
+So here
+the player two gets to see what player
+one has done up until now. So it does
+not have an anticipatory
+skill of also seeing what you'll be
+doing in the future. So it's a constant
+game between player one and player two
+that player one make a choice, player
+two see that and then they keep
+iterating in closed loop. Does it make
+sense? It's a little bit of a difference
+but it's very profound.
+So the other agent meaning player two
+acts based on state and control
+trajectory up to current time.
+Note and the notation is that the set of
+strategies we look at are those
+strategies whereby we get to see you
+from time to zero up to the current
+time. Note the player two still has a
+little bit of advantage because it gets
+to see first what you do now and then a
+reply. Think about chess. I mean usually
+white has an advantage because it moves
+first. So here player two still has an
+advantage because the current time t you
+player one make a move and then I make
+my move. So I get to react.
+So actually the inverse of chess
+actually.
+So does it make sense? So this is the
+class of strategies we're going to focus
+on. Those that do not anticipate which
+of course will be invisible in practice.
+what the player one will do. So is is
+very is much closer to the type of
+operations you will see in practice.
+[snorts]
+Any questions here?
+This is important. So if you have
+equations on this part.
+Okay. So if you have
+uh studied game theory, this is game
+theory on steroids because now there is
+a game aspect. But now you also have to
+think about the differential evolution
+of dynamics which makes the problem even
+more interesting because now there are
+geometric considerations you have to
+consider and so on.
+So the problem we want to solve then is
+as follows.
+We want to solve a minimax problem
+whereby the player one will tend to
+maximize its outcome. Again here we're
+in a setting where we view J as a
+reward. So you player you are player one
+and you try to optimize your outcome and
+player two will aim to minimize it
+subject to the system dynamics F.
+So we want to find a U that makes the
+cost as high as possible under the most
+damaging disturbance D.
+&gt;&gt; Make sense?
+&gt;&gt; Yeah.
+&gt;&gt; Semantics a little bit, but I'm curious
+on a prior slide you said that player
+two has been managed. And I'm struggling
+to see how player two would have the
+advantage when player one would be the
+one first in this structure
+because essentially I get to see what
+you do
+right and so I if I know for example
+there are two cars. So this is player
+one
+and this is player two.
+In a dynamic situation, say that player
+two wants to hit you.
+So,
+and you're player two.
+So, say that you know that at time t
+player one is going to move in this
+direction. This is a very useful
+information to you because you know that
+action these directions are not useful
+to you to damage player one. Actually
+going this direction is uh advantageous.
+So you see how having access to what the
+other person is going to do basically
+allows you to rule out actions that are
+not going to be maximally damaging and
+instead focus on the ones that are
+maximally damaging.
+Does it make sense?
+&gt;&gt; This problem are we solving for the
+worst disturbance or the optimal
+control?
+&gt;&gt; Both.
+&gt;&gt; Yeah. That's why it's a minimax term. We
+want to um
+uh essentially you're solving I mean at
+the end of the day you care about you
+but in doing so you uh solve
+simultaneously with respect to both the
+optimal disturbance and the optimal
+control. So you try to find the u that
+makes the cost as I said as high as
+possible under the worst possible
+disturbance t and you compute both of
+them. Of course, in practice, unless you
+take the role of player two, uh you're
+going to use the control U.
+&gt;&gt; Yeah. So, this is a abstract notation
+that says that we pick that is only
+those disturbance D that are not
+anticipated.
+So, they can only react to what player
+one has done
+up until now. So it doesn't have is what
+I was saying before doesn't have access
+to what player one will do in the
+future.
+&gt;&gt; The time history of player two
+instantaneous
+&gt;&gt; that's right. So it's only an
+instantaneous advantage.
+Great. So that said so the problem
+formulation here is quite sophisticated.
+Yeah
+&gt;&gt; already. But why is why is the uh player
+one or the controller you trying to
+maximize cost instead of minimize it?
+&gt;&gt; No no what I said is that in this
+specific setting don't view G as a cost
+view G as a reward.
+&gt;&gt; Oh
+&gt;&gt; this is just terminology. So here this
+there is nothing deep here. So we are in
+a word setting but they're using J
+notation because unfortunately that's
+what the community uses
+around like min and max like find the
+minimum possible disturbance and then
+find a control that would like given
+that disturbance be the most optimal.
+&gt;&gt; No actually to give the advantage to
+play so the the fact that we're defining
+problem as a minimat with the
+disturbance as the outer optimizer is
+not by chance. This is exactly what
+gives the disturbance the advantage
+whereas with what the controller is
+doing.
+&gt;&gt; I guess advantage.
+&gt;&gt; Yeah. By placing it as a um an outer
+minimizer. That's right.
+Okay. So all great questions. So now
+yes.
+&gt;&gt; Yeah. So that's why advantage is only
+instantaneous.
+&gt;&gt; Okay.
+&gt;&gt; It's a slight advantage.
+&gt;&gt; Okay. But even at the beginning
+[clears throat] doesn't want an
+advantage knowing already the same state
+of being
+the right know
+it
+well I think
+this business is best interpreted when
+uh you are at a general time t and so
+you have some history of x p2 [snorts]
+and x1 one one towel. So in this sitor
+just a general time t
+having access to the information
+including time t basically strictly
+speaking you have more information right
+because you had additional bit of
+information at time t and having more
+information is is always more useful.
+Does it make sense? In general more
+information is better than less
+information. So we can also justify it
+in that way.
+Great. All right. So how do we solve
+this problem?
+as usual uh dynamic programming and uh
+principal optimality.
+So the solution is as follows.
+We decompose the um
+the objective
+in the two pieces. immediate reward plus
+reward to go.
+And remember from when we were talking
+about the principal optimality that
+there is no loss in optimality if we
+restrict the search over the optimal
+controlled signals to only those
+controlled signals that results from the
+concatenation of uh optimal tails
+and then immediate rewards.
+So this is represented notionally by the
+drawing here where I'm showing that if I
+give you the uh optimal solution for the
+tail problem starting at time t plus t a
+state xt plus delta t.
+You don't need to reason about control
+sequences to do something else starting
+from point B3 or point B2 or point B1.
+you just concatenate the initial segment
+with the optimal tails and you just
+compare the three controlled sequence
+that arise from these concatenations.
+So here I'm enforcing the principal
+optimality in this decomposition of the
+uh cost. So here I'm not doing anything
+new. I'm really applying the principal
+optimality in the same shape and form
+that we discussed a few lectures um ago.
+So the point is that the problem here
+which is the original formulation h of x
+here as usual is the terminal cost
+can be rewritten as the cost whereby I
+concatenate optimal tails with
+um in a way transition. So view
+basically this integral between t and
+plus delta t as a very short transition
+into the new time.
+So if you have fully grasped the
+principal optimality then this should be
+quite uh clear. If this doesn't look
+quite clear it means that you haven't
+analyzed yet the principal optimality.
+So try to do a little bit more thinking
+about it.
+As I said a couple of lectures ago, the
+principle of optimality is such that
+when you see the first time I think it's
+obvious after a while becomes very
+confusing and after a little while then
+becomes obvious again. So when I see it
+it's obvious to me but you know there
+was a time where it was not so obvious
+to me. So I'm trying to say it takes a
+little bit of time for you to really
+internalize it.
+Anyway, so assuming that uh um we buy
+this step where we uh enforce the
+principle optimality. So we just say
+that we look
+a control and disturbance sequences that
+are the results of the concatenation of
+optimal tails and um a first uh uh bit
+of control between time t plus delta t.
+how we can massage this uh expression
+into something that leads me to
+something that is computable.
+So view delta t as a small time
+increment.
+By the way, this stuff mathematically is
+very complicated. So if you were to do
+it super super cleanly, it would be a
+bit complicated. Here I'm just giving
+you the main intuition.
+This is probably one of the most complex
+you know concepts in optimal control.
+So the integral can be approximated as g
+* delta t. So over very very small
+interval delta t you can view the
+function g almost a constant value. So
+the integral is simply equal to the
+integrant time the uh time difference
+delta t
+xt plus delta t can be written according
+to one step discretization x as xt plus
+delta t f of xud. I mean we have done
+this many many times
+which means that we can approximate
+the optimal cost to go from a time t
+plus delta t
+I'll rewrite it here
+with a once uh first order tus
+approximation
+by this becomes j of xt
+t plus gradient of j with respect to x
+time x of t + delta t minus x of t.
+But this is equal to
+delta t f of x
+plus
+partial d with respect to t * delta t.
+job. This is a simple step
+here. There is the cracks of the
+problem.
+The most difficult thing to swallow in
+this entire lecture.
+So we have JJ. So nothing new here. We
+have approximated the integral uh with
+just this quantity that we have here. we
+have substituted the j of x plus delta t
+comma d plus delta t with its tailor
+series expansion. Okay. So we have it um
+uh we have it here
+but now the part that is tricky
+is that it is instantaneous scale. So
+now I have removed
+u and d as a function of time over a
+continuous interval.
+Now d and u are evaluated exactly at the
+time t.
+So at the instantano scale the
+disturbance is not choosing a a a whole
+trajectory anymore. It is choosing a
+reaction to the current control.
+So the nested structure changes from the
+outer player picking a function
+anticipating the optimal response to at
+each instant one player moves and the
+other reacts. So this becomes closer to
+chess actually. So that's why we swap
+the order between mean and max to
+preserve the advantage related to the
+disturbance. That's a part that hard to
+swallow. It would require a much deeper
+proof. But the idea is that essentially
+we're trying to be consistent with our
+assumption that player two is um um
+the one that has the advantage.
+You get a control and then the student
+reacts optimally.
+I saw the problem stand changes from min
+max to max min. So
+this is not entirely obvious and I don't
+want to spend it too much time on it
+because otherwise it will be an entire
+lecture on it. So I'm trying to give you
+as much intuition as possible here. It
+might be a little bit cloudy what is
+happening. But the point being is that
+in order to be consistent with the fact
+that player two has an advantage, we
+have when we uh the problem boils down
+to instantaneous optimization swap the
+notion of a minimum maximum maximum
+minimum.
+This is this is the hardest part to
+swallow.
+So it's a little bit of a step where you
+have to trust your instructor. But at
+least
+uh trust me in the sense that what we're
+doing here is try to be consistent with
+the assumption that player two has the
+uh advantage. So the idea is that uh
+your player one will fix you
+and then D gets to choose the the
+possible best response and then you try
+to pick the U such that uh for that U D
+has the less damaging response
+but player two has an advantage because
+it gets to see what you do.
+Okay. So assuming we agree for this step
+and from now on actually the lecture
+will be downhill. So it's uphill because
+the formulation of differential games is
+a little bit complicated because we have
+this business of non anticipatory
+strategies that is
+relatively natural but not
+straightforward. it gets to the peak
+where this swapping between min max and
+max mean is a bit uh uh you know uh is
+it is deep as a concept but then it gets
+downhill from now on. Yep.
+&gt;&gt; Sorry. So why couldn't we write max men
+sense?
+&gt;&gt; Because here this mean max and this max
+mean has a bit of different uh uh
+interpretation. Here we're doing nested
+optimization over the space of control
+sequences. Here we're doing a nested
+optimization over space of instantanous
+control. So within this terminology
+actually turns out that to give the
+super an advantage it has to be part of
+the outer uh approximation. That's the
+part where
+it it [clears throat] can be understood
+but it would require a bit of a deeper
+discussion to be super rigorous. So
+that's what I'm saying. So it's a little
+bit of one of the few parts in the class
+where you have to trust your instructor.
+The most important thing though is that
+you understand the problem formulation
+and then you understand the uh final
+algorithm that we're going to derive.
+That's the most important thing here.
+I'm just providing a little bit of
+intuition about what that algorithm is
+coming from. The specific steps are not
+so essential.
+Anyway, assuming we agree on this,
+then we arrive here. So J does not
+depend on U. So I can bring and D so I
+can bring it out of the optimization. So
+these two terms cancel.
+Great. Then I can also cancel these
+terms that the T.
+Okay. And then I get to the celebrated
+Harakobi EX equation. So the optimal
+value function J
+is the solution to a partial
+differential equation. That seems like
+bad news. Partial differential equations
+typically are hard to solve.
+And so basically if you want to find the
+optimal value function J, you had to
+solve a partial partial differential
+equation because you're taking
+derivative with respect to both time and
+state. And the solution this partial
+differential equation on top of it has a
+max mean problem embedded in it. So
+looks ugly and actually it's not
+particularly pretty but there are
+solution algorithms to solve this
+partial differential equation. We'll get
+to those later. But at least now you
+have a mathematical tool that allow to
+solve for um the uh value function. And
+once you have the value function j then
+you get your optimal control u by just
+doing an arm max of all this quantity
+here. Of course a partial differential
+equation as adding differential equation
+needs to have a boundary condition which
+is represented by your terminal cost.
+So I'll come back to this later but
+first I want to go back to the setting
+of uh standard uh optimal control when
+we do not have the distortments. So we
+could have done the same thing and it
+would have been even simpler. In that
+case you get to the continuous time
+formulation of the Bman equation which
+is still we don't have d anymore because
+we are removed the disturbance. So we
+are again in a setting where the
+dynamics are simply x dot equal f of xu.
+We are b now we're in continuous time.
+So this is the continuous time
+extension to the Bman equation. It is
+still a partial differential equation.
+You take deres with respect to t and x.
+Again you don't hide these because here
+we're assuming that [snorts] with there
+is no disturbance. But here at least I
+can give you an intuition about this
+equation represents
+and then when I give you intuition you
+say oh but this actually is quite
+obvious. Specifically
+let's rewrite the hamomi bman. So bman
+is when we don't have a player two
+is when [snorts] we have a player two.
+So let me rewrite this equation as minus
+partial d with respect to t equal
+minimum / u
+of g of x u t plus partial derivative of
+j with resp to x of f of x u t.
+So if you look at this doesn't look like
+the Bman equation discrete time
+sort of on the right hand side you have
+the minimization of a U like in a Bman
+equation in discrete time and then
+inside you have the immediate reward
+or immediate cost depends on how you
+interpret this stuff. Um
+so let's interpret this as now a cost. I
+told you that there's going to be a
+little bit of a shift in terminology. So
+that's now why we're minimizing over
+because we want to make the cost as
+small as possible.
+And this is the cost to go
+and essentially it's telling you how the
+cost to go changes as you are moving
+your state one step ahead in the
+direction of your dynamics. So what is
+and this is the partial J respal
+to go. So what this equation is telling
+you is that minus the time rate of
+change of the optimal cost to go is
+equal to the uh minimum over u of the
+immediate cost plus how your cost will
+be changing when choosing the control U.
+the state will move into a new state. Of
+course, it's not you're not moving into
+a new state arbitrarily. You're moving
+into the new state following the
+dynamics. That's why the derivative is
+taking along your dynamics. So in
+continuous time, the Bellman equation
+takes the notion of a time rate of
+change of your cost function while in
+discrete time it was a discrete change
+across iterations.
+Does it shed a bit of light about where
+this coming from? So why there is a
+minus? Well, we are now in a situation
+whereby Jay is interpreted as a cost. We
+try to minimize the cost. So as the
+horizon shrinks,
+there is less cost that you're going to
+accumulate until the end of time. And so
+your cost is going to decrease as you
+move forward in time. So it makes sense
+there is a minus.
+Just trying to give you guys as much
+intuition that I didn't get when these
+results were presented to me. And I was
+utterly confused about all where all of
+this was coming from. So all I'm saying
+here is that you shouldn't be too scared
+at least from the Atoria Kobe Bman
+equation
+uh is really very similar to the
+discrete time Bman equation. But now
+since we're in continuous time, we
+reason in terms of time change of uh uh
+rates of change of quantities
+in time and with respect to how we are
+moving our dynamics uh our state around
+according to our dynamics
+in the adversarial setting. The
+intuition is a bit more complicated.
+&gt;&gt; Yeah. So kind of saying basically you're
+trying to select you to ensure there's
+no change in the cost like
+&gt;&gt; no no why change in the cost
+&gt;&gt; like seems like you're trying to select
+you so that you're like
+&gt;&gt; no you want to make the change the rate
+in terms of time and change as large as
+possible so that you decrease the cost
+as much as possible
+that's why you're minimizing
+okay so any questions here. So main
+point is that we set up the optimal
+control control problem in continuous
+time actually in a more general version
+where we also consider the possibility
+of a second player that is trying to
+temper with our objectives. We discuss
+how we had to place some assumptions in
+terms of how the player two can select
+its decisions. We argue how uh a good
+model is to assume that the player two
+is restricted to take actions that are
+not anticipatory. So it can only gets to
+see what we have done so far including
+the current time. That gives a slight
+advantage to player two which is
+captured by a specific formulation of
+the problem where we do uh a minmax.
+Then given that formulation, we invoked
+arguments from the principal optimality
+to break down that problem into the
+solution of a problem whereby we
+concatenate current decisions with
+optimal decisions
+using that insight
+then using a first order approximations
+with a little bit of magic and proof by
+authority where I tell you it's true and
+you are not allowed to uh you know
+counterargue
+uh we derive uh an equation that is
+eventually what we care about which is
+the HTO Yakobi EX equation for the
+differential game formulation of the
+problem and the Himeto Yakobi Belman
+equation for the more standard version
+of the problem where there is no player
+two and for the Hamobi Belman equation I
+gave you a little bit of intuition
+showcasing that even though the equation
+looks ugly and it is ugly but it does
+have some intuition particularly in
+terms of embodying the notion of the t
+discrete time bman equation but in terms
+of uh uh uh rate of change
+that's basically what you should
+internalize from here if you want to get
+bit deeper about this topic as I said it
+gets mathematically quite involved then
+I provided some references in the
+earlier here
+these couple of papers go in much
+greater detail about this derivation
+Great. So now we have all of these
+tools. Let's start applying these tools
+first to LQR and later meaning Monday to
+a class of problem that is very cool
+referred to as reachability
+problems. So next time we'll wrap up
+this uh lecture with an application to
+reachability problems and then we'll
+move to MPC. Yeah.
+It's a model player two can see the
+future one but can
+&gt;&gt; see it cannot [clears throat]
+assume what like can you see kind of
+predict based on what makes more sense
+in a fully deterministic setting so
+there is no notion of stoastic
+prediction
+&gt;&gt; yeah there are other formulations but
+basically you can have a probabilistic
+prediction of what
+player one could do but that's not part
+of this formulation
+&gt;&gt; okay so it's only informed state current
+state
+&gt;&gt; player It's not history yet.
+&gt;&gt; All right. So, let's apply now uh this
+stuff to LQR. So, turns out that the
+15th version of LQRI we're going to see
+in this class is the one in continuous
+time. So, now the dynamics are still
+linear time varing but uh they are given
+by differential equations as opposed to
+discrete time equation. The cost is
+quadratic but instead of having a
+summation now you have an integral.
+Same intuition about the parameters for
+a QR problem. Q penalizes deviation with
+respect to the state. R penalizes
+control effort assumed to be positive
+definite. This unit TF specified and uh
+there are no constraints on the state
+and the control.
+So can you solve LQR by using the Hobby
+Bman equation? Yes, you can. I'm not
+going to do the full derivation. It's
+not particularly uh insightful.
+For those of you that are interested
+though, the way that it would work
+is as follows. So we know from
+uh the discrete time formulation of QR
+that the optimal cost to go is a
+quadratic in the state. So you start
+with an ansat that's how often times you
+solve partial differential equation. You
+start with an answer, which is basically
+the cool mathematical term for a guess,
+right? So you start with a guess that
+your optimal cost to go is a quadratic
+for some matrix V that you do not know.
+That's a guess. You plug it into the
+partial differential equation and then
+you see if there are some conditions on
+B that make the partial differential
+equation satisfied. So you do a bunch of
+boring uh algebraic manipulations and
+you'll see that if v is chosen as the
+solution of this differential equation
+where everything is known so we know q
+we know b we know a
+um and then we have the boundary
+condition at the final time is equal to
+h. So if v is solved according to this
+differential equation referred to as the
+continuous time cut equation then the
+partial differential equation the
+hamakobi belman partial differential
+equation is solved which means that your
+guess was correct taking into account
+that v is chose as follows. So I mean
+quite quick my but main point is that
+the way that uh the solution for the QR
+will be derived is by guessing what the
+optimal cost is parameterized with
+respect to a matrix V. Plug it into the
+HT Bman equation. See if there is a
+appropriate choice of V such that the
+partial differential equation is
+satisfied because if you know that it is
+satisfied indeed the J is the optimal
+cost to go. Turns out that if you choose
+V as a solution of this ordinary
+differential equation, that's indeed the
+case. And then the control is given by
+surprise surprise linear feedback on the
+state now with a slightly different uh
+um set of multiplications.
+So that's all I wanted to say about LQR.
+Main point is that uh you would solve it
+still through the lens of dynamic
+programming. Now it's a bit more
+complicated because we have to solve the
+partial differential equation but uh
+once you make this guess it's not
+actually too complicated and the main
+takeaways are that the optimal cost is
+still quadratic and the optimal
+control is still linear feedback on the
+state in the notes you find all the
+details
+instead what I want to do is to focus
+more on applications of differential
+games so the differential game
+formulations So the formulation where
+you also have a player two is actually
+quite useful in a number of settings.
+There are a number of so-called pursue
+evision games. So games similar to the
+omicada chauffeur problem that I
+mentioned before and a broad um
+um
+uh set of problems actually are the ones
+we're going to focus on are referred to
+as reachability problems. And then there
+are also many other problems in
+economics and such that lead themselves
+quite well to differential game
+formulation. But in this class I want to
+focus a little bit on reachability
+analysis that you might have heard
+maybe. So inability theory we are
+interested in computing the so-called
+backward reachable set of a dynamical
+system. So this is the set of states
+such that the trajectories that start
+from this set
+are guaranteed to reach a given set at
+at the final time TF.
+So say that you specify a given set.
+The question is if you start one minute
+in the in the past what is the set of
+initial states such that you are
+guaranteed to land into the target set
+at the present time.
+So again the reachable set backward
+reachable set is a set of states such
+that trajectories that start from this
+set can reach some given target set.
+Now depending on how you interpret the
+target set that uh you want to reach
+then you have different flavors of a
+backwardility.
+In particular the target set could be
+something that you want to avoid. So
+basically you want to find the set of
+states
+that because of an adversarial
+um
+um choice or controls by player two
+would lead to that uh the avoidance set.
+Well, you want to then start uh outside
+of that set so that you're not
+guaranteed to
+uh hit an obstacle for example.
+So this will be the case of an avoidance
+set. So the target set is basically this
+when you hit a tree and the blue shape
+will encapsulate all those states such
+that if you start here
+no matter what you do there is going to
+be a strategy for the player two. For
+example, a fairly for fairly unfortunate
+uh sequence of wind gusts that boom will
+bring you into the avoidance set. Why is
+that useful for control for example for
+planning algorithms? Because then you
+formulate your planning algorithm such
+that you never start from states that
+are in within here.
+But sometime the target set actually has
+a more benign notion. It could be the
+set that you want to get into. In the
+case we talk about the goal reaching
+problems, the backward reachable set now
+has the notion of the set of states such
+that no matter how player two is trying
+to screw us up, we can still reach that
+set.
+And so for planning purposes, you want
+to start inside here.
+So depending on how you interpret the
+target set, you may want to start as
+player one either inside or outside of
+it.
+Now then the question is how do you
+compute these uh sets here depicted in
+blue? That's the problem which you
+analysis. That's the problem to which we
+will apply Hamitoi
+Isaac's uh argument. So let me just
+state the problem more formally here.
+We'll apply the machinery from this
+lecture to these problems. Next time I
+will also have an interactive script
+that will allow us to play a little bit
+with these problems.
+So to recap the
+backward reachable set in the case that
+uh the target set corresponds to danger.
+So we don't get there is the set of
+states Xbar such that there is a player
+two strategy
+so that no matter what we do as player
+one under the joint dynamics we are
+going to hit the undesired target at the
+final time which is time zero.
+Conversely,
+the uh
+the goal reaching formulation
+is so the go reachable set RT is the set
+of states such that no matter what
+player two is trying to do there exist a
+control action as player one that I can
+enact such that under the joint dynamics
+I'm going to end up in that state. So
+I'm happy. So these are the two class of
+problems that uh we're going to look at.
+So we'll see later we'll see on Monday
+how to apply the techniques we discussed
+today. It will take about 20 25 minutes.
+But you see this is actually quite
+useful. You can use it uh quite a bit in
+in a variety of robotics applications to
+protect yourself from uh obstacles in
+sophisticated settings whereby you have
+might have disturbances such as wind gas
+or other actors. uh or you can apply it
+in the setting so that you have very
+strong guarantees that you're going to
+fulfill your uh objectives.
+So to wrap it up, I know that there are
+some pieces in this lecture that a bit
+harder than usual.
+That said, I think it should be clear to
+you. The only part that might be a bit
+sketchy is the part when we invert the
+minimax. If you are interested in
+knowing more about that part, either
+come to my office hours or have a look
+at the two references that I provided in
+the second slide.
+But it's cool stuff. I mean, you'll see
+that actually we'll be doing I will
+showing you some interesting examples
+with the interactive script that I
+actually posted uh on the course
+website. So if you're interested, start
+playing with it in collab to just get an
+appreciation of these tools. All right,
+see you on Monday.

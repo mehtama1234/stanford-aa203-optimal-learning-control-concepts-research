@@ -1,0 +1,1529 @@
+All right, let's get started. So today
+we're going to continue our discussion
+about MPC. In particular, we're going to
+wrap up our discussion about persistent
+physibility as one of the key properties
+we want to imbue in our MPC control
+pipeline and then we switch to the topic
+of uh stability. So not only we want to
+make sure that the MPC loop has a
+feasible solution at each point in time
+but we also want to make sure that
+whatever action we optimize for does
+something useful in our problem setting.
+Useful means we are stabilizing uh the
+system that is converting to zero. We'll
+then wrap up the discussion with a
+couple of uh um
+uh topics that are practical elements
+specifically how some of the
+optimization could actually be computed
+offline as opposed to online. That was
+actually a pretty big deal about 10
+years ago where hardware was not
+particularly advanced yet and
+optimization solvers were not
+particularly advanced yet. So offloading
+part of the optimization offline was a
+big deal because it relieved what you
+had to do online. So basically it
+minimized delays. And then we're going
+to talk about uh the application of MPC
+to a slightly more general setting which
+is that of a trajectory tracking. And uh
+I will show you how the NPC formulation
+has to be modified a little bit to
+ensure that you have a good tracking
+performance. Interestingly enough,
+sometimes people in industry gets gets
+it wrong. So I want to make sure that
+you are not one of those people. Uh all
+right. So last time we introduced the
+concept of MPC. It's a bit dark here.
+Let's leave it at this before the entire
+setup explodes. So um we talked about uh
+MPC introduced the concept. I introduced
+a specific problem setup
+uh which is that of controlling a linear
+time balance system such subject to
+polyhedral constraints. We talked about
+uh the problem uh persistent physibility
+and stability. We introduce some uh
+concepts in particular the concept of a
+onestep controllable set the concept of
+a control environment set the concept of
+a positive environment set the concept
+of a physibility set and then we state
+the lema which reads as if set x1 which
+is essentially traned physibility set
+where we look at uh uh uh feasible state
+control pairs starting from stage one as
+opposed to zero. Well, if this set X1 is
+a control variant set for the system
+under consideration, then the MPC low is
+persistently feasible, which means that
+at each dependent cycle, you have at
+least one feasible solution. As I
+mentioned last time, this result per se
+is not particularly useful because X1 is
+not one of the tuning knobs that you can
+manipulate in order to tune your MPC.
+But we see is a stepping stone for the
+theorem that I'm going to state in a few
+minutes that actually relates the
+concept of resist persistent physibility
+to one of our tuning knobs that is
+actually the terminal set itself that we
+uh use as one of the constraints in our
+MPC formulation.
+With that context, let's prove this uh
+physibility lema. The proof is not
+particularly
+um you know interesting but at least it
+stress tests your understanding of uh
+some of the concepts we have uh
+discussed uh so far. So remember that we
+want to show that sorry uh if x1 is a
+control environment set then the MPC low
+is persistently feasible. So once we
+transition to the new state from the
+perspective of the new state x1 we still
+have a control that is feasible over the
+optimization horizon. So the proof is as
+follows.
+Remember the definition of a onestep
+controllable set.
+So the onestep controllable set to x1 or
+previous of x1 is defined as the set of
+states. This is just a definition that
+we stated last time is define a set of
+states in Rn such that there exist a
+control a physible controls such that ax
+plus bu transitions into the set x1. So
+that's a definition of a onestep control
+uh set. Now since X1 is a controlling
+variant
+again by definition of controlling
+variance for all states within X1 there
+exist a physible control such that ax
+plus BU is in X1.
+Now if we
+compare the two definitions we see that
+uh x1
+a point that is in x1 also belongs to
+the previous of x1 to the one step
+controllable set is the same property
+but the point that is in x1 also has to
+be in capital x by the definition of x1.
+X1.
+X1 is first of all the set of states
+that are physible. So that are in X.
+Which means
+that the set X1 has to be a subset of
+the intersection between a set X, this
+is trivial, and the pre the previous of
+X1. Does it make sense? is a bit of a
+mouthful but uh it just follows from the
+definitions. Now
+let's go back one step and now reason in
+terms of set x of zero. So this is the
+set of uh states x of0 such that there
+is a sequence of controls such that the
+states generated under the dynamics are
+produce states that are
+physible.
+Remember my definition of X0. X0 is the
+set of physible states such that there
+is exist there exist a sequence of
+controls physible controls
+such that under the
+uh dynamics evolution the generated
+states are also physible and satisfy the
+terminal condition. Now I can rewrite
+the definition of X0 as
+the set of feasible states such that
+there is a physible control such that X1
+belongs to capital X1 because capital X1
+subsumes
+uh where is the definition capital X1
+previous slide
+the fact that there is a truncated
+sequence of controls that lead to a
+feasible state trajectory
+Uh
+okay.
+Now again let's compare
+this definition to the definition here.
+So they are identical. The only
+difference is that in here I'm imposing
+these additional constraints that the
+states has to belong to X. So x0 is
+really the intersection of capital x and
+the onestep controllable set to x1.
+But then we put together the two facts
+and we see that x1 is a subset of x0.
+Every state that belongs to x1 is also a
+state that belongs to x0. Does this make
+sense? It's mostly basically pattern
+matching the different uh definitions.
+There is no particular cleverness here.
+Yes. So
+it's not necessarily
+&gt;&gt; no because of uh how we define it here
+is any state that transition us into X1
+could also be a state that is not
+feasible in terms of set membership to
+capital X.
+Okay. So
+now there is the slightly more
+interesting part. Actually this entire
+proof is quite boring. Uh take some
+state that belongs to x of zero some
+initial state
+and let u star zero be the solution to
+the finite time optimization problem.
+MPC optimization problem. Let us start
+zero being the first control in this
+sequence. Then under the control u star
+zero under the MPC control we transition
+into a new state x1
+since you start zero is clearly physible
+x1 belongs to capital x1 because it's
+part of the MPC trajectory. So by
+definition has to satisfy all the state
+constraints under the dynamics evolution
+and so it belongs to x1.
+But we just prove that set x1 is a
+subset of x0 which mean that set x1
+belong actually to
+set x0 which means that the new
+optimization problem is indeed feasible
+and then you can recursively apply this
+property through time.
+So rewinding all of this, we wanted to
+prove that under the MPC control law,
+the new [clears throat] state X of one
+X1 belongs to X0, the set of feasible
+states for MPC. to do so we manipulated
+a little bit the definition of a
+one-step controllable set and the notion
+of um control and violence and we
+finally proved
+that
+if set x1 is controlling violent then
+the problem is persistently feasible.
+Does it make sense? Again, not a
+particularly exciting result, not also
+particularly useful, but it's a good
+stress test for you to see whether you
+um you know understand the notion of a
+one step controllable set, control
+environment set and so on. In the final
+exam, there will be one question that
+will where I will ask you what is say
+control environment set.
+Okay. Anyway, so
+so say that the horizon is equal to one
+then um we can just choose the terminal
+set to be controlling violence and by
+the previous lema we know that if that
+is the case then uh the MPC problem is
+feasible at all planning uh stages
+But of course in general the
+optimization horizon is greater than
+one. So how can we extend these results
+to the cases whereby we have a general
+optimization horizon capital M. So
+that's what we're going to do next.
+Any questions in the meantime?
+So [snorts] now we get to the more
+interesting part.
+So building on the lema that I just
+showed that says that if X1 is
+controlling variant then the MPC control
+law is persistently feasible. Now we can
+prove a more powerful theorem that reads
+as follows. If the set X of F which is a
+reminder is the set through which we
+specify a terminal constraint for the
+MPC optimization problem. This is
+something that we decide and if set x of
+f is a control environment set for the
+system under under study then the mpc
+low is persistently feasible
+that's interesting uh let's try to
+understand what is saying what is a
+trivial control environment set for this
+system meaning a set that if you are
+there there exist a control that allows
+you to stay
+Well, any mathematical equation if you
+are in doubt always say zero. I mean
+typically zero is the best guess in this
+case is correct. So the origin zero is
+indeed the control environment set. If
+your state is x equals 0
+uh assuming that u equals 0 is an
+allowable control which is typically
+true. I mean doing nothing is typically
+allowed
+under linear dynamics. If you are at
+zero and you use control zero, your next
+state is zero. Which means that the
+origin you have a set with only one
+point but still is a set. The origin is
+indeed a control environment set. And
+intuitively what is it saying?
+It's saying that if we just target the
+origin in n steps and then I shrink the
+horizon by one there is always um an
+admissible control sequence that is the
+concatenation of the previous control
+sequence and then the fact that with the
+last control would just stay at zero. So
+you can just trivally continue your
+control sequence to have a full and step
+control sequence. So we're going to
+prove the theorem but intuition is quite
+obvious.
+That said
+for a general system you might have a
+different control environment set. Zero
+is just an option but actually you could
+have a larger set which is a control
+variance for the system. We'll see later
+uh how to compute those larger sets. So
+do you think that the origin is always
+the best choice?
+So constraining your system to reach the
+origin in end step as part of your MPC
+control law. You think that this is
+always a smart thing to do. It
+guarantees you persistent physibility.
+So that's great.
+Remember that typically
+you are not just reasoning in terms of
+controlling the state to zero but you
+also want to be very parsimmonious in
+terms of how much control you spend. So
+often times asking your system to reach
+the origin in n steps as part of your
+MPC optimization problem can be very
+limiting. So basically you are asking so
+of all the control sequences you could
+apply you're only optimizing over those
+that in end step to the origin typically
+those that require a lot of control
+effort. So yes, you have persistent
+physibility but now you might control
+your system very suboptimally meaning
+with a lot of control uh expenditure. So
+that's why in general the terminal con
+constraint that is something that you
+artificially add to your MPC problem to
+ensure persistent physibility should be
+as relaxed as possible so that you don't
+overly constrain your system. Does it
+make sense?
+just trying to give you both
+mathematical
+um backing for what I'm saying but also
+some practical considerations
+and this stuff that people do for for
+real right so it's it's constantly you
+know a little bit of a design choice how
+to probably set x of s so now let's
+prove this um theorem
+so the proof is as follows
+so we prove that if x of f is
+controlling violent. Then x n minus one
+the truncated set where your horizon is
+only one is also going to be controlling
+violent. And then if xnus one is
+controlling variant xnus 2 is
+controlling variant all the way to x1
+and once we hit x1 we know from the
+previous lema that if x1 is controlling
+variant then the system is persistently
+physible. So we can invoke that lema to
+conclude the proof of the theorem.
+So let's start with the first step. So
+if XF we want to prove that if XF is
+controlling violent XN minus one is
+controlling Vant 2. X N minus one is
+defined as usual now is is just a
+truncated physibility set where we only
+reason in terms of a onestep horizon is
+a set of states physible states for
+which there exist a physible control
+such that under the system dynamics we
+have a sequence of states that is
+feasible in this case um the last state
+needs to satisfy the terminal sl.
+Now
+um because of the terminal constraint
+we know that
+um remember that we want to show that
+this uh set is controlled environment.
+So the question is for any state
+so any vector within this state is there
+a control input that allow us to
+transition back into this set under the
+system dynamics.
+So that's what we want to prove. Now
+what we know is that uh by the
+definition of xn minus one
+um
+there is a control such that a x
+a x nus one plus b1 is equal to xn which
+belong to the terminal set x of f. I
+mean this is by essentially definition
+of x1.
+Now the question is
+does XN which belongs to XF also belong
+to X1? If that is true that it means
+that X1 is controlling environment. I
+found actually a control that allows me
+to transition back into X1.
+But for now the only thing that I know
+is that X of N belongs to XF.
+But from the assumption theorem we do
+know that x is a controlling varant set
+which means that there exist a u such
+that ax plus b belong to x of f [snorts]
+but is indeed the definition of uh that
+defines the membership of a point to xn
+minus one. So we have just proved that
+XN minus that XN indeed belongs to
+capital set XN minus one. Don't be mixed
+up with the subscript
+X Xnus one is just a definition of a set
+is the one step physible set. So the
+fact that Xn belongs to XUS one doesn't
+tells you nothing in terms of the
+temporal coherency between the
+subscripts.
+So we have just proven that x of n
+belongs to capital x n minus one. So we
+have just proved that x - one is indeed
+controlling environment. But then you
+can apply this argument recursively
+until to prove that x -2 is controlling
+environment. X - 3 is controlling
+violent all the way to x1. At the point
+we invoke the physibility dilemma from
+the previous lecture and then we can
+state the claim that if XF is
+controlling violent then MPC is perally
+feasible.
+Does this make sense?
+Again is a bit of pattern matching with
+definitions. [snorts]
+Most important thing for you to
+understand is and this is a big deal. If
+the set XF is
+chosen to be a controlling vent set for
+your dynamics then your set your MPC is
+perically feasible. Now the origin is in
+general u a control environment set. So
+is a possible choice for your terminal
+constraint in general is a bit
+suboptimal. So we want to have more
+sophisticated choices for the terminal
+set within all the possible ways of
+defining a controller and set. We'll get
+back um we'll get back to this point
+later along with a pointer to um
+computational tool that allows you to
+compute control environment sets. And in
+problem set three, you'll have a few
+problems that will uh um expose you to
+how to use this uh toolbox in order to
+comput
+control environment sets.
+I mean this is my son that brings back
+uh bugs from child care. This is sort of
+bio the child is sort of biological
+weapon. This is my 445. I mean I'm
+recording so I don't stop here. So we're
+just complaining about the diseases that
+go around in the cher anyway. So the
+terminal set X of F is introduced
+artificially for the sole purpose of
+leading to sufficient condition for
+persistent physibility is one of the
+tuning knobs. And now we know that at
+least from an abstract standpoint if we
+choose X of F to be controlled by set
+persistent physibility is guaranteed.
+As I said, the simplest choice would be
+to just pick X of F as the origin, but
+this is generally undesirable because it
+excessively restrict the space of
+feasible control sequences. We'll
+discuss this choice uh later in more
+detail. Now we switch to the other topic
+that is that of stability.
+Now we know at least how to make the
+problem persistently feasible. The
+tuning knob that at least for the scope
+of this class we choose for that purpose
+is the control the terminal constraints
+X of F. We have other two tuning knobs.
+How we select the terminal cost P in our
+MPC formulation and how we select the
+horizon N. So the question now is can we
+tune those tuning knobs in such a way
+that stability is guaranteed.
+[snorts]
+To prove stability, we will leverage the
+tool of leapo stability that some of you
+may already be familiar with, but if
+you're not, no problem. I'll give you a
+very quick intro to leapono uh
+stability.
+So what does the stability say? I will
+uh state in a second the full theorem,
+but first I want to give you intuition.
+So say that you have a dynamical system
+s
++ one equal f of x k or maybe in
+continuous time you also have x dot
+equal f of x.
+Now the question is
+is the system stable? Roughly speaking,
+if you start close to an equilibrium
+point, will you go back to that
+equilibrium point uh without, you know,
+having trajectories that go out of
+whack?
+If this is a ball,
+this is a stable equilibrium point
+because uh if you have a ball in the
+ball, never got the pronunciation right,
+but anyway. So this is a ball and this
+is a ball and uh uh so if you have a
+ball in a ball um you know that if you
+start this ball outside of the
+equilibrium point then it will start
+oscillating and then if you have a
+little bit of friction you dissipate
+energy you will go back to the uh bottom
+of the ball. So it's the case of a
+stable equilibrium point. If you're
+here,
+of course, this is unstable. This is an
+equivalent point. So if you put the ball
+here, it will stay here. But then if you
+start a little bit farther from the
+equivalent point,
+you will go down.
+So say that you have a dynamical system
+and say that you have an equivalent
+point and you want to understand if the
+dynamics are at least locally stable
+around that equilibrium point.
+How can you show that? Well, all that
+you know is that you have an equilibrium
+point and you add a transition dynamics.
+So in principle, what you will need to
+do is to solve for all possible initial
+conditions around your equilibrium point
+your discrete time equation or
+differential equation and then see what
+happens. Now in general solving
+nonlinear differential equation or also
+discrete time nonlinear
+update equations is complicated. So for
+the longest time this was a big problem.
+Then there was a guy leamp of that came
+in and saying well maybe we can say
+something about the stability of the
+system without reasoning directly in
+terms of the um evolution of the state.
+The idea is if we can say that there is
+some function that loosely speaking has
+a notion of an energy function that
+decreases over time
+along the system trajectories that might
+tell me could tell me something about
+the evolution of the underlying system.
+Think about energy being dissipating
+along the evolution of a system. That
+means that basically the system
+inherently is constrained to reach a
+point of minimum energy because you're
+dissipating energy. So basically this
+intuition is if I don't need to prove
+that all the trajectory goes to zero. If
+I can say tell to the system that the
+system is dissipating energy then
+probably will converge to some state of
+minimum energy loosely speaking.
+So that's basically what the leaponov
+theorem says. Consider an equilibrium
+point for a system xk + one equal of f
+of x k. Equilibrium point means that if
+you are at zero f of 0 is equal to zero
+meaning that we stay there.
+Let's consider a set omega which is
+closed bounded and positively invariant
+set. This is some mathematical thing
+that we need not super important.
+Let v
+referred to it as the leapono function
+be a function that has the following
+property. Is it zero at the origin is a
+positive outside of the origin.
+And for the evolution of system
+trajectories starting from omega then
+this function decreases along the
+trajectories.
+then x=0 is asytoically uh stable.
+So
+essentially you have
+[snorts]
+um
+this is your v function
+v of x. This is a a two dimensional
+state space.
+If I can say
+that along all possible system
+trajectories
+V decreases in value,
+it means that the state trajectories is
+going to the bottom which is the
+equilibrium point since V 0 is equal to
+zero
+which again is including this notion
+that uh you are trying to show that your
+system is losing energy along ong the
+system trajectory.
+Note how with this theorem and that's
+the most important thing we can claim uh
+stability properties without having to
+solve explicitly the uh state transition
+equations or a system of differential
+equations if you are in continuous time.
+So that's a main thing about uh the
+appro as long as we can find a function
+with such a property then um so we can
+argue about stability.
+Now you might say how do I find such a
+function B? I mean that's hard. That's
+actually the hard part. So in some cases
+u there are some um
+uh physical arguments that allow you to
+construct the upnot functions for
+example energy arguments but in many
+cases uh you can use other arguments and
+this is the case that we will consider
+for MPC now if you're interested in
+theory it has a very le theory so I
+would recommend to have a look at some
+of the references that I provided For
+the sake of this class, the only thing
+that I want to say is that there is a
+tool that allow us to infer stability
+property for a closed loop system that
+entails
+uh using an auxiliary function referred
+to as a diapon function and show that
+under the system trajectories that the
+function has a non-deereasing property
+namely this property here. So what we're
+going to do now to show stability is to
+show that for the MPC the closed loop
+MPC law we can find a leap of function
+so that we can then claim stability for
+the MPC control law.
+So the question is what is this the
+function
+and here there is another theorem but is
+the last one for MPC. So
+any questions so far?
+How many of you heard of leapono
+stability before?
+Half. Okay. Well, in any case, read
+about it. It's a it's a useful and
+interesting tool also with uh of course
+I presented here quite uh quickly but
+also with a rich um um
+physical interpretation. Again,
+main thing that I want to make sure you
+understand is that uh it's essentially a
+tool that you have to inferative
+properties about dynamical system
+without having to resort to explicit
+integration of the underlying uh uh
+system equations. It boils down to show
+that for some choice that you had to
+come up with of a function V, you have a
+um a non-increasing property uh of the
+function V. If you do that, then you can
+infer stability. So we're going to you
+use the leap theorem a little bit in a
+mechanical way without spending
+additional time in explaining its
+origin. But I do encourage you to do a
+little bit of reading on the opponent of
+stability because it's an interesting
+topic.
+Okay. So let me state now the celebrated
+stability theorem.
+This is an interesting case whereby for
+20 years or so people applied MPC
+without any theory and then in the '9s
+people started develop theory to more to
+tune the algorithm in a more principal
+way. Do you know something that is
+happening right now with no theory?
+Deep learning. I mean nobody knows
+exactly why it works but people use it
+all the time. Who knows maybe in 10
+years there will be the analog of uh I
+mean there is some theory behind deep
+learning but it's typically uh for
+settings that are not really uh
+reflective of what people do in
+practice.
+So same here NPC for 20 years people
+they applied it just worked well and
+then people said no actually we can add
+some theory and this is one of the
+celebrated theorems within this theory
+it says the following let's assume that
+we are in a um
+uh LQR type of setting so the cost is a
+two normal cost so xrpose qx plus urpose
+ru so we have a quadratic cost let's
+assume that the control pen is positive
+definite. We also assume that the states
+penalty is positive definite and the
+terminal penalty is positive definite.
+We assume that the in sets xf and u
+contain the origin in the close this you
+know just to make the math be super
+solid but it's not the most critical
+assumption. Let's assume that xf is
+[snorts] controlling violent. What do
+you think we make this assumption
+&gt;&gt; exactly? This is to to ensure that at
+least NPC is feasible. So we got that
+covered. And let's assume this fourth
+assumption here that looks very weird.
+So basically it's saying that the there
+exist a u such that ax plus b u belongs
+to the uh terminal set and such that
+under this u cx u plus p of x vu minus p
+of x is less than or equal to zero. And
+this has to be true for all x in xf.
+That's weird. Um but and and we'll see
+how we use this result. But just to gain
+a sort of intuition,
+remember the leapon theorem that I
+showed you before, we want to show that
+along the trajectory something has to
+become negative.
+Here basically what we want to say is
+that there exists a U such that C plus P
+at the next state is less than uh or
+actually let's put it this way P at the
+next state minus P at the current state
+is less than or equal to minus C and C
+is a positive thing. So is a sort of
+reminiscent of um
+a leap of like condition
+we'll see how we apply it. I just wanted
+to give a little intuition about why
+this way. I mean the first time that I
+saw it as a student I said I mean where
+is this coming from? It was like some
+nightmare of a mathematician.
+So if all of this is satisfied then the
+um origin of the closed loop system is
+asytoically stable with domain of
+attraction x of zero. namely that your
+MPC control law if started within
+um
+capital X0 is going to asynthetically
+converge to the origin. So it works.
+We'll see after I prove this theorem how
+this actually leads to an action
+actionable recipe to select the tuning
+knobs for your MPC. meaning how to
+select x of f how to pick uh p which is
+your terminal cost but let's first prove
+the theorem and the idea here is to come
+up with a leapon function for the mpc
+control law
+and show that the diapon function is
+indeed a leapon function. So you have
+this decreasing property which allow us
+to invoke the leapon uh theorem to claim
+stability MPC control law. [snorts]
+So the proof is as follows. I think this
+proof is is proof is quite cute is is
+more interesting than uh the persistent
+physibility proofs that personally I do
+not really like. All right. So
+um as your colleague said because of
+assumption A2 namely that the terminal
+set is controlling violent then MPC is
+guaranteed to be persistently feasible.
+We already proved that. Okay.
+Now what I want to show is that uh J
+0* X
+which is the optimal cost of the MPC
+problem when initialized at X it's just
+a function it maps X into a number
+that function is indeed a leapono
+function for valid function for the MPC
+control Oh,
+so that's our
+if that is true then we can invoke the
+leapono theorem and show stability.
+So essentially what we're going to do
+next is then go step by step through
+leapono theorem show that all its
+assumptions are verified most
+importantly the uh the [clears throat]
+decreasing property of a leapon function
+for this very specific choice
+and then invoke the leapon theorem to
+claim stability.
+So let's do it step by step. For first
+of all
+let's write uh
+the closed loop dynamics
+as x
+what do we use there? Xt + one
+equal f of closed loop of x of t.
+Remember that f of closed loop of x of t
+is um
+f of x comma
+the uh mpc
+low. Once I write u as a function of x
+through the MPC optimization, then I get
+a system that is just a function of x.
+Does it make sense? Once u is written as
+a function of x, I can then write
+everything as a function of x. That
+function I just call it f close u. So
+first of all, we have to be disciplined.
+Is the origin
+an equilibrium point
+for the uh closed loop system. Closed
+loop meaning once we use the MPC
+controller as our control signal.
+Well, what does it mean to be an
+equilibrium point? It means that if you
+are a state zero, I solve my NPC
+problem. I get the optimal control and
+then I transition into a new state that
+is equal to zero.
+Well, if I start at zero,
+assuming that u equals 0 is a feasible
+control and
+remembering that our cost is a summation
+of quadratic terms
+where Q and R are positive definite.
+What do you think the optimal um
+sequence is that uh the MPC
+is going to optimize for?
+What is the result of NPC optimization
+problem?
+&gt;&gt; Zero
+&gt;&gt; zero because the cost is greater than or
+equal to zero and if you start at zero
+and use equal equal to zero this all
+this cost is going to be equal to zero.
+So zero is a lower bound and there is
+this actually u such that you achieve
+zero. So that's the optimal uh control
+sequence. But if you start at zero and
+use control u equals z what is your next
+control uh sorry your next state
+zero because our dynamics are ax plus b.
+So we just proved at the minimum that
+the origin is an equilibrium point for
+the closed loop system.
+square then x0 is bounded and closed.
+That's a bit of a mathematical thing not
+important here. Now
+what I want to claim is that the optimal
+cost which is a legitimate function from
+the state to uh the real numbers is
+indeed a leapno function. So now we have
+to show all of the different criteria
+for J star to be a function meaning has
+to be zero at the origin
+has to be positive elsewhere and it has
+to decrease along the system
+trajectories. So let's start with the
+easiest one.
+So what is J 0 of zero? So if you're at
+zero, we already shown that the optimal
+solution is u equal 0 throughout the
+horizon.
+with corresponding cost equal to zero.
+That's a easy one. Also quite easy to
+show that if you start at a state x
+different from zero then the cost is
+going to be positive because remember
+that your cost you start from
+um k equals z you go to n minus one of x
+k.
+So you have at least the term x0
+transpose q x0 since x0 is different
+from zero and q is positive definite at
+least the first term is going to be
+positive which means that if you start
+from a state that is different from zero
+your optimal cost is positive. Okay
+so to me that's the easy part of the
+function. uh the harder part is to show
+that along the system trajectories this
+function is decreasing over time. So
+basically you're dissipating energy
+you're dissipating cost which means that
+over time you'll get to the lower bound
+which is your uh equilibrium.
+How do I show that? So let's consider an
+initial condition that is feasible
+meaning that there exist a feasible uh
+solution to the MPC problem.
+Now the terminology here is a bit clumsy
+[snorts]
+but uh uh just follow me.
+Let u subscript zero of superscript zero
+being the um
+uh optimal control sequence computed at
+the first iteration of MPC iteration
+zero
+and let denote the corresponding state
+trajectory as x of0 which was our
+initial condition x10 x and zero and so
+After we apply the first control in the
+control sequence according to MPC, we
+transition into a new state x1 that
+according to our dynamics is simply a x0
+plus b u0 superscript zero. So far no
+surprises. Now let's see what happens
+now that we have transition into step
+one.
+Let's consider uh a sequence of controls
+obtained as follows. I take the tail of
+the previous control sequence
+and then I append a control V that is um
+chosen to be a a physible control
+and let's denote these corresponding
+state trajectory the corresponding state
+trajectory as X1 is the point we're
+starting from look how the subsequent
+states are essentially the states
+that uh would have would have been
+predicted from a perspective of uh the
+first planning cycle
+but starting from time 2 and the last
+state is simply given by axn plus bb.
+Do you see this? So this is the part
+where terminology gets a little bit
+mixed up. Not mixed up is gets a little
+bit confused. So basically you have
+So at the um
+first computation cycle you have u 0 0
+u1
+uh zero dot dot dot dot u n0
+and then u minus one
+and then correspondingly you start from
+state X of0 you go into state X10
+dot dot dot dot dot X n - one uh xn
+zero.
+Okay. So now let's assume
+that uh we transition into the new state
+x1 equal to a of x 0 plus b
+u 0 0
+which means that basically you are
+transitioning to this state here. So if
+you now start applying
+this state control sequence, you will
+transition along the same states that
+you predicted from the perspective of
+the previous planning cycle. So that's
+what I'm trying to say here. And the
+last state, so the state that is one
+time step after is axn plus bb. So
+nothing particularly deep here, just a
+little bit of bookkeeping in terms of
+terminology. Any
+questions here?
+&gt;&gt; Yeah,
+&gt;&gt; I guess we're going to this if like the
+quadratic cost is collapse, right? Can't
+we just argue that it's decreasing?
+&gt;&gt; Well, we have to we have to show that it
+decreases along the trajectories
+generated by the
+um closed loop system. So it's not
+entirely obvious that uh when you
+evaluate the cost along those
+trajectories the cost necessarily is
+going to decrease.
+&gt;&gt; Yeah.
+&gt;&gt; At least you wouldn't know a priority
+that that is the case
+&gt;&gt; calculated based off of your initial
+state.
+&gt;&gt; Yes. But then that final control that
+you're implementing B is that
+&gt;&gt; for now this is just a the only thing
+that I'm saying is that it's physible Q.
+Now we show that for a more
+sophisticated choice of V I can find a
+control sequence that allows me to tell
+something about the decreasing
+properties of the diap function. for now
+it's just a dumb u um um you know
+control sequence that I want to consider
+on this note let's be a bit smarter
+and let's we know that xn0 belongs to xf
+this is the terminal constraint for the
+mpc problem solved at step zero
+since xf is controlling variant I know
+that there exists the physible control
+that allows me to transition back into
+Excel. So now I'm refining the selection
+of V into the selection of a specific V
+that allows me to for ax plus BB to stay
+in the um
+uh control set
+X of F.
+That means that uh this control sequence
+is now a feasible sequence for the MPC
+problem starting at step one. Why?
+because V satisfies the control
+constraints and the state trajectory is
+uh feasible in the sense that uh all of
+the states
+x to 0, x and0 are going to satisfies
+the state constraints because of uh how
+the trajectory of step zero was computed
+and the terminal constraint is also
+satisfied because I chosen V in such a
+way that the final state
+is in XF. So we satisfy the terminal
+constraint. So all of this to say that
+this specific choice of a control
+sequence is a feasible
+control sequence for the MPC problem a
+step one.
+So now what we're trying to see is
+whether we can use this controlled
+sequence to say something about the
+evolution of the cost j0 along the
+trajectory. So essentially we want to
+say is
+jar of x1 less than j star of x0. That's
+what we're trying to get to the point
+because if we can say that then we can
+invoke the leap theorem. Now for now the
+only thing that we can say is that the
+jar zero of x1
+is less than or equal to the uh cost
+related to um applying this candidate
+control sequence. Why less than or equal
+to as opposed to equal? Because for now
+all we know is that this is a feasible
+controlled sequence but it's not
+necessarily optimal. So the only thing
+that we can say is that the optimal cost
+is upper bounded by a cost of a physible
+control sequence.
+Okay.
+Now let's add and subtract
+couple of terms. So we add P of X and Z,
+we subtract it. We add the C of X0 U 0
+and we subtract it.
+Look at these three terms.
+in red. When you sum them, what do you
+get?
+Remember that uh uh
+u0 sub ukerscript zero was the optimal
+control sequence for the MPC problem
+from the perspective of stage zero. So
+when you sum those terms, what do you
+get?
+So here's a the summation of the stage
+wise cost. This is a terminal cost. So
+it looks like the cost of an optimal
+control problem. Which one?
+&gt;&gt; Exactly. Plus one
+uh for your grade. Yes,
+that's exactly right. So all of these
+terms
+really correspond to the uh optimal cost
+because we're using the optimal control
+sequence of MPC problem solved from the
+perspective of step zero. So I can
+substitute from that. So those three
+terms are now encapsulated here and then
+I have the remaining terms.
+Now,
+now we play the assumption three that
+leapno like uh assumption
+the assumption three says that for all
+states in x of f there exist a control
+let's call it u um uh v star with a
+property that ax plus bv star is an x of
+f that's what v star does
+uh such that
+um let's go back rewrite here in case
+so we keep keep it here it will also be
+useful later. So the minimum
+over u
+minimum over u in u such that ax plus b
+u is an xf [snorts]
+of
+u minus px
+plus c of x u plus p of ax + b uh
+uh all of this is less than or equal to
+zero for all x in xf. So that's
+assumption three.
+So now what I'm saying is that among all
+those
+upper bar that
+allow me to transition into the
+controlling set x of f. I pick the one
+that minimizes this quantity. And I know
+that the one that minimizes this
+quantity has the property that P of ax
+plus b bar minus uh p of
+uh minus p of x [snorts]
+plus c of x d bar. All of that stuff is
+greater than or equal to zero.
+So for that specific choice of
+V upper bar, the three quantities in
+blue sum up to something that is greater
+that is less than or equal to zero,
+which allows me to derive the key
+inequality whereby Jar0 of X1 is less
+than J star 0 of X0 minus this term
+here,
+you know. So basically I have J star
+X0
+is equal to is less than or equal to
+oops sorry
+the star of X1 is um
+0 plus C um minus C of X0
+Oh, sorry.
+U 0 0
+plus
+a term
+and I know that the term is less than or
+equal to zero. So that implies that jar
+x1 is less than just jar 0 x0 minus this
+quantity here.
+Does it make sense?
+Since this term by assumption three I
+know is less than or equal to zero.
+Well, but c of x0 u0 is greater than
+zero for all initial states that are not
+the origin again because the cost is
+positive
+uh for all states that not equal to the
+origin because of uh it's a quadratic
+cost. So we have just shown
+that the jar x1 is strictly less that
+the jar x0 meaning that the cost is
+indeed guaranteed to decrease along the
+system trajectories. So then we can
+invoke the leapon stability theory and
+then claim that indeed the MPC control
+law leads to closed loop dynamics that
+are asatically stable. So are guaranteed
+to converge to the origin assuming the
+assumptions are verified with domain of
+attraction uh x of z.
+Any questions here?
+I think that's an interesting proof.
+It's actually quite powerful. So try to
+go through it a few times just to
+internalize it. This is a fairly
+important proof.
+Okay. So now we have a theorem that
+allow us to reason in terms of
+persistent physibility. a theorem that
+allow us to reason in terms of
+stability. How do we make those theorems
+actionable? Meaning how do we link those
+theorems to specific selections for x of
+f and the terminal cost which in our
+case we're assuming the terminal cost is
+quadratic. So we want to understand how
+this what this theorem tells us in terms
+of how we choose capital P
+and we're going to see a couple of
+settings. So the first setting is we're
+given linear dynamics but now a is a
+syntactically stable meaning that all
+values of a lie in the within the unit
+circle.
+So let's define
+XF as the maximally positive invariant
+set for the system XT + 1 equal A XT.
+How do you compute this positive
+invarance set? I'll show you in a couple
+of slides the link to a very handy
+toolbox
+to compute these sets numerically. So
+you just use this math toolbox, write
+down a couple of commands and you'll get
+this set.
+Now x of f as defined is a controlling
+varant set since once you are uh in this
+set since u equals 0 is a feasible set
+then a of a of 0 is is zero. So you stay
+there.
+So the persistent physibility part is
+relatively straightforward. Now how do
+we prove how actually how do we use the
+stability theorem? Remember what the
+stability theorem is asking us?
+Actually let me write it in terms of a
+quadratic cost.
+So minus xrpose px plus xrpose qx plus
+uranspose ru
+plus ax
++ b u transpose p a x + b u. So we want
+this stuff to be greater than less than
+or equal to zero for all x in xf.
+So let's consider the specific control u
+equal to zero.
+The question is for this specific
+control u is this inequality satisfied?
+If that is the case, that's great. Then
+we can um
+uh infer stability. Now if you set u
+equal to zero,
+this term goes away. It's equal to zero.
+This term goes away. This term goes
+away. So essentially we are left with
+the inequality minus xrpose px plus
+xrpose qx
+plus
+xrpose arpose p a x less than or equal
+to zero. It just so happens that this is
+not a random matrix equation. It's
+actually a very famous equation referred
+to as the liapon equation. And it turns
+out
+that if Q is positive definite and I A
+is a statically stable there exist a
+positive definite P such that all this
+quantity is equal to zero which
+satisfies this condition here. So what
+does that mean? That if you choose P as
+the solution to the diapon equation and
+you are guaranteed that such a solution
+exists and it's positive definite so it
+satisfy all our stability assumption
+with that selection of P as a terminal
+cost MPC is going to be
+asynthetically stable.
+So what's the intuition here? The
+intuition here is that basically
+uh you optimize MPC in such a way that
+after n steps you end up
+if you do nothing in uh afterwards into
+this uh O infinity uh set and then you
+will let your natural dynamics that are
+stable to drive you to the origin. In
+reality won't you won't do that because
+by reoptimizing you're always going to
+uh find some different control sequence
+but basically that set serves as an
+anchor to make sure that uh you know you
+you uh you stay grounded into desirable
+behavior
+mechanically what do you do you call a
+computational tool that I'm going to
+mention in a second to compute such a
+maximum positive invarian set and then
+we choose a P in order to solve the
+dapon equation is another oneline
+command in MATLAB. You plug those
+numbers into your NPC, you're guaranteed
+persistent visibility and stability.
+So what if [snorts]
+um
+a is not uh
+stable meaning that your natural
+dynamics don't help you with going to
+the origin without control? Well, that
+means that you have to do active control
+in order to make sure that you go to the
+origin. So in this case, you still have
+a similar pro procedure in order to tune
+your um
+parameters, but you now use LQR, active
+control as basically your uh controller
+that allows you to anchor your future
+dynamics into some dynamics that will
+lead you to the origin. Specifically,
+let f infinity be the optimal gain for
+the infinite horizon lqr controller. set
+x of f as the maximum positive vant set
+with respect to the lqr
+closed loop dynamics which means that uh
+after n steps when you hit u um
+set x of f if x of f if you do do if you
+don't do any replanning at least you
+have a physible controller that allows
+you to uh stay within the set x of f but
+then if you choose uh uh the terminal
+cost P in such a way that uh your LQR
+controller would essentially brings you
+to the origin then you are guaranteed to
+be uh stable. Now here the derivation is
+a little bit more convoluted
+algebraically so I'm not going to show
+it but essentially the style of
+reasoning would be the same. We plug the
+controller the LQR controller U= F
+infinity X into this inequality and then
+we we will show that if we pick P as the
+solution of this equation then we will
+have equality. So we will satisfy the
+stability [snorts]
+uh condition and this equation again is
+not a random equation. This is the
+Ricati equation and is guaranteed to
+have a solution. So bottom line if you
+have unstable system you pick your uh
+terminal set as the maximum positive
+variant set for the uh closed loop QR
+dynamics. You pick P as a solution to
+the discrete time equation. You plug
+those numbers into your NPC controller
+and then you're guaranteed to have
+persistent physibility and stability and
+you have a couple of problems in your uh
+pet. Now these are not necessarily the
+best possible choices but just some
+choices that are very procedural.
+So if a is stable maximum positive
+maximally positive invariant set with
+respect to the uncontrol dynamics choose
+p as a solution to the diapon equation.
+If a is unstable, choose your terminal
+set as the uh positive set for your uh
+lqr loop dynamics and choose p as a
+solution to the ricati
+uh equation with um
+with idea again that you basically carve
+out a region x of f where the optimal
+unconstrained controller is considered
+to be feasible and this is used it as a
+value function to guarantee stability.
+All right, that was quite a bit. Uh, let
+me conclude with the two very quick
+things. So the first one is that so far
+we've been looking at MPC through the
+lens of online optimization. So measure
+your state, you solve an optimization
+problem online basically on your device.
+Get a control sequence, you apply the
+first control input and then you
+reoptimize.
+Now it turns out that there is also an
+explicit slash offline version of MPC
+that allow you to premputee NPC control
+law such that you don't have to do any
+optimization online
+to appreciate that let's go back to our
+usual setup by the way MPC can be
+generalized also to nonlinear systems
+but here you know the goal of this class
+is to give a broad overview of different
+control techniques. So we'll only
+discuss it in the context of the linear
+system. It is already quite interesting.
+So we're back to I mean usual setup
+linear dynamics quadratic cost. So it
+turns out
+that the solution to the constraint LQR
+problem is a control which is a
+continuous pie-wise ained function on a
+polyhedral partition of the state space.
+That is
+there exist a partition of the state
+space. So that if say in 1 2 3 4 five
+regions such that if your uh initial
+state for your MPC computation is here
+you can just look at a lookup table and
+then the optimal control policy is
+simply f of x plus g where the fkj and
+gkj are gains associated with the
+specific region. So basically the
+solution to LQR is just a peacewise
+um
+a fine control
+um which allows you to basically do a
+lookup table search online meaning that
+you measure a state you'll see in which
+region the state falls you pull out the
+gains corresponding to that uh uh region
+and then you have your optimal control
+law There is no optimization that you
+have to do online
+and these terms f and g and the
+partition of the state space is all
+computed offline. I'm not telling you
+how to do it. I'm just saying that this
+can be done.
+So you say great why don't you do it all
+all the time. There's I mean this is
+great for a number of reasons. Basically
+it avoids you to solve an optimization
+problem online. You know solving
+optimization problem also has its own
+challenges beyond just uh how quickly
+the optimization problem can be solved.
+For example, you have to show say that
+you are in a safety critical situation.
+You want to land the rocket on earth.
+Well, it means that you really trust
+your optimizer not to have bugs. So from
+a a development program standpoint, it
+has cost. You need to have additional
+people. They have to write optimizer.
+They had to customize it. They had to
+code it into an embedded environment.
+You had to validate it. Here everything
+is explicit so the validation step is
+much easier. On the other hand it turns
+out that often times this poly inter
+partition of the space takes very weird
+shapes mean I mean meaning that you have
+a lot of cells
+and today the optimizers such as the
+convas optimizers have become so good
+that often times it's faster to just
+solve optimization problem rather than
+just doing a lookup table in a very in a
+gigantic table. So explicit MPC
+as a good concept for you to know with
+understanding that often times you just
+use online optimization these days.
+So
+we essentially dis uh discuss the famous
+multi-step design process for MPC where
+we choose uh you can also play a little
+bit with horizon length. In this class,
+we focus primarily on XF as your uh
+tuning knob for persistent physibility.
+So you tune XF to be control environment
+so that you have persistent physibility.
+You choose the parameters Q and R freely
+to affect the control performance. You
+adjust capital P as per the stability
+theorem and then you have an automated
+way to tune your MPC algorithm to
+compute uh these you know control sets
+and so on. is a very handy toolbox which
+is MPT3 and that's what you will uh uh
+work with in your pet 3.
+Um
+one last thing in the uh past four
+minutes
+so far we have looked at MPC as a tool
+in order to uh achieve uh stability. So
+basically you want to make sure that the
+state converges to zero. But often times
+you want to use NPC for for tracking. So
+basically you're giving a reference
+trajectory for example computed through
+a direct method. And then you want to
+use an MPC wrapper that basically allows
+you to uh counterreact any disturbances
+and make sure that your actual
+trajectory stays close to the reference
+trajectory.
+So the most naive way of setting up the
+tracking problem is to have a cost where
+you penalize deviations from your
+reference trajectory plus a quadratic uh
+penalty for the control effort.
+So this formulation does not work. The
+reason why it doesn't work is that uh uh
+often times to track a reference
+trajectory you need zero control. So say
+that you have an aircraft and you want
+to track a a constant altitude profile,
+you can't really switch off the engine.
+You still need like a constant thrust.
+So what happens if you use this
+formulation is that the moment your um
+tracking error goes to zero. [snorts]
+Now the cost is dominated by your
+control effort. So now MPC is trying to
+minimize the control effort. So
+basically you reduce thrust and then
+your um tracking cost goes up. So you
+start going to this kind of oscillations
+in which in between control effort and
+tracking error uh cost. So what's the
+solution? You reframe the problem in
+terms of delta control. So basically how
+you change controls uh with respect to
+time steps as opposed to absolute
+control. So you frame the tracking
+problem as a problem of minimizing
+tracking error. So y is uh c of xx I
+mean c could be also the d identity
+could be just x k minus rk where r is
+your reference plus a penalty term with
+respect to the deviation control
+variables where the delta us are defined
+as a uk minus uk plus minus one so that
+in perfect tracking what you have is a
+zero tracking error and a custom control
+meaning constant thrust which means
+delta U equals Z which corresponds to
+what MPC really wants to do in this
+formulation.
+So all this to say that this is a better
+version of other considerations to take
+into account for tracking. But just to
+give you uh some intuition about how for
+tracking you want to be a little bit
+more sophisticated in how you set up NPC
+problem. In particular typically you
+want to use reason in terms of delta
+controls. So the optimization variables
+are the delta use that are defined as UK
+minus ukus one. You are given the u at
+the time t minus one and then you obtain
+all the use recursively by um uh adding
+the delta use that are really the
+optimization variables. Does it make
+sense?
+All right. So we quite a bit. So this
+lecture essentially wraps up the first
+part of the class where we assume that
+uh uh everything about the model is
+known. Starting from next week, we'll go
+into
+um the new setting whereby the model may
+not be completely known anymore. So
+either you have to adapt to the part of
+the model that is unknown or learn what
+you do not know in order to still act
+optimally or very close to uh optimally.
+So P3 will be an interesting one. So it
+will expose you to a lot of these uh MPC
+ideas and will also uh force you to work
+with the MP3 MP3
+toolbox uh which is kind of neat. All
+right. So see you next week.

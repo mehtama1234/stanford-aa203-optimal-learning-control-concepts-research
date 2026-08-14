@@ -1,0 +1,1647 @@
+Okay. So, um starting from usual road
+map, uh last uh last Monday we started
+talking about uh more modern approaches
+to learning based control. specific
+specifically we looked at imitation
+learning as our um specific paradigm of
+interest where you know loosely speaking
+we uh pitched imitation learning as this
+idea of wanting to learn from
+demonstrations. Uh and so we saw
+different types of ways of doing this
+specifically behavioral cloning and
+inverse reinforcement learning where the
+idea there is do we want to directly
+learn a policy that represents or mimics
+and approximates the behavior of our
+expert or do we want to learn the
+objective that is the underlying reward
+function that the expert is uh
+optimizing. However, we also recognized
+how imitation learning techniques at
+their core are essentially uh kind of
+capped in terms of performance by the
+performance of the expert
+demonstrations. And so for today and for
+the rest of this uh class we move
+towards uh reinforcement learning which
+on the other hand is this idea of
+wanting to learn from demon from
+interactions um as a basically paradigm
+to um learn through trial and error and
+discover uh solutions for optimal
+control problems. So today uh and for
+the next uh two classes we'll be looking
+at uh model free reinforcement learning
+and then we'll be looking at model based
+uh reinforcement learning.
+And specifically for today, we'll start
+with a brief recap of the reinforcement
+learning problem setting and we'll dive
+a little bit deeper into what I'm
+referring to here as exact methods. So
+if you recall in our lectures on dynamic
+programming, we discussed value
+iteration and policy iterations at ways
+of solving markup decision processes.
+And so we'll look a little bit more
+closely on uh on those. Uh there is that
+is methods that leverage dynamic
+programming for uh computing solutions.
+The reason why I refer to them as exact
+methods is because implicitly these
+methods that is valid iteration and
+policy iteration were leveraging the
+fact that we knew the underlying
+dynamics of our system uh which is
+something that on the other hand we
+assume we won't have throughout
+reinforcement learning and this is where
+learning from interaction will come uh
+will come in place and so from that
+we'll then leverage and kind of build
+upon those techniques to introduce two I
+would say really fundamental uh kind
+approaches for model free learning that
+is model learning from interactions.
+Specifically, we'll look at Monte Carlo
+learning and temporal distance learning.
+And then we will wrap up the discussion
+with some kind of concluding remarks and
+kind of as a segue into the next few
+lectures where I'll be diving more
+closely into specific algorithms both
+model free and model based. [snorts]
+And so starting from our um problem
+setting, we introduced uh in the past
+kind of this idea of a mark of decision
+process which where ultimately an MDP is
+represented by a quintuple of elements
+here defined by the calligraphic M.
+Loosely speaking, we have an action and
+a state space which represent the
+possible set of states and actions our
+agent um could either be in or could uh
+enact. We have a transition function
+which is represented in the RL
+literature usually as a distribution
+over next states given states and
+controls. We have a reward function
+which maps states and controls to a
+scalar measure of success. And we have a
+discount factor which is just a scalar
+between zero and one. We discussed this
+how this is both uh useful as an from an
+intuitive standpoint. It kind of trades
+off long-term reward with respect to
+short-term reward but also as a
+mathematical object that enables an
+infinite sum to become tractable.
+Where does this infinite sum come in
+place? It comes in place from the
+overall goal that we want to um maximize
+in when we talk about markup decision
+processes. That is we want to find the
+optimal policy pi star that maximizes
+the expected cumulative discounted
+rewards over time.
+And to solve these problems last time we
+introduced the concepts of value
+functions and Bellman equations.
+Specifically, we introduced the state
+value function represented as V as
+essentially an element that encodes uh
+kind of the expected reward that we can
+expect to have starting from some state
+XT and then following a given policy pi.
+So the value function is an object that
+depends on a policy.
+Um and we saw how these value functions
+satisfied some fixed fixed point
+equations, namely the Bellman equations.
+And so we discussed the Bellman
+optimality equation which is uh which
+relates with the optimal value function
+v star which essentially says that the
+optimal value function v star at some
+state xt is essentially equal to the
+maximization over controls u ut of the
+sum of the instantaneous reward plus the
+expected um value of the next state uh
+xt + one where the expectation is
+essentially averaging out over possible
+next
+We saw how this is a property of the
+optimal value function. But we discussed
+this how a similar fixed point equation
+holds also for any policy pi. Uh where
+the very similarly this fixed point
+equation that is the bellman expectation
+equations is defined as we introduced
+also a couple weeks back.
+We did a a very similar discussion for
+the Q function that is um essentially a
+measure to represent our expected future
+reward starting from some state XT
+taking an action UT and then following a
+given policy pipe. Again very similarly
+here we have some fixed points equations
+which these um concepts satisfy which
+are namely the Bellman optimality
+equation and expectation equation for
+the Q function respectively.
+Why did we introduce the Q function? We
+introduced it because from the control
+from the perspective of developing an
+optimal policy. Uh this is uh pretty
+useful in practice because it allows us
+to define a policy implicitly through
+the uh Q function as the argax over u of
+the Q function defined on some state X.
+uh and so very practically at least for
+the perspective of uh tabular methods
+that is the one we'll be looking at
+today so where we don't discuss function
+approximation I think it's usual to
+visualize value functions both state
+value functions and Q functions as just
+look at tables so the value function v
+of x you can namely visualize it as the
+value for any specific state x1 to xn
+assuming we have n possible states
+And very similarly for the Q function,
+this would then be a matrix representing
+possible Q values for all states and all
+controls.
+Okay, so we said how these were
+essentially interesting properties that
+derived from this infinite horizon
+markup decision process uh problem
+setting. Um and we then operationalize
+these concepts into practical algorithms
+specifically through uh as we were
+saying before value iteration and policy
+iteration and in these algorithms they
+essentially boil down if you remember at
+uh as mechanisms where we iteratively
+enforced these fixed points equations
+until convergence. So in value iteration
+we recursively enforce the Bellman
+optimality equation until we converge to
+the optimal value function. And for
+policy iteration we alternated between a
+step which we call a policy evaluation
+step that is the application of the
+Bellman expectation equation as we're
+trying to estimate the value of a given
+policy and then we had a policy
+improvement step which turned out to be
+a greedy policy improvement in our case.
+So long story short, we have seen all of
+these objects before and in the past we
+derived actionable algorithms to solve
+macro decision processes by uh basically
+enforcing these Bellman equations. But
+in order to do this we always leveraged
+uh the knowledge of the dynamics
+function.
+So looking a little bit more closely at
+policy iteration because this will be a
+concept we'll be building on uh today.
+If you recall policy iteration is
+essentially an iterative algorithm where
+we are given an initial policy pi and
+for every iteration k that ranges from
+one until some convergence or
+termination criteria is met. We're
+basically alternating between these two
+processes which visually we could
+visualize here on this slide. We have a
+given uh initial guess for our value
+function and a given initial policy. And
+we alternate between the policy
+evaluation step which basically
+evaluates the value function for that
+policy. And then we have a policy
+improvement step which on the other hand
+uses the um most recent estimate of the
+value function to derive a better policy
+from that.
+How did these two processes look in
+practice? For the policy evaluation
+step, we recursively enforce the Balman
+expectation equation as we defined
+before. And for the policy improvement
+step, we're basically taking the arg max
+over u.
+Yeah. So note again that in both of
+these formulations, we're leveraging the
+fact that we have the knowledge of the
+dynamics function.
+So more uh concretely let us look at how
+this looks imple from an implementation
+perspective in practice. Let's consider
+this grid world example where we have um
+this basically 16 dimensional um world
+where we could be in either of these
+grid cells.
+We have 14 non- terminal states that is
+the white cells and we have two terminal
+states or goal states that we want to
+reach. So loosely speaking, the goal
+here is we'll be spawned in any of these
+uh cells and the goal is to get to the
+goal uh terminal cells as fast as
+possible.
+How do we encode this objective of
+getting to the goal point as fast as
+possible? An idea could be to just fix
+the reward to be minus one or any
+negative number uh until we reach the
+terminal set, the terminal uh cell.
+In this case, we're assuming we can take
+kind of these four possible controls. So
+the four calder directions and if we
+take some of a control that would lead
+us out of this grid cell, we just stay
+where we are. We're doing this
+assumption.
+And for simplicity of calculation, we
+are assuming that we have an
+undiscounted MDP. So where gamma is
+equal to one.
+So in practice, let us take like a first
+uh step in the policy iteration
+algorithm, right? So we say that we have
+a given initial policy and for now for
+simplicity since we have potentially no
+clue about what a good policy is we just
+assume that our policy is a random
+policy. So in all states we just take a
+random action with equal probability.
+Again we have potentially no clue of how
+to initialize the value function. So we
+might just initialize it as all zeros.
+So here on the left column you're
+basically seeing different iterations of
+uh the policy evaluation uh step. So we
+are enforcing the Bellman expectation
+equations uh at k= 1 k= 2 until we
+converge.
+So concretely say we are at this grid
+cell over here. So the two the
+coordinate 22
+what we're doing is that we're updating
+the
+value um at that specific state
+as the
+um
+the current estimate of our value
+function.
+So the the reward sorry plus the
+uh expected um future values uh in the
+in the next states that we would expect
+to be in. So for uh more formally we
+have this negative one which is just the
+reward of taking one step and then we
+have the expectation of all possible
+next states which in our case are
+equally distributed around the four
+possible neighboring states. So we'll be
+looking at xt + one
+in
+uh one two
+2 1
+3 2
+and 2 3
+right so we are looking at wanting to
+update this cell over here. So the
+reward of taking any move is it's minus
+one. Um and then we have to take the
+expected value of the next of the next
+state that we land in which is in our
+case one of these four states
+and where we take the expectation under
+our transition dynamics.
+This probability of being XT + one given
+XT
+and the action that we would take in XT
+times the value
+uh the previous estimate of the value
+function. So this is v1 if you wish and
+this would be v 0
+in that state
+&gt;&gt; right. So here nothing too fancy I just
+basically formalized what we are writing
+uh the the bellman expectation equation.
+Yes.
+&gt;&gt; Is it kind of just convention that at k
+equals 0 you have all zeros rather than
+just initializing with the value or
+rather with the reward for each state.
+&gt;&gt; Uh there is just a choice. So if you
+have knowledge in in general knowledge
+in your problem that you wish to um
+encode as a starting point then it's
+definitely a good idea to do so because
+it just speeds up the convergence. But
+in this case we just assume we have no
+knowledge whatsoever and we start from
+all zeros.
+So in this case um well we know that our
+previous guess was all zeros. So this is
+always zero. In theory we would know
+that this is you know equally
+distributed across our four steps. So
+this would be always 25. But in general
+since we have a zero term here this
+cancels out. And so for all the grid
+cells in k= 1 we would actually get
+minus one.
+And you can then imagine that if we
+repeat this process across iterations we
+basically get an evolving surface of our
+value function.
+And if we do this until convergence we
+would then get something that looks like
+this.
+So at this point in our algorithm
+essentially we have taken kind of again
+visualizing it here in our sketch. We
+basically took one step in the policy
+valuation step right. So we concluded a
+full policy evaluation step where given
+a policy we estimated the value for that
+policy.
+What is the next step then here?
+according to the policy iteration
+algorithm.
+&gt;&gt; Yes,
+&gt;&gt; we want to use those expected values to
+derive a different policy.
+&gt;&gt; Yeah, exactly. So, we want to then take
+basically do this step which is the
+policy improvement step. How did we
+define it so far? We basically take this
+arg max over this quantity over here,
+right?
+And which essentially means that the
+say that we converge to this value
+function over here. The policy that
+maximizes this value function since the
+reward is always minus one. No matter
+what we do, the policy will basically
+converge to taking the action u which
+leads to the best uh the state with the
+best value function value. Right? So
+from here we could immediat like even
+visually see that in each of these grid
+cells we're basically the the policy
+that we get from that policy improvement
+step essentially would be pointing
+towards the state with the the
+neighboring state with the best value
+function
+which is exactly what we get here. So
+this would be the visualiz visualization
+of the policy that we get out of the
+policy improvement step from this value
+function which we estimated before.
+Now of course um we if you kind of in
+general we uh run a full policy
+evaluation step until convergence in
+this case but you can always hypothesize
+doing the policy improvement step at
+intermediate steps in our policy
+evaluation iterations. Right? In this
+case since this is a very simple problem
+you would actually get the optimal
+policy even if you stopped before
+convergence. But this is not guaranteed
+to be the case in general.
+For example, here, right? If we stopped
+immediately and did a policy improvement
+step here, we will get a policy that is
+still slightly better from the original
+one because we do get some nice behavior
+here where we're not random random
+anymore, but still not not there yet.
+&gt;&gt; Yes. is
+not have sorry is a is a stationary
+policy enough of a signal to say that
+you've converged or is it possible that
+between iterations you could have the
+policy not change but that if you
+continue and the value function
+continues changing you then might update
+policy later on
+&gt;&gt; yeah so in general like I guess the
+question is how do you define
+termination criteria for this case so in
+general for these tabular settings where
+we can actually enumerate all the
+possible value functions uh so values
+for each states and each state action
+pairs. This is proven to converge. So
+there is no like if you run this long
+enough you will be converging. In
+general there are different types of
+termination criteria you could come up
+with. Some could be like u delta based
+so depending on how much it changes
+across iterations and there is no real
+kind of one best rule for doing that if
+that makes sense. So to answer to your
+question in this case as long as you run
+it long enough you will be converging to
+the optimal uh value function and
+policy.
+Okay. And so you will notice also
+running through this example that all of
+these formulations uh in this case we
+looked at policy iteration but the same
+thing holds for value iteration. All of
+these formulations require a model of
+the MDP. So we use the transition
+dynamics to update uh our quantities
+in general to solve unknown NDPs that is
+NDPs where um we don't have access to
+the ground truth transition dynamics
+will use interactions with the
+environment to replace this knowledge
+and so more generally speaking we kind
+of the main limitations of these exact
+methods such as polit policy and value
+iterations are uh mainly two. The first
+one is that the update equations require
+access to the dynamics and we'll use
+sampling based approximations to uh
+basically um solve and address this
+challenge and we'll see this more
+shortly. And the other one is that kind
+of iteration over and storage of all of
+the states and actions and the values
+for the states and actions can require
+uh extreme kind of a large memory effort
+and also it could just lead to very long
+uh kind of far away convergence for
+these algorithms. And so um whenever we
+have a very large state action space
+we'll see how function approximation
+could comes in handy. Today we'll be
+mostly looking at sampling base
+approximations but starting from uh next
+week we'll also be looking at function
+approximations.
+Okay, any questions here before we get
+started with the um with the first
+algorithms.
+Okay,
+so let's start from uh Monte Carlo
+learning and the idea of Monte Carlo is
+actually u extremely simple. So
+we're saying that we are interested in
+estimating these values for uh value
+functions in general
+and
+we want to do this using samples. What
+do we mean with samples in our case? So
+we have an environment which we assume
+we can interact with and interactions
+essentially means collecting rollouts
+right. So we'll be releasing our policy
+in the environment and collecting the
+rollouts that we get from the
+environment right. So this means
+collecting a sequence of states and
+controls over time until we reach some
+uh termination criteria here.
+Now in principle the what we are
+interested in when we talk about in this
+case for example the value of state x1
+would be to basically approximate the
+expected future rewards that would
+expect to have um if we were able to
+simulate infinitely many scenarios right
+I'm interested in the ground truth
+expectation of this uh value function
+to do to do this so Far we've leveraged
+knowledge of the uh transition dynamics
+but in general this is not possible
+right. So we want to do this through
+sampling and this means in that in Monte
+Carlo what we do is that we basically
+want to approximate this um expected um
+expected value function or expected
+future reward through the return. The
+return for us, let's remember that it's
+just the or the return of a trajectory
+in this case at time t is just the sum
+of all the rewards that we observed from
+time t onwards.
+Again, simply put, the return starting
+from X1 would just be having our
+trajectory, evaluating all of the
+rewards that we got over time, and
+summing them up.
+And the idea is that if we were to
+repeat this multiple times, so we don't
+have only one trajectory, but we have
+multiple, we would be essentially able
+to approximate this ground truth
+expectation that we're interested in
+through the mean, the empirical mean
+essentially.
+Does this make sense?
+Yes. And so be because of this
+essentially Monte Carlo methods are
+methods that directly learn from
+episodes of experience and it is model
+free. Right. So so there is no knowledge
+of the transitions that we're using
+here. We're just using interactions or
+samples from our environment to
+approximate these values.
+One caveat of course which is also a
+pretty important one is that because of
+how we define the return which is
+literally the sum of all the rewards
+that we observe throughout our
+trajectory uh Monte Carlo methods um
+apply only to episodic MDP MDPs. So we
+there needs to be a termination of our
+episode at some point simply because
+otherwise we will be continuing to
+summing uh summing up rewards forever
+essentially.
+So how do we use this in practice?
+Kind of uh an immediate thought there
+would be to use Monte Carlo methods for
+learning the state value function B.
+Right? So recall that we defined the uh
+return as just the discounted sum of
+future rewards from given a trajectory.
+In principle, we're interested in
+approximating this expectation here,
+which is just our value function. So for
+us, the value function is the expected
+future reward um that I expect to have
+starting in in XT following a policy pi.
+And if you look at this inner term here,
+this is nothing else than the return
+itself,
+right? So the the entire so the
+definition of the value function is
+actually the expectation of the return
+given uh state xt.
+[snorts]
+And so with Monte Carlo methods we
+essentially or specifically with Monte
+Carlo policy evaluation what we would be
+doing is that we use the empirical mean
+to estimate this expectation um instead
+of computing exactly this expectation
+through the knowledge of the dynamics.
+Okay, in practice you could have two
+variants of um Monte Carlo methods. The
+first is referred to as first visit
+Monte Carlo where in order to evaluate
+the value function at a given state,
+we would be essentially computing these
+means these mean returns uh only the
+first time we visit a specific state in
+an episode.
+So in practice once we visit a specific
+state x we would be incrementing the
+counter of how many times we visited
+that state x. we would be incrementing
+the total return. So that is all the
+returns that we ever saw when visiting
+that state x and then just taking the
+mean.
+And in general the assuming we have you
+know the more samples of this trajectory
+we would have. So with n going to
+infinity we would be converging to the
+ground truth uh expectation.
+The other approach is the every visit
+approach where now we account explicitly
+for the situation where maybe within our
+rollout for some reason we are maybe
+visiting kind of state x1 again right so
+we are maybe doing taking some some
+detour and we end up in the starting
+state again in the first visit we would
+basically be ignoring the return from
+the second visit onwards in the every
+visit we just consider these two as
+independent visits and update the mean
+regardless.
+Again, this is just a kind of
+technicality when you look at
+implementation, but the overall idea is
+that we want to approximate these um
+expected future rewards because we
+cannot uh compute these expectations
+exactly. We approximate them through an
+empirical mean.
+&gt;&gt; Yes.
+same state from different trajectories.
+Isn't it wouldn't wouldn't it be I don't
+know unfair the right word but to
+exclude that from your database with the
+first visit um mentality rather than
+doing the every visit mentality.
+&gt;&gt; Yes, I think it's a valid point
+especially if you have these um maybe
+the generate cases where you know the
+policy is visiting the state over and
+over. Um
+I would say in general this probably
+boils down to
+you want to have sufficient
+exploration right so you want the policy
+that basically explores your state space
+state action space uh well enough uh for
+uh for these tools to be efficient and
+effective in practice. Um but yes so
+when you have these cases you know it is
+a valid uh discussion to consider like
+should I go for an every visit example
+or a first visit case maybe in that case
+the the first visit is is what you want
+&gt;&gt; like explain an example like in practice
+like you don't if you're not able to run
+this and collect this data on
+simulations based on some model that you
+have like wouldn't be difficult in
+practice to set up some experiment and
+collect all this data.
+&gt;&gt; Yeah.
+&gt;&gt; Yes, this is a good question because in
+general so here when we talk about model
+free we refer to the fact that we're not
+leveraging a known model of the dynamics
+uh within our calculations. Now you
+could indirectly use it by having
+interactions with the simulator. Uh but
+in general here this is agnostic to any
+kind of uh kind of environment and
+reality we are interacting with. Right?
+So by model free here we just mean that
+we are modifying all of our update
+equations say in the policy iteration
+case to avoid using an an analytical
+expression of the transition dynamics.
+So uh in practice I would say leveraging
+a simulator here would be a concrete
+example of using this. So we have some
+simulator that simulates our uh
+environment, say a driving simulator,
+and then we want to use these tools to
+estimate a value function within that
+simulated word. But we're doing this
+without leveraging the potentially
+extremely complex model that runs under
+the hood in the simulation. If that
+makes sense.
+Yes. Does it does it clarify?
+Yeah. Yeah. So bottom line is model free
+here just refers to the fact that we're
+not using the transition dynamics.
+Okay. So um let's look at uh an example.
+So here consider the game of of
+blackjack which we're probably most of
+us are familiar with it. But in general
+kind of here we are assuming that we
+have um uh you know a state where we
+have you know we are dealt two cards.
+We're playing against the dealer that
+also has two cards. Um the state for us
+is that we are considering the current
+sum of the two cards that we have in
+hand that ranges from 12 to 21.
+We are also um specifically uh
+recognizing if the dealers showing uh
+the dealer showing card. So we are have
+visibility of one of the two cards of
+the dealer. So from ace to 10 and we are
+specifically having a flag if we have a
+usable ace or not. So we do do we have
+an ace in hand or not.
+In this case of course the goal is to um
+beat the sum of the dealer essentially
+having the the hand that reaches closer
+to 21.
+The way we do this is by so we have two
+possible actions right. So at any point
+in time either we stand so we stop
+receiving cards and the goal the game
+terminates or we hit that is we ask for
+another card without replacement.
+In this case the reward for us is that
+when we stand so where the game
+terminates we get a plus one rewards if
+we if our sum of the cards essentially
+beats the one of the dealer. We have
+zero if we have a tie and we have a
+negative reward if our if we are uh if
+we lose against the dealer for the hit
+we when we actually ask for another
+cards we get a negative reward if we go
+above 21 or the game terminates and we
+get zero otherwise.
+So we in general the we are assuming
+that we automatically hit if our sum of
+cards is uh below 12. This is the only
+assumption that we have on the
+transitions. So in this case we want to
+consider a given policy. So we are given
+to us this policy which basically stands
+if the sum is greater or equal than 20
+and always hits otherwise. And so the
+goal here is let's now take this
+environment with these rules and
+basically run policy evaluation through
+Monte Carlo sampling in this
+environment.
+Is the setting here? Nice.
+So we'll be blackjack experts after this
+I guess. [snorts] Um so the so the what
+we're looking at here is assume we are
+running policy evaluation for
+10,000 episodes or uh 500,000 episodes.
+So again here what we're saying this
+would be one episode of interaction.
+We're assuming we are playing 10,000 and
+500,000 uh games with the dealer.
+And these kind of uh three-dimensional
+landscapes are essentially a
+visualization of the value function. So
+here specifically we have two axes. One
+axis is looking at the um dealer showing
+card that ranges from an ace to a 10. We
+have a player sum. So the sum that we
+have in hand from 12 to 21. And we have
+this surface
+uh kind of bit differentiated between
+when we have a usable ACE and when we
+don't have a usable ACE. So this is just
+our state space, right? If you remember
+those three uh bullet points.
+So what we see is first of all um you
+see a difference between the column that
+relates with the 10,000 episodes and the
+500,000 episodes in terms of noise,
+right? So these estimates are definitely
+more noisy than the ones where we have
+more um uh more episodes. Again the
+reality is that here we are
+approximating these expectations through
+empirical means. And so the more
+episodes we have the more we are
+converging to uh the ground truth
+solution.
+And to basically maybe understand to to
+to get your understanding here let us
+look at some some questions and some
+questions for you. So consider the
+specifically the diagrams on the right.
+So why does the estimated value function
+jump up for the last two rows uh here in
+the back?
+&gt;&gt; Yeah.
+&gt;&gt; 20 and 21. We always hit until we get
+there. Either most of the time we're in
+a buff, but if we do get there, we're
+probably going to win. [clears throat]
+&gt;&gt; Yeah, exactly. So, we are, you know,
+we're playing a game with our policy
+that is given to us where we only stand
+if you're 2021. And if we do, you know,
+that's a pretty good hand. So, we likely
+win.
+So, exactly correct. And another
+question could be why does the why does
+it drop why does the value function drop
+off for the whole last row on on the
+left on the other hand
+&gt;&gt; depends when the dealer has an ace
+&gt;&gt; so they're likely to have a 10 to get
+&gt;&gt; exactly so or also just uh you know
+having an ace is is is a good hand right
+so you can use the ace in different ways
+and so that's on average is something
+where the dealer is is well positioned.
+So in general of course you see how kind
+of the bottom line here is that
+in policy valuation we basically had
+um no information whatsoever on how the
+game works or any dynamics of this game.
+We basically leveraged simulation if you
+wish or interactions with the
+environment to uh estimate uh future
+values of all the states and what we get
+is through this interaction a complete
+representation of the value of every
+possible state that we could find
+ourselves in this game. And so given
+this policy that it's given to us, we
+have exactly characterized um kind of
+its efficacy in in all different states
+if that makes sense.
+And this value function is to some
+extent um interpretable, right? Because
+we can more or less understand it and
+it's reasonable.
+Okay. As a um as a just note in general
+we're talking about in Monte Carlo we're
+leveraging empirical means to
+approximate expectations. Uh of course
+uh we these episodes will be coming in
+incrementally and so it doesn't make
+sense to recomputee the means from
+scratch or store all the possible
+rewards that we ever observed. But in
+practice we often uh compute the means
+incrementally. And so we know that this
+is you know standard result that we can
+compute the mean for uh a given you know
+radization x um incrementally through
+this um uh equation over here where
+we're essentially updating the mean as
+the previous estimate plus basically a
+step in the direction of the uh new
+observation.
+So this is in general for incremental
+means. Of course, for us, the mean that
+we're interested in computing is the
+expected return, right? The mean return,
+which for us is our estimate of the
+value. And so we'll be updating our
+value uh our estimate for the value
+function [snorts] as the previous guess
+plus basically a step in the direction
+of the new return that we have observed.
+So this is the exact formulation for the
+incremental mean. In practice, we'll
+often see this expressed uh kind of very
+similarly to what you would see uh kind
+of a gradient descent uh step update
+rule where we could have a a varing
+alpha uh basically a scaler that changes
+how big of a step we're taking in the
+direction of the update.
+Okay, any any questions on on Monte
+Carlo before we move to uh TD learning?
+Okay, so Monte Carlo is one I would say
+really fundamental strategy for model
+free learning. TD learning is I would
+say the other bigger player in when we
+talk about um model free learning uh
+techniques and specifically at a high
+level TD learning is a combination of uh
+Monte Carlo and dynamic programming
+approaches. So like Monte Carlo TD
+learning is model free. So there is no u
+knowledge of the transition dynamics in
+R&DP
+and TD learning also learns from
+experience right. So we are replacing
+this knowledge through interactions uh
+with the environment.
+On the other hand, different uh kind of
+differing from Monte Carlo but similarly
+to dynamic programming um temporal
+difference learning update estimates of
+for example values based in part on
+other learned estimates. Essentially um
+we can update our guess towards a guess
+without waiting for the final outcome in
+our episodes. Uh more more formally uh
+it is denoted as temporal difference
+learning and dynamic programming
+bootstrap.
+So
+remember how in
+dynamic programming we were essentially
+saying that we could have a recursive
+um function where the value function for
+us would be at a state xt would be equal
+to the immediate return a reward that we
+see at xt plus the discounted
+um future value at the next state xt
+Right
+now in TD learning since we cannot appro
+uh compute these expectations exactly
+because in order to do this we would
+have to have knowledge of our transition
+dynamics. We use samples to approximate
+these expectations.
+So in Monte Carlo we were using the full
+trajectory to directly estimate the
+return.
+In TD we are only interested in the
+onestep update where we will be updating
+the value of X1
+basically as the
+in the direction of the immediate reward
+that we see R1 plus the discounted value
+at X2 in this case.
+Right? So we'll be using this same
+property that we can use our current
+estimate for the value function to
+basically
+approximate all future rewards that we
+will have uh we would have observed uh
+going forward with the episode.
+So more concretely let us look at at the
+specific definition in Monte Carlo. Um
+we said that we want to update our value
+estimate towards the actual return GT.
+Specifically, we take a step alpha in
+the direction of the return.
+In temporal difference learning, we
+update the value towards the estimated
+return where this estimate is taken
+using basically dynamic programming
+ideas where we take the immediate reward
+plus the discounted future estimate of
+our uh of our value.
+And so specifically we take a step in
+the direction of this target over here
+in red.
+So in general uh this the reward plus a
+discounted future value is referred to
+as the TD target. And the uh difference
+between our guess and this TD target is
+known as the TDF.
+So in general you see how temporal
+difference methods combine the sampling
+of Monte Carlo because we're only
+leveraging interactions with the
+environment to estimate our values with
+the bootstrapping of dynamic programming
+because we're updating a guess towards a
+guess.
+&gt;&gt; Yes.
+&gt;&gt; Just quick recap for the first one with
+GFT. Does that mean you'd have to run a
+bunch of rollouts at each up step to
+figure out what the actual return would
+be? So here this is independent of how
+many rollouts you do. So here we're
+saying that we want to approximate the
+f the actual uh uh return. So that is
+the sum of all future rewards through
+sampling. Specifically here we could
+take one sample of the return which is
+just means sampling uh sorry summing all
+the rewards that we see over time.
+Visually we want to approximate this
+ground truth expectation over here and
+we could do this by just uh evaluating
+the empirical returns that we observe
+over time and taking a mean.
+Now GT is just the definition of the
+return. And so for us assuming we have
+one sample, this would be a one sample
+estimate of the actual expectation.
+In temporal difference learning, instead
+of looking at the final return here, we
+actually look at the one-step uh
+estimate of that return where this
+estimate is just the instantaneous
+reward R1 plus the discounted uh guess
+of the value here.
+So in other words, our guess here is
+just a mechanism to avoid having to run
+through the entire episode but
+approximating what this rest of the
+return will be at uh time two in this
+case. Does this clarify?
+&gt;&gt; Yeah.
+just like you have like
+&gt;&gt; so in general so the interaction will
+always be um
+you know for full rollouts so we'll be
+having full interactions with our
+environment but then this is changing
+how we update our value estimates in the
+Monte Carlo case we update our value
+estimates looking basically one episode
+at a time, the full episode. In TD
+learning, we can actually update our
+value estimates more often because this
+would basically be only one update if
+that makes sense because we only have
+one return.
+&gt;&gt; Here we can update uh our value function
+um before the episode finishes
+potentially because we just use our our
+guess to do so.
+&gt;&gt; Yeah.
+potentially potentially.
+&gt;&gt; Yeah. So, kind of looking at differences
+more uh more closely.
+[snorts] Um we mentioned how Monte
+Cararo learning essentially requires
+episodic MDPs because we need to reach
+the terminal state at the end. Uh on the
+other hand, in TD learning because we
+are only using our own guess to estimate
+the values. Um, TD learning can learn
+before the final outcome essentially.
+And so TD learning can potentially learn
+online after every step while Monte
+Carlo must wait until the end of the
+episode to collect those returns.
+And so indeed Ted learning can learn
+without the final outcome and so can
+learn from potentially incomplete
+sequences
+um and can potentially work in
+continuing or non-terminating
+environments. But on the other hand, the
+Monte Carlo requires this
+discrimination.
+Does this make sense?
+&gt;&gt; Yeah. So I would say really kind of
+Monte Cary learning and TD learning are
+kind of the fundamental mechanisms
+through which we estimate quantities of
+interest. Most of the times these are
+values and value functions and that
+these are really kind of you know the
+foundations over which all model kind of
+reinforcement learning algorithms are
+all built on. Either if these are
+estimated you are kind of value based
+methods or policy optimization methods
+we will see kind of actor critic and so
+forth. All of these tools essentially
+rely on some approximation of value
+functions and if when we don't have a
+knowledge of the transition dynamics we
+have to resort to interactions with that
+environment and leverage tools similar
+to Monte Carlo and TD learning to do so.
+&gt;&gt; Yeah.
+depend on like value function the next
+step in [clears throat] like
+how could that work from environments
+like the way I'm understanding is like
+you would have to recursively go back
+from the final state to understand the
+value have that final state and then
+work backwards to say x
+so how I think I'm misunderst
+&gt;&gt; I think you have the right intuition
+Because basically what you're saying is
+uh I get that the point that we're
+updating our guests towards our next
+guess and how this could mechanically
+work online at each step even without
+relying on the final step. But you're
+saying at the end of the day we need to
+ground some of our estimates on an
+actual value right and I think this is
+correct and this is exactly where kind
+of the discount factor comes into into
+play because if we take the you know the
+extreme version where we are you know
+the [snorts] final we are at step
+500,000 in the future then here kind of
+the future values will essentially be
+very close to zero and so we will have a
+way to estimate these value functions.
+So it's not exploding to infinity if
+that makes sense.
+Okay. But so we're basically saying
+we're interested in estimating values
+and value functions. Uh we introduce
+these two ways of doing so. Monte Carlo
+and TD learning um which are essentially
+estimators of a quantity that we're
+interested in in approximating right
+that is the expected future reward or
+the cost to go the reward to go in this
+case. So let us look at kind of
+properties of these two estimators right
+so specifically the bias and uh variance
+of these two estimators. So
+let us take Monte Carlo to start.
+So we're interested in estimating the
+true value of our policy
+and we're saying that in order to do so
+we want to use the return which is just
+the sum the discounted sum all the
+rewards that we observe. Now, of course,
+this return is an unbiased estimate of
+the ground truth um value. Again, uh
+kind of uh using an extreme example, if
+the expectation that we're actually
+interested in will be the expectation
+over all possible future evolutions or
+episodes in our environment and we're
+and the return is just the
+a sample from this. If we take an
+infinite amount of um interactions and
+episodes with our environment, we would
+be converging to the ground truth
+expectation. Right? So in this sense,
+this estimator is actually an unbiased
+estimate.
+In principle, the true TD target that is
+for temporal difference learning um is
+also an unbiased estimator of the actual
+value. But this is only if we assume we
+already know what the true value
+function is. Right? So here we're saying
+we're using this value function at at
+the next step to basically approximate
+the future reward.
+And if the value function is exact, then
+this would actually be a an exact
+characterization of the expected reward
+to go. But in reality we won't be using
+the exact the true uh value function
+because this the [snorts] purpose of
+learning is trying to estimate the value
+function. And so we will actually be
+using an estimate right kind of a v hat
+for our value. And so since this
+estimate won't be exact we're
+introducing some bias.
+Does this make sense?
+Yeah.
+Okay. And uh how about uh variance? So
+in general
+I would uh the TD target is uh a much
+lower variance estimator than the true
+than the return. And this is because the
+return depends on a full sequence of
+random actions, transitions and reward
+realizations.
+On the other hand, TD error, the TD
+error kind of only depends on one kind
+of sample uh of uh basically stoasticity
+of a random action transition and
+reward. Right? So here we're saying that
+in order to approximate the future
+reward to go, we are either
+approximating through the return that we
+evaluate here or we approximate it
+through the
+um TD uh target. So basically in this
+case R1 plus V X1
+right. So in in the former in the former
+case in order to compute the return GT
+we're basically sampling multiple times
+over the episode where sampling means we
+have potentially unknown kind of
+stoastic transition dynamics
+that we are repeatedly sampling from. we
+have a potentially stoastic policy
+that we're potentially sampling from and
+the reward itself might be a stoastic
+reward right on the other hand in the TD
+for the TD error for the TD target we're
+doing the same sampling but only once
+right and so in this sense the return as
+an estimate of the true uh value is
+actually a much higher variance
+estimator because there are just many
+more possible futures that we are kind
+of taking into consideration here.
+Okay. But so let's really um kind of
+drive this uh this message home and I
+think it's useful to visualize this
+through uh these sort of treel like
+diagrams and specifically let let us
+look at Monte Carlo first. So in we
+basically introduced uh what is often
+referred to as a Monte Carlo backup
+meaning the update equation that we use
+for our value estimates according to
+Monte Carlo learning and we define this
+as updating our guess of the value
+function by taking a step in the
+direction of the return.
+What does this mean visually in this
+diagram? uh kind of white nodes here
+represent states um and black nodes
+represent actions and t represents a
+terminal state. So that is where the
+episode terminates and so you see how
+potentially in state xt we could be
+taking two possible actions and
+depending on the action that we take we
+could land on potentially two different
+states
+in a Monte Carlo backup. This
+essentially means that in this possible
+tree of all kind of futures that we
+could observe in our environment, we
+approximate the ground truth expectation
+of the values by essentially taking a
+full episode of interactions with the
+environment until we reach a terminal
+condition
+and using the return that we observe
+over here to update our guess.
+differently. In TD learning, we defined
+our update as taking a step in the
+direction of the immediate reward plus a
+guess of our um future values.
+And so this visually means that rather
+than having to take a full episode of
+interaction until reaching a terminal
+state, we only look at the onestep
+transition. If that makes sense.
+On the other extreme, kind of kind of
+positioning this with respect to what we
+saw with dynamic programming. In dynamic
+programming, we were essentially able to
+evaluate exactly these expectations
+through the use of the transition
+dynamics, right? And so we weren't
+really defining these estimates of these
+expectations because we could actually
+compute the exact expectation by
+basically analyzing this uh basically
+computing this expectation analytically
+through the knowledge of the dynamics.
+Any
+any questions here?
+Okay. So, we've seen um we've seen now
+how um we introduced these two basically
+techniques, right? So we discussed
+sampling um as essentially our mechanism
+to approximate expectations through
+interactions with the environment and we
+saw how both Monte Carlo and TD learning
+um sample and this is because they're
+model free algorithms. So we assume we
+don't have knowledge to dynamics on the
+other hand dynamic programming does not
+sample because there we assume we had
+knowled knowledge of the dynamics and we
+could compute those expectations
+exactly.
+We then discussed also bootstrapping
+where the idea is to basically update uh
+our guess towards a guess right and we
+saw how both uh TD learning and dynamic
+programming were using this idea while
+Monte Carlo did not.
+And so really what we're doing uh today
+is basically
+constructing or paving uh a unifying
+view of all possible reinforcement
+learning algorithms depending on these
+two axes. So uh and specifically
+thinking about these um trees that we
+were observing before different
+algorithms fall on a spectrum depending
+on the width of the backup. So we
+discussed algorithms that look at the
+full width of the backup that is uh
+dynamic programming or intuitively also
+exhaustive search right we could just
+sample infinitely until we explore the
+full tree or on the other hand uh
+algorithms that only um sample use um at
+the extreme one sample from the
+environment right and so we looked at
+temporal difference learning and Monte
+Carlo learning similarly We looked
+[clears throat] at the height of the
+backup that is through on one extreme
+Monte Carlo and exhaustive search
+require reaching the end so a terminal
+state in order to update their values
+and TD learning and dynamic programming
+instead relied only on a one-step um
+update because they could use
+bootstramping to um approximate their
+values. Of course, these are just kind
+of four extremes of a spectrum and you
+could envision algorithms laying some
+somewhere in between, right? So, for
+example, you could assume having rather
+than updating your um TD target after
+one step, you might assume that you want
+to do four steps of experience and then
+uh use the value function after four
+steps of experience. And there are pros
+and cons when doing so.
+&gt;&gt; [snorts]
+[snorts]
+&gt;&gt; Okay. So um let's now build towards uh
+if you want a first working versions
+version of a reinforcement learning
+algorithm using these tools. So in
+previous lectures we introduced policy
+iteration and also earlier today um and
+we essentially discussed how this is um
+an algorithm that implements two uh
+interactive processes right we have
+policy evaluation on one hand which
+given a policy estimates the value for
+that policy and then we have policy
+improvement where given a new estimate
+of the value function we used it to
+improve the correct policy. In general
+um we will use the term generalized
+policy iteration to refer to this
+general idea of an algorithm skeleton or
+structure whereby we we will be
+iterating between these two processes
+regarding of kind of regardless of how
+these two processes are actually
+specifically defined
+in policy iteration. We saw how the
+policy evaluation scheme, the policy
+evaluation step was essentially
+iterative enforcement of the Bman
+expectation equation.
+And for the policy improvement step, we
+used a greedy policy improvement. Right?
+So we were taking the arg max over uh
+the quantity defined by the new value
+function.
+But this is a general formalism and you
+will see how many algorithms actually
+apply this uh this skeleton.
+Okay, so you know we mentioned how
+policy iteration specifically required
+knowledge of the dynamics to in both of
+these processes, right? So we use the
+knowledge of the dynamics to perform
+policy valuation through the Balman
+expectation equation and we use the
+knowledge of the dynamics to um improve
+the policy in our greed improvement
+step. So
+can we make this actionable through
+everything that we learned today? So the
+first thing that you might think of is
+can we replace the you know analytical
+policy kind of bleman expectation
+equation through Monte Carlo policy
+evaluation of the value function. Right?
+So the first step is we were given a
+policy and we want to estimate the value
+for that policy. Can we do this through
+Monte Carlo policy evaluation which is
+what we've done uh today.
+and potentially leave unchanged greedy
+policy improvement.
+And the answer is that well uh yes in
+the sense that Monte Carlo policy
+evaluation will work and this is exactly
+what we've been doing today in both uh
+in the Monte Carlo learning section but
+then the greedy policy improvement as we
+said before relied on this knowledge of
+the transition dynamics to update our
+policy to take this arts right so this
+will not will not cut it in a way
+so kind of one thing is that so we
+discussed before how the Q function is a
+nice object in order to uh and a
+convenient object in order to define a
+policy implicitly. So let us just
+replace the value function V with the Q
+function.
+So now we're looking at a version of
+policy iteration where we are doing
+Monte Carlo policy evaluation of the Q
+function and then potentially greedy
+improvement. So, will this work?
+What do you think? Well, there is a
+spoiler on the slides, of course, but
+what do you think? And and why?
+Well, the point is that it it won't in
+general. And the idea is that here kind
+of touches on I would say um a really
+fundamental issue and challenge in
+reinforcement learning which is the one
+of um exploration. So the trade-off
+between exploitation and exploration.
+So we
+let us look at this from the perspective
+of a simple example. So say we have two
+doors uh and that is and we need to pick
+among these two doors and each of these
+two doors will give us a specific
+reward.
+This is a in a way stateless environment
+because we are always in in the same
+state right. So we have nothing that
+conditions us in in picking the two
+doors. But now say that we have no
+information of the quality of the two
+doors and that we first of all uh so we
+initialize our Q function randomly and
+then al or randomly we basically pick
+the left door as our first interaction
+and we get a reward of zero. So we
+basically update the value of our Q
+function as zero.
+Now we similarly uh uh kind of execute
+in our environment and we pick the right
+door and we observe a reward of one in
+this case. So we update the value of the
+Q.
+Now note that in general right now the
+policy that we are executing in the
+environment is a deterministic policy
+right it is the R max over the Q
+function. So since we have basically
+created the situation where the right
+choice is basically dominating the left
+door here and basically forever we'll
+always be choosing the right door,
+right? And so this is potentially
+at loss of a better reward that we might
+have had on the left door.
+And so the problem here is once we
+estimate Q functions or state action
+values through samples then we need to
+visit every state action pair in order
+to approximate those values
+and deterministic policies do not allow
+for this exploration.
+So a simple but effective trick uh and
+strategy is to basically
+uh introduce some randomness in how we
+explore the environment in how we take
+decisions and a simple strategy is the
+one of epsilon greedy exploration
+specifically
+with some probability epsilon
+u one minus epsilon we will be
+consistent with how we've picked the
+action so far so we will just take the
+arg max over q on the other hand with
+some small prob BD epsilon uh we will be
+acting randomly. So we'll just pick a
+random actions from our possible action
+space.
+This is a very simple trick but
+fundamentally this ensures that all m
+actions are tried nonzero probability
+and so this on the long run ensures that
+we are visiting and exploring and that
+is having a nice coverage of our entire
+state action space.
+And so if you wish kind of this builds
+and leads us to kind of a first working
+version of an reinforcement learning
+algorithm that is something where we
+have Monte Carlo policy evaluation of a
+Q function and then an epsilon greedy
+policy improvement.
+So since the goal for today is becoming
+experts at blackjack um let's look at
+how like the policy that we will get if
+we run this in practice on the same
+environment that we had before. So now
+before we were focusing on policy
+evaluation. So we were given a specific
+policy that that was uh standing if the
+sum of cards was 20 or above. Um now
+we're actually doing the full problem
+where we actually want to uh derive an
+optimal policy for the for the task. And
+so here kind of you know if you trust me
+that by running exactly the algorithm
+that we discussed so far we would
+basically be converging to um this
+policy over here whereby um you know we
+have a specific rule that we can also
+inspect where depending on if we have an
+a usable ace or not and kind of the sum
+of the cards and the dealer showing card
+we have an explicit rule of whether we
+do stick or stand or Okay.
+And note maybe intuitively that um if we
+don't have a usable ACE, we're actually
+more conservative here, right? So, of
+course, we can go into the details and
+I'm definitely not advising you to try
+this strategy if you if you go casinos,
+but this is the this is the idea, right?
+Again, we gave no clue, no intuition
+whatsoever to the environment on how to
+behave. And through this interaction we
+derived both an optimal policy and its
+respective uh value function.
+Okay. So to to recap what we've been
+discussing so far. So we started from u
+exact methods for solving uh mark of
+decision processes right namely policy
+iteration and value iteration.
+And we said and recognized that these
+have some limitations. Specifically
+today we looked at the first of these
+two which is the one that in
+both the update equations and in the
+uh of our estimates for the value
+function that is the Bellman equations
+and in the greedy policy improvement
+steps we were using implicitly our a
+knowledge of the transition dynamics.
+And so today kind of we focus on these
+two main classes of methods and families
+of methods MCarning and TDarning to
+address this through interaction.
+And so indeed so we introduce MCarning
+and TD learning as examples of a
+spectrum right where depending on the
+height or width of the backup uh we
+could derive different algorithms
+all under the ma kind of shared goal of
+solving unknown MDPs through learning.
+We did not discuss how we could deal
+with highdimensional state action spaces
+uh but we'll do this in the in the
+coming lectures.
+Okay, any questions here before uh I
+spend a few minutes on some concluding
+remarks?
+All right,
+so if you recall last week we were
+looking at this taxonomy of
+reinforcement learning algorithms. Um
+starting next week we'll be looking at
+kind of in order uh we'll be looking at
+valuebased methods. uh next Monday we'll
+then be looking at policy optimization
+uh next Wednesday and then we'll be
+looking at uh model based uh algorithms
+well not next Monday because that's bank
+holiday but next next time and then
+we'll be looking at uh model based
+algorithms
+in general
+um I think it is really valuable to see
+all of these algorithms as different
+instantiations of a common shared
+skeleton of a reinforcement learning
+algorithm and specifically the skeleton
+has three main uh processes going on.
+The first one is that all algorithms
+will have some way of generating samples
+right because we want to learn from
+interaction and as we saw today
+interaction for us essentially means
+sampling um episodes from interactions
+with the environment
+where the goal here will be essentially
+to collect these uh trajectories or
+episodes of interactions to
+and use these quantities to uh basically
+do something with it. Specifically,
+we'll use these samples from the
+environment to either fit a model or
+estimate a value. Right? So, today we
+discussed extensively how we might be
+interested in estimating um value
+functions or Q functions. Um but in
+general we might also see how we could
+use these um trajectories to estimate um
+a learned model of our dynamics in
+model. Bottom line is we will have some
+interactions with that environment and
+we'll be doing something with that
+interaction which is loosely speaking
+either estimating some values or um
+fitting some model of our dynamics
+and then we'll use these computations
+that we do in the second block to
+improve the policy. Today we saw how we
+are basically using kind of an an
+excellent greedy or greedy policy
+improvement step but we will see
+different ways of um improving the
+policy.
+For example, we'll see how in policy
+optimization algorithms. we will be
+taking um gradient steps with respect to
+some parameters theta which might
+represent a parametric um policy that
+we're defining in the in order to
+optimize the RL objective directly that
+is maximize estimated return but we'll
+see this uh more next week
+okay but bottom line is I think this is
+a um a very useful mental model to use
+when approaching different arguments
+because this is really a kind of other
+core what most of these are doing.
+Okay, so if there are no more questions,
+uh I'll see you next time with value
+based reinforcement learning. Thank you.

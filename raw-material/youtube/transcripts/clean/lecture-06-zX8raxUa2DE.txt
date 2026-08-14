@@ -1,0 +1,1756 @@
+So for today we will be first of all
+wrapping up the discussion on indirect
+methods uh and then we'll be introducing
+the another class of openloop control
+strategies which is the one of direct
+methods and so specifically remember
+that last time we basically were
+wrapping up the discussion indirect
+methods where uh kind of bird's eye view
+we're saying that indirect methods
+represents this class of solution
+methods. for optimal control problems
+whereby we define and derive some
+optimality conditions uh which we want
+to solve for generating candidates for
+optimality. These optimal conditions
+boil down into twooint boundary value
+problems which we have to solve. uh and
+and so what we did is essentially
+started to look at computational methods
+for solving these twopoint boundary
+value problems whereby we first of all
+introduced kind of these the solve BVP
+uh solver in in Python specifically for
+an abstract uh twooint boundary value
+problem and so today we will be using
+the same solve BVP but this time applied
+to an actual optimal control problem
+first of all so that you you can see how
+this is uh can be done in practice and
+then also for you to have a potentially
+a useful template for uh for optimizing
+or for solving other optimal control
+problems.
+Um but specifically we were also
+mentioning how these solve uh the solve
+BBP solvers and most solvers out there
+to be honest for to point boundary value
+problems assume that we kind of specify
+the problem in a quote unquote standard
+form. uh where for example uh we were
+assuming that the final time is given
+and uh known, right? And so we we know
+that in general we have been dealing
+with optimal control problems where this
+is not the case. And so there are uh a
+number of tricks that have been
+developed in order to basically
+reformulate any given structure of our
+optimal control problem into a
+formulated then amenable for classical
+solvers. And so here there is a
+reference that I definitely advise you
+to uh to check out. It's a fairly old
+reference dates back to the 1980s. Uh
+but it has kind of all of these
+collection of reformulation tricks to uh
+to indeed massage the problem into one
+that falls under this uh standard form.
+And specifically uh uh for today I
+wanted to highlight one of the most
+common uh kind of settings whereby the
+standard form does not apply which is
+the one of free uh final time. So again
+these solvers usually assume that we
+have a given final time. How do we
+reformulate a problem where the final
+time is actual a decision variable that
+we want to pick in order to to be
+amenable for this? And in a usual trick
+that that happens uh often times in in
+mathematics is the one of uh that is
+so-called of time rescaling
+where specifically we will be
+introducing
+uh where we we model time t as a
+uh kind of normalized time uh tao
+times uh ts
+uh tao here is is this kind of rescale
+time which we wish to uh to use and note
+that kind of by this definition TOAO is
+T over uh TF and so TF is something we
+don't know but whatever TF is uh TOAO
+will be defined between 0 and one
+because at the final time this will be
+TF over TF which is equal to to one so
+overall this object is something that is
+between uh zero and and one
+now of course when we do this um kind of
+reformulation, we need to change the
+time derivatives.
+And so specifically the time derivatives
+over to by the chain rule will be the
+derivative over times
+the to time
+df over the to which is indeed
+da time.
+So essentially we want to uh reformate
+the problem in one where the final time
+is known. We do this by rescaling time
+according to this new rescale time to
+which is between 0 and one. So in this
+rescale time final time is known and
+equal to one. When we do the reform this
+reformulation we need to adjust the time
+derivatives which essentially entails uh
+multiplying our time derivatives by uh
+tf.
+The other step that in that is entailed
+in this trick is then to introduce kind
+of a dummy state variable r
+which corresponds to the final time and
+has trivial dynamics r dot equals to
+zero. So r replaces final time uh and in
+order to model this in our twooint
+boundary value problem we need to have
+some associated dynamics with it. But we
+know that since R replaces TF for us
+which is a constant its dynamics are
+trivial and which essentially boils down
+to meaning that R is fixed over time.
+And so this is basically all that there
+is with this trick. So we do these
+modifications and replace all instances
+of TF with R in our formulation.
+So any questions about this but there
+will be an example where where we go
+into the the details of this.
+Okay, that's pretty straightforward and
+specifically the example um we will use
+will relate to the uh kind of specific
+optimal control problem we were solving
+uh a couple of lectures back uh where if
+you remember we were trying to control
+this particle on a line system u where
+we wanted to move from a position x0= to
+10 with zero velocity to a final
+position of the origin. So xdf equal to
+zero also with zero velocity. And we
+wanted to optimize this cost functional
+which was comprised of two terms kind of
+one term uh kind of waiting the final
+time and one term weighing the control
+effort in our system. And uh last week
+we derived the solution analytically for
+this. But now let's model it uh using
+the uh the computational methods. And
+specifically notice that here time uh
+final time is a free variable. And so we
+will have to implement exactly these uh
+tricks and reformulations that we just
+uh described.
+So uh essentially what we're doing here
+is we're modeling this uh particle on a
+on a line system where as usual for our
+solve BVP we have to uh describe first
+of all our dynamics. So the OD uh where
+actually just to make sure that we are
+getting this straight let me quickly uh
+re uh restate the solution and the uh
+optimality conditions which we derived
+for this example. So this is I will go
+quite quickly through this because this
+is what we did last time. U but
+essentially we solved this problem over
+here and so if you remember to solve
+this we applied our classical strategy.
+So we they derived the optimality
+conditions which entails uh first of all
+um taking our system which in this case
+is a second order system and write it in
+a as a first order system by augmenting
+with one additional state variable. Uh
+so x double dot equals u essentially
+becomes x1 dot = x2
+and x2 dot equals u.
+uh then once we reformulate it as a
+first order system we could apply kind
+of nominally uh our optimality
+conditions. So the first thing that we
+do as usual is we formulate the
+Hamiltonian
+uh which for us is 12 EU ^2
+plus the costate variables transpose our
+dynamics. So p1 p2
+uh
+time x2
+u
+which is equal to 12 p u ^2 + p1 x2 + p2
+u.
+So this is our hamiltonian and once we
+have this we can apply our uh optimality
+conditions and as usual uh and let's
+just write them down. So the first
+optimality condition uh essentially
+represent the dynamics. So where we know
+that x dot is equal to the partial
+derivative of the Hamiltonian with
+respect to the co-states p and this is
+exactly
+our dynamics over here.
+The second condition entails setting P
+dot equal to minus the partial
+derivative of the Hamiltonian with
+respect to X
+where by doing the partial derivative of
+the Hamiltonian with respect to our two
+co-state variables. what we get is P1
+dot equals Z
+um and P2 dot
+equals minus P1
+right so the first one is the derivative
+of the Hamiltonian with respect to X1
+there is no X1 here the second one is is
+with respect to X2 so there is negative
+P1
+and then the Third optimality condition
+entails setting the so essentially
+imposing that u has to be a stationary
+point of our Hamiltonian which
+essentially means that the derivative of
+the Hamiltonian with respect to u has to
+be equal to zero
+which in this case means that b u + p2
+has to be equal to zero
+and so essentially u is minus p2 over
+And so here we can update this as minus
+p2 / b because remember that usually
+mechanically how we solve this is that
+we use this third condition [snorts] to
+express u as a function of x and p and
+then we do the appropriate substitutions
+in our differential equations.
+Okay. So these are our conditions to uh
+in order to solve these differential
+equations. As usual we need uh boundary
+conditions
+uh where we know the uh kind of the
+state at our initial and terminal uh and
+terminal we know the initial terminal
+state. So we know that x1 at time 0 is
+equal to 10. We know that x2 at time 0
+is equal to zero. We know that x1 at tf
+has to be equal to zero. And we know
+that x2 at tf has to be uh equal to
+zero. Right? So we have our four
+boundary conditions there. We have five
+constants of integration that we will
+have to um to pinpoint. And so the
+additional boundary conditions come from
+our kind of master boundary condition
+where this depends on whether the final
+state or the final times are fixed or
+free. And so in this case we are in a
+case where the final time is free. And
+so if you remember from the past
+lectures, this additional boundary
+condition essentially entails uh setting
+the Hamiltonian evaluated at the final
+time plus the derivative of the terminal
+cost in the t also evaluated at the
+final time setting this to uh zero. Now
+I won't go through the derivation of the
+terms because we did this already. But
+the result of this is the last boundary
+condition which boils down to uh minus
+p2
+ts over 2b
+plus alpha ts
+has to be equal to zero. Right? Right.
+And so here we have our
+uh system of differential equations and
+here are boundary conditions.
+Okay, this everything here is not is not
+new. Uh I just re kind of rederived it
+so that we can then visually compare uh
+what we are implementing in the in the
+code.
+Okay. Okay. And so going back to the
+code, essentially what we have here is
+the first we define our differential
+equations. Um so if you see x1 is equal
+x1 dot is equal to x2. Uh we have x2 dot
+is equal to p2 over b. Uh we then have
+uh that uh yes so p1 dot is equal to
+zero and p2 dot is equal to negative p1.
+And then here we already are using this
+reformulation trick which we just
+derived whereby we are adding this
+additional kind of dummy state variable
+R with trivial dynamics. Specifically R
+has to be R dot has to be equal to zero
+and we are rescaling these dynamics by
+TF right by the time derivative which we
+just discussed before.
+Now not uh given this we also have the
+boundary conditions specifically
+remember that these are fed to the
+solver as residuals. So we have x1 has
+to be equal to 10. Uh x2 has to be equal
+to zero. x1 also has to be x1 at the
+final stage has to be equal to zero. x2
+at the final time has to be equal to
+zero. And then we have our last master
+boundary condition here.
+Okay. And then so we have all of our
+ingredients. Uh so we pass to the solve
+uh BVP the uh differential equations. We
+pass the boundary conditions. We specify
+an array of times of discretized times
+which now goes from 0 to one because we
+rescaled time to be between 0 and one
+uh together with an initial guess for
+our uh for our solutions. And if we run
+this what we get is that the final time
+is equal to 4.47
+which if you recall is exactly what we
+were getting by the analytical solution.
+So if you remember our analytical
+solution was looking something like uh
+1,800 * b over a uh to the power of 1
+over 5 and this is 47.
+So we do get the same solution. Um and
+we can also inspect the uh the state
+variables x1 and x2. So x1 indeed at
+time zero starts at 10 and at time at
+the final time reaches uh zero
+and we see also our control of how we we
+get there. Right? So this is essentially
+we reformulated this two pound boundary
+value problem into its standard form and
+solved it through uh numerical methods.
+Okay. Any any questions about uh about
+this?
+Pretty straightforward, right?
+Okay. And so, um this kind of concludes
+our discussion on indirect methods. Uh
+again at a high level we saw how this
+entails specifying optimizing conditions
+uh and then passing them through a
+numerical solver to solve the resulting
+twooint boundary value problem. Indirect
+methods are historically how optimal
+control and the overall field started.
+Um and nowadays I would say direct
+methods are definitely uh increasingly
+more popular uh because of their ease of
+use. Uh that said indirect methods have
+their strengths. for example, they can
+ultimately boil down to having an
+analytical solution for your control,
+which is ultimately the gold standard,
+right? If I have an analytical solution,
+then essentially computing an in real
+time an optimal control entails a
+forward pass through a function, which
+is great. Uh if even if we're not able
+to solve analytically, we might be able
+to just derive the control structure of
+our control profile. Remember last time
+we were looking at like bang bang
+control, bang of bang control which is
+uh great for interpretability and just
+overall system design. Uh but again
+indeed the field of robotics is
+definitely moving towards uh direct
+methods. So let's uh talk a little bit
+about those.
+Okay. So usual road map we are al always
+in the open loop part of our of our road
+map uh looking at direct methods.
+&gt;&gt; Yes.
+&gt;&gt; Is that also up?
+&gt;&gt; It is it is so all the code is up and
+you can free to to play around with it.
+Yeah.
+&gt;&gt; Okay. So direct methods of course in in
+you know in in at a high level uh uh
+approach to and try to solve the exact
+same optimal control problem uh where we
+have you know cost functional which we
+wish to uh optimize. We have some
+dynamics. We have an initial state and a
+terminal state here expressed as having
+to belong to some uh manifold m of f
+defined as the zero level sets of a
+function f. um and we have some we might
+have some some control constraints. So
+here for simplicity I am assuming that
+the terminal cost is equal to zero but
+it could be trivially added and we're
+also assuming that the final the initial
+time t0 is equal to zero but this is
+mostly for simplicity and for for
+notation.
+So until now indeed we were approaching
+this problem through indirect methods
+where we defined and derived optimality
+conditions and then we solved this as we
+just saw through uh numerical methods
+whereby we're essentially solving these
+uh twooint boundary value problems
+and this is and indirect methods are
+referred to as optimized then
+discretized exactly because of this
+reason the optimality conditions refer
+kind of relate to the optimized part and
+the solving those for those optimality
+conditions through numerical solvers uh
+kind of relates with the discretise part
+because numerical solvers internally are
+discretizing time anyways.
+direct methods uh are kind of if you
+want the reciprocal of indirect methods
+because and in a way I would say that
+direct methods are probably uh kind of
+the more natural uh approach to uh
+approaching optimal control problems if
+we were to have discussed this a couple
+weeks back because nominally what we do
+is we take the optimal control problem
+in uh continuous time we discretize time
+and turn this into a nonlinear and
+constrained optimization problem and
+then we can just throw this uh
+optimization problem to nonlinear uh
+solvers and get and hope to get a
+solution out of it.
+And the reason why direct methods are
+starting to become and are increasingly
+more used in robotics is because there
+have been a lot of kind of improvements
+in the field of nonlinear optimization
+that is making the solution of this
+problem feasible also in in real time.
+[snorts]
+There are a number of excellent
+references here. I'm just listing a
+couple uh for you to um for you to look
+at if you're interested.
+But so transcription meth and direct
+methods at a high level kind of also
+kind of are can be subdivided between
+two subcategories of uh methods.
+And the way these kind of these two
+families differentiate from each other
+is based on how we choose to transcribe
+that is uh discretize and remodel as a
+discrete optimization uh uh problem the
+original optimal control problem. And so
+we have namely state and control
+parameterization methods also known as
+uh collocation methods and control
+parameterization methods also known as
+shooting. So at a high level starting
+from the latter so the control
+parameterization methods is that we take
+the optimal control problem in
+continuous time and we will be
+discretizing time and assume that only
+the controls uh for us are variables
+prone to optimization. So from the
+perspective of the optimizer and the
+solver only the control variables will
+be variables we are optimizing over the
+states are computed recursively through
+the unrolling of the dynamics.
+On the other hand, state and control
+parameterization methods again taking
+the perspective of the blackbox uh
+nonlinear solver will be kind of
+transcriptions whereby both the states
+and the controls will be numerical
+optimization variables we are free to
+tune and the solver will be free to
+tune. The difference is that in this
+case, so the state and control
+primitization methods uh dynamics become
+constraints that link together the
+control optimization variables and the
+state optimization variables. Here this
+is just a highle picture but we will see
+in detail both of these classes in uh
+today.
+Of course these two families have uh
+pros and cons. Um so as you can probably
+imagine we are discussing these control
+parameterization methods are as methods
+whereby only the control variables
+become optimization variables and so
+these tend to become smaller
+optimization problems simply because we
+have less variables to optimize over.
+Uh at the same time um
+these in this family here because we are
+enforcing uh so the states are only
+recursively computed through the
+unrolling and propagation of our
+dynamics. Enforcing constraints over
+states is uh definitely more challenging
+uh because if you imagine the other
+approach where both states and controls
+are optimization based variables, we can
+directly impose state constraints by
+just introducing a new constraint on an
+optimization variable. We'll see this
+more in the in the next slides, but here
+just to give you a feel of the pros and
+cons of different methods.
+So uh simply put if I would say if the
+if you have complex state constraints
+that you would like to include in your
+optimal control problem uh then uh
+control parameterization methods might
+be a good approach because they're just
+simple and you have less optimization
+bas optimization variables for your
+optimizers. On the other hand, if you
+have complex uh state constraints that
+you would like to enforce, then probably
+state and control uh parameterization
+methods are the way to go.
+Yes.
+&gt;&gt; Uh it's uh it's a big question because
+there are definitely hybrid formulations
+uh known as multiple shooting methods.
+Um I will discuss them in a in a few. We
+won't cover them in depth, but I'll
+definitely give you pointers for those.
+But yes, so you're hitting on a point
+where these pros and cons can be mixed
+and matched through hybrid methods.
+Yeah.
+Okay, so let's start from the state and
+control parameterization method. So at a
+high level what we want to do is take
+our continuous time optimal control
+problem and turn it into a discrete time
+nonlinear optimal control problem
+where the way we do this uh is we we do
+I mean there are many transcription
+methods and ways of discretizing time
+that you could uh that we could select
+uh but here we we tend to use the
+simpler of these approaches which is uh
+uler time discretization ation. So in
+order to do this step from continuous
+time to discrete time, what we do is
+that we select a time discretization
+meaning we uh discretize time from t0 to
+tn according to some uh time interval
+which we pick
+uh and then for all of our time steps so
+t0 through the n which now are just
+indices we assume uh what is called a
+zero order hold on our control namely
+that the control between uh ti and ti +
+1 is equal to uh ui. So we assume that
+the control is fixed in between a single
+time interval.
+Um let me
+so the sec the other thing that we need
+to do is um essentially we use uler
+integration to integrate the dynamics
+[laughter]
+and remember that so the dynamics
+uh x dot of t equals fx
+u t. Uh now we can approximate this as
+uh x of t + delta t minus x of t over
+delta t.
+And so from this what we can essentially
+write is that
+xt plus delta t is equal to xt
+uh plus delta t * f of x u t
+right and in this slides I'm calling uh
+delta t H.
+&gt;&gt; Yes.
+&gt;&gt; Definitely. Yeah. Here we're just going
+for simplest approach. Uh but you could
+think of more sophisticated ones.
+[snorts]
+&gt;&gt; Uh yeah. So at a high level again we
+want to go from continuous time
+formulation to the discrete time
+formulation. We do this by discretizing
+time. So selecting a range of indices
+that represent our time. Um we assume a
+zero order hold on our controls. Uh and
+approximate our uh continuous time
+dynamics in this way. And then the last
+thing that we have to do is also
+discretize the cost which is here
+represented by this integral. Uh but
+notice that
+if we consider the integral between ti
+and ti + 1 of g x
+ut in the t. Once we are assuming that
+we have this zero holder hold on our
+controls. uh then the integral between
+so the cost between ti and ti + 1 this
+is essentially a constant right
+and so we can approximate this as g of x
+u t * h
+right because we can take g outside of
+the integral and so we know that we just
+call this uh basically the integral
+between a single time step as page
+[snorts]
+and that's done basically right so
+you know then you you could say why even
+bother spending you know three lectures
+on indirect methods if this is all you
+have to do to solve optimal control
+problems uh again we we said indirect
+methods have their their their benefits
+um I would say especially now in the age
+of of LLMs to be honest Um,
+you know, I'm sure we all know that LLMs
+can do a great job at solving these uh
+these PMP problems. Uh, you know, aside
+of from our homeworks, of course. uh but
+you know the point is that I think
+through LLMs there is also this notion
+where we can definitely accelerate the
+design and development process in
+characterizing the optimal the
+optimality conditions which is arguably
+one of the cases why people are going
+for these indirect methods in direct
+methods in the first place because it's
+just simpler. Um anyways this is a
+parenthesis uh but so this is basically
+all that there is to it to uh on the
+state and control parameterization
+method. Um any any questions on this?
+We'll see an example shortly on how this
+is implemented in practice. But any
+questions on at a high level what we're
+doing.
+Okay. [snorts] So indeed let's see this
+in practice.
+So
+um let's solve this problem of crossing
+the uh the river known as Zerlo's
+problem. uh you have a version of this
+also in your pet set and specifically
+the setting here is that we want to
+cross from an origin point to uh another
+destination point on the other side of
+the river. uh the river has some flow
+which is uh zero at the two extremes and
+stronger in the middle.
+And specifically here we are assuming we
+have a constant forward velocity B. And
+the control for us is represented by the
+angle between the forward velocity and
+the uh and and you know and the flow.
+And specifically we want to reach this
+task by minimizing the control effort
+expressed as the squared of our uh
+control variable u. Why does the angle
+represent a notion of control effort?
+It's because if you imagine taking the
+180° uh angle with respect to the flow,
+this is when you're doing maximum effort
+because you're essentially going exactly
+against the flow. If it's zero, you're
+following the flow and then you have no
+cost. So this problem essentially models
+the fact where [snorts] we want to reach
+our destination point on the other side
+of the river uh while minimizing overall
+control
+&gt;&gt; effort.
+I guess
+like
+you go
+that
+I guess your what would be the words and
+acceleration bounds are like how far
+&gt;&gt; yeah so here we don't assume we have
+acceleration meaning we assume we have a
+constant velocity v and we are
+controlling this angle uh and we assume
+our angle is has to has some bounds so
+we have some ux yeah
+does this answer your your
+Okay. So here we are indeed defining our
+problem. So we assume that TF is 10. We
+have uh our uh final uh coordinates 10
+and five. Here we represent the flow
+through this lambda function where
+ultimately if
+um y is equal to l. So uh we are at the
+upper extreme of our river this is equal
+to zero. If uh
+if y is equal to zero this is also zero.
+Right? So this basically encodes that at
+the two borders of the river the flow is
+zero and it is maximum in in between.
+So here we are representing our
+optimization variables through basically
+a concatenation in a vector. So our z
+variable represents all of our x y and
+u's where xy is the position that we
+have on the plane.
+Right. So this is our river.
+This will be X and this will be Y where
+this will be this point would be L and
+this and this would be M.
+Okay. And so first of all we the we
+introduce and we define our bounds for
+our variables. Specifically the x's have
+to be between 0 and m and our y's have
+to be between zero and l.
+And for our controls we are bounded
+between negative ux and ux. Right?
+We define our cost function as the
+square the sum of the squares of our uh
+u variables um multiplied by h according
+to our discretization
+and then we define our constraints
+specifically our dynamics on the x
+variable uh such that the states x i + 1
+are equal to x i plus uh h times our
+dynamics
+Same thing for the y. So y i + 1 is
+equal at y i plus our flow dynamics.
+Uh and then we have the initial and
+terminal constraints. Right? So we
+basically say that the first variables
+of both uh x and y have to be equal to
+zero and m or l respective.
+Okay. And so is this clear how we are
+basically mapping from the actual
+formulation to this code?
+&gt;&gt; Yeah. So ML is is this point over here,
+right? So this would be our coordinate
+ML and we start from 0.
+&gt;&gt; Is the X the
+&gt;&gt; Yeah. Yeah.
+&gt;&gt; Yes. So is your state here or Z?
+&gt;&gt; Uh in this code we are basically
+defining Z
+as the concatenation of X Y and U.
+&gt;&gt; Uh this is just to handle it. Okay.
+Yeah.
+Does that make sense?
+&gt;&gt; Yes.
+If this model we're completely noiseless
+is perfectly described propriet
+solving it the same way but it
+&gt;&gt; it's a great question. So here we're
+assuming kind of the full openloop
+strategy where we assume the dynamics
+are perfectly known. Um, of course the
+moment in reality dynamics are never
+perfectly known. So usually what happens
+is that your control stack will
+definitely have a hierarchy of modules.
+Maybe you would have some openloop
+planner which basically produces a rough
+plan that I would like to follow. But
+then in real time when I'm actually
+deploying I will probably have a closed
+loop module which basically tracks this
+plan. This closed loop model will then
+be you know tasked with the pro the
+problem of
+say that this is the path that I decide
+but in reality I will be bounced off
+this path the closed loop will tend me
+to steer towards my nominal path.
+&gt;&gt; Yes. So this is one way uh one way is
+handling it through closed loop and I
+would say that in general any deployment
+has a closed loop uh flavor to it. Uh,
+of course you could also do a more
+sophisticated openloop planning where
+maybe I have some notion of the
+uncertainty which I can capture through
+some random noise random variable W
+which might be you know maybe assuming
+it's kind of gash and distributed or
+something of the like uh and then come
+up with more sophisticated planning
+strategies.
+Okay. And so we have all of our
+ingredients. We need an initial guess.
+Uh and so here we just come up with a
+pretty nonsensical I would say initial
+guess. So our y x's and y's are set to
+one for all the time. Uh and our u is uh
+basically five of the max that we can
+solve. It doesn't have to be feasible.
+It's just an initial guess. So if we
+um [snorts]
+if we run this what we get is this uh
+solution over here. So you can see that
+uh indeed we go from uh zero at time
+zero to uh 10 five which is how we
+defined ML following this sort of
+trajectory and this is a visualization
+of the optimal control profile over
+time.
+Now note that in this case we were
+essentially assuming that our UMAX so
+our bounds of our controls was equal to
+one
+and if you look a little bit more
+closely at our control profile we never
+really reach the boundary right so this
+bound on our control is basically non
+enforcing or non-restrictive so let's
+try to
+rerun this but now taking a slightly
+more restrictive um which is 75 which if
+you note is slightly below kind of our
+current optimal control profile.
+&gt;&gt; Yes. So U for us is the angle and so we
+are indeed assuming uh yeah
+so if we just run this first of all it's
+taking a little bit more time which is
+never a good sign and then we see that
+it basically produces uh garbage right.
+So um we are not even starting from our
+initial point. Uh we're not reaching our
+final point. Uh you know basically lost
+in the river. Um and this is also what
+the optimizer says right so the we don't
+reach a final a final solution. And this
+is obviously just a specific case, but I
+want to kind of use this an example of
+the fact that in moving from indirect to
+direct methods, we are basically
+transitioning a lot of the effort from
+the formulation of the problem and the
+optimality conditions to kind of
+tweaking and making sure that the
+optimization actually uh runs
+successfully. And so this is why direct
+methods are also much more uh
+susceptible to uh the quality of the
+initial guess uh and all of many other
+kind of well uh properties that enable
+it to be uh well conditioned.
+Uh this is because if you think about it
+from the solver perspective um the
+solver is basically it doesn't know
+we're solving an optimal control problem
+right it just sees a random nonlinear
+optimization problem and it's trying to
+do its best. Um
+so for example a classical strategy that
+people use to generate better initial
+guesses is to first solve a simplified
+uh version of the full problem that we
+wish to solve. For example, we might be
+relaxing some constraints or loosening
+some of the constraints and then using
+this intermediate solution as a
+candidate initial guess for a further uh
+kind of iteration of our of our problem.
+And so let's do just that. So here what
+we're doing is that we first run the
+same optimization with the UAX equal
+one. So the one that where we were
+actually able to solve the problem. And
+then let's rerun the 75 version where we
+are assuming now we're using the
+previous solve as an initial guess for
+the second solve.
+And what we get is that now this
+converges and it does indeed um follow
+the bounds on the control.
+Again, many of the discussions here are
+definitely problem specific, but this is
+just a hint of the kind of uh
+sophistications that have to come with
+uh direct methods.
+&gt;&gt; Okay. Any any Yes. um if your like
+relaxed version gives you a control
+input that's higher than 75 at the
+beginning or some state where you're
+like outside of bounds at the beginning.
+How would that like play out in your
+state?
+&gt;&gt; So in actually think about it this is
+what was happening here right because
+the solution with the bounds to one was
+actually breaking the 75 bounds. Um
+but the point is that initial guesses
+don't have to be feasible, right? So it
+just have to be an initial point in
+solution space for the optimizer to uh
+to start iterating from.
+&gt;&gt; Okay, does that make sense?
+&gt;&gt; Like a time zero like a time zero um or
+actually no I can understand
+&gt;&gt; uh in general the initial guess doesn't
+have to be feasible. So it doesn't
+really mind there's no point in in
+&gt;&gt; it doesn't really affect the
+optimization if it's feasible or not. Of
+course if it's feasible probably it's
+also a better a better initial guess.
+Yeah.
+&gt;&gt; Yes.
+That's just angle that's just in
+radians. But what would the unit be on
+the control?
+uh we're assuming it's radians and then
+we are uh the cost for us is just the
+squared of the radians over time
+essentially.
+Okay. And so
+um
+yes so this is the basically the
+transcription for this example zeral uh
+zeral problem uh where we essentially
+discretized time we this led to
+discretized dynamics where we're
+multiplying the original dynamics with
+with respect to our time discretization
+h and the integrals be some become sums.
+Now, of course, here remember we're
+looking at these two broad subcategories
+of direct methods. Specifically, the
+states and control parameterization
+methods. And so, notice that here the
+optimization variables for our
+optimization problems are both the
+states and the controls, right? Where
+these two are tied together through the
+dynamics, which essentially become
+constraints that tie controls and states
+together.
+And these are the results that we just
+uh that we just saw.
+Okay. And so moving to the other family
+of methods which is the control
+parameterization methods. Um I would say
+that most of the intuition directly
+applies. The only two differences are
+like specifically relate with the
+optimization variables. So now in the
+control parameterization methods only
+the controls UIs will be our variables
+for optimization
+and the dynamics essentially become the
+mechanism through which we are
+implicitly encoding our states by
+recursively computing the dynamics over
+time. Right? So how we will see now in a
+moment on uh on the same example in code
+uh we will see how this essentially
+boils down to defining an optimization
+problem over use uh whereby internally
+we have this inner loop where we are
+propagating forward our dynamics and
+this is also why it's it's referred to
+as kind of shooting methods because you
+could imagine we are you know
+pictorially doing something where we
+have an initial state x0 and then the
+optimization will choose a set of u so
+from u1 to uh un
+and then internally we will have this
+recursive application of our dynamics
+which essentially propagates forwards
+our states
+but apart from that everything else
+stays the same we're again assuming a
+uler discretization of time we use uler
+integration to uh basically solve
+integrate our dynamics
+uh with this only distinction that now
+the controls are the only optimization
+values.
+&gt;&gt; Yes.
+&gt;&gt; Problems in which you use control
+parameization
+method versus the previous one.
+&gt;&gt; Yeah. So in general I would say that so
+note that uh well before
+if we wanted to include some fancy state
+control so a state constraint so a
+constraint on the x since x is an
+explicit optimization variable. We could
+have just added that constraint. So say
+x has to be less or equal than three. We
+could just add another constraint saying
+x has to be lesser equal than three.
+In this other uh formulation, these
+states are recursively computed and so
+handling state constraints is much uh
+more challenging. And so
+in kind of at a very high level
+generally I would say that if you have
+complex state constraints then I would
+go for the state and control
+parameterization. If you don't uh then
+this could be a viable option for
+example.
+&gt;&gt; Yeah.
+Uh well in this case uh both would be
+able to
+&gt;&gt; but if you have controls then you can
+only function or you can only
+&gt;&gt; I would say from the perspective of the
+optimizer nothing would change here.
+Yeah.
+Okay.
+All right. So this is indeed how we
+exactly what we do. Uh so we transcribe
+through the control parameization method
+the continuous time problem into a
+discrete time problem. Uh so let us
+let's see how this works in uh in the
+code.
+Yes. Okay. So the definition of the
+problem is exactly the same as before.
+So we have the same goal point. We start
+from the same origin point. We have the
+same time horizon and final time TF. The
+the dynamics of so the flow of the river
+is exactly the same. Um
+and yeah so note that now we define this
+dynamics function uh which indeed
+encodes are uh dynamic. So the fact that
+uh you know the the next x will be the
+previous x plus the flow of the river.
+We have some bounds on our controls
+exactly as we did before. So u has to be
+between minus ux and ux. Uh but now the
+kind of the crux is in how we define the
+constraints. Right? So note that now the
+constraints function is only a function
+of u because u is the only optimization
+variable that we have. And so what we do
+here is we have this inner loop where we
+are propagating our dynamics forward. Uh
+where for
+all of our
+uh controls in a candidate solution U,
+we essentially propagate the dynamics
+forward. So we get uh next state and
+then we append these uh constraints
+um to the to the state at every time.
+Note that specifically here we're using
+inequality constraints uh whereby in
+order to encode the equality constraint
+that the final state has to be equal to
+ML we have both the fact that the state
+has to be less or equal than ML and that
+state has to be greater or equal than ML
+but you can probably so given kind of
+what we're saying here you can imagine
+that the sensitivity of this is uh much
+greater right because we are basically
+uh the optimization variables cannot be
+independently tweaked and kind of
+snapped to respect the constraints. But
+the influence on of the controls on the
+overall trajectory is kind of accounted
+for uh kind of through this propagation
+of the dynamics.
+Okay. And so um so what we have now is
+that we
+encode our initial guess uh which again
+is something uh pretty random in this
+case. Uh and we have everything to to
+solve our our problem. And if we run
+this
+now with the
+umax equal to one. So the same case as
+before what we get is the exact same
+solution. So it's still able to solve
+this um successfully
+and if we run the the problem with um
+equal to 75 we get that this method
+indeed does solve it directly right so
+again don't take kind of don't abstract
+general conclusions from this specific
+run but in general I would say that the
+control parameterization methods is less
+uh kind of less dependent on the quality
+of the initial guess but this is very
+much case dependent.
+&gt;&gt; Yes.
+&gt;&gt; Did it matter at all whether you use
+control dependent versus control and
+state dependent because you just kind of
+wrapped up the state into the controls.
+Um
+I guess I'm now confused cuz people were
+talking about oh it does matter because
+when you have like state insurance then
+it's important to do X Y and Z but in
+this case where you kind of have state
+insurance depending on how you want to
+look at it it didn't matter. So I guess
+if you could clarify
+&gt;&gt; yeah it's a good question. Now imagine
+that here I hope that kind of it's uh
+you agree with me where when you know we
+say that kind of here this is something
+that the solver needs to run internally
+every time it wants to evaluate some
+constraints. Right? So for the take the
+kind of the solver perspective on this
+right we have something we don't know
+what it is an optimization problem that
+we want to solve and the only knobs we
+have to solve this problem are our
+optimization variables in this
+formulation the only knobs that we have
+are the controls and to evaluate how any
+tweak in my knobs affects the feibility
+and quality of my solution here I need
+to propagate forward all of my dynamics
+which is different from the previous
+transcription where we could turn our
+knobs for both the states and the
+controls and the yes the states and the
+controls and we could verify that in a
+way more directly. And so the moment
+where we have in this case constraints
+are pretty simple mostly bounds. Uh but
+the moment we have more sophisticated
+constraints you can imagine how this
+becomes uh much more uh u kind of
+sensitive to my knobs which are my
+controls. Does it make sense more or
+less? Still, I guess my confusion comes
+where it seems like as long as it
+doesn't get too complicated, this one's
+better because even this is not as um uh
+susceptible to a bad initial guess. So,
+&gt;&gt; so uh so I don't want you to take this
+specific statement and generalize it to
+any possible problem. For this problem,
+we saw that initialization didn't matter
+too much. I would say in general maybe
+there is a slight tendency towards
+initialization being less relevant here
+but in general it's very much problem
+dependent. I was thinking in terms of
+like rules of thumb is it better to use
+the state and control um uh
+constraints and do it that way and then
+if you know there are really no state
+constraints then go this way or is it
+better to go this way unless
+&gt;&gt; yeah if you like as a rule of thumb if
+you have simple or nonstate constraints
+then maybe you could try this if you
+have complex ones then you might want to
+go for the other one.
+&gt;&gt; Yeah.
+&gt;&gt; Yes.
+say this is good cuz it guarantees the
+trajectory is like physically feasible
+cuz the dynamics are like all the states
+are propagated forward based on my
+control which is
+&gt;&gt; yeah there is some element of that for
+sure uh in the sense that dynamics are
+implicitly encoding the fact that no
+matter how I tune my knobs uh the state
+trajectory that I get is feasible uh so
+there is some element of that for sure
+yeah
+&gt;&gt; does the benefit of one or the other
+kind of depend a lot on the constraints.
+&gt;&gt; Uh yes, I would say it depends a lot on
+the constraints and in general the the
+problem setting. Yeah. So
+one thing I said at the beginning is
+that this parameization has fewer
+variables and so I kind of hinted at the
+fact that they were just smaller
+optimization problems. Of course it is
+smaller but I am propagating these
+dynamics at every time. So trade-offs.
+Yeah, I think there was. Okay.
+&gt;&gt; Um, since this all depends on kind of
+like a numerical propagation, how
+important would you say is like uh the
+selection of step size?
+&gt;&gt; Yeah. So, kind of great followup from
+what we're just saying. uh because this
+might seem as a smaller optimization
+problem but then in this case since I'm
+integrating the dynamics forward then I
+might have to in order to kind of
+uh solve my my problem accurately I
+might need to reduce my step size and
+discretization and so this would in turn
+be a bigger optimization problem. So uh
+problem also problem depending matter
+but it could it could matter the
+discretization
+right and also not only the time
+discretization but also the way I
+integrate my dynamics right um because
+in the state space what we're
+essentially saying is that we have like
+a peace-wise linear uh state trajectory
+that we are approximating uh the
+continuous time with one with and so
+you know the bigger the step size, the
+more I have kind of chances of maybe
+violating constraints in between and and
+things like that.
+Does it answer your question? Yeah.
+Oh, sorry. Yeah. [snorts]
+&gt;&gt; Um or more complicated cost function
+is
+optimizers
+do matter a lot. uh here we were using
+like the most uh standard out there. Uh
+but definitely also within the sci kind
+of ecosystem there are a number of
+different optimizers you can choose. Uh
+but this is also what I meant with we
+are kind of shifting uh mental effort
+from formulation of the problem and
+optimality conditions to the solution of
+a blackbox optimization problem. And
+within this uh kind of umbrella term
+what I mean is that also the choice of
+the optimizer is does play a role.
+Yeah.
+Okay.
+All right. So, basically, you know, we
+we saw these two families of
+transcription methods where at a high
+level, what we want to achieve is
+exactly the same thing. So, we want to
+go from our continuous time uh optimal
+control problem formulation to a
+discrete time one which we can solve
+through blackbox uh numerical solvers.
+uh we saw the uh control uh
+parameterization methods which entails
+using only the controls as optimization
+variables and then in this case the
+dynamics are essentially used to
+recursively propagate forward in time my
+state trajectory. And we saw the state
+and control parameterization methods
+whereby both states and controls are
+optimization variables. And these two
+optimization variables are linked
+through the dynamics which become
+constraints that link these two
+variables together.
+Of course here we're just scratching the
+surface on the types of approaches that
+can that can be used. Um in general I
+think as your colleague was also
+alluding to there are definitely hybrids
+of these two methods. For example
+multiple shooting is one that I
+definitely wanted to mention. Um so if
+at a high level if you it's clear what
+we are doing in the uh control
+primitization methods with this shooting
+of the dynamic dynamics forward in time
+in multiple shooting. This is basically
+a hybrid in the sense that rather than
+propagating forward my dynamics from the
+initial condition to the final
+condition, what I'm doing is I I'm doing
+this single shooting on smaller uh
+subset of my uh time intervals. So you
+could imagine something where I'm
+propagating my dynamics forward in time
+or only for some subset of the time and
+then I'm doing this again and then I'm
+doing this again and we introduce
+optimization variables at these kind of
+dislocation times and the dynamics
+become constraints where I want to tie
+these two endpoints together. Again high
+level picture but what I meant here is
+that there are some hybridizations of
+these two approaches. Yes.
+&gt;&gt; So that allow you to be a little bit
+more specific on state constraints
+around those joining points
+&gt;&gt; in turn you would get that. Yeah.
+Of course you know the depending on how
+big your
+single interval is you might have the
+same problems but in general. Yes.
+And of course also another discussion
+that came up is that here we were
+assuming kind of a simple kind of uler
+discretization and integration of our
+dynamics. We could go for more
+sophisticated approximations. Uh for
+example leveraging uh polomials which
+lead to kind of hermite simpson
+collocation schemes and pseudo spectral
+methods. Uh and so you know this is kind
+of an entire family of of approaches.
+Okay, any questions before I move on the
+last topic for for today?
+&gt;&gt; Okay, great. I mean, I think it's pretty
+I hope it's clear kind of the
+attractiveness that that direct methods
+have, right? because we we had to spend
+you know multiple lectures into deriving
+these optimality conditions uh before
+going into kind of solving them through
+numerical methods. Here we're basically
+defining the formulation taking that at
+face value discretizing it and throwing
+it to a numerical optimization method.
+And so for the last topic for today is
+sequential convex programming which is
+uh [snorts] you know arguably actually
+one of my favorite uh direct methods
+whereby the idea of sequential convex
+programming is that until now what we're
+doing is that we're taking the
+continuous time uh formulation
+discretizing it into a nonlinear
+optimization problem and then solving it
+uh through nonlinear solvers.
+Uh, of course, these nonlinear
+optimization problems might be
+challenging to solve and so sequential
+complex programming essentially defines
+an iterative strategy to solve this
+potentially complex uh nonlinear
+optimization uh problem.
+And the way it does this is is that we
+will be defining as the name kind of
+alludes to a sequence of convex problems
+which would ultimately and iteratively
+lead to the solution of the actual
+nonlinear problem which we care about
+solving. Why we care about doing this is
+because you did a recitation last week
+about convex optimization. Convex
+recognition is great because we can
+solve it easily, fast uh and you know we
+are guaranteed to get the global
+optimum. And specifically the way we do
+this is by introducing
+essentially
+introducing a surrogate problem of our
+original problem that we wish to solve.
+And this surrogate problem is
+essentially a version where we are uh
+linearizing and convexifying the kind of
+nonlinear elements in my in our
+optimization problem. Right? So and
+specifically where the nonlinearities
+come from are either the uh usually the
+dynamics or the cost.
+So the idea of sequential convex
+programming is to linearize and
+convexify the dynamics and cost around
+nominal trajectories.
+Solve this problem, get a new nominal
+trajectory, reconvexify, relinearize and
+keep iterating this until we get a
+better solution.
+But let's look at this a little bit more
+in detail.
+Any any questions on the high level u
+perspective here?
+Yes.
+Uh the question is what is the
+difference between multiple shooting?
+&gt;&gt; You're constantly regularizing and then
+you're resolving and you're breaking the
+chunks.
+&gt;&gt; Uh so here we would basically break
+down. So here we would be doing one
+optimization solve and we're breaking
+down the trajectory over time.
+Essentially we have these chunks over
+time here and it's it'll be clear now
+because we will go through it but here
+we are not chopping kind of time but we
+are just solving different surrogate
+problems over time. So here it's one
+single solve here it will be n solves
+but here the single solve is a solve of
+a nonlinear program. Here we will be
+solving recursively uh convex programs.
+Does that make sense?
+Okay. And so the general idea is that we
+are
+so assume that g so the cost is convex
+for now. Um and let x0 u0 be a nominal
+uh trajectory for our states and
+controls. In this slides, the uh indices
+represent uh iteration steps where
+remember this is an iterative algorithm.
+So here zero would be the initial guess
+at iteration zero
+um which will lead to kind of a
+surrogate problem which we will solve to
+get a nominal guess at iteration one and
+keep iterating over over that. So let x0
+u z be u a nominal trajectory or more
+concretely
+so x0 t would essentially be
+uh with with t between t0 and tf
+uh is is a full function right so we
+assume we have a nominal state uh
+trajectory
+and a nominal
+uh control signal.
+So the way we want to linearize
+so remember what we're doing here is we
+are taking the nonlinear program and we
+want to turn it into a convex
+optimization problem and we do this by
+uh linearizing the nonlinear uh dynamics
+and specifically we linearize these
+dynamics around this nominal trajectory.
+So we we do this as usual through tailor
+expansion right. So
+what we can do and we know is that f of
+x u t can be approximated
+as f evaluated at the nominal trajectory
+x0 u0 t plus plus the
+uh jacobian the derivative of the
+function f with respect to x times the
+difference so x - x0 plus the derivative
+with respect to f of f with respect to u
+* u - u 0 plus here we would have uh
+high order terms
+&gt;&gt; yeah x and um not of t
+&gt;&gt; I always thought x kn is like at t kn
+but so what is x knot at like a t not
+equal to t
+So here we are introducing this. So for
+the coming two slides uh the indices
+represent iteration steps because we are
+introducing this iterative algorithm. So
+for us x not t is a full function at
+iteration step zero.
+&gt;&gt; It's like the
+&gt;&gt; got it. Okay. So that x knot on that
+slide is not the same x.
+&gt;&gt; Uh which one? where you have x of0 is x
+knot but that is not the same x knot
+that you were and then you have x of t.
+&gt;&gt; Yes, you're right. It's a bit it's
+confusing. Yeah, I will update it.
+&gt;&gt; But is it clear what we
+&gt;&gt; Yes. Yes. I just was
+&gt;&gt; Yeah.
+&gt;&gt; Okay. And so you know here what we did
+is we basically linearized the dynamics
+around nominal trajectory. Uh and so
+basically what we get is that now you
+know G is convex. We have now linear
+dynamics. And so we basically get a new
+problem which is uh now linear, right?
+And so what we would do now is we solve
+this new problem. We would get a nominal
+uh trae a new candidate nominal
+trajectory X1 U1 where again here
+indices represent iteration steps. And
+we would then just repeat this process
+whereby
+we [clears throat] would now relinearize
+our dynamics around this updated nominal
+trajectory, solve the linear program,
+the linear problem and iterate until we
+for example stop improving our um our
+solution.
+Of
+course, in in between these steps, we
+always have to discretize, right?
+Because we're doing these through direct
+methods. And so, at every time, we would
+be linearizing the dynamics. We now have
+a linear optimal control problem. To
+solve this, we discretize it exactly as
+we did, which boils down into a convex
+optimization problem. Solve this and
+keep iterating.
+So at a high level sequential complex
+programming essentially defines this
+scheme where we are given a nonlinear
+optimal control problem in continuous
+time. To solve this we uh define this
+iterative scheme whereby we linearize
+the dynamics around a nominal
+trajectory. Initially this would just be
+an initial guess.
+This would then lead us into defining a
+continuous time but linear optim optimal
+control problem which we discretize
+uh in time which leads to a convex
+optimization problem which we can solve
+reliably efficiently and to the global
+minimum which leads to having an updated
+nominal trajectory and we keep this
+iterating on this loop right until some
+termination criteria is uh reached.
+Does it make sense what what we're
+doing?
+Yeah. So basically what we're exploiting
+here is the fact that
+we are given a nominal trajectory. This
+would be x0.
+We exploit the fact that we can
+basically linearize our nonlinear
+dynamics around this trajectory. Meaning
+We exploit the fact that deviations
+around this trajectory
+essentially behave can be well
+approximated by some linear dynamics.
+And we use these linear dynamics to
+essentially define a linear optimal
+control problem whereby this would lead
+us to maybe an updated guess
+say x1 in this case which essentially is
+like a minor tweak around our original
+solution hopefully in the right
+direction and we keep iterating this and
+refining our solution until we are
+satisfied with uh with our solution.
+&gt;&gt; Yes. So you talked about your update for
+your new function when you're talking
+about the update for the new guesses. So
+U12 34 exactly how is that exactly set
+per
+&gt;&gt; uh and repeat the question.
+&gt;&gt; Yeah. So you're iterating in your
+function. So which I'm assuming is that
+is that function also changing the x and
+the I guess.
+&gt;&gt; Yes. So this is only in state space. We
+would be doing this also in for the
+controls. This function is changing
+everything. Um, it's a function that
+changes both the state and the control.
+&gt;&gt; Yes, I'm not sure what you mean by
+function exactly, but what I'm saying
+here is I was representing the iterative
+scheme in state space here.
+[snorts]
+&gt;&gt; These are our dynamics. Yes.
+&gt;&gt; Yes. That's a function describing all of
+your dynamics. Um and so that is just
+representing how you are going to be
+changing the answer in each iteration.
+&gt;&gt; Um not really among the iterations. So
+these are just the dynamics of our
+system. Um what we do is we linearize
+these dynamics in order to get a linear
+formulation. We solve this linear
+formulation to get an updated
+trajectory. So what changes from what
+brings us from x0 to x1 is one step in
+this solve, right? So we're solving a
+convex problem which leads to the next
+nominal guess.
+&gt;&gt; Mhm.
+&gt;&gt; A new path and a new control.
+&gt;&gt; Yes. And then what we do is we we would
+be relearizing around the updated
+nominal trajectory
+&gt;&gt; and kind of modifying this again to get
+the next two and so forth.
+Okay, so I want to quickly
+show this in code as well.
+So usual problem. Um what changes here
+is that now we are linearizing our
+dynamics. We're we are not doing this
+analytically. We're using jacks to
+linearize our dynamics. So we have this
+uh function here which essentially
+computes the Jacobians uh of our
+dynamics. So these two terms which are
+essentially two matrices right this
+would be a matrix A this would be a
+matrix B.
+Um
+and once we have the and so we define
+the linearized dynamics as the original
+dynamics evaluated at uh the nominal
+guess
+this one here
+plus
+uh the derivative of f with respect to x
+times the displacement in x plus the
+derative of f with respect to u time the
+uh displacement in u
+and and so once we have this we
+basically define our um
+sequential convex programming
+iterations. So here we assume we have a
+maximum number of iterations that is
+100. So for each of our iteration steps
+or loops uh we would be defining an
+optimal control problem which
+essentially entails our x's and u's for
+now u ignore the s we have our controls.
+So we have our cost function, we have
+our linearized dynamics, we have our
+initial and terminal conditions, we have
+our state and control constraints and we
+can just uh solve it
+and we see that kind of this leads to
+the solution of the of the same problem.
+Okay, one thing. Yes,
+&gt;&gt; the start. Didn't we come up with a
+nonlinear programming solution to it?
+Like I'm confused when you want to use
+SCP instead of the original method.
+&gt;&gt; So the problem is that the original
+nonlinear optimization problem might be
+just very hard to solve. And so SCP is
+basically a strategy to solve nonlinear
+optimization problems which relies kind
+of in an inner loop on a convex uh
+optimization which is fast and reliable.
+And so you could see this as a
+sophisticated way of solving those uh
+nonlinear optimization problems which is
+quite effective and I would say most
+state-of-the-art approaches nowadays use
+something on along these flavors.
+&gt;&gt; Yeah.
+&gt;&gt; Yes. How do we know that linearizing the
+dynamics and then using like convex
+optimization to solve each sub problem
+will give us like closer to like get us
+a better solution? Yeah, it's a great
+question and I would say so this is also
+where kind of most uh state-of-the-art
+so what differentiates between uh you
+know a naive implementation of SCP and a
+state-of-the-art implementation of SCP
+uh so where this difference lies and
+this is because um
+the so at the overall high level picture
+kind of SCP describes a scheme where we
+are given an initial trajectory guess
+somehow
+u we linearize the non-convexities
+around this nominal guess as we just
+saw. Forget this box for now. Uh we
+discretize it. We solve it through
+convex optimization. If we're happy,
+then we're done. If we're not happy, we
+start again this loop. Again, ignore
+this box. What I meant between
+difference between um
+naive implementation and a
+state-of-the-art implementation exactly
+lies in these two boxes whereby since we
+are introducing this surrogate problem
+which is on one hand easy to solve
+because it's convex but it could
+introduce some additional problems and
+two specifically relevant ones are
+artificial invisibility and artificial
+unboundedness. So since we are have
+we're introducing a surrogate problem
+this surrogate problem might be
+infeasible while the overall non
+nonlinear problem might actually be
+feasible
+and the other problem artificial
+unboundedness is that the convex problem
+might just lead us into a situation
+where the optimal solution of the convex
+problem just leads us to minus infinity
+for example and so there are different
+ways in which one could um approach
+this. So typically to handle artificial
+unboundedness
+uh you want to ensure that you're in
+solving the individual iterate you don't
+diverge too much from your nominal guess
+and this is because since we're
+linearizing the dynamics um these
+linearization is only accurate in a
+neighborhood of the nominal trajectory
+and so this is where concepts like trust
+regions are introduced in order to
+basically
+mass massage the convex problem such
+that we are not moving too much from the
+original solution.
+For example, a trust region constraint
+could be something where
+I want to stay within a certain distance
+from my nominal trajectory.
+And the other topic is the one of uh
+artificial invisibility.
+Uh and typically this is handled through
+slack variables. So a slack variable is
+something where say we have
+[clears throat] a constraint that our u
+has to be smaller than a uax. We could
+add an additional optimization variable
+s uh which allows us to kind of loosen
+this constraint if needed but we would
+be penalizing this in the cost. So like
+an updated cost could be the original
+cost plus s squ for example.
+Now this is kind of a long detour uh but
+does this kind of go in the direction of
+what you're asking?
+Yeah. And so now to conclude if you're
+seeing those s variables before this was
+indeed the slack variable. So we were
+adding introducing this fictitious
+[snorts]
+uh optimization variable s which we are
+adding to our uh bound constraints u uh
+and in the cost. So we are penalizing
+the slack variable. And if you look at
+the results of the optimization, we see
+how the slack variable indeed kind of
+decreases over time because initially
+for the optimization, apparently it is
+helpful to violate some of the
+constraints, but then since we're
+penalizing them, this kind of reduces
+and ultimately goes to zero.
+Okay, any questions on this?
+Okay, perfect. And so, uh, yeah, just to
+wrap up, this is a nice quote from, uh,
+Professor Tedre at MIT, uh, where Centry
+says, as you begin to play with these
+algorithms on your own problems, you
+might feel like you're an emotional
+roller coaster. And this is because,
+again, as we were hinting at before, we
+are kind of shifting a lot of the mental
+effort into tweaking the nonlinear
+optimization problem such that it gives
+us a solution in the end. Uh and so I'm
+sure you will be going on this roller
+coaster also through your pets. Um and
+this kind of concludes the openloop um
+portion of our road map and on Monday
+we'll be moving towards closed loop
+methods through dynamic programming.
+Thank you.

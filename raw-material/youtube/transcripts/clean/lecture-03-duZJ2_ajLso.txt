@@ -1,0 +1,2541 @@
+Hi, everyone.
+So first of all,
+great to see you here.
+My name is Daniele Gammelli.
+I'm a postdoc in the
+Autonomous Systems
+Lab in the Department of
+Aeronautics and Astronautics.
+As you might guess from the
+accent, I'm also Italian.
+So if optimal control
+doesn't work for you,
+I guess you'll be experts in
+Italian accents at the very
+least.
+So for today, the plan is
+that-- so over the last week,
+we started introducing
+the general formalism
+for optimal control.
+Specifically, we introduced the
+general problem formulation,
+which is something along
+the lines of-- we're
+given a dynamical
+system x of t, which
+is in the form of a
+differential equation.
+And the overall goal for us was
+to determine an optimal control
+signal, u star of t, that
+minimizes some objective, which
+we defined as having a
+terminal cost h of x of tf
+for the final time tf
+plus our running cost.
+And then so this we
+realized that this
+was in an infinite dimensional.
+Yes?
+Can you use a different board?
+All right.
+Again, nothing new here.
+What I was saying here is we
+defined the optimal control
+problem as a dynamical system,
+where we wanted to define
+an optimal control u star of t.
+And this control then steers the
+state trajectory x of t in a way
+that we can optimize
+an objective function
+j, which is composed of two
+terms, a terminal state--
+terminal cost h of x of tf
+evaluated at the final time
+plus a running cost.
+Again, I don't want to just--
+don't take too much out of this
+exactly, because we
+saw this already.
+And then given that
+we realized that this
+is an infinite dimensional
+optimization problem,
+we then went into--
+opened a parenthesis
+about finite dimensional
+optimization,
+where we started
+by defining, first
+of all, what we mean by
+minima or maxima, that are
+the objects of interest for us.
+And then we went into defining
+necessary optimality conditions
+for the unconstrained
+case first,
+namely the fact that
+gradient of f of x
+needs to be equal to 0,
+so be a stationary point
+of our objective function f.
+And then we did the same for
+the constrained case, namely
+the equality constraint case.
+And so for today,
+we'll just quickly
+wrap up last week's
+lecture, where
+we will be defining the
+necessary optimality conditions
+for the inequality
+constrained case.
+And then s move to the
+content of today's topic,
+which are then essentially our
+first step into optimal control,
+where we'll be trying to
+have a similar approach that
+is defining necessary
+optimality conditions,
+this time for the infinite
+dimensional optimal control
+problem.
+Any questions on the plan
+and does this make sense?
+All right.
+OK.
+So first of all, when we
+say inequality constraints,
+we essentially refer to
+an optimization problem
+of this form.
+So we're minimizing,
+as usual, our objective
+function f of x subject to some
+equality constraints, which
+is exactly the setting
+we were seeing last week.
+So h of i of x needs to be equal
+to 0 for m equality constraints.
+And then here, we're introducing
+our inequality constraints
+represented as gj of x.
+It needs to be less
+than or equal than 0.
+And we're assuming here that
+f, h, and all the gj's are
+continuously differentiable.
+Again, this problem can be
+written in compact form, which
+we will be referring to as
+the ICP, so the inequality
+constraint problem, where we
+are essentially compacting
+this in vector notation.
+So all the letters become
+basically boldface.
+But this is the
+kind of problem we
+are looking at when we say
+inequality constraint optimal
+control problem.
+And so when we introduce
+inequality constraints, kind
+of mathematically, this object
+becomes much more difficult.
+And we could spend
+a series of lectures
+into defining the optimality
+constraints for this case.
+However, what I will do
+today is essentially,
+I will try to take an
+easy route in defining
+the optimality constraints.
+And what I mean by
+easy route is that we
+will try to reuse as
+much as possible what
+we derived last week with
+the equality constraints.
+And the way we do this is
+through something which we
+refer to as active constraint.
+So specifically for
+any feasible point,
+the set of active
+inequality constraints
+is denoted as this A of
+x, which is essentially
+the set of all the
+inequality constraints,
+gj's, that are respected
+at the equality.
+On the other hand, all
+the other constraints
+that are not respected at
+the equality, so are strictly
+less than 0, we will be
+defining them as inactive at x.
+So more visually,
+say that we have
+a problem along the
+lines of minimizing
+x plus y, subject to the fact
+that x and y must be greater
+than 0, and x plus y
+needs to be less than 3.
+What we're looking
+at is something
+where-- first of
+all, it has to be
+in the positive
+side of the plane.
+And then we have
+this constraint here,
+which essentially defines
+the feasible region
+to be this one over here.
+Can you guys see from
+the back over there?
+Yeah.
+So in this case,
+the minimum-- so
+if you look at the level curves
+of our objective functions,
+there are something
+that look like this.
+And so in this case, the minimum
+point would be at the origin.
+So if we take this
+point, so 0, 0,
+at this point out of
+the three constraints,
+we have that these two are
+respected at the equality.
+So these two will be active.
+On the other hand, this
+constraint over here
+is not respected
+at the equality.
+So this is inactive.
+OK.
+And so given that this
+definition is clear,
+this point is where
+most of, I would say,
+the brainpower for understanding
+this easy route goes into.
+Specifically what we're saying
+here is that if x of star
+is a local minimum
+of the ICP, which
+is the full problem that we
+saw on the previous slides,
+so this one here, what we're
+saying is that then x of star
+is also a local minimum
+for the identical ICP
+without the inactive
+constraints.
+And to give you an intuition,
+the proof for this argument
+usually goes by contradiction.
+So we're saying
+that x of star is
+a local minimum of
+the original ICP,
+so with all
+constraints included.
+But let us assume
+that this is not
+a local minimum for
+the problem without
+the inactive constraints.
+So if it is not a local
+minimum, what this would mean
+is that we would be able to
+move in the neighborhood of that
+x of star while
+respecting the constraints
+and still finding a better
+value of the objective function.
+At the same time, so if we are
+moving into a neighborhood,
+we can find a neighborhood
+that is arbitrarily
+small, such that the
+inactive constraints always
+remain inactive.
+And if you're following me
+until here, what we're saying
+is that if this is true,
+then all the constraints
+of the original problem
+would still be satisfied.
+And so this would mean that we
+would have found a better point
+also for the original problem.
+Therefore, kind of concluding
+the contradiction here.
+Right.
+So if you will--
+again, don't take
+me by the exact word
+here, but what we are
+saying is that we can always
+think of a neighborhood
+of this point x star.
+So if this is not a
+minimum of this problem,
+we can define a neighborhood
+that is arbitrarily small, such
+that we can move along this
+minimum and find a new point
+x prime, such that the value
+of the function at x prime
+is smaller than the
+original f of x prime.
+And specifically, since I
+can take this neighborhood
+to be arbitrarily small, I
+could move in the direction
+that it satisfies all of
+my original constraints,
+so the equality constraints, but
+also the ones that are inactive,
+because the inactive
+ones always have-- you
+could think about it intuitively
+as there is some margin
+that I can play with.
+And so if this is
+true, then I would
+have found a point that is
+better for the original problem
+as well.
+And so this is not the case.
+Does this make sense?
+OK.
+And so what we're seeing here
+is that at the local minimum,
+active inequality
+constraints can essentially
+be treated to a large
+extent as equalities.
+And so you're probably
+starting to guess a little bit
+where we're going now.
+So remember, what
+we're trying to do here
+is define the optimality
+conditions for inequality
+constraint problems.
+And we said, we want to take
+the, quote unquote, "easy route"
+of leveraging as much as
+possible the results that we got
+in the equality constraint case.
+And so here what
+we just proved is
+that if x is a local
+minimum of the full problem,
+that is the full inequality
+constraint problem,
+then it is also local minimum
+for the version of the problem
+where I'm only considering
+the active constraints.
+Yes?
+When you're saying that it's
+a local of the constraint,
+are you assuming that
+you're not on the boundary?
+Even with that example, if
+you cross the boundary out
+of the constraints, you
+could be going lower
+or it would not be local.
+Yeah, exactly.
+So this is what I meant by
+don't take it too rigorously
+here, because here, there
+is actually only this one
+point that we're considering.
+But maybe you could
+imagine something
+like in three
+dimensions, maybe, where
+I have my inequality constraints
+being some kind of hyperplanes,
+and satisfying both means lying
+on this subspace over here.
+Then you could think that moving
+in a neighborhood of this point,
+I could still respect my
+original equality constraints.
+Does this [INAUDIBLE]?
+As long as you are
+not on the boundary,
+essentially, is what that
+previous point was saying,
+then that is true.
+Because we are on the boundary.
+You can cross the boundary and
+become a lower [INAUDIBLE].
+No, of course, we want to
+respect all the constraints.
+Yes.
+The previous point,
+only-- you're
+saying only is of concern if
+you are not on the boundary.
+By previous point, you
+mean that also the--
+The local minimum of that
+is also the local minimum
+without the constraints.
+That's only true if the
+local minimum is only
+within the boundary and not--
+If the local minimum
+is a feasible point.
+Yes.
+So it's a local--
+it's within the bounds
+and not on the boundary.
+If it's on--
+Well, in this case, it
+is a boundary, right?
+Yeah.
+But if crossing the boundary
+outside of the constraints
+means you have a
+lower point, then--
+so the local minimum without
+the active rates is a different
+local minimum than with the
+constraints, because you're--
+one is in the boundary.
+one is not in the boundary.
+Yes.
+Well, if you're going across the
+boundary in the feasible region,
+then yes.
+That means you don't
+care about that.
+Yeah.
+So then that is only true
+then when you're within--
+you're not on the
+boundary, right, 0.1?
+I mean, again, the fact is
+that boundary here it depends,
+because we--
+boundary-- I guess,
+you're saying when
+these constraints are active.
+So some of them will be at
+the boundaries and some won't.
+Yeah.
+So I guess I'm
+confused where you
+say it's a local minimum
+without the constraints,
+just because you have a local
+minimum within the constraints.
+But if you're in the boundary,
+that's not necessarily true.
+Because when you talk
+about the previous thing,
+it's like on the boundary,
+you might have a more minimum,
+you have a lower
+value, but because you
+can't cross the boundary, you
+have to keep the local boundary.
+Yeah.
+So it's only a local minimum
+outside of the constraints
+if you are within
+the boundary itself.
+Yes, I think that's about-- yes.
+Does the general picture
+make sense apart from this?
+Yeah.
+Any other questions on this?
+OK.
+So basically what
+we're saying here
+is that x is a local
+minimum of the original ICP,
+then it is also a local
+minimum for the same problem
+where we remove the inactive
+inequality constraints
+and only keep the active ones.
+And if we think about
+what we did last week,
+this is an object we can
+basically work with and derive
+optimality conditions.
+So remember that last time we
+were defining the Lagrangian
+as L of x lambda, we're
+introducing some Lagrangian
+multipliers lambda, equals f
+of x plus the summation from i
+to m, which is where m
+is the number of equality
+constraints of lambda i times,
+I think we call them h, so hi
+of x.
+And then we use this to derive
+necessary optimality conditions,
+such that the gradient
+of the Lagrangian
+needs to be equal to 0.
+Can you use a darker marker?
+I think this was
+the darker marker.
+So again, this is
+from last lecture.
+So what we're just
+saying is that we
+use this to define necessary
+optimality conditions.
+So we define the Lagrangian.
+And then we just said
+that the gradient
+with respect to this Lagrangian
+function needs to be equal to 0.
+So these were the
+optimality conditions
+in the equality
+constraint case, which
+boil down to a
+system of n plus n
+equations in n plus m unknowns.
+And so what I'm saying here
+is that this is exactly
+the same case now
+that we did this step.
+And so we can apply the
+exact same reasoning
+in defining the optimality
+conditions for the ICP
+with the inactive constraints
+removed, where again, this
+is exactly the same necessary
+optimality conditions we derived
+for the equality constraint case
+with the addition of this term
+over here, which takes care of
+only the active constraints,
+that is the inequality
+constraints that are respected
+at the boundary, where again,
+we have this Lagrangian term mu
+j star times the gradient of
+the inequality constraints.
+And everything has
+to be equal to 0.
+Or equivalently, we can
+write the exact same thing.
+So here nothing new, just
+rewriting a little bit more
+elegantly where rather than
+having a summation over only
+the active
+constraints, I can have
+a summation over all inequality
+constraints, so from r1 to r,
+with the additional
+condition that the mu's
+need to be equal to 0 for
+all the inactive constraints.
+There is an
+additional condition,
+that is the
+multipliers mu j that
+relate with the inequality
+constraints have to be positive.
+There are some kind of
+geometric interpretations
+and proofs we could
+do here, but it's
+beyond the scope
+of this lecture.
+Yes?
+For the concept
+of the [INAUDIBLE]
+for equality constraints also,
+there could be [INAUDIBLE].
+Well, I mean, the equality--
+either you are at the equality
+or you're not respecting it.
+So it's slightly
+different, I think.
+Does it make sense?
+If we solve this for the
+global minimum with respect
+to the active
+constraints, are we
+guaranteed to also be
+satisfying the inactive ones,
+or is it something we
+have to iterate on?
+No, this is exactly
+the point I was
+trying to make earlier that
+we-- again, we kind of did
+a sketch of a proof.
+But what we proved
+here is that if x
+is a local minimum of
+the original problem,
+then it is also local minimum
+of the problem removed
+the inactive constraints.
+[INAUDIBLE]
+Yes.
+So here the entire
+goal is just to come up
+with optimality conditions.
+Yeah.
+So there's more terms here.
+Can you knock a gh
+of 2, for example?
+What does any of
+that-- any example?
+The example, you
+mean this one here?
+Yeah.
+So in this case,
+there are no h's.
+So this is f, our
+objective function.
+There are no h's because h for
+us is the equality constraint.
+So here, we are assuming we only
+have inequality constraints.
+And all of these would be g's.
+So this would be g1, this would
+be g2, and this would be g3.
+Of course, here, I'm not
+respecting the formalism that
+I'm--
+whereby we only use less
+than or equal than 0,
+but you could just flip
+the sign here and get that.
+Does this make sense?
+And then what about A?
+So A is the set of
+active constraints,
+A of x is a set of active
+constraint at a point x.
+So it depends on the point.
+We were assuming we have
+this point here as our x.
+In this case, A of 0, 0,
+which is this x over here,
+would be these two
+constraints, so 1 and 2,
+because this is inactive.
+Yeah?
+Can I [INAUDIBLE]
+point for the region
+for which the
+[? sign ?] is active?
+What's the method for that?
+So here for us,
+we just defining A
+of x as the set of
+active constraints.
+So we are not talking
+about regions necessarily.
+We're just referring-- it's
+literally a set of indices.
+So in this case,
+it would be 1 and 2
+referring to constraint number
+1 and constraint number 2.
+This is the one that
+you just-- point
+that we'll talked
+about the constraints
+and see what [INAUDIBLE]
+for any [INAUDIBLE].
+Sorry, can repeat this?
+So if you find that constraints,
+just plug-in the values of point
+and see where it's going?
+For the example, correct.
+Yes?
+So then I guess I
+just [INAUDIBLE].
+So how would you then identify--
+for example, you have 0, 0, 1.
+It's 1 and 2 that are active.
+3 isn't.
+Is it like then is
+active if you're
+like right on the
+boundaries that's
+why the third constraint
+is not active?
+If you say moved it to
+3 and 0, would it then
+be that 2 and 3 would be active?
+Yeah, exactly.
+Yeah, so active is when you
+substitute the value of x and y
+here and you get
+an equality out.
+OK.
+Yes?
+Is there such a thing for
+the inequality contraints?
+Because if it's constrained
+to be on two lines
+and you're not on
+there, then that just
+means that neither of those
+are satisfied as well.
+Or is it just for
+inequality constraints?
+I don't think I got that.
+Is there a similar thing--
+unless I'm missing the point
+of the active constraint thing.
+It's just the area that
+satisfied by all of them.
+So would there--
+like everything--
+You're talking about
+the physical set?
+Yeah.
+For equality, is there
+a version of that?
+I mean, if the theta we have--
+indeed this problem here.
+So you imagine we have
+two equality constraints,
+such that in--
+of course, in three dimensions.
+So one equality constraint is
+we have to lie on this plane.
+Another equality constraint,
+you have to lie on this plane.
+Then the feasible region
+is this part over here.
+OK.
+All right.
+So all of this to boils down
+towards the necessary optimality
+conditions for the inequality
+constraint problems, which
+are known as Karush-Kuhn-Tucker
+conditions or KKT, which
+essentially goes as follows.
+So we, once again,
+define the Lagrangian
+function L of x lambda
+mu, where lambda mu are
+Lagrangian multipliers.
+We used this object
+then to define
+the optimality conditions.
+And so the theorem of basically
+the KKT condition states that
+if x of star is a local
+minimum for the full inequality
+constraint problem, where f,
+h, and g's are all continuously
+differentiable, and we assume
+that x of star is [INAUDIBLE],
+again, kind of--
+you can ignore this for now.
+But in general, we're
+saying that the equality
+and active inequality
+constraints
+are-- the gradients are
+linearly independent.
+Then it means that there exists
+a unique Lagrange multiplier
+vectors, so the lambdas
+and the mu's, such
+that the gradient of the
+Lagrangian is equal to 0.
+The mu j's in correspondence
+to the inactive constraints
+are equal to 0.
+And in general, they're all
+positive, so non-negative.
+Again, so here, we're
+just putting together
+the results we arrived at.
+OK.
+So now to ground the
+intuition a little bit--
+yes?
+In this case, we are presently
+only checking the boundaries,
+because we're only checking
+whether it is equal.
+And so if we find one on the
+boundary, then we're like,
+oh, we found it.
+We never checked within
+the boundaries, right?
+So this is a
+necessary condition.
+Meaning if a point
+is a local minimum,
+it has to satisfy this
+condition over here.
+So it does not mean that all--
+so what it means is
+that all local minimums
+satisfy this condition.
+Yeah.
+So for example,
+x sub 1, 1, which
+is none of those
+constraints you have there,
+in terms of the
+equality constraints.
+Because it's not x equals 0.
+It's not y equals 0.
+And it's not y plus x equals 3.
+It would never show
+up in your set.
+The a, 1, 1 would be
+nothing of the set.
+So you would never
+have it on there,
+but it could be a
+minimum in this problem.
+X sub 1, 1 could be a minimum?
+Yeah, it could be because it
+satisfies all the constraints.
+And let's say the gradient and--
+[INAUDIBLE] the
+gradient is, right?
+But it's never being checked
+in your problem, because a of 1
+is nothing with that,
+because it's not equal to 0.
+X is not equal to 0.
+Y is not equal to 0.
+And x plus y is not equal to 3.
+I'm afraid I'm not exactly
+following your argument,
+but I would have
+to take that on you
+because we have a
+full lecture to cover.
+I'm happy to stay afterwards
+if you want offline.
+Yes?
+Isn't it necessary
+condition that at least one
+of the inequality
+constraints is active?
+The necessary condition on what?
+To solve the point.
+To have it be a solution
+for the problems.
+There are at least-- one of
+the constraints is inner.
+So it's a property of problems
+that usually solutions
+are at tension points
+between objective function
+and constraints.
+And so usually, yes.
+All right.
+So to make a small example of
+what it means to apply this,
+hopefully to ground
+the intuition,
+so let us solve
+this problem over
+here where we want
+to minimize x squared
+plus epsilon squared subject
+to one inequality constraints.
+That is 2x plus y less
+than or equal than 2.
+Can you see with this marker?
+Is it good enough?
+Yes.
+Yeah.
+All right.
+And let's be methodical, right?
+So let's apply the
+KKT conditions.
+So first of all, what we need is
+we need to compute the gradient
+of f, which in this case
+is simply 2x and 2y, right?
+And the gradient of our
+inequality constraints,
+so grad of g, which
+is 2 and 1, right?
+So we're using this
+to characterize
+the gradient of our Lagrangian.
+And the inequality constraints
+are slightly trickier
+in the sense that you
+need to consider cases,
+in the case of the constraints
+are active or inactive.
+And so let's look at
+the first case, case 1,
+where we are assuming that
+the constraint is active.
+That is that 2x plus
+y is equal to 2.
+Now, we indeed write that the
+gradient of the Lagrangian is
+equal to 0 condition, which
+essentially means that 2xy plus
+mu times our gradient of our
+constraints is equal to 0.
+So this is our gradient of the
+Lagrangian has to be equal to 0.
+And of course, we also have that
+the mu's need to be positive.
+Mu needs to be positive.
+Well, non-negative.
+From this, we can write
+that 2x plus 2 mu equals 0,
+2y plus mu equals 0, which
+essentially means that x is
+equal to negative mu and y is
+equal to negative mu over 2.
+OK.
+All right.
+Now, if we plug these into
+our active constraint,
+so we have values for
+x and y, what we get
+is 2 mu equal to 2,
+which essentially
+means that mu is
+equal to negative 4
+over 5, which is not
+possible because we
+want to choose to be positive.
+Well, non-negative.
+So this is not
+what we need here.
+All right.
+And so we try with a
+second case, case 2,
+which is where we assume that
+the constraint is now inactive,
+meaning 2x plus y is
+strictly less than 2.
+Now, in this case, we know that
+for all inactive constraints,
+the mu's are equal to 0.
+And so our gradient of the
+Lagrangian essentially becomes
+2x to y plus 0, because this is
+mu times the gradient of x of g,
+which essentially means
+that x and y are equal to 0.
+Now, this satisfies
+the constraint
+because if we plug these values
+here, it is indeed less than 2.
+And so this is indeed a
+candidate for a local optimum.
+And to convince you that--
+I mean, this was not
+like a hard problem,
+because-- just to
+convince you that what
+we did makes sense, what
+we are characterizing here
+is a problem where we
+wanted to basically satisfy
+this inequality
+constraint, which
+defines this line over here.
+And so the feasible region
+is in this part of the line.
+And our objective
+function is like a ball
+that originates in 0 0.
+And so indeed, the
+local minimum here--
+well, global minimum
+in this case is 0 0.
+Yes?
+I apologize if I
+missed it before.
+Could you explain why
+we use 0 in case 2?
+So here, we defined that--
+if you remember how we
+derived the KKT conditions,
+is that we essentially
+define the problem
+to be identical to the equality.
+And so we derived this
+condition over here,
+which could be
+equivalently rewritten such
+that we were
+iterating or summing
+over all inequality conditions,
+inequality constraints,
+with the additional
+condition that the mu has
+to be 0 for all the
+inactive constraints.
+And so in this case,
+we were in a case
+where we were assuming this
+constraint is inactive.
+And so for this constraint,
+the mu has to be 0.
+So when the constraint
+is inactive here,
+the mu is equal to 0.
+Yes, correct.
+Again, here, what
+we're saying is that--
+this is an example
+of how we could use
+these optimality conditions.
+So we did all of
+this work to say--
+to come up with a condition
+that we can use to potentially
+filter for candidates.
+So we use this.
+We find potential
+candidates for optimality.
+And then we check if
+it makes sense or not.
+Yes?
+Why should mu be non-negative
+for the [? active ?]
+constraints?
+Yes, this is the point I was--
+I'm happy to share with
+you some literature.
+It gets a little bit tricky.
+There are some geometrical
+interpretations,
+but they're beyond the
+scope of this class.
+Yes?
+Is there a multiple [INAUDIBLE]?
+Exactly.
+This is where it
+gets tricky in here.
+We use only one constraint.
+Yeah.
+So in case 1, it would have to
+be greater than or equal to 0.
+[INAUDIBLE] positive,
+strictly positive.
+In case 1, mu would have
+to be strictly positive.
+Well, no, right?
+Because here, what we're
+saying is that the-- so these
+are the conditions.
+So we're just applying
+the conditions nominally.
+And basically, the conditions
+entail that for all constraints,
+the mu has to be non-negative,
+except for the ones that
+are inactive, where they
+actually have to be 0.
+Yes?
+So am I understanding
+it correctly
+that the conclusion that we
+drew from check in case 1
+is that there just does not
+exist a candidate for optimality
+that has this active concern?
+Yeah, correct.
+Again, here is
+one simple example
+of how you could use optimality
+conditions just as a way
+to filter out candidates.
+Yeah.
+OK.
+And so this actually wraps
+the content for lecture 2.
+So let me just grab--
+OK.
+Any other questions on
+this before we move on?
+Perfect.
+And so with this,
+now, we essentially
+laid the foundation
+of some intuitions
+that relate with finite
+dimensional optimization.
+And now, we are--
+and this is important
+because we will be coming
+back to these ideas
+over and over in this
+class, at the very least
+for the optimal part
+of this class before we
+go into learning.
+And now, we start essentially
+exploring our roadmap.
+And this is a slide
+we will be coming
+to over and over because
+it just helps you,
+I think, in grounding what
+we're covering exactly.
+And so specifically for the
+next two to three weeks,
+we will be focused on this
+quadrant of our roadmap.
+That is open loop methods
+for optimal control, which
+are to be differentiated from
+closed loop methods, which
+entail finding a closed
+loop policy for behavior.
+And specifically for the next
+three lectures within the class
+of open loop methods, we'll be
+looking at indirect methods,
+which is historically how
+optimal control started back
+in the '60s and '70s, which--
+and so we will look at indirect
+methods and then move towards
+direct methods, which,
+on the other hand, are
+the more modern and way--
+modern way to solve optimal
+control problems in practice.
+So what are indirect methods?
+So at the high level,
+indirect methods
+are essentially a mechanism
+for which we basically
+go and define and determine
+necessary optimality
+conditions for optimal control
+problems and solve for those.
+So if you wish,
+everything that we
+have been doing so far in
+the finite dimensional case.
+So we have defined these optimal
+control problems depending on
+if they're constrained or not.
+We derived optimality
+conditions and used as we just
+did, for example, these
+optimality conditions to filter
+out candidates for
+optimal, for minimums.
+In the exact same
+way, indirect methods
+try to use the exact
+same formalism.
+That is, define
+optimality conditions
+and use those to
+filter out solutions,
+this time for the
+original problem,
+which is the one we were looking
+at the beginning, which is
+the one in infinite dimensions.
+So we are looking at the
+dynamical system, which
+is with the objective function
+that we were describing before.
+And what I mean by the
+fact that this is actually
+an infinite dimensional
+optimization
+problem is because while
+here kind of variables
+are essentially
+vectors, in this case,
+we are interested in optimizing
+kind of a full signal u of t
+in between time t0 and tf.
+So you should imagine
+that for us, u of t
+is the full signal that we want
+to optimize, not a single point.
+OK.
+And indirect methods
+are also known
+as optimized then discretized.
+And this is because
+optimize refers
+to deriving optimality
+conditions, which
+kind of as a
+spoiler, in the case
+of infinite
+dimensional problems,
+these optimality conditions,
+as we will see today,
+will essentially end up
+being differential equations.
+And then discretized because
+these differential equations,
+in order to solve them,
+we typically feed them
+through solvers,
+numerical solvers, which
+entail some discretization.
+And these are to
+be kind of compared
+to direct methods,
+which, on the other hand,
+are usually referred to as
+discretized then optimize.
+So we are given
+an optimal control
+problem in continuous time.
+We discretize time
+by, for example,
+using a specific
+discretization of time,
+replacing integrals with
+sums-- with summations
+and so forth, and
+then optimizing
+this finite-- this
+discrete time problem.
+And so you can see how these
+two methods are in a way
+nicely complementary.
+But so why do we
+bother kind of going
+through these ancient tools,
+such as indirect methods?
+And the point is that sometimes
+indirect methods provide
+a more direct,
+that is analytical
+or semi-analytical solution
+for the optimal control
+problem, which is great because
+it means that at deployment
+on board, we have to do very
+little computation, which
+is great in the case
+where we have only
+limited compute environments.
+For example, in aerospace,
+these are highly, highly used.
+And at the same time,
+indirect methods
+are also typically used to
+maybe provide initial guesses
+for direct methods.
+And so the message here is
+that I'm not wasting your time.
+So these techniques
+are usually--
+can be quite
+mathematically challenging.
+And this is because, kind of
+as a result of this, books
+and textbooks and
+material is generally
+written by mathematicians,
+which is great.
+They're perfect, but
+also sometimes they
+do not really follow the
+desiderata of control engineers.
+And so I definitely
+advise you to go
+through this
+reference over here,
+which I think strikes
+a nice middle ground.
+OK.
+So in general, so we were
+referring to this problem
+before, but so now, we
+are taking the first step
+into tackling the
+optimal control problem
+kind of at first hand.
+And again, what we're
+saying is that we
+want to find an admissible
+control u star, which
+causes the dynamical system
+defined by a differential
+equation to follow an admissible
+trajectory x of stars that
+minimizes the functional j.
+And what we saw last week,
+and at the beginning today,
+is that for a function,
+we essentially
+defined optimality
+conditions that boil down
+to setting the gradient to
+0 to find stationary points,
+and then either using higher
+order derivatives to determine
+whether these are
+maximums or minimums,
+or just iterate through
+all of the candidates
+and check if these
+are feasible, and what
+is the minimum among
+these candidates.
+We'll do something very
+similar for function out, which
+is the extension of a function
+in infinite dimensions.
+So loosely speaking,
+functionals can be thought
+of as functions over functions.
+And again, very mechanically
+what we mean by this
+is that u of t, in this
+case, is an entire signal,
+an entire function, as
+we were saying before,
+and j, which in this
+case is a functional,
+is something that takes
+as input a full function
+and spits out, in this
+case, a scalar number, which
+is a measure of optimality.
+And the tool I'll be using today
+to introduce these and derive
+these optimality
+conditions is referred
+to as calculus of
+variations, which
+is a generalization
+of calculus that
+allows to find maxima and
+minima of functionals,
+specifically by
+using variations.
+And we'll see more
+in the next slides
+what we mean by variations.
+Calculus of variations
+is even more ancient
+than indirect methods.
+It dates back 300, 400 years.
+And it's really kind
+of a fundamental kind
+of subfield of calculus.
+And once again,
+these topics can be
+extremely heavy from a
+mathematical standpoint.
+And so in order to
+be focused on what
+is the goal for us in this
+class, what I'll try to do here
+is that I'll essentially
+be constantly mapping
+between the results
+that we want to obtain
+in the infinite
+dimensional case,
+that is, through calculus of
+variation, to the intuitions
+that we built in the
+finite dimensional case,
+in order that is probably
+the setting we are all
+most familiar with.
+And specifically,
+we will start by--
+so if you look at
+this agenda, this
+is essentially the
+one-to-one mapping
+on what we did on
+last week Monday.
+So we'll start by introducing
+concepts for functionals.
+For example, defining
+what is a functional,
+what it means for two functions
+to be close to each other, what
+it means to be a minimum or an
+extreme point for functionals.
+And then we'll
+use this to derive
+what is referred to as the
+fundamental theorem of calculus
+of variations.
+That is the necessary
+and optimality conditions
+for the infinite
+dimensional problem.
+And then we will apply
+this to optimal control.
+Any questions on the plan or
+questions so far in general?
+OK.
+All right.
+So what I'll be doing
+for the next 15 minutes
+is probably a bit boring, but
+it introduces the terminology
+and notation that we
+need going forward.
+And so specifically,
+a functional j
+is a rule of correspondence
+that assigns to each function
+x in a certain class
+omega, say the class
+of continuous functions,
+a unique real number.
+And it is always useful to
+look through an example.
+So for example, a
+possible functional
+is this functional
+j of x, which is
+the integral between t0 and tf.
+T0 is just a number say, 3tf.
+Again, just the number say 6
+of x of t in dt, where x of t
+could be any continuous
+function, for example.
+And a specific class of
+functionals we are interested in
+is the class of
+linear functions,
+which are defined by
+the fact that they
+respect two properties.
+The first one is homogeneity.
+So the functional of the
+scaled version of a function,
+so here alpha times x, is
+equal to the scaled version
+of the function, so
+alpha times g of x.
+Homogeneity.
+OK, thanks.
+And the second
+one is additivity.
+That is the
+functional of the sum
+of two functions is equal to the
+sum of the functionals applied
+to the individual functions,
+which together lead
+to the superposition property.
+So, as an example, the
+previous functional
+is linear because
+say that we are--
+if you want to do j of alpha
+x, which essentially means
+the integral between t0 and
+tf of alpha x of t in the t,
+we can carry out the
+alpha from the integral,
+which is equivalent to
+saying alpha j of x.
+Again, nothing deep
+here, but just proving
+that the example here is indeed
+respecting the homogeneity,
+for example.
+And you can do an equally
+simple proof for additivity.
+OK.
+So next.
+So remember that
+to define what is
+a minimum in the finite
+dimensional case,
+we use the idea of being
+optimal in a neighborhood.
+And to define neighborhood,
+we essentially
+needed to have the concept
+of closeness, right?
+And to define closeness in
+the case of functionals,
+we resort to a concept
+that is exactly
+the one we use also in
+finite dimensions, which
+is one of norms.
+And so specifically the norm
+in the case of a function
+is a rule of
+correspondence that assigns
+to each function x, again,
+in a specific domain
+omega, a real number.
+And it is defined as we
+do in finite dimensions,
+and it satisfies the
+following properties.
+That is the norm of a function
+has to be non-negative.
+And it has to be equal--
+and the norm is of a
+function is equal to 0
+if and only if the function
+is equal to 0 for all times.
+The second property is that
+the norm of the scaled function
+is equal to the absolute value
+of the scaling factor multiplied
+by the norm of that function
+for all real numbers alpha,
+and it has to respect the
+triangular inequality.
+And in practice to compare
+closeness between two functions,
+say y and z, what
+we do is we let
+x be the difference
+between the two functions,
+and we measure the norm
+of that difference.
+So it might seem, as
+we are doing nothing,
+but what we are essentially
+doing is just carrying
+over all of these results.
+We have infinite dimensional--
+infinite dimensions to the
+infinite dimensional case.
+As an example, consider
+the continuous functions x.
+A possible definition
+of the norm
+could be the maximum
+between t that
+goes from t0 to tf of the
+absolute value of x of t.
+And you can see that this does
+indeed satisfy these properties.
+For example, the
+value of the norm
+is, by definition,
+always non-negative,
+because we're taking the
+maximum absolute value.
+And the only way the norm is
+0 if it is 0 across all times,
+because we're indeed
+taking the maximum.
+So this is for the
+first property.
+But indeed, I do invite you to
+check the other two properties.
+But just as an example
+of what is a norm for us.
+Yeah?
+So to set omega, the
+functions in that set
+have to be related to each
+other at all, or is it something
+that we choose individually?
+No, I mean, omega here is
+pretty general definition.
+It could be the set of
+continuous functions.
+Yeah.
+So in this case,
+they are related,
+but I would say just a
+domain for our functions.
+Yeah?
+Could you help bridge the gap?
+There's a concept here of
+closeness but also [INAUDIBLE].
+Why are they connecting
+closeness [INAUDIBLE]?
+Yeah, this is a good point.
+So essentially, the way
+we do in finite dimensions
+is we use norm kind of loosely
+speaking, to measure kind
+of distances between vectors.
+So usually what works
+in infinite dimensions
+is literally to revert,
+resort to your intuition
+in finite dimensions
+and trying to map it
+to the infinite
+dimensional case.
+And so here, we're doing
+exactly the same thing.
+We're using norms
+over functions, not
+over vectors to measure kind
+of distance between functions.
+And we can use this distance
+to measure, quote unquote,
+"closeness".
+And this will become more
+practical in the next slides,
+but this is more or
+less what we're doing.
+Does it make sense?
+Yeah.
+OK.
+Yeah?
+Just to clarify,
+the norm is being
+taken of the difference
+of the two functions,
+not on each function.
+Yes, correct.
+OK.
+So we're getting towards
+what we actually care about.
+There is this defining
+extrema for functions.
+So now that we have a
+measure of closeness,
+we can actually do the
+exact same thing we're
+doing in finite dimensions.
+And specifically, a functional
+j has a local minimum
+at x star of t.
+Again, x star of
+t is a full signal
+just so that we don't get
+confused as we would do
+in the finite dimensional case.
+If there exists an
+epsilon greater than 0
+such that for all
+functions that are
+kind of close to the
+local minimum, that
+is, the distance between
+these two functions
+is smaller than this epsilon,
+the value of the function
+is greater or equal
+than x of star.
+So again, exact
+same result that we
+have in finite dimensions,
+exact same means of getting
+to the result, but
+we're just extending it
+to the infinite
+dimensional case.
+Yes?
+You quote it's
+excellent to use signal.
+What if the signal be u?
+Yes, this is a good point.
+So here we are
+introducing these ideas
+from a high-level standpoint.
+For us, we are interested in
+optimizing control signals,
+which is u.
+So in general-- here, we're
+using x as a general notation.
+But in practice, we will
+always be optimizing.
+OK.
+And maxima, of course,
+defined similarly
+just by flipping the sign.
+Now, to define minimum,
+we need to define
+something that is similar to
+the differential of a function.
+And just for-- as a
+reminder, remember
+that to derive the necessary
+optimality conditions
+in the finite dimensional
+case, what we did
+is that we essentially
+were looking
+at the increment of a function.
+And we saw how this
+could be approximated
+by the value of
+the function itself
+plus the gradient of
+f transpose delta x
+plus some higher order
+terms, where this is what we
+called a differential, right?
+So this is exactly
+what we did on Monday.
+And specifically,
+the reason why we
+did this is that
+we used the fact
+that for small enough increments
+delta x, the value of a function
+is well approximated
+by this linear part.
+And then what we did is that we
+essentially derived conditions
+on this linear part
+to say something
+about the minimum
+of the function.
+Specifically, we went from this
+differential to the condition
+that at the minima, the gradient
+of f needs to be equal to 0.
+So this is what
+we did on Monday.
+And so intuitively,
+what we want to do
+is something very similar,
+actually, exactly the same,
+but again, in the
+infinite dimensional case.
+And to do this, we
+start by introducing
+an increment of a
+function that is defined
+as the difference between
+the value of the functional
+evaluated at the function
+plus a variation of x
+minus the value of the function
+at the function itself.
+And now is where I think, again,
+most of the brainpower goes.
+So at the high-level, this
+is what we want to do.
+So we want to follow
+exactly the same recipe that
+is defined something
+similar to a differential
+and use this linear part that
+well approximates our function
+to derive a condition
+on this linear part
+in the infinite
+dimensional case.
+To do this, we need to define
+a notion of differentiability.
+Yes?
+The comma is supposed
+to be plus straight?
+Sorry?
+The x of t comma
+delta x of t, that's
+supposed to be a plus straight?
+That's what you
+thought or is it not--
+No, this is correct.
+So we are defining
+the increment,
+which we express
+basically as a function
+of-- the original function x
+of t and the variation delta.
+So that equals what
+you were talking
+about x plus delta x, right?
+No, this increment
+would be f of--
+So it's a completely
+different function than the j
+that you were
+talking about before?
+No, it's this part over here.
+So if we bring this
+on the other side,
+this is the increment
+because it's
+the difference of the
+value of the function,
+and this is the difference of
+the value of the functionals.
+The function else?
+Functionals.
+Functionals?
+Yes.
+Does that make sense?
+OK.
+So here, what we're
+essentially doing
+is expanding the concept
+of differentiability.
+And to do this, we first rewrite
+the increment in this way.
+And specifically, the
+increment we rewrite it
+as the sum of delta j, which is
+a linear part plus some stuff.
+And some stuff is the equivalent
+of the higher order terms
+in the finite dimensional case.
+And so here, you
+might say, well, sure,
+we can always write
+something as something
+linear plus some stuff.
+The point is that to define
+what it means for a function
+to be differentiable, this
+stuff has a specific property.
+And specifically
+what we're saying
+is that if this part g goes
+to the limit of smaller
+and smaller delta
+x goes to 0, we
+have something that
+goes to 0 times
+something that also
+goes to 0, which
+means that this higher order
+terms goes quadratically to 0.
+Well, this is a linear
+term, linear in delta
+x, which means that
+goes only linearly to 0,
+which means that the increment
+of the functional for smaller
+delta x is well approximated
+by only this linear part.
+So again, we're trying to
+do the exact same statement
+that we were doing in the
+finite dimensional case.
+And so again, so this is the
+notion of differentiability,
+meaning that given
+that we are rewriting
+the increment in this way,
+if this condition is true,
+then the functional j is said
+to be differentiable on x.
+And delta j, so
+this term over here,
+is referred to as the
+variation of j at x.
+Any questions here?
+Yeah?
+Is this definition coming
+from the Taylor series
+or is this just
+completely different?
+Can you repeat louder?
+Is this definition
+for the increment
+coming from the Taylor series
+you're talking about before,
+or is this completely different?
+It's a great question,
+because in a way,
+everything that I'm saying
+here is s actionable.
+Meaning I haven't told you
+how to get any of this.
+And so we'll see later in the
+next few slides how to do this.
+So here, what we're only doing
+is setting the stage for that
+result. Specifically
+by setting the stage,
+I mean that we are trying to
+draw parallels between what
+we're doing in the
+finite dimensional case,
+and here expanding the
+notion of differentiability.
+Was that a question or no?
+Yes.
+So for now, we'll just
+say it's unrelated.
+For now, it's just a result
+that is taking a step
+into how we actually compute.
+Yes?
+Sorry.
+[INAUDIBLE] by what
+the [INAUDIBLE].
+Yeah.
+Again, so here, I have
+not defined concretely
+what any of this is.
+Intuitively, you can think
+of this part over here
+as the equivalent
+of the higher order
+terms in our Taylor expansion.
+Yeah.
+OK.
+And so this-- once
+we have this, we
+can formally state the
+fundamental theorem
+of calculus of variations
+or again, kind of i.e.
+The necessary and optimality
+conditions for our infinite
+dimensional problem.
+Specifically, the
+theorem goes as follows.
+So let x of t be a vector
+function of t in the class
+omega and j of x be a
+differentiable function of x.
+Again, differentiable meaning
+that the increment is well
+approximated by the
+linear term delta
+j that we were seeing before.
+Assume that the
+functions in omega
+are not constrained
+by any boundaries.
+For now, ignore this sentence.
+If x of star is an
+extremal, the variation of j
+must vanish at x of star.
+That is, the necessary
+optimality conditions
+for our problems is that the
+variation of j at a local minima
+x star needs to be equal
+to 0 for all admissible
+delta x is small enough.
+So again, here, we won't be
+bringing forward the proof
+because it's fairly intricate
+and in my opinion, not
+super insightful.
+But in a way, how I
+want you to interpret
+this result is that
+this is exactly
+the analog of the gradient
+to f transpose delta
+x equal to 0 condition
+that we saw on Monday.
+Now, in the finite
+dimensional case,
+this was directly leading
+towards an actionable thing
+we could compute, which
+is the gradient of f
+equal to 0 condition.
+In this case, this is
+not yet actionable,
+but we'll build towards it.
+But intuitively and
+at a high-level,
+you should map
+this result exactly
+to the differential
+equal to 0 result
+in the finite dimensional case.
+Yes?
+You use a lower case delta j.
+In the biggest slide,
+[INAUDIBLE] full delta j.
+That's the same thing?
+We're talking about this
+linear part over here.
+So the capital delta
+is the increment.
+So the difference between
+the value of the function,
+well, plus the variation
+minus the original function.
+And lower delta here is what we
+introduced to be as a variation.
+Again, kind of in
+your mental model,
+I would suggest you see
+this as the equivalent
+of the differential.
+So it's the linear part
+that approximates very well
+the increment.
+And in the finite
+dimensional case,
+what we did is that once we
+had this linear part that
+approximates well the increment,
+we derived a condition
+on this linear part.
+Here, we're doing
+the exact same thing.
+Does that make sense?
+Yeah.
+What is big?
+No, I'm not sure
+I understand what
+the increment and
+the linear part is.
+Why there's a difference?
+So the increment,
+we're just defining
+as the difference
+between the value
+of a functional at the
+kind of function plus
+variation minus the value of
+the function at the original--
+the functional at the
+original function.
+So this is just a definition.
+Then what we're saying
+is that we can--
+for variations of the function
+delta x that are small enough,
+this increment is well
+approximated by a linear part.
+And then we use this linear
+part to basically impose
+a condition on this
+linear part to derive
+our optimality conditions.
+Again, I understand how
+this can look a bit vague,
+because here, it's still
+not really actionable yet.
+In two slides, it will be.
+OK.
+But again, so
+fundamental theorem
+of the calculus of
+variations is the analog
+of the differential
+equal to 0 condition
+in the finite
+dimensional case, so
+the necessary
+optimality conditions
+in the infinite
+dimensional case.
+Yes?
+The delta x in the delta
+j function there is not
+the variation of x over time?
+Yes, correct.
+Actually, this is a good point.
+Let me try and give some
+intuition to what delta x is.
+So say that this is our x of
+t, so our function x of t.
+We can define-- and
+this is like t0.
+This is tf.
+Delta x could be a function.
+There could be
+something like this.
+So delta x is, in
+itself, a function,
+which leads to x plus delta
+x being something like this.
+So this would be
+delta x and this would
+be x of t plus delta x.
+And then j would still be all
+of that flipped into, I guess,
+the integral that you're
+talking about as the example?
+We didn't define what
+delta j is here yet.
+You should just see it as
+the linear part, the analog
+of the linear part that will
+approximate the increment
+in the infinite
+dimensional case.
+Yeah.
+OK.
+Now, let's make this actionable.
+And to do this, let's
+start by applying it
+to basically an extremely
+simplified optimal control
+problem, if you wish, the
+simplest possible optimal
+control problem
+we could think of.
+Specifically, we
+consider the problem
+where we want to minimize
+this functional, which
+is defined as the
+integral between t0
+and tf of this function g,
+which is a function of x,
+the derivative of x and n time.
+So going point to
+the observation
+that your colleague
+was doing before,
+here, you should interpret
+this as we want--
+as if we are directly
+controlling the state
+trajectory, for example.
+So there is no control,
+but we are directly
+steering the state
+trajectory of our system.
+And so some assumptions here is
+that g is twice differentiable.
+We are assuming that
+t0 and tf are fixed.
+Again, this is something
+we will relax on Wednesday.
+But for now, we assume that the
+initial time and the final time
+are fixed and given.
+Same thing for the state at the
+initial time and the final time.
+X0 and xf are also fixed.
+So to basically recap
+what we're doing,
+so far, we have introduced
+the fundamental theorem
+of calculus of variations, which
+is the optimality conditions
+in the infinite
+dimensional case, which
+we said is not really
+actionable and operational yet.
+So now, we will make it
+operational by starting
+to look at a simplified
+version of an optimal control
+problem, which we
+will be building
+on Wednesday to until we reach
+to the full fledged optimal
+control problem.
+So to do this, let's apply
+the fundamental theorem
+of calculus of variation.
+And specifically, what we do
+here is we write the increment.
+So here, we're not really
+doing anything particular.
+We're just applying the
+definition of an increment.
+And then we're
+substituting our value of j
+from our optimal
+control problem.
+So for us, the increment
+will be defined
+as the integral between t0
+and tf of g of x plus delta
+x, x dot plus delta
+x dot t in the t
+minus the original function g.
+We can bring the second
+integral inside the first
+and we get this
+equation over here.
+So completely nothing new here.
+We're just applying
+the definition
+of an increment with
+respect to our definition
+of j in this problem,
+which was this one here.
+OK, so just a note on notation.
+X dot is the
+derivative of x of t
+and the t and delta x dot is
+also the derivative of delta xt.
+OK.
+So remember what we said for the
+fundamental theorem of calculus
+of variation is that we took
+the expression of the increment.
+And then we said
+that the increment
+would be equal to a linear
+part delta j plus some stuff.
+Now, here, what we want to do
+is from this equation here,
+we want to extract the linear
+part of this function over here.
+Now, in general,
+assume a fixed t.
+So we are considering only
+if you want one element
+of this integration.
+What is the tool
+we would usually
+use to derive a kind of the
+linear part in this case?
+Taylor series.
+Yes, exactly.
+Correct.
+So we will be using Taylor
+over and over in this class.
+And so this is exactly
+what we do here.
+So we basically do
+the Taylor expansion
+of the term inside the
+integral, whereby essentially,
+the increment becomes the
+integral between t0 and tf of g
+x, x dot t, plus the derivative
+of g with respect to x, which we
+refer to as g of x
+times the variation in x
+plus the derivative of g
+with respect to x dot times
+the variation in x dot plus
+some higher order terms.
+So here, we just expanded
+the first term, if you wish.
+Now, if you look at this, the
+first term and the last term
+cancel out.
+And so what we are
+left with is only
+with these three
+terms over here.
+And even by inspection,
+what would you say--
+out of these three
+terms, where are we
+sure the linear part
+is not coming from?
+So I guess you're probably
+guessing this higher order terms
+element, right?
+So even just by
+inspection, so we Taylor
+expanded our increment, and
+we are defining our variation,
+that is the linear part that
+well approximates our increment,
+as this guy over here.
+Does that make sense?
+Yes?
+Does the term in
+the parentheses,
+does that just represent all
+the higher order terms networks
+that you're not considering?
+Yeah, exactly.
+OK.
+Now, if we look back at the
+fundamental theorem of calculus
+of variation, which is
+what we want to apply,
+we are seeing that the
+condition that we had
+is basically that the
+variation of x delta x
+needs to be equal to 0.
+Now, what we got here
+is the variation.
+But this is also a
+function of x dot.
+So what we're
+going to do here is
+we're going to massage this
+term in order to have everything
+as a function of delta x.
+Yes?
+All right.
+Could you just quickly say
+how you got capital delta J
+to small delta j?
+Yeah.
+So let's see if
+it's somewhere here.
+So if you remember, the way
+we did it kind of abstractly
+is that we defined capital
+delta J, so the increment,
+as some linear part
+plus some stuff.
+What we're doing here is we
+want to derive the linear part
+for this specific case.
+So we started by just applying
+the definition of increment
+to our specific functional,
+which led us to this.
+Well, actually, it led
+us to this guy over here.
+Then we wanted to
+extract the linear part.
+And so we use Taylor
+expansion of this first term
+to get the linear part,
+which led us to this.
+Here, the first
+and the last term
+cancel out and out
+of these three terms,
+here, we have this
+higher order terms,
+which is definitely not the
+linear part we are looking for.
+And so we're just left
+with the middle two.
+Yeah.
+OK.
+And now, we said
+we want to express
+this only as a function of
+delta x not delta x dot.
+And so we want to
+massage this second term.
+The way we do this is
+through integration by parts.
+So remember that--
+I think we lost that print.
+So remember that we--
+integration by parts
+essentially entails doing this.
+So the integral of udv
+is equal to u times
+v minus the integral of vdu.
+And now, we want
+to basically apply
+this in the context
+of our second term.
+So what we have is this one here
+from integral from t0 to tf of g
+of x dot x dot t
+delta x dot in the t.
+So we want to apply integration
+by parts on this one here,
+where we're considering
+this as u and this as dv.
+And this essentially means,
+well, applying the integration
+by parts.
+So we have g of x dot x, x dot
+t delta x dot delta x t0, tf.
+So this is the
+first part minus--
+and I'm not sure if
+you're able to see,
+but unfortunately, I'm
+out of dark markers now.
+So the integral between
+t0 and tf, right?
+Let's try again.
+This is great.
+So the integral between
+t0 and tf of delta
+x times the derivative with
+respect to time of g x dot x,
+x dot t entity,
+which essentially
+means that now if we take this
+and we write the full variation
+delta j, what we're getting
+is the integral with respect--
+between t0 and tf
+of g of x, x dot
+t minus the derivative
+with respect
+to time of g x dot x plus
+the gx dot t also computed
+between t0 and tf.
+So here, we use
+integration by parts
+to massage the second term here.
+And then we just rewrote
+the full variation delta j.
+Now, if we look a little
+bit closer at the last term
+over here--
+actually, I think I
+forgot delta x here.
+Yes.
+So if we look at
+this term over here,
+we can safely say that
+all of this is equal to 0.
+Because at t0 and
+tf the variations
+that are admissible in
+our x are actually none.
+So we said that x at t0
+and x at tf are fixed.
+And so the variations that are
+admissible are basically none.
+Again, visually, what we're
+saying is that in our problem
+we have fixed x of tf
+and x0 at t0 and tf.
+And so this means that we
+have some fixed boundary
+conditions for x.
+And so the admissible
+delta x here
+are none because all of my
+points need to pass there.
+And so if these are all
+zeros, then this entire term
+is equal to 0.
+And so we're left with
+this term over here.
+OK.
+So for us, we're basically left
+that the fundamental theorem
+for calculus of
+variation results
+in this integral over here.
+It's your tf of g of x, x
+of t minus the derivative
+with respect to
+time of g of x dot,
+x dot times dx dt equal to 0.
+So our condition for fundamental
+calculus of variation
+is that this guy is equal to 0.
+And so here, we are just
+setting delta j equal to 0.
+Yes?
+Is the admissible dx
+that you're talking about
+captured in that dx inside the
+bracket, or is it [INAUDIBLE]?
+It's in the dx.
+This one here.
+Is that admissible [INAUDIBLE]?
+I mean, in general, we are
+looking at the variations
+of our functions dx.
+And for the problem
+that we're looking at,
+the admissible variations
+of x at the boundary points
+are always 0.
+OK.
+That is [INAUDIBLE].
+OK.
+Yeah.
+And so I just want
+to wrap this up,
+so I don't steal too
+much of your time.
+But essentially,
+what we're saying
+is that for us the fundamental
+theorem of calculus of variation
+leads to exactly that condition
+over there, which is the one I'm
+written here on the slide.
+Now, does this tell us
+anything about the inner--
+like the integrand
+term over here?
+It does.
+And it does so through
+the last result
+that I'm introducing
+today, which
+is the fundamental lemma of
+calculus of variation, which
+essentially says that for
+any continuous function h,
+so any given continuous function
+h, the integral between t0
+and tf of h of t times
+delta x, so if this is true,
+so if we have this
+result here, this
+is only true if
+h is 0 everywhere
+in the interval t0 tf.
+What is the intuition
+here is that--
+say that this is our h of t
+and these are the possible
+variations delta x of t given--
+if we have any variable function
+h of t, say one that is none--
+is positive at
+some time t, if we
+were to pick our variations
+adversarially, our delta x of t,
+we could always pick
+the point that kind of
+matches the variation in x in
+order to make this positive.
+And so the only way in
+which this entire integral
+is equal to 0 is if h
+of t is 0 everywhere.
+Does that make sense?
+So through this, we essentially
+are finished in the sense
+that we arrived at
+our condition here.
+And then we said that
+through the lemma,
+we know that this essentially
+means that this would be our h.
+And this is delta x.
+All of this integral
+is equal to 0
+only if this part
+here is equal to 0.
+And so here, we have
+fast tracked Newton.
+He basically took 20 years.
+We took 45 minutes to
+reach to the same result.
+And we arrived to the
+necessary optimality condition
+for the infinite
+dimensional case, which
+is known as the Euler equation.
+I'm out of time, so I
+won't stick further,
+but I'll recap
+this on Wednesday.
+Thank you.

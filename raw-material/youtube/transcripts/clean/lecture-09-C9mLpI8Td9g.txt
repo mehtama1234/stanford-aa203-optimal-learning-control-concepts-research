@@ -1,0 +1,1881 @@
+So, let's go back to our usual road map.
+So, today we are going to still focus on
+closed-loop methods for optimal control,
+particularly through the lens of dynamic
+programming in a discrete-time
+formulation.
+But, we're going to extend the
+formulation to the setting whereby we
+have uncertainty
+in our system. Particularly, we're going
+to reason about disturbances that might
+affect the forward propagation of the
+dynamics for you for for the state.
+The setting that we're going to discuss
+is a very famous one and is referred to
+as the Markov decision processes
+setting.
+So, specifically, remember the
+problem formulation we've been
+discussing for the past
+two three lectures. So, now we're in
+discrete time. So, the update equations
+for the state are written as SK + 1 = F
+of K
+SK
+UK.
+So, this would have been the setting
+until the previous lecture, but now
+we're adding an additional element, WK.
+WK is referred to as a disturbance.
+It is something that uh
+affects the forward propagation of our
+dynamics and depending on the specific
+application might have different uh
+uh meanings. For example, if you are if
+you want to control an aircraft, WK
+could be environmental uncertainty, for
+example, wind gusts.
+If we're trying to control
+the uh financial market,
+uh like basically we want to decide how
+to buy and sell the stocks. WK might
+represent the underlying uncertainty
+within the market, and so on and so
+forth.
+So, the idea is that you observe the
+state XK.
+You take a control UK.
+And then, nature is going to pinpoint a
+value of WK.
+This order is somewhat arbitrary, but
+you have to fix an order in order to
+make this model actionable.
+Now,
+as it was the case of the deterministic
+setting, we are still assuming that the
+controls need to belong to some set
+capital Q.
+That is, our
+set of controls is, in general,
+constrained
+within some
+set capital U.
+Now, the disturbance W are quantities
+that are computed by nature,
+in a way.
+And so, they are modeled as uh
+random variables.
+And we do place a key assumption on the
+distribution of such random variables W.
+Specifically, we assume
+that the random variables WK
+are distributed according to some
+general probability distribution.
+It could be Gaussian, it could be
+anything.
+They can be conditional on the current
+value of the state and the current
+selection of the control.
+So, you are in a state XK, you get to
+see that state.
+You pick a control U.
+Based on that,
+there is some realization of the
+disturbance value.
+Of course, in some setting, actually
+this probability distribution
+does not does not need to depend on X
+and U. That's perfectly valid.
+What is important though, is that this
+probability distribution is not allowed
+to depend on the previous values of the
+state. So, it's not allowed to depend on
+X K minus 1,
+X K minus 2, and so on. So, it's not
+allowed to depend on the history of the
+process.
+That's a fundamental assumption we're
+making in our model. It's typically good
+assumption,
+meaning that the realization of your
+disturbances and essentially uncertainty
+in your environment only depends on the
+current state and current selection of
+the control. But, for example, if you're
+driving, what the other pedestrian might
+do next could be modeled as a
+disturbance. And of course, what the
+pedestrian is going to do next depend on
+where we are with our car and what we
+plan to do, turning right right or left.
+So,
+so it makes sense.
+But, there are cases where actually you
+would like to model
+the dependency on the previous values of
+the states. Well, that's not allowed in
+this problem setting. So, it's a
+restriction, but it's a mild
+restriction. Again, why do we place
+these restrictions in our settings is to
+find a good compromise between
+um generality of our problem formulation
+and a problem formulation that allow us
+to do some computation, basically
+uh derive some uh
+uh recipes to compute our control
+policies in an actionable way.
+I'll come back to this assumption later.
+As it was the case of the deterministic
+setting, we are interested in
+closed-loop control, so we are
+interested in finding controls that are
+expressed as a
+uh a closed-loop policy. So, a function
+pi that maps uh any state in the world
+into an optimal control action.
+And finally, the last ingredient in our
+problem formulation is the cost. So, the
+cost is going to be expressed as the
+summation of a terminal cost, as usual,
+plus a stage-wise cost, as usual.
+Now, the stage-wise cost could actually
+depend on the disturbance.
+We'll see some examples later.
+And importantly, since you have uh a
+dependency of the cost on the
+disturbance, that cost itself is a
+random variable.
+So, you want to translate that random
+variable in something deterministic that
+you can uh minimize or maximize,
+depending your setting, in order to uh
+define a notion of optimality for your
+policy.
+To do that,
+there are different ways to do it.
+We, in this problem formulation, select
+to
+compute an expectation of the cost. The
+expectation is with respect to the
+realization of all the disturbance
+variables.
+Make sense?
+So, main differences here
+are that the um
+state transition function depends on the
+disturbance W.
+W is a random quantity
+with an arbitrary probability
+distribution. It is constrained, though,
+of being only conditional on the current
+value of the state of control. It cannot
+depend on previous values of the state.
+And the cost
+is allowed to depend on uh the
+disturbance, but since we have such a
+dependency, all this term is now a
+stochastic quantity. So, to reduce it to
+a deterministic quantity we can optimize
+over, we take an expectation of it. And
+then the the problem is to find a policy
+pi that optimizes such a cost.
+So, any questions here? So, this is uh
+important we're all on the same page,
+otherwise everything I'm going to
+discuss next is not going to make much
+sense. Yeah.
+&gt;&gt; Just to clarify, you said that at each
+stage the disturbance value
+on the disturbance in the prior stage.
+&gt;&gt; Unless
+uh um
+only indirectly through the state. So,
+the state mediates your dependence on
+the history. Of course, the evolution of
+the state depends on the disturbances.
+But, everything that
+is related to the history of uh
+the process,
+previous states, previous controls,
+previous uh disturbances, all of that
+knowledge is mediated through the
+realization of the current state.
+Yeah.
+&gt;&gt; Does the cost change depending on when
+you sample the W K?
+&gt;&gt; Yeah, absolutely.
+Like, for example, you are trying to
+control an aircraft, depending on what
+the actual realization of your wind
+profile is, the cost of the trajectory
+is going to change.
+&gt;&gt; But, do you only factor in like
+I guess three iterations?
+&gt;&gt; No, the problem
+is that you want to find a policy that
+is optimal
+with respect to all possible realization
+of
+those uncertainties.
+And one way to collapse all those
+realization of those uncertainties in a
+number you can optimize over is to take
+the expectation of your cost
+with respect to all possible
+realizations.
+So, maybe sometimes you are unlucky,
+sometimes you're lucky, so you want to
+compute the policy that on average is
+going to do good enough.
+Yeah, so it's the expectation over all
+realizations of the disturbances at time
+0, 1, 2, all the way to N minus 1.
+Other questions here?
+So, this is the setting of Markov
+decision processes.
+Now,
+there are variations, right? So, as we
+will discuss later,
+maybe you're not just interested in
+expected value of your cost. Maybe
+you're also interested in expectation
+plus some notion of variability. So, you
+don't you want to make sure that on
+average you do good enough and there are
+no cases whereby you could do terribly
+poorly.
+Or
+another setting that we're not going to
+cover in this class is rather than
+modeling the disturbance as a stochastic
+quantity
+to model it in an adversarial fashion.
+So, assuming that at every point in time
+the disturbance that is realized is the
+worst possible. This that leads to
+minimax problems.
+There is no stochasticity. Basically,
+now becomes a game against nature uh
+with some sort of game theoretical
+interpretation whereby you try to
+compute an action and nature tries to
+compute the other action that is uh
+maximally damaging. Anyway, we're not
+going to solve to see those settings.
+Markov. So, Markov mean
+I did not come up with this formulation,
+unfortunately. Otherwise, I would
+receive the couple Nobel Prizes.
+So, because of Remember that when we
+compute the cost, the cost is additive.
+It takes into account
+the cost of the full state trajectory.
+But the cost of the full state
+trajectory depends on the realization of
+all the disturbances.
+That said,
+the state evolution
+only is only affected by the current
+realization of the state. And as we will
+see, dynamic programming will try to
+break down this complex cost that
+depends on all these nested realization
+of the disturbance into expectation
+uh with respect to each this one
+disturbance at a time.
+Does this address your question?
+&gt;&gt; Um
+&gt;&gt; Somewhat.
+Yeah, that's it.
+&gt;&gt; The wild obviously causes this problem
+because it has a lot of possibilities.
+&gt;&gt; Well, as I was telling your colleague,
+keep in mind that once you move into the
+new state SK + 1
+SK + 2
+is only going to be affected
+directly by WK + 1.
+But SK + 1 came from here, and SK + 1
+was affected by
+WK. So, you can see how SK + 2 has a
+direct dependency on WK + 1 and indirect
+dependency on WK.
+So, actually each state does indeed
+depend on all previous disturbance
+realizations, but directly only on the
+most current one.
+At least in this formulation, that's how
+we started the problem. Does it make
+sense?
+So, SK + 1 too doesn't it depend on WK?
+Absolutely.
+But that dependency, as I was
+uh saying telling to your colleague
+before, is mediated through the
+realization of the state SK + 1.
+All right. So, a few key points. So,
+this is discrete-time model, obvious.
+Is a Markovian model. Markovian model
+means that uh we do not have an explicit
+dependency on the history of the
+process.
+Everything is mediated through the
+current value of the state.
+Practically, what that means is that the
+probability distribution for the
+stochastic disturbance can only depend
+on SK and UK. Cannot depend, for
+example, on SK - 1.
+The objective is to find a closed-loop
+policy.
+In a stochastic setting, this is
+even more important since stochasticity
+is bringing us left and right. So, you
+really want to have a policy that maps
+whatever you are in the state space into
+a control
+in a
+optimal control action.
+The cost is additive. Additive, that's
+usual. That's same as in the
+deterministic setting.
+And we use a risk-neutral formulation.
+What does it that mean? That in order to
+compute the cost,
+here we take an expectation.
+We do not
+model
+additional considerations such as as I
+was saying before, variability with
+respect to the average. In some
+settings, for example, even as a human
+when you try to optimize your life,
+you try to optimize for your
+average income if you make a bet, but
+also you try to protect yourself from
+the worst case or from excessive
+variability. So, this formulation is not
+doing that. It's only modeling what is
+going to happen on average.
+There are more sophisticated formulation
+referred to as a risk-sensitive. When
+you add additional terms such as, for
+example, a variance term and so on.
+The problem with those formulations is
+that they make a computation much more
+complicated.
+In their most, you know, naive uh
+uh in the most naive approaches,
+standard dynamic programming equations
+no longer hold, the principle of
+optimality no longer holds. So, you need
+to do, you know, additional analysis in
+order to come up with uh practical
+algorithms. Actually, this is a topic
+that I've done quite a bit of research
+Uh uh in the past. Anyways,
+for this class we're only going to focus
+on the risk-neutral formulation.
+The reason why the expectation is nice
+is it intuitively
+the expectation is itself a linear
+function. So, it allows you to chop the
+problem in multiple stages to be, you
+know, very practical. But, we'll see
+that in a second.
+Now,
+as I also mentioned uh sometime ago,
+different communities use different
+notations. So,
+UK is a typical notation in controls.
+Computer science typically use the
+notation AK. A stands for action.
+XK is the typical notation for the state
+in control. Computer science typically
+uses SK.
+The probability So, the transition
+equations are typically written
+according to a transition function that
+says what the value of the next state is
+depending on SK and AK.
+So,
+this is analogous to what we wrote here.
+And there are additional terminologies
+from other communities. Like, for
+example, from operations research and so
+on and so forth. Fortunately, there is a
+paper which is called uh
+AI OR OR stands for operational research
+and control theory, a Rosetta Stone for
+stochastic optimization. So, if you get
+tripped by the notation uh among
+communities, this is a good paper whose
+only job is to say that's a symbol we
+use in control that seems crazy, right?
+But, I mean, these days probably just
+going to ask ChatGPT
+when uh first I had this reference uh
+was a few years ago, ChatGPT was not
+there. But, anyway, the point is
+different communities use different
+terminologies. Don't get tripped.
+Now, the good news
+is that uh because of the way we
+formulated the problem, specifically, we
+use the expected value operator
+uh to map the random cost into a
+deterministic quantity we can optimize
+over. And critically, we make the
+Markovian assumption.
+Intuitively, these two assumptions allow
+us to uh chop the problem into pieces.
+Chopping means the principle optimality.
+Specifically, and the intuition is the
+same, we're not going to derive it, but
+the proof is not too complicated.
+Uh
+assume that you have an optimal control
+policy pi star.
+That means that we have an optimal
+policy at time zero, pi star 0 1,
+optimal policy at time one, pi star 1,
+optimal policy at time n n - 1, pi star
+n - 1. So, an optimal policy is indeed a
+sequence of n policies, each one mapping
+the current state into the current
+optimal control.
+Consider the tail subproblem. We are at
+some state
+x of k,
+and we only care about what happens
+after
+time k.
+Then, the truncated policy
+is uh sorry, we start at the time i.
+k is still the running subscript. We
+start at time i
+with the state x of i,
+and we look at uh
+the tail problem as from
+time i all the way to capital n. Then,
+the tail policy, so the policy the
+sequence of policies from time i to time
+n - 1 is optimal for the tail problem.
+Intuition the same as in the
+deterministic setting, the proof a
+little bit more involved. If you're
+interested in the proof,
+a good reference is is represented by
+the work of Dimitri Bertsekas.
+Basically, his optimal control books
+are also
+referenced in the syllabus.
+He provided proof nothing particularly
+insightful, so we're going to skip it.
+But, of course, as any result, it has to
+be proven.
+Any questions here?
+So, per se the principle of optimality
+is not so useful.
+It's something interesting to know, but
+it doesn't really lend to an actionable
+algorithm. The point here is to show
+that
+to highlight this problem has a specific
+structure that allows us to get to
+an actionable algorithm, which is really
+dynamic programming, but the extended to
+the stochastic setting.
+And the as we'll see in a second, the
+dynamic programming algorithm in a
+stochastic setting has exactly the same
+form of dynamic programming in a
+deterministic setting. So, we start from
+the end,
+and then we start solving the problem
+going backward one stage at a time.
+Easier thing to do is just to
+show how the algorithm works.
+We start from the last stage, capital N,
+and we set the
+terminal cost J N X of N as the terminal
+cost in our cost formulation.
+And then we go one step backward
+recursively, where at each time stage K
+for a given state X of K, we try to find
+the
+uh optimal control U K
+that optimally trades off
+the current cost
+and the future cost to go.
+So, same as the deterministic setting
+with the two differences.
+The transition function now depends on W
+K, but that's obvious, that's how we set
+up the problem. Remember Remember that
+this is S K + 1, J K + 1 SK + 1 is the
+cost of the optimal problem, the tail
+problem that starts at time K + 1
+at state SK + 1.
+And then the key difference with respect
+to the deterministic setting is that
+this quantity is stochastic, the
+current cost
+in general depends on a WK.
+And the cost to go it's also stochastic
+because the transition to the next state
+is stochastic.
+But so we have to take an expectation
+with respect to WK, but importantly in
+this computation we only take an
+expectation with WK as opposed to the
+full
+sequence of disturbances from time zero
+to time N - 1. So it's a dramatic
+simplification.
+So you carry out these
+computations for every stage K and every
+state SK K.
+And once you are done going backward all
+all the way to time zero
+J star at X zero, so the optimal cost of
+the problem you're interested in
+starting from state X zero is equal to
+the end solution of this recursion. And
+the optimal policy is constructed by
+setting a
+a pi star SK as the minimizer of the
+Bellman a recursion.
+So same as the deterministic setting,
+only difference is now we have to deal
+with the disturbances.
+Correct.
+So in stochastic setting in order to
+still to keep the structure
+you still need that additive structure
+on the cost, but then you also need the
+Markovian
+assumption on the distribution of the
+disturbances.
+That allows you to devise to derive
+dynamic programming
+equations to solve the problem.
+And for the proof of it,
+I reference I refer you to the books of
+Dimitri Bertsekas.
+Who is a celebrated professor at MIT.
+Actually, I was his course assistant
+when
+he was teaching dynamic programming at
+MIT.
+Any questions?
+Let's do an example just to fix ideas
+about what's happening what's happening
+here.
+So, let's consider the following
+problem. So, this is the inventory
+control problem. So, you have a
+warehouse
+and you are storing some stock.
+You're purchasing some new stock in
+anticipating future demand. And of
+course, when once demand for that stock
+is realized, then you ship it.
+So, we define we now model the problem
+as follows. So, we let SK, that's our
+state, be the stock
+available. For example, number of
+refrigerators if our warehouse is
+storing refrigerators.
+Inventory UK is the number of additional
+items that
+we get anticipating future demand.
+And WK is the demand that gets realized
+at time K.
+The state at time K plus one, so the
+number of units of stock that are
+available at the next
+um
+stage is given by how much stock I have
+right now
+plus the stock that we purchase. And we
+assume that once we purchase it, it gets
+immediately delivered.
+Minus the demand.
+So, if you start with two, we purchase
+one, we go to three, then we have a
+demand of a two, so we ship two stocks
+out. I'm left with one at the next
+stage.
+If the demand is larger than the stocks
+that I do have,
+then the number of stock at the next
+time stage is equal to zero. And the
+demand that is unfulfilled is
+unfulfilled.
+So, that's why the transition dynamics
+are the maximum between zero
+and SK plus UK minus WK.
+Now, our warehouse is very small,
+and so the maximum amount of
+stock we can keep in our warehouse is
+equal to two, which means that SK plus
+UK is less than or equal to two.
+Of course, this is a toy problem. The
+reason why I'm making this assumption is
+since I'm going to do the dynamic
+programming recursion by hand, and I
+have to do it for each possible value of
+the state, I don't want to do it for 25
+different values of the state. I
+artificially somewhat decrease the
+state space.
+Now,
+what about the disturbance? We need to
+specify a probabilistic model for the
+disturbance to have a complete problem
+formulation. So, in this setting, I'm
+assuming that the demand, which is our
+disturbance or our stochastic element in
+the formulation, does not depend on the
+control nor state.
+So, it's a simple setting.
+Specifically, we assume that at time K,
+uh
+we have a 10% probability that we have
+no demand,
+70% probability that we have demand for
+one unit,
+and uh
+20% probability that we have demand for
+two units.
+Of course, the probability distribution
+has to be normalized, so the
+probabilities have to sum to one.
+And finally, we have to set up the cost.
+So, the cost is defined as
+zero. So, we assume So, we assume first
+of all that we are going to optimize
+operations over the horizon of three
+steps into the future.
+And we assume that the terminal cost is
+equal to zero. So, no matter how much
+stock I'm left with at the final time,
+I don't care. I just dispose of it at no
+cost. So, the terminal cost is zero.
+And then the stage-wise cost is as
+follows. Is it UK, so we assume that we
+spend $1 to buy one unit of stock
+plus
+a quadratic term.
+So, this quadratic term has the
+following interpretation.
+If
+after a purchase
+UK units of stock and then the demand WK
+gets realized, if this quantity is
+positive, meaning that I have a
+uh
+positive amount of stock that have to
+keep until the next stage,
+that's an undesirable situation because
+of course storing stock is expensive.
+And I penalize that with the square of
+that value.
+So, that's the interpretation if this
+quantity is positive. If this quantity
+is negative, means that
+the demand is larger than the amount of
+stock that I have available,
+I still penalize
+this quantity with a square because of
+course not fulfilling demand is also an
+undesirable situation.
+I, for example, damage the trust of my
+customers. Of course, this is somewhat
+arbitrary and in general how you set up
+the cost is arbitrary. You just try to
+inject some notion of how happy you are
+with a suitable different conditions.
+Notice how
+all of this depends on the realization
+of the different disturbances at time 0,
+1, and 2.
+So, I transform all of this into the
+deterministic quantity by taking
+expectation over W0, W1, and W2.
+So, now the problem is you are an
+operator for this
+warehouse, what is your optimal policy?
+So, for all possible realization of the
+state, say that at time
+two, it just so happened that X2 is
+equal one, what is the optimal thing
+that you should be doing?
+You buy one, you buy zero, what do you
+do?
+Yeah.
+It depends on the current amount. So,
+basically, how much stock you have right
+now in your stock.
+So, if at time one, you have a one unit
+of stock,
+what do you do? Do you purchase one
+additional unit of stock, or you do not?
+But, the keep in mind
+the sequence of events how we have
+specified it. So, you get to observe the
+state, so you know that at time one you
+have a X1 unit of stock,
+but you don't know your demand yet at
+time one.
+Then you have to select how much stock
+you want to purchase, and then the
+demands get realized.
+Well, why do you say that it's expected
+demand of one? You expect a demand of
+one with 70%.
+But, it's also possible
+that you get zero with 10%, and it's
+also possible that you get two with 20%.
+So, it's not so clear-cut.
+So, what you know is not what the exact
+realization of the disturbance is, it's
+a probabilistically what the realization
+of the disturbance is might be. So,
+that's the knowledge you can
+uh you know, leverage.
+I mean, we should not realize that when
+you invest in stocks, you don't know
+exactly what the return on your Tesla
+stock is going to be. So, let's say at
+the beginning of the day, you don't know
+what the return of your the the value of
+your Tesla stock is going to be at 12:00
+p.m.
+You try to anticipate that. So, you have
+some probabilistic model, based on that
+you want to um
+optimize operations.
+Yeah.
+&gt;&gt; What do we impose the
+So, it's a daily constraint that relates
+to not wanting two units or more than
+two units in the warehouse.
+&gt;&gt; Yeah.
+Uh but, what does that translate to our
+constraint on the action at once?
+So,
+Well, here basically, I'm modeling that
+uh
+at the maximum,
+you can have two units of stock. So,
+your warehouse has some physical limit.
+It can't have more than
+uh you know, n units.
+So, how much you store in the warehouse
+is how much you have right now, plus how
+much you purchase and gets delivered
+immediately.
+So, that's the meaning of this
+constraint.
+But, there's also pedagogical meaning
+about why use this constraint. So, this
+is a setting whereby UK, your control,
+is a constraint by a function of the
+state. So, this is a case whereby the
+explicit dependency of the set capital U
+on SK arises.
+&gt;&gt; No, what
+you have is that using your stock SK
+plus UK minus WK only in SK.
+&gt;&gt; Well, the reason is that So, this is
+your warehouse.
+And you have this amount of stock.
+And you have only this space here.
+Then you should you
+purchase with you this space here.
+And then the demand is realized
+afterwards. So, it's not like
+immediately realized. So, basically,
+there is a moment in time where you
+can't really fit more stock in there.
+Yeah.
+So, think about W as something that
+happens after
+non-infinitesimal amount of time after
+you purchase your stock.
+Again, some of these assumptions can be
+changed, right? Yeah.
+I want to give you like a realistic
+example, but also something that is
+manageable to and also highlight some of
+the features of the problem formulation.
+So, the question is how do you solve
+this problem?
+So, the way you solve it is uh
+by being disciplined
+and running
+dynamic programming recursion. So,
+specifically
+you set the terminal cost J3 X3
+as a G3 X3.
+And for this problem formulation, we
+said that this terminal cost is equal to
+zero.
+So, this is by how we define the
+problem.
+So.
+And then you start going one step
+um
+backward in time. So, now we have a J2
+X2
+is equal to
+the
+uh minimum
+over U2 has to be greater than zero and
+has to be less than or equal to X2 minus
+two. So, these are the control
+constraints they were discussing.
+Expectation
+over uh W2
+of a G of X2
+U2
+W2
+plus G3
+X3.
+Okay?
+Now, from the
+recursion, we know that this is equal to
+zero.
+So, we write down
+the this explicitly
+uh what we get.
+What we get is J2 X2
+equal minimum
+of U2 between zero. I cannot buy
+negative amount of stocks.
+And X2 minus two because of the capacity
+constraints warehouse expectation with
+respect to W2
+of
+Now, I'm going to write down the
+stage-wise cost explicitly.
+So, this is going to be equal to
+It's going to be equal to
+U2
+right?
+Plus
+X2 plus plus U2 minus W2
+squared.
+There is no cost to go because already
+set that the cost to go to stage three
+is equal to zero because of the previous
+recursion. Well,
+um I use the boundary condition.
+Any questions here?
+Yeah.
+Two minus X2. Yeah, 100%.
+Sorry about that.
+That's absolutely correct because the
+constraint is U2 plus X2
+less than equal to
+Yeah. Thank you for noticing that.
+All right. So, now that you have read
+you have written down the Bellman
+equation for
+state X of two at stage two,
+now you have to solve it for all
+possible values of the states.
+What are the possible values of the
+states?
+Zero,
+one, and two, because you can't have
+more than two stocks.
+So, which one Okay, so let's do it for
+J20.
+So, of course, in general, a computer
+would do it.
+But, it's useful for for you to carry
+out the some of these Bellman recursions
+by hand.
+It's a bit annoying. It There is no
+cleverness or smartness, nothing.
+But, it's helpful in order to better
+appreciate that what's happening here.
+Practically, your final exam, I would
+ask you to carry out a Bellman equation
+by hand. So,
+uh I like to say it's like a vaccine.
+It's a bit annoying, but you do it once,
+and then you're fine for life. So, do
+it.
+Anyway, so let's do it for one. Then you
+maybe you can do it for J21 or J22
+uh by yourself. So, for J20,
+so now we have minimum
+over U2 greater than or equal to zero.
+Now, we are solving the tail problem
+where X2 is equal to zero, which means
+that the constraint is now U2 less than
+or equal to two, because we are plugging
+zero into X2. So, uh U2 between zero and
+uh two
+of expectations with respect to W2
+of this quantity here.
+&gt;&gt; [snorts]
+&gt;&gt; Well, so what's the expectation of this
+quantity? Well,
+with a 10% probability,
+with 10% probability, W W2 is equal to
+zero.
+So, with 10% probability
+So, this is a random variable. Its
+realization is uh
+for a given selection of U2 is U2 plus
+X2 is zero
+plus U2
+minus zero squared.
+I mean, I'm a a bit pedantic here, but
+So, that's the case where W2 is equal
+zero.
+Plus
+then I had the case where W2 is equal to
+one, which is 70%.
+So, plus a 0.7
+I mean, as an aside
+the expectation of a random variable X
+is equal to the summation of
+for I equal one to N
+of what?
+So, if you have a random variables that
+can take a N values like size, each one
+with probability PIs
+Yeah.
+&gt;&gt; [snorts]
+&gt;&gt; So, that's what I'm doing here. So, it's
+0.7
+of U2
+plus the state is still zero
+plus U2 minus one squared.
+And then I have a plus
+should be 20%
+So, zero
+um
+plus a 0.2
+of U2
+plus zero
+plus U2 minus two squared.
+And now I have to find the u2 that
+minimizes this expression.
+So, does this make sense? Essentially,
+you have a unrolled the expectations
+with respect to the three possible
+realizations of uh
+the
+um
+disturbances w2, each one weighted with
+its respective likelihood of happening.
+Yeah.
+&gt;&gt; And if we started with initial top value
+of one,
+then all of the first terms in those
+parentheses should be one, right?
+&gt;&gt; One?
+One? One? Yes.
+Uh
+And here, you should also change the
+constraint set because now u2 can only
+be between between 0 and 1.
+You got 2 - 1. So, you'll have a change
+here, too.
+The probability distribution wouldn't
+change because we're assuming that the
+probability distribution that it is not
+conditional on the exact value of the
+state. So, these numbers will be the
+same.
+Okay, so this becomes a J20
+in minimum over u2 between the two
+and zero of
+0.1 u2 0.7 u2 0.2 u2. Of course,
+probability sums to one, so this is
+equal to u2.
+Plus
+u2 squared
+uh times 0.1
+plus a 0.7
+uh u2 - 1
+squared plus 0.2
+u2
+- 2
+squared
+which is uh
+exactly what you have here.
+So, you plug u2 = 0, you get a value.
+You plug you do equal one, you get a
+value. You plug you do equal two, you
+get a value. You pick the you do that
+gives you the lowest value.
+Just so happens that the optimal choice
+is uh
+one.
+So, that means that if you happen at
+stage number two to be in state X2 equal
+zero, then the optimal thing to do for
+you is to
+purchase one. And cannot make sense.
+That's also what your colleague was
+hinting at.
+That since we have such a high
+probability that we have a demand of
+one,
+you want to buy an additional stock so
+that you can fulfill it. So,
+it's not too surprising.
+&gt;&gt; [snorts]
+&gt;&gt; Anyway,
+so it turns out that if you do
+the this computation now for
+the state equal to one,
+the state equal to two, and then you go
+back to J1 and J0,
+the
+the optimal value
+for each possible initial condition is
+as follows.
+So, we'd encourage you to do some of
+these computations, maybe not all but at
+least some of them. The result for each
+recursion, for each possible state, each
+possible state
+uh stage is in the spreadsheet that
+linked here. So, just click on the link
+and you'll get the spreadsheet with all
+the values so that you can cross-check
+what that what you're doing is correct.
+Yeah, keep in mind this is a cost. So,
+in general, the lower the better. So,
+yes, state one will be the best to start
+with. Which again cannot make sense.
+It's in between uh
+uh
+is in between, so you're not at risk of
+a missing demand, but at the same time
+you don't have to buy
+uh a lot of new stock. So, roughly
+speaking, it's not too surprising that
+something in the middle for this
+specific problem is a a place to be. So,
+short answer is yes.
+&gt;&gt; So, does this give us like the optimal
+policy to take from any state at any
+point? Or if we like if we use like 0.1
+and 0.2
+and then like we have something
+like W
+or command,
+will we have to will we have to
+re-evaluate
+&gt;&gt; No.
+&gt;&gt; You will be given the optimal policy
+because of the principle of optimality.
+So, as you go back, all the decisions
+are optimal at each step of the time.
+So, no, the sequence of policies if it's
+0.1 or 0.2
+always gives you the best option of
+things to do.
+&gt;&gt; at all stages, all states. You don't
+have to re-optimize anything.
+So, that's pretty powerful.
+Yeah.
+So, that's a little bit of a problem
+with dynamic programming. As you've seen
+the homework, it does provide
+significant computational savings
+whereas we do brute force optimization,
+but still
+it's pretty time-consuming, particularly
+because you have a dependency on the
+number of states. So, in this case the
+state is one-dimensional.
+X can only adjust one number.
+But if now X is
+a pair,
+then you have to
+your scaling goes quadratically and
+cubically and basically exponentially
+with the number of dimensions in terms
+of how many computations you have to
+carry out.
+In this case specifically, it's not.
+It's basically three for the states and
+then you have to go,
+you know, you have three stages.
+So, three by three. Yeah.
+Yeah.
+Yeah. So, if you have a continuous state
+space, you cannot run this algorithm
+because you cannot enumerate all
+possible states.
+So, you can do a few things. So, one
+could be
+uh discretizing your states,
+of course,
+uh or map your state of this
+presentation something lower dimensional
+and then discretize it there. But yeah,
+at some point you have to get to
+something you can do
+uh numerical optimization on.
+Let's look at another example. So,
+our preferred problem, which is LQR. So,
+we're going to look at the LQR with a
+yet another twist.
+So, same setting as before, we have a
+quadratic cost.
+Only difference is that now our dynamics
+are affected by
+a disturbance W, which is a stochastic
+quantity, that is distributed as a
+Gaussian variable with a zero mean
+and uh covariance matrix sigma.
+So, LQR problem as before, only
+difference is that the dynamics are now
+stochastic.
+So, the question is, can we use dynamic
+programming to solve this problem? The
+answer is yes, in a way it is extremely
+similar
+to what we did uh a couple of lectures
+ago.
+Specifically,
+the way it works is that
+inspired by what we know from um
+the solution to LQR in a deterministic
+setting,
+let's assume
+um
+that the cost JX JK XK is equal to some
+quadratics,
+quadratic,
+plus possibly
+some constants. Let's call it CK.
+Remember that for LQR,
+the
+um
+There is a typo here. This should be PK
++ 1.
+Uh I'll fix that. Um
+so remember that in a standard LQR, the
+cost to go is quadratic. It's a
+quadratic form on the state.
+Okay.
+So,
+Oh, come on. I have two another typo
+here. So, this should be SK.
+I don't know what I was thinking. So,
+this should be JK or SK,
+and this should be SK + 1 PK + 1 SK + 1.
+So, I'll fix these two typos.
+So, how do we solve this problem? We
+write down the Bellman equation. So, JK
+SK, again, K + 1 is a typo here, is
+equal to minimum of UK expectation of WK
+stage-wise cost plus cost to go.
+So,
+assuming the cost to go is a quadratic,
+so is SK + 1 PK + 1 SK + 1 plus a
+constant, I'm ignoring it here.
+Now, let's unroll this multiplication.
+Here, I'm quite fast because this is
+essentially something we already
+covered. So, we have a AX U
+PK AX + BU. So, that's exactly the
+quadratic term we had in standard LQR.
+Plus, I have the quadratic term in WK,
+which is here, plus I have the cross
+terms between AX and BU and W,
+which is here, and I have a two of them.
+So, this is just by unrolling this
+multiplication.
+So, now I'm taking the expectation of
+this quantity. So,
+this is a constant,
+so its expectation is exactly XQX. This
+is a constant, so the expectation is
+the same quantity. This is also
+constant, that's not dependent on WK.
+The only two things that depend on WK is
+this term and this term.
+This term is linear in WK,
+and we're assuming that WK is zero mean.
+So, the expectation of all of this stuff
+is zero because the expectation of W is
+zero.
+So, if you have a random variable, say
+that you have a A
+times X. You know that expectation of X
+is equal to zero.
+What is the expectation of the
+AX for A being a real number?
+Zero. A times expectation of X. But,
+expectation of X is zero, so that's
+equal to zero.
+So, this is exactly what's happening
+here.
+Whoop.
+What is it? Here. Okay.
+The term that is not obvious is what is
+the expectation of W PK + 1 W.
+So, it turns out, we're not going to
+prove it, basically relies on some basic
+facts related to um linear algebra, is
+that the expectation of W PK W where W
+is a Gaussian variable with covariance
+sigma
+is equal
+to the trace of PK + 1 times the
+covariance of W. Remember that the trace
+is equal to the sum of the elements of
+the diagonal of a matrix.
+This is not obvious.
+I'm just giving you giving this to you
+as uh
+as a fact. So, basically, I'm telling
+you that expectation of
+W transpose
+PK + 1
+WK
+is equal to the trace, which is the sum
+of the elements of the diagonal of a
+matrix, of PK + 1
+times the covariance sigma
+of the variables WK. That we assume we
+know because we assume that we know that
+this variance is at zero mean and we're
+given co-covariance sigma.
+The proof requires a two three steps.
+Um, not particularly insightful, so
+we're skipping it here.
+The point I want to make here is that
+look at what we found, that the right
+hand side of the Bellman equation is
+exactly the one that we had in LQR
+plus a constant term.
+So, these are quantities that we already
+know. PK + 1 from the computation that
+we already carried out at time K + 1,
+and sigma is part of our modeling
+knowledge.
+Which means that when we
+try to find the optimal control U,
+what would be the solution?
+Is exactly equal to deterministic LQR
+plus a constant. So, when I I try to
+find the optimal control, I take the
+derivative
+with respect to U, the constant goes
+away because it doesn't depend on U. So,
+the solution that I will find is exactly
+the solution that we found for LQR,
+linear feedback on the state. I plug
+that back into the cost,
+I get
+a quadratic with respect to the state
+plus a constant.
+So, we started from a cost to go at time
+K + 1 that was a quadratic plus a
+constant. I get again a quadratic plus a
+constant. So, all of this to say,
+without
+spending too much time here, is that uh
+for stochastic LQR, the control control
+policy is the same, the cost is almost
+the same. The only difference is that
+the cost the cost is increased by some
+constant related to the magnitude of the
+noise.
+Which kind of makes sense.
+We have to pay something because now we
+are operating in a
+um
+uncertain setting.
+All right. This was just one other
+example to to showcase the use of uh
+stochastic dynamic programming for the
+LQR problem.
+Yeah.
+&gt;&gt; What if you also include the case where
+the variance of the stochastic uh term
+was dependent
+on the control?
+&gt;&gt; Yeah.
+&gt;&gt; Like the probability is like a function
+&gt;&gt; Yeah. Of course, because now once you
+start
+taking the derivative with respect to U,
+this term wouldn't go to zero anymore.
+So, actually the formulation Yeah,
+absolutely.
+What we exploit here
+is that sigma
+is just a given quantity that does not
+depend neither on state nor on control.
+Cool. All right. So,
+one additional item Maybe we're going to
+conclude this item
+on Wednesday.
+And this will become important when we
+move into the second part of this class,
+namely reinforcement learning, imitation
+learning, learning.
+So, so far we have introduced the
+stochastic optimal control problems or
+optimal control problems in a finite
+horizon setting. So, basically we assume
+that we are optimizing operations over
+15 steps, 20 steps, 35 steps.
+Uh
+but as you will see,
+for a number of reasons, the RL problem
+or imitation learning problem,
+particularly RL problem, reinforcement
+learning problem, is formulated within
+an infinite horizon setting.
+So, we assume that now we're trying to
+optimize operations over infinite number
+of
+stages. So, the number of stages is
+infinite.
+Now, of course, the function [snorts] of
+an infinite number of stages is never
+fulfilled in practice, of course. Our
+lifetime is limited. The life of the
+universe is arguably
+um
+um limited, but is a good approximation
+for those problem involving a finite,
+but very a very large number of, uh,
+stages.
+And, as we will see, it simplifies the
+problem considerably. So, it's again a
+sort of a compromise between being
+something that is quite reasonable in
+many settings,
+and also simplifying the problem even
+further.
+Specifically, an infinite horizon Markov
+decision process is a problem where by,
+as usual, we have a state X, or in a
+computer science notation, S.
+We have an action U,
+and we have a transition function that
+tells us what the next state XT will be,
+given the current value of the state XT
+- 1 and current value of the control UT
+- 1.
+Now, since we're getting closer to the
+RL formulation, typically in
+reinforcement learning, people don't
+talk about cost, they talk about
+rewards.
+So, instead of minimizing a cost, we
+maximize a reward.
+And that is just a minor modification.
+Each problem can be mapped into the
+other one,
+uh, by just swapping minimization with
+maximization and adding a a sign minus,
+uh, in in front of the quantity you're
+interested in.
+We introduce the notion of discount
+factor gamma. I will talk about it, uh,
+shortly.
+And so, an infinite horizon problem is
+defined by these, uh,
+uh, five quantities here.
+We knew four of them. There is a fifth
+one that I'm introducing, gamma. I'm
+going to explain it in a second.
+The point I want to make here
+is that now,
+everything in this formulation is, uh,
+stationary.
+What that means is that the transition
+probability from,
+uh,
+the state at time T - 1 and control at
+time T - 1 into the state at time T does
+not depend on the specific stage T - 1.
+Remember that, uh, before
+the transition model was allowed to
+depend explicitly on time. So, even if
+you are the same state, same control,
+and you have the same relation to
+disturbance today and tomorrow, in
+general, the transition to the next
+state might be different.
+In a infinite horizon MDP, we're making
+assumption that the problem formulation
+is stationary.
+Why do we make a stationary assumption?
+One again because often times is a
+decent one for processes whose dynamics
+don't change dramatically from stage to
+stage, but two, in a infinite horizon
+MDP, as you can imagine, we are trying
+to use some limit concept. And so, doing
+limits when underlying problem
+formulation changes, it will be very,
+very hard.
+So.
+Uh again, compromise between being
+reasonable and uh making computation
+feasible.
+Now,
+our goal is to find a policy
+that optimizes the expected cost-to-go.
+But now we are Sorry, reward-to-go.
+So, now we're talking about rewards and
+not costs.
+And now we have this additional term
+gamma that multiplies the reward, gamma
+to the power of t. So, gamma is a number
+between 0 and 1 and is referred to as a
+discount factor.
+So, why do we multiply our reward by
+this constant to the power of t? We
+didn't have that in the finite horizon
+formulation.
+Any hypothesis about why people do that?
+Exactly. So, that's the intellectual
+explanation that in general, when you
+try to optimize
+operations,
+you of course place a lot of emphasis on
+the consequences of your decisions in
+the next few time steps. You don't care
+too much about what the consequences
+might be
+1 month from now or 1 year from now,
+which kind of makes sense.
+But as usual, there is also the
+pragmatic uh
+uh explanation. What is the pragmatic
+explanation?
+Exactly. So, since now we are in an
+infinite horizon setting, so this is sum
+from zero to plus infinity, and so in
+general, for any reasonable reward, this
+will be equal to plus infinity. So, if
+all policies have a cost equal to plus
+infinity, which one is optimal?
+They're all plus infinity. They're all
+phenomenal, right? So, that's why you uh
+and you put like an an exponential
+waiting because typically exponentials
+kill a lot of uh functions.
+Is it a common theme where people
+pre-append the quantities of an
+exponential to ensure convergence?
+Anyway.
+Just wanted to highlight why people use
+this counting factor. Again, it makes
+sense, but also practically. Is there a
+question?
+Do you You have a question?
+&gt;&gt; Oh, no. I think we're good.
+&gt;&gt; No. Okay, great.
+So, infinite horizon DP, problem is
+stationary, we are now focusing on
+rewards, we have this addition of a
+discount factor in our modeling.
+Now,
+since the problem is stationary and we
+are in an infinite horizon,
+the policies the optimal policy doesn't
+depend anymore on the stage you are at.
+So, you don't have a P0, P1, P2 anymore.
+You just have pi.
+So, we're just optimizing over pi.
+Uh a mapping between state at any stage
+in time into a control action.
+Remember that before we were optimizing
+over P0, P1, P2. Here, we just optimize
+over a single pi.
+Because a stationary policy, that is a
+policy that does not does not depend
+explicitly on time, is indeed optimal.
+Yeah.
+&gt;&gt; Are you saying that the optimal policy
+has to be stationary?
+&gt;&gt; We focus only on stationary policies.
+Yes, that's what we're saying here.
+Correct.
+Okay. So, then the question is how do we
+solve
+How do we solve such a such problem?
+Guesses?
+Well, we try to reuse whatever we
+learned from a finite horizon optimal
+control,
+which is the notion of a Bellman
+uh equation.
+So,
+trying to
+exploit that intuition,
+remember that when we were in a finite
+horizon setting, we said that the
+optimal cost or optimal rewards
+satisfy a recursive equation.
+So, it's natural to wonder if an
+infinite horizon setting
+if you let the number of stages to go to
+infinity, basically you take a limit on
+both sides,
+that stuff will converge to something.
+So, basically remember that you have a
+uh J of K X K is equal to
+maximum over
+U K of uh
+expectation over W K of uh
+um
+Actually, let me do it with a cost since
+we were talking about cost with a J
+formulation.
+Oop, there is a
+G K X K U K
+W K plus
+J K plus one S K plus one.
+So,
+assuming our problem is stationary,
+does this stuff converge to
+something?
+And if this stuff converge to something
+and I take the limit here and here,
+do I get a sort of a stationary Bellman
+equation?
+The answer is yes. So, actually, the
+cost function
+in the limited horizon goes to infinity,
+does converge to a steady state
+quantity.
+And that steady state quantity satisfies
+a
+not a recursive equation such as there,
+but fixed point equation, which is
+represented here. So, this is the
+extension of the Bellman equation to an
+infinite horizon setting.
+Whereby
+V,
+which is the same as a J, but when
+people talk about rewards, they like to
+call refer to it as V. V stands for
+value.
+So, reward values, cost Js. I don't know
+what J stands for, actually.
+Anyway.
+So, V star X is equal to maximum over U
+of the immediate reward plus the
+expectation of the reward to go.
+So,
+in infinite horizon problem, one can
+prove that the optimal value function,
+so the
+value of the problem assuming that you
+start at X and you follow an optimal
+policy, satisfies a fixed point equation
+whereby V star X is equal to max over U
+of R plus expected cost to go.
+Discounted by gamma, one step discount
+factor.
+So, we take this as a fact.
+There is a bit of a proof that uses some
+uh uh limit considerations. But again,
+from intuition standpoint, I'm trying to
+give you some justification. The
+justification is that this looks very
+similar to the Bellman equation,
+but in an infinite horizon setting, the
+recursive equation becomes just an
+equation.
+&gt;&gt; Now,
+when you're solving these, how do you
+inform the algorithm to not keep
+searching? Because obviously, like with
+the discount factor, you probably see
+the point like clearly some earlier
+stopping point would be more optimal
+than the later one. But how do you
+distinguish like when it's not even
+worth to keep searching? Because maybe
+there is like some
+minimal point.
+&gt;&gt; Yeah.
+&gt;&gt; Like steps away.
+&gt;&gt; Yeah. So, keep in mind that here,
+I'm not giving you an actual model
+algorithm yet. I'm just uh highlighting
+a key property of infinite horizon MDPs
+whereby the optimal value functions
+satisfy an equation.
+How we translate this information into a
+search algorithm,
+that's something we'll see at the
+beginning of the next lecture.
+And basically, we can do it a couple of
+ways.
+Uh
+value iteration algorithms and policy
+iteration algorithms. For now, this is
+just a derived property of our problem
+formulation.
+Just so happens
+that if you're not interested in the
+optimal value function, but you're
+actually interested in the following
+question, if I give you any policy pi,
+what is the cumulative reward
+that that policy is going to collect?
+Turns out
+that the value for that policy
+satisfies a very similar fixed point
+equation.
+But now we don't have a maximization of
+a U anymore because we're fixing the
+policy.
+And then the computation of the U's are
+simply with respect to the policy pi
+that is given.
+Note that this is given to you. This is
+given to you.
+So, assuming that X
+has a finite number of realizations,
+this is actually a linear system of
+equations with respect to the value
+function B.
+So,
+you could potentially solve
+this equation by solving a linear system
+of equations.
+&gt;&gt; Can you quickly clarify why previously
+for dynamic programming the cost
+function depended on the disturbance,
+but here
+&gt;&gt; Yes, here it depends still on the
+disturbance.
+But the stochastic dependency is more
+cryptically
+captured by this transition function.
+That is uh
+T
+is the probability of going into a new
+state X prime given X and U.
+So, it's what I was saying before, and
+here I made a little bit of a change of
+notation as I mentioned, from the
+control theory notation to the computer
+science notation.
+So, you can write
+X K + 1
+= f of X K
+U K W K
+and then say that W K follows some
+probability P K of
+conditional X K U K
+or equivalently, you can say that so
+what they give you is a P
+and F in order to compute the next X or
+I can just give you this object T
+XK + 1
+given XKUK.
+So this is directly the probability
+distribution of the next state
+given X and U. The two are actually
+identical. They can be mapped to each
+other. The difference then notationally
+the dependence on disturbance here is
+explicit. Here is a little bit more
+cryptic.
+But
+the point being the dynamics are still
+stochastic and the stochasticity is
+captured by the probability distribution
+of the next state given X and U. Note
+that this model is clearly Markovian in
+the sense that the dependence on the
+past is all only with respect to the
+current value of the state X and the
+current action U.
+All right. One more thing and then we'll
+wrap it up. I'll talk about the
+algorithms to solve for the infinite
+horizon Bellman equation the next time.
+You You won't be too long. It'll be only
+15-20 minutes.
+There's an alternative way of writing
+the
+infinite horizon Bellman equation.
+It seems very benign but actually it's
+been quite revolutionary
+especially
+to derive learning based algorithms.
+Specifically, let's define something
+that is referred to as a Q function.
+The Q function is simply the right hand
+side of the infinite horizon Bellman
+equation. And it has the following
+interpretation.
+&gt;&gt; [snorts]
+&gt;&gt; It is the
+cumulative reward that you collect
+assuming that uh
+you start at X
+you play control U
+and then you act optimally after that
+according to the policy pi star.
+So, if you are state X and you use
+control U and then you are optimally
+rewarded
+from the next state stage onward, your
+community cost is RXU plus
+the optimal reward to go from the
+perspective of the next state. But, of
+course, the next state is stochastic, so
+you have to average the different
+realizations of the next state.
+So, you say, "Who cares?"
+I'll tell you in 1 second why you care.
+But, first, I want to show that the
+assuming that you care about the Q star
+Q functions,
+the Q functions satisfy a fundamental
+equation that is uh
+essentially the same as the Bellman
+equation, but for Q functions,
+specifically.
+And this seems to be like uh
+um
+a little bit circuitous.
+So, we said that the Q star
+is by definition RXU
+plus gamma
+sum over next state X prime of the
+realization of the next states
+times V star X prime.
+So, that's the definition of uh
+Q.
+But, then we also have the
+condition that V star X, again,
+following our definition, is equal to
+max
+over U of Q star XU.
+So, you plug this into here and now you
+have a fixed point equation for the Q
+functions.
+Okay, so that's
+that's fine.
+But then the question for me should be
+why do we care about the Q functions?
+In principle, you don't care about them.
+But let's assume and of course we will
+revisit this setting
+at a great extent.
+Let's assume that now
+some part of the model are not known.
+So
+you don't know this probability
+distribution T.
+And you have some algorithm, learning
+algorithm, reinforcement learning
+algorithm or imitation learning. Let's
+say reinforcement learning algorithm
+that allows you to learn approximately
+the Q functions.
+We'll see which algorithms we can use.
+So some part of the MDP problem is not
+known anymore.
+Like the transition kernel is not known.
+But we're learning an approximation for
+Q. And now I'm asking you to compute the
+optimal action given that you are at
+state X.
+So what do you do? Well, if an oracle
+gives you the Q star XU
+then your optimal action is simply
+the one that maximizes the Q.
+Okay. So basically if an oracle gives
+you the optimal Q function, then
+computing an optimal action is trivial.
+You just solve the optimal Well, trivial
+I mean, it could be a high-dimensional
+problem, but at least you have a way to
+do so.
+Say that actually oracle gives you the V
+star function,
+the optimal value function.
+How do you compute the optimal action?
+Well, now
+the optimal action is going to be max
+of you
+of r x u
+plus gamma sum of t x prime
+x u with star x prime.
+And so, even if I give you the optimal
+value function
+to compute the optimal action
+you need
+to know
+the transition kernel.
+But, if you're in the learning setting
+where we assume that we don't have
+access to the transition kernel, that
+becomes a problem. That's why this
+somewhat very benign reformulation of
+the problem has been extremely
+influential in order to derive learning
+algorithms because that allows you to
+much more directly find actional
+algorithm for optimal action estimation.
+Just to want to the first time I saw Q
+function said, "Okay, this is completely
+useless. I'm just
+writing one thing in terms of another
+quantity." Why is that? People typically
+don't really discuss that.
+But, that's a big difference that
+if you then reframe the problem through
+the notion of Q function, then back
+tracking and optimal control action
+becomes much more natural in the setting
+where some elements of the MDP problem
+are not known is not known, for example,
+the transition probabilities.
+Make sense?
+So, [snorts] what we're going to
+see next time is a couple of algorithms
+to
+uh
+given a policy there is also an
+analogy equation to compute a Q function
+for the specific policy. So, Q pi x u is
+the value of the problem assuming that
+you are at state x, you use control u,
+and then you use the policy pi
+uh for all stages afterwards. So, what
+we're going to see next time is a couple
+of algorithm to solve the infinite
+horizon MDP problem, value iteration
+algorithm and policy iteration
+algorithms.
+And then, we're going to move into the
+topic of continuous time closed-loop
+optimal control. We'll get back to
+infinite-horizon MDPs and their
+extension to the set of learning-based
+control in a couple of weeks.

@@ -1,0 +1,1644 @@
+Okay. So as discussed uh on Monday for
+the next uh for this lecture actually
+we're going to go through some of the
+key concepts behind the classical
+optimization. So nonlinear optimization
+problem where we solve over a finite
+amount of decision variables. An idea
+here is not that this is a class about
+optimization. This is a class about
+optimal learning based control. But many
+of the insights from classical
+optimization carry over to the field of
+optimal and learning based control. So
+in particular what we did uh uh on
+Monday was to define what an
+optimization problem is and what does it
+mean to for a point or a vector. I will
+use this uh terminology interchangeably
+to be a local minimum or a global
+minimum of a given objective function f.
+What we're going to do now is a couple
+of things. So first derive basic
+necessary conditions for optimality. So
+these are conditions that essentially
+say if a given point or vector is a
+local minimum then something has to
+happen. And typically people use these
+necessary optimality conditions for
+example as a filters to filter out
+candidates for optimality. The fact that
+you fulfill a necessary optimality
+condition doesn't guarantee that that
+point is a local minimum. But if it does
+not fulfill but if a point does not
+fulfill that necessary optimality
+condition there is not a chance that
+that point can be a local minimum.
+So how do we derive necessary conditions
+for optimality? So the idea is that uh
+you assume that you are at a local
+minimum and you see whether there are
+any particular insights that you can
+derive from the fact that a point is a
+local minimum. Particularly the idea is
+to reason in terms of what happens when
+we perturb
+a local minimum denoted as XAR by a
+small perturbation delta X and we try to
+find some general rule that can serve as
+our necessary optimality condition.
+Specifically from basic calculus we know
+that if f is differentiable
+f of xar plus delta x where delta x is a
+small displacement.
+So you're just moving a tiny bit out of
+xar in some direction
+is approximately equal to f of xar
+plus gradient of f evaluated at xar
+times uh delta x
+prime means transpose.
+So you should be familiar with uh this
+notion. Of course there are some error
+terms here but the idea is that as delta
+x gets closer and closer
+the first order term. So the term that
+includes the derivative becomes the
+dominant one and so the other terms can
+be neglected and so roughly speaking we
+can look at this approximation as it
+deemed being an equality. Okay.
+Or one can go one step further and
+consider a second order approximation
+where in addition to the first order
+term you also account for a second order
+term this is the action of the function
+f. So basically the matrix that collects
+the second order derivatives.
+Are you okay with this? Yeah. Are you
+taking the gradient over the derivative
+of f or is it you're taking the gradient
+over f the function f?
+&gt;&gt; Oh no gradient of f is just notation. So
+this is a the naba symbol. So by
+definition
+naba f is defined as the vector of uh
+the derivatives with respect to each
+variable. Oh yeah.
+X2 dot dot dot dot derivative XN
+&gt;&gt; this one.
+&gt;&gt; Oh yeah just transpose. uh it could be
+like T or here in this class I use other
+transpose of or
+so on the transpose in this class I will
+either use the symbol capital T or prime
+um yeah same thing here
+okay so so far nothing uh uh
+particularly interesting
+now Let's
+apply the fact that we are assuming that
+xar is a local minimum.
+So if xar is a local minimum by the
+definition of a local minimum if I move
+around that point the function f has to
+assume a larger value. This is by
+definition for a point to be a local
+minimum. Which means that f of xar plus
+delta x minus f of xar
+has to be greater than or equal to zero.
+This is because we're assuming that xar
+is a local minimum. Which means that if
+we move around then the function f has
+to take on a larger value.
+But if this is the case and assuming
+that delta x is small so this relation
+can be taken as an inequality. So this
+implies
+So this implies that uh the
+remember that f of xar plus delta x
+minus f of xar is equal to the gradient
+times delta x. So that implies
+worse
+worse.
+This implies that gradient of f
+evaluated xar time delta x has to be
+greater than or equal to zero.
+I write this killer product
+in expanded form. So I carry out the
+product. So this implies that the
+summation from i = 1 to n or the partial
+derivative of f with respect to x i
+times delta x i
+is greater than or equal to zero. Well
+the delta x i added this displacement
+with respect to each i coordinate. Delta
+x is a vector
+with displacement delta x1 delta x2
+delta dot delta xn.
+Any questions about that?
+So remember
+that if xar is a local minimum then f of
+xar plus delta x has to be greater than
+or equal to f of xar for all possible
+delta x. small enough.
+That was for all possible delta x. Let's
+just fix a few possible choices for the
+delta x. So let's consider displacement
+of the type delta x equal to epsilon
+where epsilon is a small scalar positive
+number
+say 1 0 0.
+So this will be um say delta x
+one or another possible choice for the
+vector delta x could be delta x2 equal
+epsilon where all the coordinates are
+zero except the second one and so on.
+So this is just a specific choice of the
+attacks. This relation has to be true
+for all possible choices. I'm just
+selecting a few possible choices.
+But if I select delta x in this way and
+then I carry out this color product,
+you'll see that all those products are
+equal to zero except for the i
+coordinate.
+So if I start plugging in all these
+possible choices of displacements, I
+start getting conditions of the type
+epsilon delta uh partial to f to xi
+time 1 greater than or equal to zero.
+But I also take can take the negative of
+this one. So I get minus epsilon partial
+dative f to x i * 1 less than or equal
+to zero. absolutely small positive
+number. So this I can just cancel it out
+from this inequality. So essentially I
+get a bunch of inequality of this type.
+So wrapping up we have found that if xar
+is a local minimum
+then each partial derivative has to be
+simultaneously greater than or equal to
+zero or less than or equal to zero. So
+what what is the only number that is
+simultaneously greater than or equal to
+0 less than or equal to 0? Z. So
+basically we've just proven that each
+partial if xar is a local minimum then
+each partial derivative of f with
+respect to x i has to be equal to zero.
+Putting all those results together we
+get to the celebrated necessary
+optimality condition that says that at a
+local minimum if xar is a local minimum
+then the gradient has to be equal to
+zero.
+In the one-dimensional case,
+say that you have a function.
+Say that you have a function like this
+one.
+So this is a local minimum. And indeed
+you see that here the derivative is
+equal to zero.
+Here the derivative is equal to zero but
+this is clearly not a local minimum.
+This is a local maximum. So that shows
+that the fact that the gradient is equal
+to zero is a necessary condition for
+optimality but is not a sufficient
+condition for optimality.
+And probably already know about this but
+my point here is just to reiterate the
+concept of a necessary optimality
+condition because as I said it will
+become quite useful as we move on.
+Now of course we can go one step
+further. So so far we have used a first
+order approximation of a function but we
+can also use a second order
+approximation of a function and see
+whether the fact that the point is a
+local minimum tells us something about a
+function beyond just the first order
+derivative.
+Well remember that uh the
+second order approximation of a function
+reads like the following. So you have a
+linear term and a quadratic term.
+Quadratic because the delta x multiply
+each other.
+So by the same reasoning as before, if
+xar is a local minimum, this different
+has to be greater than or equal to zero,
+which means that this term also has to
+be greater than or equal to zero. But we
+have just proven that the local minimum
+the gradient is equal to zero. So we are
+left with the fact that if a point is a
+local minimum then this quadratic
+product has to be greater than or equal
+to zero. A delta x is arbitrary.
+It can be so for example if you're into
+d can be any vector in you know any
+possible direction.
+So what is this telling us with respect
+to the action of the function?
+there has to be positive semi-definite.
+Actually that's a definition of a
+positive semidefinite matrix. So if the
+function is twice differentiable we get
+the strengthen
+necessary optimality condition that not
+only the gra has to be equal to zero but
+isan has to be positive semidefinite
+we us to the
+nc theorem necessary optimality
+condition theorem let xar be
+unconstrained local minimum of a
+function that maps a vector of n
+variables to a scalar that is a real
+number. R is the set of real numbers. RM
+is the set of vectors with components in
+the real space. Assume that f F1 is C1.
+C1 means that the function is
+differentiable with is continuously
+differentiable.
+And let's assume that X star is an
+unconstrained local minimum within an
+open set.
+um
+then the gradient has to be equal to
+zero. And additionally, if f is twice
+differentiable, the hash has to be
+positive uh semi uh definite.
+A reminder, an open set is loosely
+speaking
+uh a set that contains a ball around
+each point. So basically set that
+doesn't contain its boundary.
+This is important because for example
+say that you have this a function that
+is defined between a and b. Is this
+point here a local minimum?
+Well it is right. So if you move in any
+allow allowable direction then the value
+of the function increases.
+But is the derivative equal to zero?
+clearly enough because this will be the
+derivative. So here what's happening is
+that this point is not inside the open
+set is indeed on the boundary. So this
+necessary condition only holds if you're
+not on the boundary of the domain of
+your function. So that's what the open
+set statement here is referring to.
+If you're within the open set, yes, then
+if there is a local minimum, then the
+derivative has to be equal to zero.
+Yeah.
+&gt;&gt; So when you say the open set, does that
+mean the same thing as the constraint?
+&gt;&gt; No. So if um
+basically so here
+so you can have like an interval
+like this one, right?
+So the interval does have constraints.
+So has a lower bound as an upper bound
+but does not contain its boundary.
+So this notion of open interval or
+closed interval.
+Does it make sense?
+&gt;&gt; Basically you don't want to pick points
+that are on the boundary of your domain.
+That's what he's saying.
+&gt;&gt; Constraint problem.
+&gt;&gt; Constraint. That's perfect. Then of
+course the space of real numbers doesn't
+have a boundary. So yes, you're in an
+open set. And so this holds true. No
+problem. This is more for the case of a
+function that for example is defined in
+uh that maps all numbers from AB into
+the real numbers. So the domain is
+actually between A and B. You want to
+make sure that you apply the NOC
+condition only for points strictly
+between A and B. Otherwise you might get
+a spurious situation whereby you have a
+point that is a local minimum but is not
+uh doesn't have a um derivative equal to
+zero.
+That's all I'm saying. But the moment
+you move away from the boundary then for
+a point to have any chance to be local
+minimum then the derivative has to be
+equal to zero.
+This is more of technicality by the way.
+So then a natural question is can we
+strengthen this to a sufficient
+optimality condition. So a condition
+that says if something happens then that
+point is a local minimum.
+And here I'm just going to give you an
+intuition.
+Say that now we strengthen
+the condition whereby the the aen now is
+not just positive some definite but is
+positive definite which means that as
+you move locally around xar
+the value of the function
+increases.
+So this suggests
+that uh strengthening the condition a to
+be positive definite will lead us to a
+sufficient optimality condition. Of
+course the proof has to be a little bit
+more involved because there are some
+additional terms that we're not
+accounting approximation. So we should
+do use a little bit of limit arguments
+to make sure that this actually is
+mathematically rigorous. But the
+intuition is that if
+uh the action is positive definite, the
+gradient is equal to zero. The function
+locally around xar is essentially a
+ball, right? And so uh the value of the
+function increases immediately after you
+leave xar which means that the the being
+positive definite is indeed a sufficient
+condition which is encapsulated in the
+theorem here.
+So for example, one way to use these
+conditions is that uh you look at all
+the points for which the gradient is
+equal to zero
+and then maybe you get six points that
+satisfy the condition and then you
+evaluate the function at each one of
+these points and then you apply some
+other arguments to see whether that is
+indeed the local minimum or not.
+One special case that will become
+important later is that of a convex
+function. Probably you already know what
+a convex function is but just in case
+you don't know about it is specific
+class of function that in a way
+have a behavior
+that is very nice and then I will
+specify later what I mean by nice but
+there still no linear functions. So how
+are convex functions defined? So let's
+start from the domain of a convex
+function. A convex function is defined
+over a convex domain. What is a convex
+domain? Well, a set a set is set is said
+to be convex
+if whenever you pick
+two points
+the line joining them is contained in
+the set. So this is a context set.
+Mathematically
+a set a subset of
+the ukidian space is referred to as a
+convex set. If whenever you pick two
+point x and y the line joining x and y
+is contained in the set. So this set is
+convex.
+This set is not convex. Right? Because
+if I pick these two points then this
+line leaves the set which means that the
+set is not convex.
+So let's consider a set C which is
+convex. A function F is called convex if
+this condition holds. What does this
+condition say graphically?
+So let's just
+draw a diagram.
+So you have a function.
+So you have x, you have y,
+and then you have a function such as
+this one.
+So you pick any point between x and y.
+So for example this point here. So this
+will be uh alpha x
++ 1 - alpha y.
+This will be f ofx.
+This will be f of y.
+So the function is convex if the line
+segments between any two points on the
+graph of the function lies above the
+graph.
+So this will be the segment that joins
+f_sub_x and f_sub_y.
+The function is convex if that line is
+above the graph of the function.
+So for example this function is
+convex
+and then
+this function what do you think is not
+convex because for example if you pick
+two points
+then the line will be below the graph.
+So you might say why do you care about
+uh such functions
+from the point of view optimization you
+care for two reasons. So these functions
+are special in that a local minimum of f
+over c is also global minimum.
+In general nar optimization a local
+minimum is not guaranteed to be a global
+minimum. you might have many local
+minima and then some of them would be
+global minima.
+In addition, if f is strictly convex,
+which means that this inequality holds
+strict for all points not in the
+boundary, then there is at least uh at
+most one global minimum.
+Even more interestingly, if f is convex
+and is differentiable,
+then the gradient being equal to zero is
+a necessary a sufficient condition for a
+vector xar to be a global minimum of c.
+So this is nice on two different
+accounts. Not only gradient equal to
+zero is a sufficient condition as
+opposed to just being a necessary
+condition as it is the case for general
+nonlinear function but also is a
+sufficient condition not just for local
+optimality but indeed for global
+optimality which is great because
+essentially means that a very local test
+so essentially taking a gradient means
+that you're just looking at a function
+very locally tells you something a
+property about the entire function.
+So you can think how computationally
+convex functions are much easier to deal
+with. That's basically the intuition I
+want to give here.
+&gt;&gt; Yeah.
+&gt;&gt; You mentioned if the complex function is
+different.
+&gt;&gt; Yeah.
+&gt;&gt; Yeah. For example, if you have a king
+Yeah.
+Okay. So we'll get back to this later.
+In particular, one of the strategies we
+look at to compute uh trajectories or to
+solve openloop uh uh optimal control
+problems will be to uh successively
+convexify
+uh a function, solve a convex
+optimization problem, get a new
+solution, reconvexify the problem and
+iterate. It turns out that this strategy
+is one of the most popular strategies to
+do trajectory optimization for uh
+robotic systems of all sort. So we'll
+come back to convex optimization later.
+So that's essentially what I wanted to
+say about necessary optimality
+conditions. They are useful to filter
+out the candidates. They form the basis
+to derive a computational algorithm to
+compute local minima as we will see in a
+second. They can also be used for
+sensitivity analysis purposes. So to see
+how much a local minimum
+might change if we change some of the
+problem data based some of the value of
+the parameters in your problem like the
+mass of your robotic system even though
+the sensitivity analysis aspect is a bit
+beyond the scope of this class.
+All right. So let's then move
+to today's lecture.
+So, so far I've talked about necessary
+optimality conditions, but you know
+often times it's quite unwieldly to
+compute all the points that satisfy the
+condition gradient equal to zero. So,
+we're interested in computational
+methods that directly give us the uh a
+candidate for optimality.
+So that's what what we're going to see
+next and then we're going to conclude
+the lecture by expanding what we know
+from the field of unconstrained
+optimization to the setting where we
+have a constraints.
+Constraints are indeed as something we
+have to deal with in this class because
+at the minimum we have a one constraint
+we have to deal with which is the basic
+constraints we have to deal with
+the dynamics of our body I mean of
+course we cannot go the speed of light
+so that's a constraint on our motion so
+we can optimize as much as we want but
+uh if you have a Fiat 500 you don't get
+the performance of a Ferrari. So that's
+probably unfortunate fact of life. So
+yeah, so at least there is dynamics as a
+constraint.
+Okay. So
+let's talk a little bit about
+computational methods. Of course, this
+class will be quite deep in
+computational methods to solve optional
+control problems. And what we're going
+to discuss now again is quite
+pedagogical with respect to what we're
+going to discuss next.
+And particularly I mean there are many
+different ways to attempt to solve a
+nine optimization problem but a specific
+way we look at is referred to as
+gradient methods
+which is a particular class of iterative
+methods. So what are iterative methods?
+So the idea is that we want to solve our
+unconstrained nine optimization problem
+and we want to see whether we can find
+uh
+some rule
+that starting from
+uh do I use the superscript? Yes.
+Starting from some initial guess of what
+a local minimum could be. If you have no
+idea, you can just say, well, your local
+gas is 0000 0, just the origin.
+Then you start producing a sequence of
+uh
+updated guesses.
+And the idea is that uh you hope that
+you have a rule that allows you to
+update your guesses in such a way that f
+of x0
+is greater than of f of x1 is greater
+than or equal f of x2
+dot dot dot. So basically you try to
+cons iteratively update your guess about
+what a local minimum can be
+with a property that at every new guess
+the value of the function is below the
+value of the function. of the previous
+guess with a hope that after
+sufficiently many updates the value of
+the function has been reduced so much
+that you have either reached a local
+minimum or at least you're very close to
+local minimum.
+But the question of course is how do you
+produce such a rule that allows you to
+go through these iterates and in doing
+so you um decrease the value of the
+function. So for that we again use the
+notion of tailor series approximation of
+first order approximation of a function
+specifically.
+Let's assume that uh we our current
+guess is x some vector with you know a
+components taking value 1 3 - 2 or 1 and
+assignment.
+So let's consider
+the updated uh guess obtained by taking
+x and subtracting
+alpha times gradient of f evaluated at
+x. I call this new guess
+as x alpha. It is parameterized by
+alpha. Alpha is a positive number.
+So basically I am at x. Assume that you
+are in
+in the plane.
+You are in the plane. So this is x.
+This is uh
+um gradient of f. Remember that the
+gradient is a vector.
+So x plus gradient of f leaves you here.
+But of course this is parameterized by
+alpha. So the larger the alpha, the more
+far away you move from x.
+Okay. So then
+um
+here
+okay so I call it yeah x of alpha. So
+then we know that f of x of alpha if
+alpha is small enough so I don't move
+too far away from x is equal to f ofx or
+at least approximately equal to f ofx
+plus
+gradient of f of x
+times
+x alpha - X
+but X alpha - X is equal to minus alpha
+gradient of F of X.
+So what we got is that
+this is equal to or equal to f ofx
+minus alpha gradient of f ofx. Here
+there is a prime
+prime gradient of f ofx.
+But you know that for any vector V in Rn
+V scalar product with V is equal to the
+square
+norm of V.
+So this is equal to f ofx
+minus alpha
+gradient of f ofx².
+the norm
+is a non- negative number. In
+particular, if the gradient is equal to
+zero, well, you never you already know
+that you are a candidate local minimum.
+But if this not equal to zero, then this
+number is positive, which means that
+this number is negative, which means
+that f of x alpha has a lower value than
+f ofx.
+So I've actually found a direction that
+leads me to a value for f that is lower
+than the value that I have at the
+current gas.
+Now interestingly as alpha gets larger
+and larger which means that I move
+farther and farther away from x this
+becomes larger and larger which means
+that f of x alpha becomes smaller and
+smaller. So you might be tempted to say
+so why don't you shoot alpha to a very
+large number
+why you don't do that I mean it's
+tempting right why don't we sh choose
+alpha equal a million
+&gt;&gt; skip over
+&gt;&gt; what's that
+&gt;&gt; skip over the minimum
+&gt;&gt; well from this mathematics there is
+nothing that is telling us that is
+skipping over the minimum we just can
+arbitrarily decrease the value of the
+function
+&gt;&gt; exactly which actually is related to
+what you were
+that uh when we do the approximation the
+first order approximation always keep in
+mind that this is holds true for
+uh points that are very close to x. So
+the moment that you move farther away
+you might think that you're doing
+something useful but in reality you're
+not relying on an approximation that is
+telling you nothing about the value of
+the function. So uh the result will no
+longer be applicable.
+Make sense? Effectively it means that
+you go maybe overshoot a local minimum.
+But mathematically one might say well uh
+if the approximation was true actually
+you could just arbitrarily uh decrease
+the value of the function.
+So this leads us to uh the class of
+gradient methods. The class of gradient
+methods is a bit broader in that you can
+slightly generalize
+this construction by just saying by
+looking at update rules
+whereby x of alpha
+is more generally defined as x + alpha
+d where
+the gradient of f at x
+scalar product with the direction d. So
+this is a vector is greater than zero
+sorry is less than zero. Of course if d
+is equal to the minus of the gradient
+which is exactly what we have here
+automatically this is verified. But my
+point here is that you don't need to
+necessarily go along the gradient
+direction. You can also pick some other
+vector as long as this property is
+satisfied because if you do so and you
+do you go through the same steps again
+you'll find out that f of f of x alpha
+has lower value than f of x because this
+color product the direction d is chosen
+such that this scalar product is
+negative. So geometrically what is
+happening here? It's always good to have
+a little bit of a geometric intuition.
+So say that you have a function uh
+defined on the real plane. So on the
+plane of the board
+and let's consider the so-cal
+level set curves. So basically the set
+of points x such as f of x is equal to a
+given number c and then you can change
+your number c is equal 1 2 and so on. So
+this could be for example
+the level set curve. So this will be f
+ofx=
+c3. This one f ofx= c2
+f ofx. So for this one
+f ofx= c1
+for this one
+and assume that the c3 is greater than
+c2 is greater than c1 and so on.
+So say that we are here at X
+otherwise you should look at the proof
+the gradient
+of a function is orthogonal to the level
+set curves. So basically what this
+update rule is telling me is that I'm
+looking at moving along these directions
+here parameterized by alpha
+or I can look at some other directions
+like these ones as long as
+the scalar product is negative which
+means that I form an angle greater than
+90°.
+So this leads us to the celebrated class
+of gradient methods rules whereby your
+next guess. So your guess of what the
+local minimum is at the iteration k +
+one is equal to your previous guess
+after k iterations plus alpha k dk.
+Alpha k here doesn't mean alpha to the
+power of k. here just means that the
+step size as we will see in a second
+might change in value depending on which
+iteration you are at.
+So if the gradient is different from
+zero and that and DK is chosen such that
+the angle between decay and the gradient
+is greater than 90°
+um and the step size alpha is chosen to
+be positive. This is guaranteed to be um
+an alpha ch carefully as we'll discuss
+in a second. This might will lead to uh
+descent.
+Does it make sense? So gradient methods
+again iterative algorithms where you
+update your guess according to this rule
+where the decay is a vector
+with a property that the scalar product
+with the gradient is is less than zero
+and the step size alpha is chosen to be
+positive
+and typically we want to choose alpha
+such that uh um the value at the new
+guess is below the value at the previous
+test practically you want to be careful
+that you don't choose alpha too big.
+&gt;&gt; Does the guarantee still hold if we take
+into a composite order?
+Yes, this will lead us uh to so you can
+reason also the level of so there are
+two things you can look you can still
+use information from the hashion
+as we will see uh in a second or you can
+find more sophisticated algorithms that
+consider uh more sophisticated
+approximations we're going to look at
+the former so I'll show you in one
+second why actually we want to use
+information also from the ashen not just
+from the gradient
+So of course there are two things that
+uh are unresolved yet. So how do you
+pick the descent direction? We said that
+the gradient is a choice but really any
+vector d as long as the scalar product
+with the gradient is less than zero is a
+valid choice. So which one do you pick
+and how do you pick alpha? So alpha is
+this number here which is referred to as
+the step size.
+So for the descent direction,
+a popular class of descent directions is
+defined as the gradient premultiplied by
+a matrix that is positive definite.
+Of course with this choice of the
+descent direction
+the um scalar the scalar product between
+the gradient of f and d is negative
+because we've chosen d to be positive
+definite and we have a minus in front.
+So this is a valid uh assignment of the
+desend direction according to our rules.
+But I just shifted the problem. So how
+do we pick the direction? Now the
+question is how do I pick this matrix D?
+Two popular choices are you pick D
+simply as the identity. So basically
+just move along the negative gradient
+direction or you pick D as we were
+saying we were discussing with your
+colleague as the inverse of the ashen.
+Let me provide some intuition about why
+we may want to consider different uh
+choices of D without going too much into
+the details about how one uh uh would
+derive actually these rules.
+Specifically, let's assume that we have
+a function still defined in uh 2D
+with a very nice level set carves. So,
+they're just circles.
+So, this is the domain of the function
+x1 and x2.
+So, the function would have values that
+go uh orthogonal to the blackboard and
+it will be a sort of a ball, right?
+isotropic ball. So say that you're here.
+So the gradient shoots in this direction
+is orthogonal to the level set car.
+Clearly this is the minimum because
+we're talking about a ball. So the ball
+is really at So basically the function
+will be x1 squar plus x2 square. The
+minimum will be at the origin. So you
+move toward the negative direction of
+the gradient. It's clear that you're
+pointing around in the right direction.
+You pick some alpha, maybe you end up
+here. Then you recomp compute the
+gradient, maybe you end up here, and
+then finally you end up here. Great.
+But what if we are
+in a
+in a situation like the following
+whereby our function is still defined on
+two dimensions, but now the level set
+curves are ellipses.
+So it's still a ball but now is
+elongated in one direction and shrunk in
+the other direction. So say that you are
+here.
+Now the gradient points in this
+direction and the negative gradient
+points in this direction. So as you see
+actually you're not pointing
+directly to the minimum. The minimum is
+still zero. It's still a ball. is just
+as is you know elongating this direction
+and shrank in the lateral direction.
+So this is to say that uh picking as a
+descend direction the negative gradient
+may not necessarily be the best thing to
+do especially if you have a level set
+curves are very elongated.
+what happened is that uh you will
+started zagging
+a lot
+so that and here I'm just giving you the
+motivation there there could be a little
+bit of derivation to do it that's why
+you may want to use uh the ashen
+intuitively the ashen gives you
+information about the carvature of your
+function so it allows you to better
+inform
+the uh direction that looks most
+promising in terms of going to a minimum
+So basically allows you to recognize
+that this problem is different from this
+problem. So you should do something
+different. That's roughly speaking what
+this um action here I'm doing. I won't
+go uh far into the detail since this is
+not a class on optimization.
+Just to speak that there are different
+choices.
+This seems better. Of course it uses
+more information. It use information
+about the carvature of the function. But
+everything comes at a cost here. The
+cost is that if you want to implement
+this descent direction action, not only
+you have to compute a gradient, but you
+also have to compute a hashion. So
+basically a matrix of second order
+derivatives. Depending on the size of
+your nonlinear optimization problem,
+maybe there is not enough bang for the
+buck. Sure, you might decrease the
+number of iterations because your
+direction is better aligned with where
+the local minimum eventually will be.
+But every iteration is much more
+expensive. So this is just to say that
+and we'll see this theme over and over
+that there is a little bit of a tradeoff
+in terms of how much sophistication you
+want to have in your algorithm versus uh
+the algorithm eventually you end up
+using since eventually your goal is to
+get to the local minimum as fast as
+possible.
+So we talked a little bit about the
+center action. What about alpha the step
+size? Again different ways of choosing a
+step size. For example, a possible way
+is the so-cal minimization rule. You
+among all the uh positive alphas, you
+choose the one that leads you to the
+largest cost reduction into your
+function f sensible, but you have to
+solve the minimization problem. Not
+terribleizing over a scalar, but still
+is a minimization problem that you want
+to solve.
+At the other end of the spectrum, you're
+super lazy. So you just pick a number
+for alpha, say 0.1, you stick with it.
+It's probably the very first descent
+algorithm that you would implement. You
+just pick a value for alpha, you stick
+for with it, and you hope for the best.
+Unfortunately though
+um with this choice actually the method
+might diverge. So it might not converge
+to a local minimum and the convergence
+rate could be very slow.
+So another idea that is quite popular is
+a so-called diminishing step size. So
+you choose an alpha
+that across iterations goes to zero. So
+you start with one maybe 0.5.1
+0005. So basically you have a rule
+whereby alpha goes to zero but
+with a property that the sum over all
+alphas across iteration is equal to
+infinity.
+So what's the deal here? The idea here
+is that often time when you start the
+process you are so let's look at now a
+one-dimensional problem.
+So you're here.
+So you're quite far from the local
+minimum. So at the beginning it's quite
+typical to have a long step sizes. So
+you make like a a big jump and maybe you
+move here, then you move here, maybe
+then you overshoot,
+but then after a while where conceivably
+you have gotten closer to local minimum,
+you start making smaller and smaller
+jumps so that you don't oscillate too
+much around the local minimum and
+eventually eventually eventually you
+converge to it. So beginning very large
+alpha so that you can make big progress.
+But the point with large alpha is that
+as you get close to the local minimum,
+you can start bouncing around and
+oscillating. But then you start
+decreasing the alpha so that you do that
+final fine tuning to really get to the
+to the local minimum you care about.
+But you have to be careful because if
+your alpha goes to zero too quickly,
+maybe you don't make enough steps toward
+your local minimum. So you want to make
+sure that collectively
+when you sum all of the alpha actually
+you may make potentially an infinite
+distance so that you're guaranteed to
+explore widely if necessary.
+the firstation
+&gt;&gt; in the first iteration
+&gt;&gt; generally pure guess.
+&gt;&gt; Yeah.
+Yeah. There is quite a bit of
+hyperparameter tuning.
+Um
+which is a good sake into this analysis.
+So there is a lot of stuff that we
+haven't discussed
+how you choose those parameters. So for
+the descent direction is a little bit
+more principle. For step size is a bit
+murky. It's a bit more experience.
+But then in general there are three key
+concepts we haven't really discussed.
+The first one is how do we guarantee
+that this algorithm indeed converges. So
+I told you how in one step you're
+guaranteed to decrease the value of the
+function. But that doesn't mean
+necessarily that you're guaranteed to
+get to the local minimum once you
+iterate across all of the iterations.
+So indeed there are some properties that
+one could list that ensure that you
+converge to a local minimum that is so
+sorry to stationary points that means a
+point where the gradient is equal to
+zero.
+Second when do you stop?
+There are different termination rules.
+One might just say I'm willing to invest
+100 iterations. Whatever I get after 100
+iterations that's it. Or maybe
+you look at the value of the function at
+x k + one
+and the value of the function at x k
+you take the difference if this
+difference is less than epsilon you just
+quit and call it a day means that you're
+not doing much progress anymore and so
+there is no point in keeping investing
+computation and then convergence rate.
+So depending on the initial condition
+and how actually you choose the step
+size profile, what can you say about how
+quickly you will converge to a
+stationary point,
+we could spend pretty much half of the
+class on this topic. So we are skipping
+on those, but I just want you to be
+aware of those. And second of all, the
+class of methods that I've just
+discussed are referred to as
+gradient methods because you use
+information for the gradient. But there
+are also methods that do not need or
+necessarily need information from the
+gradient. Those are referred to as
+derivative free methods such as the
+coordinate descent uh uh the coordinate
+descent method that iteratively
+minimizes
+uh along the coordinate directions to
+find the minimum of a function or or the
+nether mean method that is another
+clever method that doesn't require at
+all any computation of derivatives. This
+is just to say that uh there are there
+is very re rich literature both in the
+field of gradient free and non-gradian
+free methods.
+Any questions?
+So, so far we have talked about
+unconstrained optimization problems but
+we are particularly interested in uh
+constraint optimization problems because
+as I said optimal control problems
+typically have at least one constraint
+which is the represented by the
+dynamics.
+uh as we will see the key solution to
+solve the constraint optimization
+problems boils down to the concept of a
+lrange multiplier and actually this
+concept will carry over also to the
+setting of optimal control and we won't
+do proofs uh here but just wanted to
+give some intuition about how people
+would go about proving statements about
+equality constraints problem or
+inequality constraint problems and
+typically there are two main approaches
+The first one is uh the so-called
+penalty viewpoint whereby you take the
+constraints
+you put those constraints if you so to
+speak in a cost function and you assign
+a high penalty for violating them. So
+basically you reduce a constraint
+problem into an unconstrained one where
+constraint satisfaction is viewed as a
+penalty cost meaning that if you satisfy
+the constraint then you have zero in the
+cost. If you don't satisfy the
+constraint then the cost shoots up.
+That's one way. Or the other way is to
+take an approach similar to the one we
+have discussed in the case of
+unconstrained optimization. But when we
+talk about displacement,
+we can't talk about arbitrary
+displacement anymore because some
+directions are allowed some others are
+not because we have equality
+constraints. So we have to have a little
+more sophisticated notion of what an
+allowable displacement is and based on
+that derive necessary optimality
+conditions.
+So let's start first with the equality
+constraints. So equality constraint
+optimization problems are those whereby
+you're still trying to minimize a
+function f
+over real n. So over n decision
+variables subject to m equality
+constraints written as hi x equals zero
+and we have m of these functions.
+As I said f maps rn into r and hi also
+map rn into r. And here we assume that
+they are both continuously
+differentiable.
+And just to save on some notation, I
+will compactly write the set of function
+h1 to hm as bold h. In general in this
+class, a bold phase means vector.
+So the basic result in the field of
+equality constraint problems is the
+lranch multiplier theorem.
+That is a bit cryptic and I will provide
+some intuition later on. But
+mechanically it states that if XAR is a
+local minimum then there exist M
+numbers. M is the same number of
+equality constraints. These numbers are
+referred to as the lagrange multipliers
+and denoted as lambda 1, lambda 2 all
+the way to lambda m such that the
+gradient of f plus the linear
+combination of the constraint gradients
+scaled by the lranch multipliers one per
+constraint is equal to zero.
+We I'll provide later a bit of
+justification. Right now this seems a
+bit uh mysterious
+but
+first let me show you the mechanics
+about how people uh use this theorem. So
+before in an strain optimization you
+take the function you compute the
+gradient equal to zero you find the
+points that satisfy the condition and
+then among those points you see which
+one achieves lowest value. Great. Here
+we do something similar but we don't
+just set the gradient equal to zero.
+That will be the case. Look how if the
+number of constraint is equal to zero we
+this piece goes away. So we recover the
+condition gradient equal to zero. Here
+is a refinement. It's not just gradient
+equal to zero. It's gradient plus this
+linear combination of the constraint
+gradient being equal to zero.
+What does that mean in practice? So
+let's see. Let's assume that we have uh
+this optimization problem which is
+equality constraint. This is the
+objective function
+and uh uh this is the constraint set. So
+essentially the function that we are
+looking at.
+So this is the plane
+x1 x2.
+So now the function is not mapping any
+possible point into a value
+but only those point that belong to the
+circle.
+So this is the so this is the locus of
+points whereby x1 squar + x2 squar equal
+to so this basically the physible
+domain.
+You can pick any point in here
+and you want to find the one for which f
+namely x1 + x2 achieves lowest value.
+So mechanically what do you do?
+This is a necessary optimality
+condition. So you treat it the same way
+as the gradient equal to zero. But now
+there is that additional
+term that you have to account for and
+note that you also have to solve for the
+lranch multipliers.
+So what you do is first
+you compute the gradient of f
+idea of what the gradient of f is for a
+generic point x1 x2.
+Should I ask the ca and joke and joke?
+So it's a one one
+right because this remember that the
+gradient
+is by definition gradient of f with
+respect to x1 gradient of f respect to
+x2.
+But f is equal to x1 + x2. So dative of
+x1 + x2 with respect to x1 is equal to
+1. Dative x1 plus x2 with respect to x2
+is equal to 1. Okay.
+So then what is the gradient of h?
+So derivative of
+uh x1 2 + x2 - 2 with respect to x1 is
+equal to 2x1.
+And for the other component is just 2
+x2.
+So then what you do
+is that you put everything together.
+And so the lranch multiply theorem it
+says that if x is a minimum then
+1 one plus lambda here we only have one
+constraint. So we're going to have only
+one lranch multiplier which I call
+lambda. lambda
+2 x1 2 x2 is equal to zero.
+And I have to solve for x1 x2 and
+lambda.
+Once I solve for x1 x2 and lambda I
+don't care about lambda anymore. That
+was just a mechanism for me to find the
+necessary optimality condition for x1
+x2. I only look at the x1 x2 that had
+derived
+but two equations three unknowns
+that's a problem do you have an idea
+where the last equation can come from
+equation can come from
+&gt;&gt; the state
+&gt;&gt; exactly so still the the necessary
+condition says that x has to satisfy
+this condition and of course x to has to
+be physible so it has to belong to this
+circle so we also have the additional
+equations x1 squar + x2 squar = 2.
+Okay, so now we just have to solve uh
+all of this.
+So we have 1 + 2 lambda x1 = 0 and 1 + 2
+lambda x2 = z.
+Which means
+uh x1
+is equal to minus over 1 / 2 lambda and
+x2 is equal -1 / 2 lambda.
+Now I plug x1 and x2 in here so that I
+can solve for lambda.
+So when I plug into the constraint, so
+what I get is 1 / 4 lambda squar + 1 / 4
+lambda squar = 2, which implies
+2 over 4 lambda squar = 2. So this goes
+away. So lambda
+is equal to +
+minus 12.
+And then I go back here.
+And what I get is uh
+so if lambda is equal to 1/2
+then
+x1 is equal to
+- one
+and x2 is equal to minus1. And if lambda
+is equal to minus one/2
+then x1 is = 1 and x2 is = 1
+for which value the function achieves
+for for which pair the function achieves
+lower higher sorry lower value
+here. So that's a minimum.
+Actually the lran multiplier does have
+value but at least for the way I'm
+presenting it here is just a a medium a
+means to an end. So we use it to solve
+for these equations but then once we get
+to our local minima we just throw it
+away.
+So it's just the mechanics. Now I'm
+going to give you a bit of intuition
+about that how this works. So think
+about gradient equal to zero. But now
+there is this additional sophistication
+where you also have to account for the
+constraint gradients and you will
+through the notion lranch multipliers
+that are additional variables that you
+solve for. The good news though is that
+uh between the lrange multiplier theorem
+and the equality constraints you have
+the same number of variables as
+equations. So you can always solve for
+all of that. Of course, it can be
+challenging because these might be
+nonlinear algebraic equations.
+Let's look graphically at what's
+happening here and I'll come back to
+this picture. So this is your
+physible set
+and these are the level set curves for
+your fun for your cost function.
+Remember that the cost function is f
+x1 + x2.
+So x1 + x2 = c defines a line in the x1
+x1 x2 space. Namely the line x2 = c -
+x1.
+So these the one that goes through the
+origin will be x2= - x1 as I go in this
+direction actually have increasing
+values. So this will be x1 + x2= 3 or
+four five and so on and so on. So from
+this
+interpretation and you'll see later in a
+second why this is useful.
+Remember that the optimal point as we
+found it is -1 - one. So that's a
+minimum which makes sense because these
+are the level set and we want to try to
+pick the level set carve with the
+possible pos the lowest possible value
+but it still intersect the principal
+set. So as you move you move you move
+until you get here the point of tangency
+here
+there is no point x1 and x2 that will be
+feasible with respect to the circle.
+the objective would actually get a lower
+value but it's not allowed.
+Does it make sense?
+Maybe think a little bit about this
+geometric intuition because it's
+important.
+So again this is the constraint set.
+These are the level set carves
+and these will be the set of points such
+as x1 + x2 is equal 5. x1 + x2 is equal
+3. x1 + x2 equals zero. That would be
+this curve here. And here I have a two
+points for which x1 + x2 = 0. The one
+here and the one.
+But I can go even farther. So x1 + x2 =
+-1 and so on until I get here which is
+x1 + x2= -2. And I have an intersection
+here. So there is at least one point
+that achieve that value. If I go farther
+down then there is no point that yeah
+&gt;&gt; is there a geometric interpretation of
+why we have two lambdas is that the
+maximum
+&gt;&gt; yes because that's a because remember
+that this is just a a necessary
+condition for a stationary point. So
+it's not differentiating between it
+being a maximum and minimum. And in fact
+if you plug in the other lambda you get
+a maximum here.
+&gt;&gt; Would that mean that the con was
+important for the
+Uh no the no I mean the the constraint
+is always important for the minimization
+because you're only allowed to pick
+point from the physible set
+but
+&gt;&gt; equals what does that mean?
+&gt;&gt; Lambda so lambda equals zero but
+remember that here the condition is not
+in terms of the quality constraints is
+in terms of the constraint gradients. So
+that's why lambda equals 0% doesn't tell
+you immediately a condition on the
+equality constraint per se because to
+the gradient of the constraint
+but related to that
+let's try to be a bit more of intuition
+and essentially there are two ways at
+least in my mind to interpret
+um
+the lanch multiplier theorem. So let's
+look.
+Let's look at a simple case where you
+have only one constraint.
+Yeah,
+I I just for simplicity avoided the
+parenthesis x. So what the lanch
+multiplier theorem is telling us is that
+the gradient of f belongs to the
+subspace spanned by the constrainted
+gradients at x. the the constraint
+solution will be at a point of tangency
+of the constraint cost curves and the
+constraint function. What does that
+mean? So here
+what the lrange multiplier theorem is
+saying is that the gradient of f is
+equal to the gradient at the candidate
+for optimality the gradient of f is
+equal to the gradient of h times a
+scalar. So basically they are colinear
+but remember
+that the gradients are orthogonal to the
+level set carves
+which means that uh if the gradient of
+the level set carve refer to the
+constraint set and the gradient to the
+objective function are colinear it means
+that those two level set carves are
+tangent to each other which is really
+what you have here.
+So this is the situation. So we have the
+circle which is the physible set.
+Here we have the point
+-1 - one.
+The gradient
+was uh
+the gradient of the objective function
+was 1 one
+and the gradient of h
+here is equal to -2 - 2.
+So you see that the gradient of the
+objective function and the gradient of
+the constraint set are colinear which
+means that the level set where the
+constraint set and the level set carve
+for the objective function are tangent
+to each other which notionally captures
+the fact that to minimize you're trying
+to push your level set carve for the
+objective function as much as possible
+towards some
+situation whereby if you push farther
+you don't have intersection anymore with
+your constraint set. If you could push
+it even farther then you would do so.
+Tangency is basically the geometric
+notion that capture
+uh the fact that you cannot push it
+farther
+some intuition here but it's actually
+correct intuition
+make sense
+so that's the more geometric intuition
+the other way that I like to think about
+a multipliers is as follows that might
+sound a little bit uh cryptic but
+actually it's even clearer in my opinion
+so the cost gradient So what a
+multiplicity theorem is saying remember
+it's saying that the gradient of the
+cost function at a local minimum
+is
+a linear combination
+of the gradient of the constraints.
+So what that implies and we'll see in a
+second. So first let me state it and
+then I'll explain it. What that implies
+is that the cog gradient uh gradient of
+f is orthogonal to the subspace of a
+first order physible variations. We
+define the physible variations as those
+variations that are orthogonal to the
+constraint gradients.
+So what is it saying? So v of xar
+is the space of displacements
+that are allowable up to first order.
+Meaning that they lead you to a point
+that is still feasible up to first
+order. Specifically,
+h
+of xar plus delta x
+is equal to h of xar
+plus gradient of h times evaluated xar
+time delta x.
+So if you choose delta x from this set
+then this term is equal to zero.
+This term is also equal to zero because
+we're assuming that xar is feasible
+since it's a candy local minimum which
+means that this is also equal to zero.
+So all this is to say that uh if you
+move along these displacements
+you are moving away from xar
+to new points that at least up to first
+order
+satisfy the
+constraints.
+But remember,
+but then
+if that is true, then delta f of xar
+time delta x
+is equal to zero thanks to the lranch
+multiplier theorem. Since the gradient
+of f is a linear combination of all
+these uh constraint gradients and the
+delta x is picked in such a way that the
+scalar problem between delta x each one
+of these constraint gradient is equal to
+zero then I'm just uh if I replace with
+a with the lambda i's gradient of h i
+all this goes to zero. So what I'm
+saying here is that you can view the
+lagranch multiplier theorem as
+essentially embodying the conditions
+whereby the gradient of f has to be
+orthogonal to the space of feasible
+variations which is exactly what we had
+in the case of unconstrained
+optimization if you remember and then we
+said that x can be anything and that
+leads to the condition gradient equal to
+zero here that cannot be anything that
+tax has to be taken from this set here
+and so the condition is a bit more
+sophisticated is saying that the
+gradient of f the most we can say has to
+be orthogonal to all these data
+I mean my point here is that uh what
+we're doing is just a more sophisticated
+way of what we did before with um
+unconstrained optimization but now we
+had to be more sophisticated in the
+sense that we cannot reason about all
+possible displacement
+only those that satisfy the equality
+constraints up to first order.
+So this leads us to the key result here
+and we will see this result showing up
+again of course with some modifications
+in optimal control which is a necessary
+optimality condition for equality
+constraint problems. So let's assume
+that xar is a local minimum of f subject
+to h of x=0 and assume and that's a
+technical condition that the constraint
+gradients are linearly independent.
+Turns out that if this is not the case
+actually this is no longer a necessary
+optimality condition.
+I don't want to elaborate too much on uh
+this condition. Main point is that
+always check that for a kind of
+optimality the constraint gradients are
+linear independent. Then there exist a
+unique vector lambda 1 lambda ma granch
+multiplier vector such as the gradient
+of f is a linear combination to the
+constraint gradients.
+So a physible vector for which the
+constraint gradients are linear
+independent is called regular. How do we
+prove this theorem is actually a little
+bit convoluted but essentially can be
+proved in a couple of ways. First again
+as we said before penalty approach we
+move the constraints to the cost
+function. We penalize deviations from
+feibility and then um
+um
+we make a limit argument to derive the
+lanch multiplier theorem or and this
+maybe a little bit more direct and
+intuitive but actually it's a bit com
+not convoluted but it's a little bit
+more annoying in terms of bookkeeping.
+So what you do is that you have n
+variables and m equality constraints. So
+you express m of the variables in terms
+of the remaining n minus m
+and then you reduce the problem to an
+unconstrained optimization problem
+and then you do three pages of analysis.
+But just saying you know what the
+intuition comes from. An excellent book
+if you're interested in nonlinear
+optimization is the book of Dimmitri
+Bertikas nonlinear optimization.
+If you want to learn more about
+convergence rates for grad descent
+methods proofs or lage multiplier
+theorems
+explore a little more these technical
+conditions and so on
+and this is again something that will
+come back in optimal control. What you
+do with linearly sorry with equality
+constraint problems is to form the
+so-called lagrion function. The lang
+function is a function that comprises
+your objective plus you now lift your
+equality constraint into the cost and
+you scale down by multipliers lambda
+which are additional variables you have
+to find and then you just treat the
+problem as an unconstrained optimization
+problem with respect to this augmented
+cost function.
+So then the necessary optionality
+condition with respect to the lrion
+becomes set the lrjen l equal to zero as
+if the problem was unconstrained. And
+what you get when you take the gradient
+with resp to the x variables you get
+exactly the lranch multiplier theorem.
+So gradient of f plus sum of lambda i
+gradient of hi is equal to zero. When
+you take the gradient with respect to
+the lambdas, you get the different
+condition h1= 0, h2= 0 and so on and so
+forth.
+Notably, the gradient with respect to x
+leads to a set of n equations. The
+gradient with respect to lambda leads to
+a set of m equations and we have n + m
+variables. So we have n plus m variables
+over n plus uh m equations. So you can
+solve for that. So that's what I wanted
+to say about equality constraint
+problems. Next time we'll have a quick
+look and this will be quite brief at the
+inequality constraint case which will
+lead you to the so-called KKT conditions
+and then we move to into our first topic
+related to optimal control.

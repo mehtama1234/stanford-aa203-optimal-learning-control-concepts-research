@@ -1,0 +1,1754 @@
+So as usual uh let's start from our
+classic road map uh just to to have an
+exact point of where where we are right
+now. Uh so over the last uh week or so
+we started approaching the this quadrant
+of the road map. Specifically we started
+looking at uh openloop uh methods for
+optimal control. uh last uh Monday we
+started looking at indirect methods for
+optimal control and we'll spend also
+today in this box over here and uh
+Monday then next week Wednesday we'll
+move to direct methods for uh open loop
+optimal control and then we'll move
+towards uh closed loop methods uh in the
+following weeks
+and uh I just want to make sure that we
+have kind of the key takeaways in place
+and specifically when on Monday we
+introduced indirect methods we
+essentially said that indirect methods
+are a way of defining necessary
+optimality conditions for optimal
+control problems. uh in their infinite
+dimensional optimization case and
+specifically again what I mean by
+infinite dimensional
+is that
+we want to optimize with uh over
+functionals which are in and of itself
+kind of loosely speaking defined as
+functions over functions. So we want to
+find the optimal control u star of t
+that optimizes a given functional that
+is given to us. And again u of t is a
+continuous signal in the sense that it
+is defined between some time t0 and tf.
+And again loosely speaking it represents
+to optimizing the full uh kind of
+control signal over time. And in order
+to derive these necessary optimality
+conditions, we had to extend basically
+everything we know from the kind of
+domain of finite dimensional
+optimization
+um and essentially derived kind of a key
+result which is the fundamental theorem
+of calculus of variation. So these
+slides are not the ones you will find on
+online. These are just some selected
+slides from from Monday just to to to
+recap. Um so the and the key result is
+this fundamental theorem of calculus
+operations which essentially says that
+for a function XAR to be an extreal. So
+loosely speaking kind of a local minimum
+for or optimum for for our functional uh
+the variation of J must b must vanish at
+uh x of star. Namely we derive this uh
+equation here that the variation of of j
+of our cost function j evaluated up the
+optimal x of star needs to be zero for
+all admissible variations uh delta x.
+And kind of in your mental map,
+something that I want to stress is that
+this condition here uh when we map it
+to the finite dimensional case
+should essentially feel as if we are
+saying that the differential is equal to
+zero. So that the gradient of f
+transpose delta x is equal to zero.
+Now this result is obviously important
+because it characterizes what is a local
+minimum in our case in the case of
+infinite dimensional functions but it is
+not actionable. So what we did on Monday
+is that we took a specific simplified
+optimal control problem which is
+essentially the one where we were
+assuming to have a functional defined
+through this stage wise cost G which is
+a function of x of t uh x dot of t and
+time. And so essentially speaking here
+we refer to it as simplified because if
+it is if it's as is we are directly
+controlling the state trajectory. So no
+explicit controls u in this case and we
+were assuming um and we essentially
+derived kind of from the fundamental
+theorem of calculus operation an
+actionable strategy to solve these
+problems and to define necessary and
+optimality conditions.
+And of course we did this in the case
+where both the initial and final
+conditions were fixed. So the initial
+time and final time were fixed and the
+initial state x and final state x at tf
+is also fixed.
+And so we started if you remember kind
+of a derivation where we took the
+increment of the functional we
+linearized. So we took the linear part
+of that increment and then we derived a
+condition on that linear part of the
+increment which boiled down to the euler
+equation. essentially here is where we
+kind of fasttracked uh Newton in uh in
+just one lecture essentially and if and
+here is where I want to now delve a
+little bit deeper because we didn't have
+time on Monday is that this Uler
+equation is again in your mental model
+you should essentially see the
+Euler equation as the analog of the
+gradient of f equal to zero condition in
+the finite dimensional case because now
+this is actionable right we can actually
+compute
+Now let's look a little bit closer at
+what this uler equation looks like. It
+is a nonlinear uh ordinary differential
+equation specifically a second order uh
+differential equation because here we
+have a function g of x dot uh that is
+also is differentiated uh with respect
+to time once more here and specifically
+it is an equation with split boundary
+conditions.
+So now you might be more familiar with
+uh kind of the type of uh differential
+equations which uh are regarded as kind
+of in the form of Koshi problems where
+usually the boundary the uh boundary
+conditions are only one-sided for
+example at the initial time zero but
+here is if if you wish this is a
+slightly nastier object because in this
+case the boundary conditions are split.
+So we have them both at the beginning
+and at at the end of of of of time in
+this case.
+Okay.
+Uh any any questions on on this point?
+&gt;&gt; Yes.
+&gt;&gt; Instead of like uh an optimal like
+control sequence.
+&gt;&gt; Yeah. So this is derived on this kind of
+simplified setting where we are assuming
+that we can control the kind of the
+dynamics if you wish as if we're
+directly controlling the the state
+trajectory. Uh in in the next slides we
+will kind of relax some of these
+assumptions and build towards an actual
+optimal control problem.
+Okay. Okay. So what we'll do now is I'll
+spend maybe 5 minutes or so doing a
+concrete example of how to use these uh
+optimality conditions in practice and
+then we'll move towards relaxing these
+uh boundary conditions and these
+simplifying assumptions that we just
+introduced here.
+Okay. And specifically the problem we'll
+be looking at is the one of finding
+the
+minimum shortest path between two
+points.
+So even just to build kind of a mental
+map assume we are at a specific time
+time zero and x of sub0.
+We want to find the shortest line that
+connects these two these two points and
+it will give us kind of great
+satisfaction in deriving the fact that
+this is actually the straight line. Um
+and the way we will do this of course is
+by leveraging calculus of variation.
+So remember that uh first of all to
+approach this problem we have to define
+what is a functional that represents
+kind of the minimum distance between
+these two points. And remember from
+kind of your calculus classes that in
+order to measure the length of of a
+line, what we do in practice is that we
+take a kind of infinite decimal segment
+uh ds and then we integrate it over the
+entire length of the line. And so for us
+kind of we will define the so kind of
+the length of the segment is something
+along the lines of taking this
+infinitizing all displacement and just
+integrating it over the the length of
+the line. Now how do we calculate this
+in practice? As usual we are often only
+good at uh handling linear objects. And
+so assuming that kind of uh ds is is is
+small enough we do this by taking an
+infinite decimal displacement in in time
+which I'm calling dt
+and in the x direction which I'm calling
+dx. And so from the
+using a pilagorian theorem we can
+approximate ds as
+d s 2 equ= dt ^ 2 + d delta x^ 2.
+Okay.
+From this we can of course derive the
+fact that delta s is equal to the square
+root of dt ^ 2 plus delta x^2.
+Taking delta t out of the square root
+you get that delta t multiplies the
+square root of 1 +
+delta x over delta t squared.
+And assuming there are no mathematicians
+in this in this class here, we are kind
+of redefining this as x dot.
+And so this leads to kind of our
+definition of the functional j as the
+integral between t0 and tf of our
+equation that we just derived for uh ts
+which is essentially the square root of
+1 + x dot of t squared
+in the t.
+And this is essentially our g of x x dot
+t.
+Yeah. Okay.
+So now to solve this we want to be uh
+methodical. So we want to apply uh uler
+equations. So our necessary and
+optimality conditions.
+So to do this what we need is to first
+of all compute uh g of x and g of x dot
+which as a reminder
+so g of x is equal to the derivative of
+g with respect to x which in this case
+the g does not depend on x it only
+depends on x dot and so this is equal to
+to zero.
+The next thing that we need is indeed to
+define g of x dot
+which is 1
+over
+*&lt;unk&gt; 1 + x dot
+squared
+time 2 * uh x dot.
+The two cancels cancel out. And so for
+us, g of x dot is essentially x dot * 1
++ x dot^ 2 power of the -1 /2.
+Okay. So here we're just basically uh
+computing those those terms that we need
+for in order to apply the the uler
+equation.
+Okay. So now what we want is indeed just
+computing that and spelling out that
+uler equation. So what we need is to
+compute the derivative. So we know that
+the first term is is zero. And so what
+we need is the derivative of g of x dot
+with respect to time which is equal to x
+dot * 1 + x dot^ 2 to the powers of -1
+/2
+plus the derivative of the second term
+which is indeed x dot
+multiplied - 12 * 1 + x dot^ 2 to the^
+of -3 /2
+multiplied by the derivative of the term
+inside which is 2 x dot x dot.
+Again it's just some uh derivations
+here.
+Now we can rewrite this as x dot
+over 1 + x dot^ 2 to the power of 12
+minus
+x dot 2 * x dot
+over 1 + x dot^ 2
+to the^ 3 / 2
+which we can rewrite as X dot + X dot *
+X dot 2
+- X dot 2 X dot all everything over 1 +
+X dot squared to the power of 3 / R2
+which finally is equal to X dot / 1 + X
+dot^ 2 to the power of 3 /2
+Okay. So now basically what we have is
+we have all of the both of the terms
+that we need for our uler equation
+and essentially we can then write our
+necessary optimality conditions as the
+fact that so g of x is equal to zero.
+And so we can write that x uh double dot
+has to be over 1 + x uh dot squared
+to power 3 / 2 needs to be equal to
+zero.
+Now we know that this is always positive
+and so the only way for uh this term to
+be equal to zero is that x dot has to be
+equal to zero.
+And so we essentially reach that this is
+now the our uh uler equation kind of
+fully fleshed out. Um which needs of
+course our uh boundary conditions which
+in our case are that x of t0
+is equal to x0 and x of tf are equal to
+uh xf. Again here we didn't really
+specify what x0 and xs are. Uh but this
+is where uh what the boundary conditions
+look like.
+Now this is something we we know how to
+solve. So uh
+what what is the the solution here
+when we integrate uh x a double dot z?
+Yes.
+&gt;&gt; It's a straight line.
+&gt;&gt; Yeah. Exactly. So kind of writing it
+down it means that x of t is equal to c1
+t plus uh c2
+which it is indeed the uh basically the
+formula of a line right the equation of
+a line.
+Now notice that here we have uh again
+kind of pointing your attention to the
+fact that this is a second order
+differential equation. This will need uh
+kind of two constants of integration
+that we need to pinpoint. And so here
+we're using our two boundary conditions
+to pinpoint those constants of
+integration.
+And so we indeed prove that the shortest
+uh path between two points is is a line.
+Now formally what we proved here is that
+the line is a candidate for optimality.
+Uh there are kind of second order
+arguments you could could be done here
+to actually prove that this is a an
+actual optimal. But this is the the kind
+of way mechanically in which we would
+use these uh these conditions.
+Okay.
+All right. Now if this is clear um I
+would move towards what is probably the
+most interesting for us for the purpose
+of this class which is um wanting to now
+apply these ideas towards the anoptimal
+control problem. And to do this, we need
+to extend kind of and relax some of
+these assumptions we're doing to
+simplify the setup.
+&gt;&gt; Yes.
+&gt;&gt; X do.
+Oh, is that an X double dot?
+&gt;&gt; Uh where? Sorry.
+&gt;&gt; Oh, it's a double dot.
+&gt;&gt; This is double dot. Yes.
+&gt;&gt; Yes. Ellie made sure that the markers
+are all uh nice and working today. So,
+&gt;&gt; you just integrated, right? So once you
+have that x dot that's zero literally
+just
+&gt;&gt; okay.
+&gt;&gt; All right.
+Okay. So this is the mechanics of how
+you would use uh kind of the uler
+equation essentially the optimality
+conditions for the case we're looking
+at. And now we want to build towards
+problems that we actually care about
+solving which are optimal control
+problems. And so the first kind of uh
+extension that we want to do to this
+formalism is uh relaxing the assumptions
+that the boundary conditions are fixed.
+So we derived all of this using the fact
+that initial time final time initial
+state kind of condition and final
+condition were fixed. And so we want to
+relax this assumption. And so what we do
+here is we take the exact same setup. Uh
+now formally we're considering functions
+which map reals to real in Rn. Uh so
+we're just like a multi-dimensional
+version of that but it does it shouldn't
+bother you. It's exactly the same the
+same thing. Um with the usual
+assumptions we're assuming that g is
+twice differentiable. The initial
+conditions t0 and x sub0 are fixed. But
+now we are relaxing the fact that the
+final time might and and x of tf might
+be fixed or free.
+And so
+essentially uh what hap what we want to
+do here is kind of adjust the kind of
+our optimality conditions in order to
+handle these uh these cases. Now the the
+problem here as you can probably imagine
+is that so we we showed here already on
+this example that the optimality
+conditions boils down to solving these
+uh differential equations. In order to
+solve them we need to pinpoint uh kind
+of some constants of integrations. And
+here we use the fact that we had these
+uh boundary conditions fixed to pinpoint
+those constants of integrations. But the
+moment we are relaxing this we are
+missing some boundary conditions. So
+essentially what happens here is is that
+the uler equation remains uh valid. So
+it still has to hold but now we're
+lacking these boundary conditions to
+pinpoint the constants of integration.
+And so this is uh uh kind of in general
+for today uh I will be limiting myself
+to uh stating the results. We'll be
+proving also some of them but most of
+the proofs are one very similar to the
+kind of uh manipulations we did on
+Monday and so not very insightful in and
+of itself. And so I will focus on
+stating the results and showing you how
+to how to use them.
+And so the fact here is that we need to
+have a more sophisticated version of the
+boundary conditions.
+And specifically the boundary conditions
+are found from this equation here which
+you know at the first approach might
+seem like a very nasty equation to deal
+with. So let me uh unpack it and show
+you how how to use it. So first of all
+notice that here we have these two uh
+terms which are uh which comprehend kind
+of these delta xf
+and delta tf. So we have the variations
+in the uh in xf and and the final time.
+The trick here will be that uh we will
+have to make the appropriate quote
+unquote substitutions for these delta x
+terms. And so very kind of very
+practically if we are in a setting where
+delta x again delta x here represents
+the admissible variations that we can
+allow at the final state xf uh so if
+delta x is fixed it means that we the
+only admissible variation here is zero
+and so this entire term will go to zero
+and so we're only left with this other
+part of the of the boundary condition.
+Same thing for delta TF. So we'll be
+using the fact that either one or the
+other might are fixed or free in order
+to basically uh compute the boundary the
+additional boundary conditions from this
+equation over here.
+And you can imagine there are a number
+of different cases. uh we won't go
+through all of them but there are like
+there are some nice tables which
+basically summarize all of the uh cases
+that we can find and different
+combinations. So for example if we look
+at the very first one this is the
+setting we were on Monday and in the
+example that we just showed where both
+XTF and TF were specified and so this
+essentially entails that the boundary
+conditions are the uh you know initial
+state initial and final state in and of
+itself. Uh on the other hand if the
+final uh x of tf is free and the final
+time is specified
+what we get is essentially
+uh this that the derivative of g with
+respect to x dot evaluated at the final
+time needs to be equal to zero
+which is indeed only this part here.
+Right? So if TF is u fixed delta TF is
+zero and so all of this gets canceled
+out and so what remains is this part
+over here and so we know that if this is
+free so we can have all any possible any
+admissible variation in order for all of
+this to be equal to zero then this part
+has to be equal to zero.
+Okay, so nothing too crazy here, but at
+the very high level, what we're doing is
+that we are extending the current
+formalism. When we extend it to
+generalized boundary conditions, we're
+lacking some uh uh some boundary
+conditions to pinpoint concepts of
+integrations. And we can derive them
+through this equation over here, which
+ends up being kind of a case- by case
+analysis on essentially pinpointing
+those those boundary those constants of
+integration.
+Does this make sense?
+Okay, great.
+So now again to kind of uh see this in
+practice how this works, let's take a
+very related problem in a way.
+You're talking about your boundary
+condition.
+Is that always assuming that to be said?
+&gt;&gt; Uh me.
+&gt;&gt; Uh I noticed that the initial time for
+the x is not in there. It's only whether
+or not x and tf are set. Um is that
+because we're and it also didn't show up
+in the equation, but it's always set.
+It's being essential. So it's always a
+system that's always been fixed.
+&gt;&gt; Yeah. I mean usually you if you think
+about it from an optimal control problem
+you know where you are now and you know
+what time is
+&gt;&gt; okay but like there could be also some
+problems where it's like um when are you
+going to start necessarily measuring or
+something like that perspective or like
+it can start at any time if you're
+thinking maybe not from an a point of
+view but maybe from a optimizing some
+type of point and when you're going to
+make this decision or something
+um but then it wouldn't we wouldn't be
+able to use this method
+&gt;&gt; I think you can always reformulate your
+problem such that you're starting from
+zero time 0 and say zero. You can always
+re reshift and rear your problem to to
+always have the initial conditions are
+given. Does that make sense?
+&gt;&gt; Yeah.
+Okay. And so the
+example we'll be looking at specifically
+is one where we want to determine again
+the the smooth curve or smaller length
+that connects
+point x uh of 0 = 1 to
+kind of a free final point x of tf but
+on the line t = 5. So here we're
+assuming we have a fixed final time of
+t= 5. We have a fixed initial condition
+x of0als 1. But then we want to find the
+curve of smooth kind of shortest length
+that connects to this line here. So we
+want to find the the final x of tf. So
+in you know it could be this line over
+here. It could be this line over here
+could be this other function over here.
+But most likely it'll be this one here.
+Right? And so uh let us now approach it
+from the perspective of the optimality
+conditions which we just introduced.
+So again as we were doing uh here above
+the uh cost functional will be the same.
+So we keep this cost functional over
+here
+and we already applied the uler. So we
+know
+from the treatment we were doing here
+that the uler condition still holds
+right. So we can leverage the results
+that we had here above. meaning that the
+uler condition uh essentially boils down
+to uh this equation over here right
+which just for practicality let me
+rewrite. So we derived above that x of t
+is equal to c1 t + uh c2. Now in this
+case we have one boundary condition
+which is that x of0 is equal to 1. And
+so from uh these two we can evaluate x
+at time z which is equal to c1 * 0 plus
+um c2 and this must be equal to one
+right
+which essentially means that
+uh c2 is equal to one right
+so we use the initial uh condition to
+pinpoint one of the two constants of
+integration.
+Now, how do we find the other one? So,
+C1, we are missing, as we were saying
+before, one of these boundary
+conditions. And so, we'll use the the
+one we just derived on the slide. And
+again, we want to be methodical. So, the
+way we do this is that from the table
+we are in the case where TF is specified
+uh but X of TF is free. So we already
+used this boundary condition over here.
+Now we want to use the second one.
+Okay, which in practice boils down to
+evaluating the relative g with respect
+to x dot
+which we did again before but let me
+just rewrite it here which is 1 / 2 *
+square&lt;unk&gt; of x uh 1 + x 2
+x dot
+* 2x
+dot.
+And so what we want in practice is that
+we uh want to take this expression. So
+looking at the boundary condition, we
+take this expression, we evaluate it at
+time tf and we set it equal to zero.
+So this leads to
+x dot of tf
+over square&lt;unk&gt; of 1 + x dot of tf
+uh equal to zero
+which essentially means that
+x dot of tf is equal to zero
+Right.
+So now we know from
+here we know that uh x of t is equal to
+uh c1 t + 1 because c2 is equal to 1.
+uh which essentially means that
+x dot of t from from here
+is equal to uh c1
+right by differentiating this.
+And so basically now what we have is
+that by combining these two we can
+essentially derive that c1 is equal to
+zero because we are evaluating this at
+the final time and we know that this is
+equal to zero. So c1 must be equal to
+zero.
+Right.
+So now what we get kind of as a final
+result is that we pinpointed both of our
+constants of integration. And so we have
+that C1 is equal to 0. C2 is equal to 1.
+And so we get that X of T is equal 1
+which is indeed this line right here.
+Again, nothing too deep here. Uh it's
+exactly the same mechanics. Uh I just
+showed you an example of how do we
+derive those additional boundary
+conditions in the moment we don't have
+the uh necessary boundary conditions
+that are needed.
+Okay.
+Okay. So in general just as a caveat um
+the moment we have uh kind of
+multi-dimensional
+uh functions that we're dealing with uh
+the exact same mechanics apply we just
+apply them uh component wise. So again
+nothing really deep here. We used
+everything assuming we had functions
+that maps mapped reals to reals. But in
+the moment where we have
+multi-dimensional uh functions, we would
+apply all of the boundary conditions and
+all the uler equations uh per component.
+Okay. The second extension that I want
+to briefly uh touch upon I I say briefly
+because we will be expanding on it in
+the context of optimal control uh in a
+few slides from now is the one where we
+are considering constraints that link
+together uh the function wt in this case
+with the derivative of the the
+derivative of the function wt with the
+function itself. Yes.
+&gt;&gt; Just on that example,
+I might not be seeing something, but I'm
+wondering how you got x= 1 and not x=
+&gt;&gt; we because we pinpointed this constant
+of integration. Uh
+this one here where is it? Yeah, c2
+equals 1.
+&gt;&gt; Okay.
+&gt;&gt; Right. So we know that x of t is c1 t +
+c2. And we pinpointed both c2 is 1 and
+c1 is zero. And so you get that x of t
+is equal one.
+Okay.
+So again what we're doing here is we
+want to uh bring forward a second
+extension that we're doing to the
+current formalism. Specifically we're
+interested in having uh extensions to
+the fact where we have constraints that
+tie together the derivative of a
+function with the function itself. And
+so here we're considering a situation
+where say we have a function w that maps
+reals into r n + m um where we want to
+essentially find the extrema for w star
+that basically optimizes this functional
+over here uh which is the exact same uh
+situation we were uh seeing before but
+now we have everything expressed in this
+uh in this W. Now notice that uh the
+constraints here are only with respect
+to the first n dimensions. So w is a
+function that maps in n plus m. We have
+n constraints. And so kind of if you
+wish kind of a way you can interpret it
+as taking a step into the direction of
+what we care about is that n could be
+our state dimensions, m could be our
+controls. And so we have a a constraint
+here which represents the analog of the
+system dynamics which essentially ties
+together the controls the which are the
+m free variables with the n uh states
+&gt;&gt; just clarification when so in this
+situation where we were previously doing
+assuming x is like a number now you're
+calling it w making it a vector and then
+you're also I
+Yes, exactly.
+&gt;&gt; So if you wish the extension of calling
+it W and being it a vector value
+function is just extending from
+functions that map real to real into
+vector value functions. The only thing
+that we're adding here is this type of
+constraints. Yeah.
+Okay. And and so indeed we we mentioned
+that only M of the N plus N components
+of W are independent. uh and constraints
+of this type might may represent the
+state equations such as the system
+dynamics. And so indeed maybe one way to
+interpret it is just w is the
+concatenation of our states and controls
+uh variables control functions.
+And so uh the way we handle this uh is
+similar to the way in which we handled
+in finite dimensional optimization the
+constrained setting. And specifically in
+finite dimensional optimization if you
+remember we introduced the concept of
+lrangen where essentially we took the
+constraint we added it to the objective
+function uh together with some lrange
+multipliers which we called lambda and
+then we treated the problem as if it was
+unconstrained. So essentially this term
+represented like a penalty for violating
+those constraints. And so here what we
+do is exactly the same thing in the
+sense that we uh posit an augmented uh
+integrant function g specifically g of a
+um which is the original g plus this uh
+term here which represents the
+constraint multiplied by this p of t
+which is uh the analog of the lrangen
+multipliers. Now notice that in the
+finite dimensional optimization lambdas
+was just a vector of values. Now p of t
+is a function of time in and of itself.
+Uh and is usually referred to as the
+coate in literature. Cost coate because
+you have one uh function for every state
+uh that you have in your system.
+Um yeah again so we're changing notation
+because this is what you will find uh in
+literature most most commonly. But this
+is the exactly the analog of the lambda
+uh variables that we introduced in
+finite dimensions.
+Okay, so the
+point here is that we are extending our
+necessary optimality conditions to
+various extensions. And so what you get
+is that uh the optimality conditions for
+this case. So the case where we are
+introducing this kind of constraints
+essentially boils down to the enforcing
+the Uler equation this time on the
+augmented cost. So again, we're using
+the exact same trick we did in finite
+dimensions. So we took the constraint,
+we added it to the objective function,
+and we're treating it as if it was
+unconstrained. And so this is exactly
+the same thing that we're doing here.
+We're taking our differential
+constraints, adding them to the original
+cost function G, defining the augmented
+cost G of A and uh applying the uler
+equation to this G of A.
+Of course, here there is an additional
+condition that is the fact that the
+constraints must be satisfied, right?
+So, if a function is optimal, it has to
+be also satisfying those constraints.
+And indeed, notice again the similarity
+with the respect to the finite
+dimensional uh optimization.
+Again, this I just wanted to kind of
+share the intuition of how we deal with
+this. We'll formalize it in in a couple
+of slides.
+Okay. And so given these two extensions,
+we were treating them from the broader
+perspective of calculus of variation,
+which is this tool kind of mathematical
+tool we're using to solve uh problems
+over functions. But now we want to go
+into things that we actually care about
+which is solving optimal control
+problems. And we will do this in kind of
+three steps actually four. Today we'll
+only look at the first one uh which is
+we will be uh deriving uh necessary of
+humanity conditions for optimal control
+problems assuming that the uh controls
+admissible controls are not bounded. So
+we won't be assuming controls such as uh
+constraints uh such as uh maximum
+thrusts on the controls.
+on uh Monday next week we'll be
+introducing kind of the celebrated uh
+pontraan minimum principle uh which is
+essentially the generalization of these
+optimality conditions to the case where
+the controls uh may be bounded
+and then we will apply these optimality
+conditions to a number of known cases
+showing that we can derive known uh
+strategies for controls such as bang
+bang controls to those of you that are
+familiar with that and then the fourth
+that is not listed here is that we will
+be looking at uh computational methods
+for solving these uh differential
+equations. So until now we've solved
+these problems analytically if you wish
+uh in practice uh how you will use them
+uh you know in this class and
+potentially in your career is that you
+will be using the optimality conditions
+to derive these differential equations.
+You derive the boundary conditions for
+your specific case and then you feed
+both so the differential equations and
+the boundary conditions to a numerical
+solver which will take care of the
+solution for you. Uh and so this is why
+indirect methods are also called
+optimize then discretise because here
+we're formulating the optimal solution.
+So the optimize part and then the
+discretization part usually comes when
+you feed this into our numerical solver.
+Is the plan does the plan make sense?
+and any questions so far?
+So um let us consider now the optimal
+control problem with unbounded controls.
+So specifically as we introduced also uh
+a couple times in the previous lectures,
+the problem here is we want to find an
+admissible control u star which causes
+the dynamical system represented by this
+uh differential equation to follow an
+admissible trajectory x of that
+minimizes the following cost functional.
+The cost functional is composed of two
+terms. Uh stage uh cost represented by g
+uh which is a function of x and u and
+time. Usually uh g is something that is
+you know accumulated over time and could
+represent things like uh control effort.
+So maybe something like u ^ squ. Uh so
+you don't want to maybe push too much on
+the on the throttle or something like
+that. and a terminal cost which depends
+only on the uh final time. Uh so the
+state at the final time and this could
+represent something like making sure
+that you're actually hitting the target
+that you want to hit.
+Uh notice that uh J so the cost is only
+a function of U because this U are our
+free variables our controls and the
+state that corresponds to our control
+signal are kind of implicitly defined
+through the system dynamics.
+So this is the setup we introduced
+before uh but just making sure that this
+is exactly where we are we're going into
+and we're assuming that uh the initial
+time and initial conditions are are
+fixed.
+Okay. So the way I will uh go by
+deriving the optimality conditions is in
+three steps. So first I'll state them.
+Then we will go through an example
+showing how to apply them and then we'll
+go through a sketch of a proof of how we
+uh can derive these results. So the
+optimality conditions are
+not nothing more than this slide nothing
+less than this slide over here. So
+specifically
+um the optimality conditions state that
+we define the Hamiltonian meaning we
+augment the cost with the constraint. So
+exactly how we did before through the
+kind of equivalent of the lrangen our
+co-state variables p of t
+and then kind of define the optimality
+conditions uh whereby an optimal x p u
+triplet must satisfy uh some
+differential equations. We'll have a
+look at them more later. Uh given some
+boundary conditions which are given
+through this equation over here which we
+can handle exactly how we did before
+depending on uh if our final time or xf
+are fixed or not.
+So let's have a look a little bit more
+closely at uh what these differential
+equations look like. So the first one is
+uh obvious because these are essentially
+the uh dynamics constraints. So if you
+look at the uh Hamiltonian here and take
+the uh derivative with respect to the
+co-state p of t what you're left with is
+that uh you're left with the dynamics
+you're left with f right so essentially
+this this condition over here is just
+saying that for a triplet to be optimal
+it needs to satisfy the dynamics make
+sense the second and third are less
+intuitive we'll derive them in in a
+But very mechanically what you typically
+do is that you would u essentially
+define the Hamiltonian. You then posit
+these differential equations. You use
+the third which are uh m algebraic
+equations. Actually this is not a
+differential equation to express u as a
+function of p and x and then you
+basically solve these differential
+equations using the boundary conditions
+to pinpoint the constants of
+integration.
+&gt;&gt; Yes.
+&gt;&gt; Yes. So it's a it's a good question.
+It's important this that this is clear.
+So remember how um we were looking
+before at the case where we introduced
+the uh constraints represented by the
+dynamics and in order to handle these we
+used kind of a very similar logic that
+from the one that we used in finite
+dimensions which is when we have a
+constraint in order to handle it we take
+that constraint and we augment the cost
+with a penalty for that constraint and
+then we treat the problem as if it was
+unconstrained. And so in finite
+dimensions we did this through lranch
+multipliers which are the lambdas if you
+if you recall. And the co state here is
+playing the exact same role but this
+time in the context of continuous uh
+time uh functions. Um and it represents
+the analog of the lrange multipliers
+which we call co-state and label them as
+p.
+Does it make sense?
+Any
+[snorts]
+other question on on this? So again here
+I'm just stating what the optimality
+conditions are for the optimal control
+problem we're interested in. And these
+optimality conditions look as uh this
+set of uh uh differential equations with
+accompanying boundary conditions
+and mechanically we will see how to use
+them but it is uh mechanically it's kind
+of a process where we uh compose the
+Hamiltonian by essentially augmenting
+the cost through our dynamics. We define
+these differential equations and then we
+solve for them by using the boundary
+conditions.
+Okay, as we were doing before of course
+uh in order to uh find the
+correct boundary conditions uh it's also
+a case a case by case scenario and so we
+have kind of equivalent uh tables as we
+were having in the in the previous case.
+Yeah,
+&gt;&gt; I was just I also had a question about
+the previous slide. How did you restate?
+You were saying something you solve the
+last for you and then do something like
+that.
+&gt;&gt; Yeah. So we will see it in a moment
+because we'll do an example. Uh but what
+I meant is that so in practice after you
+define the Hamiltonian uh kind of
+applying these so using them to solve a
+problem it means that you need to
+basically solve these differential
+equations. And in practice, what usually
+happens is that you use the third one to
+express u as a function of p and x. And
+then you use these two basically, you
+know, feed u in kind of substitute u in
+the first two differential equations.
+And then you solve these differential
+equations pinpointing the constants of
+integration with the boundary
+conditions.
+&gt;&gt; Yes.
+&gt;&gt; Just trying to connect what we were
+looking at before to this here. So it's
+we're using like the same boundary
+conditions that we just bought the
+balances. It's just to equate a case of
+not using these OE as well, right?
+&gt;&gt; Uh I mean the boundary conditions look
+slightly different as well.
+&gt;&gt; So this is where I am just stating the
+result. Uh I'm happy to provide kind of
+the derivations of how we get there.
+We'll have a sketch of a proof. So will
+be some intuition there. Uh but the
+point is that the derivations are not
+that insightful. Um yeah the but yes the
+point is that you have some boundary
+conditions which are not exactly the
+same as we were doing before
+mechanically we use them exactly in the
+same way but they just look different
+&gt;&gt; the difference between what we were
+previously doing before was a lot of
+notation didn't just change um the main
+difference is more instead of just
+finding like a position or so which is x
+of t we're now doing it as a control
+system
+&gt;&gt; yeah so I can understand the confusion
+that comes with a lot of notation
+changing. So the point is that up until
+now we introduced calculus of variation
+as a tool for solving infinite
+dimensional optimization problems
+detached from optimal control and so we
+are using like only X or W as a
+combination of everything. Now we are
+basically doing kind of the you know the
+hop in the direction of optimal control
+and we want to use the exact same tools
+for now formulating everything notation
+included as an optimal control problem
+where we have the dynamics f we have the
+states x and we have the controls u.
+Does it clarify? Uh yes and the and so
+the equations though are slightly
+changing. Uh go on the front like but
+the equation it looks extremely similar
+and that's on purpose because the only
+difference is we're adding the u
+&gt;&gt; uh if I mean what equation are you
+referring to this one here? Um so yeah
+that equation there essentially u just
+became x dot it was previously x dot in
+the previous time and now it's u because
+we are now controlling that versus x
+&gt;&gt; if if now we are controlling the system
+&gt;&gt; through the coupling of so you were free
+variables we control u's and we control
+x through u
+&gt;&gt; uh before we could control directly x
+&gt;&gt; yes
+&gt;&gt; um sorry I'm just confused with what's
+the difference between the Hamiltonian
+and the GA function that they defined
+earlier.
+&gt;&gt; Mhm. Yes. Uh so the
+kind of the GA function you should see
+it as uh I basically I wanted to give
+you the intuition of how to handle this
+sort of constraints that couples uh you
+know in the optimal control notation
+couples controls with states. And I did
+this here. We had like a simplified
+objective function, right? We only had
+this G over here. And so in this
+specific case, kind of augmenting, so
+kind of taking these constraints into
+the objective function and penalizing
+for them bo down to this augmented G. In
+the more general setting, which is the
+one we care about, uh we formally define
+this Hamiltonian, which is again
+intuitively the same thing. uh but this
+is the much more general uh formalism if
+that makes sense.
+&gt;&gt; Okay.
+&gt;&gt; Yeah.
+&gt;&gt; Yes.
+&gt;&gt; Question. What's the difference between
+the is the Hamiltonian the same as the
+lrangeian we had in previous lectures
+where we had to lambdas and stuff?
+&gt;&gt; Uh you could interpret it as the inde
+the analog of the lrangeian. Yeah.
+&gt;&gt; Okay. And so in practice kind of the uh
+necessary conditions
+meaning the these ones here essentially
+represent a system of 2n differential
+equations of sec well sec um a set of
+second order uh 2n first order
+differential equations and m algebraic
+equations which is the third
+uh and in order to solve these we would
+basically need to pinpoint these uh
+constants of integrations. And so we'll
+do this by uh using the boundary
+conditions as we were doing before. But
+this is just to give you a sense that at
+the end of the day we will have uh two n
+constants of integrations and we will
+need uh 2n uh boundary conditions to
+pinpoint those constants of integration
+actually. So here I'm mentioning kind of
+2 n + one. Can you think of the case
+where we need the plus one?
+So again here we're just mechanically
+thinking of we'll have a set of
+differential equations uh and we need
+the
+appropriate number of boundary
+conditions to pinpoint those constants
+or integrations.
+and we will see it in the example but
+essentially the additional one will be
+to pinpoint the final time
+but now I think it's it's good that we
+go through an example to to see this
+mechanically
+Okay.
+Okay. All right.
+So the problem we'll be looking at is
+the one where we are trying to
+essentially optimize uh the equivalent
+of a particle on a on a line. Right? So
+we have x of t which represents uh kind
+of our position of our particle at time
+t. uh and this is defined by uh a system
+which is a uh second order uh through
+some second order dynamics uh which
+essentially means that we are directly
+controlling the acceleration of this
+particle. So we're assuming uh unit mass
+and so f equals ma we are directly
+controlling the acceleration of this
+particle
+and specifically we want uh to steer
+this system from an initial condition
+whereby
+uh at time zero so x of
+0 is equal to 10. So we are at a
+position 10 and with u uh zero velocity
+because the derivative of x at time 0 is
+equal to zero
+and we want to reach the origin.
+So we want that x of tf is equal to zero
+and also we want to reach reach it with
+uh zero uh velocity.
+So this is uh what we want to do in this
+system and specifically we want to do
+this while minimizing the following uh
+functional j uh which is uh comprised of
+two parts. Uh we have a running cost
+which is is defined as uh 1/2 uh the
+integral between t0 and tf of b u uh u t
+^2. Now this uh essentially represents
+the analog of wanting to minimize
+control effort for example
+and the we have a terminal cost that is
+12 * alpha ts^ 2 which represents the
+essentially wanting to get to the
+objective uh you know quickly
+essentially we don't want to take a very
+long time so we're penalizing final time
+now these two terms are kind of balanced
+and weighted from these two scaling
+factors alpha and B. And so depending on
+uh which one is bigger, we might want to
+reach our objective by so if B is very
+large, we want to do this by uh not
+reading be really cautious with the
+acceleration that we have. Uh on the
+opposite, if alpha is very large, we
+want to reach it very quickly
+potentially uh at the expenses of a
+larger control effort. Yes,
+&gt;&gt; I just wanted so using that halfart that
+just says minimize. So you don't want as
+much acceleration as possible.
+Yes, exactly.
+&gt;&gt; Yeah,
+&gt;&gt; yeah. Yeah, indeed. So, we are in the
+setting where we are defining a
+functional and uh in general we're
+always minimizing costs in our in our
+optimal control problems. Yeah. And in
+this case, the final time is assumed to
+be free.
+&gt;&gt; Are these square kind of like generalize
+how they do the cost or is that
+&gt;&gt; this is just a choice. Yeah.
+&gt;&gt; Okay. So, uh why is this interesting? I
+think it is particularly interesting
+because uh it it's a a simple example
+that kind of encapsulates a lot of the
+uh characteristics of what you would see
+in kind of real world optimal control
+problems. Right? So we have uh
+some cost which balances control effort
+and final time. We have a free final
+time which we want to optimize over. Um
+and in general it's a problem that if I
+were to have given this to you a couple
+weeks back you probably wouldn't have
+known how to start with right and now we
+indeed have uh general for formalism
+which we could use to tackle these kind
+of problems.
+Okay so let's let's get started.
+So in in general u
+in optimal control we want to be uh
+methodical. So let's apply and and
+follow step by step the the recipe. So
+the first thing that we want to do is
+define the uh Hamiltonian right
+which we defined as G plus our co-state
+variables again the analog of the lang
+multipliers uh uh transpose F.
+Now in order to apply any of this the
+first thing that we have to do is so
+remember that
+you might have noticed but here we're
+looking at a second order uh system and
+everything that we derived so far kind
+of assumes we have a first order uh
+system. So the first thing that we want
+to do is cast this problem as a first
+order differential equation which we
+know how to do and specifically the way
+we do this is by
+constructing the analog of this system
+which is essentially by adding an
+additional uh dimension whereby X do one
+is equal to X2
+and X dot2 is equal to U
+right? So we saw this I think Monday
+last week
+and for us this here will be F right.
+Okay.
+Now remember that we have one costate
+variable for
+every state variable. And so we define
+P
+of T
+as the vector of P1T
+and P2T. So we essentially have two
+components.
+Okay. But so now we have all of the
+ingredients to define our Hamiltonian.
+So
+h will be uh g which from our actually
+it's probably useful to keep the the
+problem over here from our definition of
+the functional
+g is
+12 b u ^2
+again this is g
+plus
+the vector of co-state variables p1 1 T
+p2t
+transpose
+x2t. So our f
+uh u
+right which
+we can expand as 12 b
+u 2 t plus p1
+t x 2t
+plus p 2 t
+uh u t.
+I hope this is uh big enough for the
+ones in the back.
+Yeah.
+Okay.
+Okay. So now that we have the
+Hamiltonian,
+let's be methodical and indeed define
+our differential equations, our
+optimality conditions. Yes.
+&gt;&gt; Have to cast it like let's say it was
+just we were only controlling the
+velocity
+um instead of the acceleration.
+That makes sense. Um what would we have
+our app? Would it just be x itself and
+then would there still be the u or like
+what would your app?
+Um
+&gt;&gt; now I'm not exactly sure about this
+specific example but in general if you
+have a system where it would be just a
+first order system it will be as it is
+so you would be ready to apply it
+&gt;&gt; now
+would it still be a twoimensional
+&gt;&gt; no in that case
+&gt;&gt; yes
+okay so let us take the
+and define the first of our conditions
+which is that
+x dot has to be equal to the derivative
+of the Hamiltonian with respect to the
+costate vector which is indeed uh we
+know already this is our f right
+which just to spell it out this
+essentially means x1 dot equals uh x2
+and x2 dot equals uh u. Uh so now here
+I'm omitting uh t uh in between
+parenthesis just to save on space but
+everything here is a function of time.
+Okay so this is the kind of the
+intuitive one right just our dynamics.
+Now for the second one, for the second
+one
+what we have is P dot is equal to minus
+the derivative of the Hamiltonian with
+respect to X
+which is equal to P1 dot.
+So the Hamiltonian
+is this guy over here. So taking the
+partial derivative with respect to X1.
+So there is no x1 here. So it's just p1
+dot equals z. And then
+p2 dot in this case uh equals
+uh
+negative uh p1.
+Yes. because we're taking the derivative
+with respect to um
+x2. Yeah.
+Okay.
+Does this make sense?
+Yeah. Perfect. [snorts]
+Now for the third uh what we do is that
+we have set the derivative with respect
+to the of the Hamiltonian in the u uh
+which is equal to b u plus uh p2 from
+here
+which means that u is equal to 1 / b p2.
+So this is for example to refer to your
+comment before what I what I meant by in
+the third case we want to express uh u
+was a function of uh p and x in this
+case is only p
+okay and so from this if we kind of are
+putting these two uh together what we
+get is that
+x do 2 is equal to -1 / p uh p2
+Right.
+Okay. So just as a caveat in general uh
+this is where uh you would stop. Right.
+So you derive the optimality conditions
+uh you would feed this to a solver
+together with the appropriate boundary
+conditions and hope that the solver
+converges and you're done. Now for the
+purpose of uh you know being methodical
+let's let's try to solve this uh
+analytically.
+Okay. So
+we know from
+um
+from over there that P1
+uh dot of T is equal to uh zero. So I'm
+just rewriting here which essentially
+means that uh P1 of T
+is equal to uh C1. So now we're starting
+to see our constants of integration
+starting to pop up.
+So we know from P2 of T that has to be
+equal to negative P1
+of T again from up there that this means
+that uh P uh 2 dot is equal to uh
+negative C1 right
+[snorts]
+okay which essentially means
+that P2 of T is equal to C1 T plus uh
+C2.
+Okay. Then kind of again going forward
+we know that x uh 2 dot is equal to
+1 / b * p2t
+again we got this from over here so I'm
+just rewriting it
+which is equal to 1 / b multiplied by
+um
+minus C1 T + C2 because this is what we
+just derived
+which essentially means that uh
+integrating we get X of X2 of T is equal
+to -1 / B * - C1 / 2 T ^ 2 + C2 T + C3
+&gt;&gt; [snorts]
+&gt;&gt; Okay. So here to avoid having to carry
+over this uh C3 term in the following uh
+computations I I'm already kind of
+exploiting the fact that we know that
+our initial conditions are fixed. So
+specifically
+we know that
+um let's just write it here
+x dot at time z is equal to zero. So the
+we start from a zero velocity condition
+which means that x 2
+is equal to zero
+which essentially means that kind of
+combining these two kind of C3 is equal
+to zero it.
+[snorts]
+Okay.
+Uh actually let's go over here.
+Okay.
+Now we keep going and we have that x1. T
+uh is equal to x2 t.
+again from leveraging our differential
+equations right there
+which means which is equal to -1 / b*
+- c1 / 2 t ^ 2 + c2 t
+where by integrating it means that x1 t
+is equal to 1 - 1 / b * c1 T1 / 6 T
+power 3 + CT * T 2 + C4,
+[snorts]
+right? Okay, so here we essentially
+spelled out all of our uh differential
+equations
+and now what we need is we need our
+boundary conditions to pinpoint all of
+our constants of integrations which in
+this case is C1 C2 C3 C4 C3 we already
+used it here but it's it's those four
+plus the final time TF. So we need to
+pinpoint those five constants of
+integration and so we need five uh
+boundary conditions to do so.
+So again what do we know? So we know
+that x 1 0 is equal to to 10. We know
+that x2 0 is equal to zero. So our
+position at the initial time is 10 and
+we are at zero velocity. [snorts]
+Uh we know that x1 at the final time tf
+is equal to zero and the we have to get
+there uh with zero velocity and so x2 tf
+is equal to zero. So here we have four
+uh boundary conditions and now to get
+the fifth we essentially look at our
+table
+and we look at the case when uh the
+final position is uh specified right. So
+uh this one here. So x of tf is a
+specified final state. And so this means
+that we need to include this additional
+boundary condition over here.
+So what does that boundary condition
+look like in practice is that we need to
+take the Hamiltonian um evaluate it at
+final time. I'm using this notation to
+mean evaluated at final time to avoid
+writing a sequence of parenthesis. Um,
+plus the derivative of the terminal cost
+uh also evaluated at the final time must
+be equal to zero. So this is our fifth
+uh boundary condition exactly how we uh
+got it from the table.
+So uh let's just do that.
+So the Hamiltonian evaluated at the
+uh final time
+is 1 / 2 B U 2
+TF
+plus P1
+TF * X2 TF
+plus P2
+TF * U
+TF
+right so here I just took our expression
+of the Hamiltonian and I just evaluate
+it at the final time.
+Now uh we know that this is equal to
+zero
+um because we know that x2
+of tf is equal to zero right
+from here
+and we know that this part over here uh
+is
+b
+u
+right from
+where is it?
+Uh can you spot it?
+Well uh yeah from here for example.
+Yeah. So we know that P2 evaluated at TF
+is equal to negative B UT.
+Okay. And so kind of this essentially
+means that the Hamiltonian evaluated at
+the final time is equal to -1
+/ 2 * B U^2
+TF.
+So this is the first of our two terms
+that we are computing of our boundary
+condition. We just need the last one
+which is the derivative of the terminal
+cost evaluated at the final time
+which is equal to alpha tf. So again the
+terminal cost for us is uh
+is this one here. So 12 alpha tf squ.
+Are we able to see over there? I saw you
+were. Does this help?
+&gt;&gt; Okay.
+&gt;&gt; Yeah.
+&gt;&gt; All right. And so basically summing
+these two uh parts together what we get
+is that
+1 / 2 b u^2
+tf
+plus alpha
+uh tf must be equal to zero. Right? So
+essentially we got our
+five
+uh boundary conditions uh
+right to pinpoint our five constants of
+integration. Yes.
+the X1
+C2.
+&gt;&gt; Uh yes. Uh
+&gt;&gt; or is there
+&gt;&gt; Wait, so you're saying that this should
+be one half or
+&gt;&gt; C2 in the middle?
+&gt;&gt; Inside the brackets C2 C2 T²
+&gt;&gt; uh
+&gt;&gt; on the far right.
+&gt;&gt; Yeah, I see. Yeah, I think I think
+you're right. Yeah.
+It should be like this. Yeah.
+Yeah, this makes sense.
+Okay. And so basically what happens is
+that uh
+if we now we have all of the ingredients
+uh and to pinpoint our constants of
+integration and what we get is that the
+solution actually looks like uh
+something like this. So we can pinpoint
+all our constants of integration and
+specifically we have that the final
+times look like 1800 * b you know
+divided by alpha^ 1/5. Now uh well this
+looks like you know an okay beast uh it
+kind of aligns with intuition right
+because so the higher b so the higher
+our uh weight on the control effort the
+the the
+higher the final time so we'll tend to
+go slower. On the other hand, the higher
+alpha, so the h the the lower will be
+the final time. So the more we'll be
+quicker at at reaching our our
+[clears throat] final condition.
+&gt;&gt; Yes.
+&gt;&gt; For this if um initial condition by the
+table, is there any sort of like
+intuition behind it or should we just
+like take it out and just memorize it
+and not worry about it?
+&gt;&gt; Yeah. So the this is a great question
+because it's a great segue into kind of
+the next uh slide which is indeed uh
+trying to give you some intuition to
+into how those uh equations come up. Um
+well in in to be exact the boundary
+conditions they're just um
+let's go through this and then maybe we
+can uh we can take this question again.
+So specifically okay so we introduced
+the optimality conditions we showed how
+to use them. Now I want to just spend a
+couple of minutes to giving you an
+intuition into how those are derived.
+Yes.
+&gt;&gt; Yeah. So solve for the final option by
+time. Is there a way to solve for
+control time or no?
+&gt;&gt; Uh that experiment you have but you
+never solve for
+&gt;&gt; no well of course you would get also the
+once you have everything here from the
+your solver you would get also kind of
+all the triplet you would get x u and uh
+p. Yeah.
+Okay. And so specifically
+so remember how we uh derived the uh
+uler equation in the unconstrained case
+and specifically our argument there is
+that we started from the variation. So
+we took the uh fundamental theorem of
+calculus of variation. So
+uh that the variation has to be equal to
+zero. Right? And so specifically we got
+to here by so we turned this into an
+actionable uh condition by starting from
+the increment uh taking the linear part
+of that increment which equal to the uh
+variation and then we derived that
+condition on the integrant of that
+linear part uh by leveraging the fact
+that we could have um any potential
+admissible variation uh delta x. So this
+is just that I ahead of what we did on
+on Monday. Uh so ideally to derive those
+conditions we do a very similar process.
+However, now uh the problem here is that
+those variations cannot be arbitrary
+because these are coupled together
+through the dynamics. So the u's and the
+x's cannot really vary or arbitrary.
+And so the way we kind of we can derive
+this is that we
+um first of all uh to here we consider a
+simplified setting where we set to zero
+the terminal penalty and we uh assume
+that the final time and the x of df are
+fixed and given.
+And in order to derive the optimality
+conditions for uh for this case, we
+consider the augmented uh cost function
+which is exactly how we did uh which is
+basically what we did before um which is
+essentially a trick to u
+basically add zero to our original cost
+g. The way the the reason I'm saying
+that this is uh a trick is because if
+you look at this term over here we have
+s f minus x dot and since this is an
+optimality condition in order to be
+optimal the point also has to be
+feasible and so this has to be equal to
+zero right so essentially this is a
+trick where we are defining these
+augmented cost by nominally adding zero
+but we are introducing these costate
+variables or the analog of the langen
+which we will see later. We can then
+kind of use these in order to select
+those cost state variables in such a way
+to simplify our analysis.
+&gt;&gt; Yes.
+&gt;&gt; Sorry. Um on the previous how did it go
+from not knowing you because that's what
+we were solving for getting like of that
+final circle problem to getting that t
+is the one.
+&gt;&gt; Yes. Do you do you mind if we take this
+in a couple of minutes? I just want to
+go through this slide. Yeah. Thanks. Um
+so essentially we are in a situation
+where the augmented cost function is
+something that you that takes this uh
+augmented g that we just did and so by
+doing an exact like exactly the same
+process as we did to derive the uler
+equation we essentially rewrite the
+fundamental theorem of calculus of
+variation in this you know nasty looking
+beast. But if you think about it, this
+is exactly the same thing we were doing
+in the Uler equation where uh we had our
+partial derivatives of the cost uh which
+we obtained by basically doing a tailor
+expansion of our uh increment. Um this
+term here corresponds to the term where
+we were using the integration by part to
+eliminate the dependency on delta x dot.
+And just to make sure that this is
+slightly more explicit. So this term
+over here, so the derivative of GA with
+respect to the costate is just the term
+of our dynamics which we're looking at
+before. Uh this is equal to negative
+costate and this is equal to these two
+uh partial derivatives. Now the argument
+here is that as we did before we want to
+get an an actionable condition by
+leveraging the fact that the variations
+could be arbitrary such that everything
+inside the integrant has to be equal to
+zero in order for the entire integral to
+be equal to zero. The problem here is
+that out of these
+all of these terms the only kind of
+freely v uh kind of variations that we
+could freely vary are the ones in u
+because everything else is kind of
+coupled with respect to u. So what we
+want to do is that we ideally want to
+remove all of this extra stuff be left
+only with this part here and here we can
+actually do the argument that we want to
+do. So the uh first one is kind of
+trivially uh satisfied because for a
+point to be optimal it has to be
+feasible. So this part here is actually
+zero. So this term cancels out. Now for
+these two terms remember that we
+introduced kind of the cost states kind
+of arbitrarily right so we fictitiously
+augmented our cost function adding zero
+with these additional costate functions.
+So here we actually could choose the
+cost state in a quote unquote smart way
+in order to cancel everything out. And
+so exactly this is exactly what we do.
+So we set the PS to be equal to this
+other stuff. And so we are left with
+only this term where the variations are
+arbitrary. And here we could do the
+argument uh that this thing has to be
+equal to zero. And so if you kind of
+think back at what the actual necessary
+optimity conditions were, these were
+exactly those conditions. So remember we
+had three kind of two differential
+equations and some algebraic equations.
+The first one was that the dynamics need
+to be satisfied and it's this term over
+here. The second one was a condition on
+the co-state variables and it's this
+term over here. And then the last one
+was that this term over here needs to be
+equal to zero. So I invite you to kind
+of do the mapping between these slides
+and the actual formulation where the
+only difference is that we're being more
+elegant by defining the Hamiltonian.
+And this is all for today. Thanks.

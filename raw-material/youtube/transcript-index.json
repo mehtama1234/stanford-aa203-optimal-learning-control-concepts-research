@@ -1,0 +1,197 @@
+{
+  "course": "Stanford AA203 Optimal and Learning-Based Control | Spring 2026",
+  "playlist_url": "https://www.youtube.com/playlist?list=PLa9dmHsLK9dg",
+  "videos": 19,
+  "available_transcripts": 18,
+  "total_transcript_words": 197258,
+  "records": [
+    {
+      "lecture": 1,
+      "video_id": "Au2stLALZew",
+      "title": "Course Overview",
+      "url": "https://www.youtube.com/watch?v=Au2stLALZew",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-01-Au2stLALZew.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-01-Au2stLALZew.txt",
+      "word_count": 11184
+    },
+    {
+      "lecture": 2,
+      "video_id": "FbkNYklySak",
+      "title": "Optimization Theory",
+      "url": "https://www.youtube.com/watch?v=FbkNYklySak",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-02-FbkNYklySak.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-02-FbkNYklySak.txt",
+      "word_count": 10515
+    },
+    {
+      "lecture": 3,
+      "video_id": "duZJ2_ajLso",
+      "title": "Calculus of Variations",
+      "url": "https://www.youtube.com/watch?v=duZJ2_ajLso",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-03-duZJ2_ajLso.en-en-j3PyPqV-e1s.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-03-duZJ2_ajLso.txt",
+      "word_count": 11051
+    },
+    {
+      "lecture": 4,
+      "video_id": "7rejaoMWviw",
+      "title": "Indirect Methods",
+      "url": "https://www.youtube.com/watch?v=7rejaoMWviw",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-04-7rejaoMWviw.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-04-7rejaoMWviw.txt",
+      "word_count": 11713
+    },
+    {
+      "lecture": 5,
+      "video_id": "R4_fHzTo0IM",
+      "title": "Computational Methods",
+      "url": "https://www.youtube.com/watch?v=R4_fHzTo0IM",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-05-R4_fHzTo0IM.en-en-j3PyPqV-e1s.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-05-R4_fHzTo0IM.txt",
+      "word_count": 10121
+    },
+    {
+      "lecture": 6,
+      "video_id": "zX8raxUa2DE",
+      "title": "Direct Methods",
+      "url": "https://www.youtube.com/watch?v=zX8raxUa2DE",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-06-zX8raxUa2DE.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-06-zX8raxUa2DE.txt",
+      "word_count": 11566
+    },
+    {
+      "lecture": 7,
+      "video_id": "hy-e9g4nugE",
+      "title": "Dynamic Programming",
+      "url": "https://www.youtube.com/watch?v=hy-e9g4nugE",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-07-hy-e9g4nugE.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-07-hy-e9g4nugE.txt",
+      "word_count": 10288
+    },
+    {
+      "lecture": 8,
+      "video_id": "1YdgSwEtf_s",
+      "title": "LQR-Style Algorithms",
+      "url": "https://www.youtube.com/watch?v=1YdgSwEtf_s",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-08-1YdgSwEtf_s.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-08-1YdgSwEtf_s.txt",
+      "word_count": 10114
+    },
+    {
+      "lecture": 9,
+      "video_id": "C9mLpI8Td9g",
+      "title": "Stochastic Dynamic Programming",
+      "url": "https://www.youtube.com/watch?v=C9mLpI8Td9g",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-09-C9mLpI8Td9g.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-09-C9mLpI8Td9g.txt",
+      "word_count": 10462
+    },
+    {
+      "lecture": 10,
+      "video_id": "Fl5EjGhQjgs",
+      "title": "Reachability Analysis",
+      "url": "https://www.youtube.com/watch?v=Fl5EjGhQjgs",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-10-Fl5EjGhQjgs.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-10-Fl5EjGhQjgs.txt",
+      "word_count": 11102
+    },
+    {
+      "lecture": 11,
+      "video_id": "3_gxaB_Pp3k",
+      "title": "Introduction to MPC",
+      "url": "https://www.youtube.com/watch?v=3_gxaB_Pp3k",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-11-3_gxaB_Pp3k.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-11-3_gxaB_Pp3k.txt",
+      "word_count": 10288
+    },
+    {
+      "lecture": 12,
+      "video_id": "8Elrw30y0tg",
+      "title": "Feasibility of MPC",
+      "url": "https://www.youtube.com/watch?v=8Elrw30y0tg",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-12-8Elrw30y0tg.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-12-8Elrw30y0tg.txt",
+      "word_count": 10124
+    },
+    {
+      "lecture": 13,
+      "video_id": "RtJSHiqOdgQ",
+      "title": "Intro to Learning",
+      "url": "https://www.youtube.com/watch?v=RtJSHiqOdgQ",
+      "transcript_available": false,
+      "error": "es to: /home/manishmehta/projects/stanford-aa203-optimal-learning-control-concepts-research/raw-material/youtube/transcripts/raw-vtt/lecture-13-RtJSHiqOdgQ.en.vtt\nWARNING: The extractor specified to use impersonation for this download, but no impersonate target is available. If you encounter errors, then see  https://github.com/yt-dlp/yt-dlp#impersonation  for information on installing the required dependencies\nERROR: Unable to download video subtitles for 'en': HTTP Error 429: Too Many Requests"
+    },
+    {
+      "lecture": 14,
+      "video_id": "7YdOx-ih0II",
+      "title": "Intro to IL and RL",
+      "url": "https://www.youtube.com/watch?v=7YdOx-ih0II",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-14-7YdOx-ih0II.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-14-7YdOx-ih0II.txt",
+      "word_count": 11319
+    },
+    {
+      "lecture": 15,
+      "video_id": "udHX5Auj7ik",
+      "title": "Imitation Learning",
+      "url": "https://www.youtube.com/watch?v=udHX5Auj7ik",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-15-udHX5Auj7ik.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-15-udHX5Auj7ik.txt",
+      "word_count": 11860
+    },
+    {
+      "lecture": 16,
+      "video_id": "cqPbt3OfRK4",
+      "title": "Fundamentals of RL",
+      "url": "https://www.youtube.com/watch?v=cqPbt3OfRK4",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-16-cqPbt3OfRK4.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-16-cqPbt3OfRK4.txt",
+      "word_count": 10702
+    },
+    {
+      "lecture": 17,
+      "video_id": "zanXSI7zSws",
+      "title": "RL Value-Based Methods",
+      "url": "https://www.youtube.com/watch?v=zanXSI7zSws",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-17-zanXSI7zSws.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-17-zanXSI7zSws.txt",
+      "word_count": 11181
+    },
+    {
+      "lecture": 18,
+      "video_id": "a1g9U_5zO54",
+      "title": "RL Policy Optimization",
+      "url": "https://www.youtube.com/watch?v=a1g9U_5zO54",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-18-a1g9U_5zO54.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-18-a1g9U_5zO54.txt",
+      "word_count": 11656
+    },
+    {
+      "lecture": 19,
+      "video_id": "ZXMThMHFD_w",
+      "title": "Model-Based RL",
+      "url": "https://www.youtube.com/watch?v=ZXMThMHFD_w",
+      "transcript_available": true,
+      "raw_vtt": "raw-material/youtube/transcripts/raw-vtt/lecture-19-ZXMThMHFD_w.en-orig.vtt",
+      "clean_text": "raw-material/youtube/transcripts/clean/lecture-19-ZXMThMHFD_w.txt",
+      "word_count": 12012
+    }
+  ]
+}

@@ -1,0 +1,5472 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:05.680 --> 00:00:06.540
+Hi, everyone.
+
+00:00:06.540 --> 00:00:09.513
+So first of all,
+great to see you here.
+
+00:00:09.513 --> 00:00:10.680
+My name is Daniele Gammelli.
+
+00:00:10.680 --> 00:00:12.560
+I'm a postdoc in the
+Autonomous Systems
+
+00:00:12.560 --> 00:00:15.920
+Lab in the Department of
+Aeronautics and Astronautics.
+
+00:00:15.920 --> 00:00:18.500
+As you might guess from the
+accent, I'm also Italian.
+
+00:00:18.500 --> 00:00:20.427
+So if optimal control
+doesn't work for you,
+
+00:00:20.427 --> 00:00:22.760
+I guess you'll be experts in
+Italian accents at the very
+
+00:00:22.760 --> 00:00:24.520
+least.
+
+00:00:24.520 --> 00:00:29.000
+So for today, the plan is
+that-- so over the last week,
+
+00:00:29.000 --> 00:00:31.880
+we started introducing
+the general formalism
+
+00:00:31.880 --> 00:00:34.000
+for optimal control.
+
+00:00:34.000 --> 00:00:39.440
+Specifically, we introduced the
+general problem formulation,
+
+00:00:39.440 --> 00:00:41.880
+which is something along
+the lines of-- we're
+
+00:00:41.880 --> 00:00:48.480
+given a dynamical
+system x of t, which
+
+00:00:48.480 --> 00:00:52.360
+is in the form of a
+differential equation.
+
+00:00:52.360 --> 00:00:59.200
+And the overall goal for us was
+to determine an optimal control
+
+00:00:59.200 --> 00:01:08.960
+signal, u star of t, that
+minimizes some objective, which
+
+00:01:08.960 --> 00:01:14.160
+we defined as having a
+terminal cost h of x of tf
+
+00:01:14.160 --> 00:01:21.220
+for the final time tf
+plus our running cost.
+
+00:01:26.520 --> 00:01:28.520
+And then so this we
+realized that this
+
+00:01:28.520 --> 00:01:30.400
+was in an infinite dimensional.
+
+00:01:30.400 --> 00:01:31.110
+Yes?
+
+00:01:31.110 --> 00:01:32.360
+Can you use a different board?
+
+00:01:32.360 --> 00:01:35.040
+All right.
+
+00:01:35.040 --> 00:01:36.480
+Again, nothing new here.
+
+00:01:36.480 --> 00:01:40.200
+What I was saying here is we
+defined the optimal control
+
+00:01:40.200 --> 00:01:47.120
+problem as a dynamical system,
+where we wanted to define
+
+00:01:47.120 --> 00:01:50.800
+an optimal control u star of t.
+
+00:01:50.800 --> 00:01:56.680
+And this control then steers the
+state trajectory x of t in a way
+
+00:01:56.680 --> 00:02:01.160
+that we can optimize
+an objective function
+
+00:02:01.160 --> 00:02:05.080
+j, which is composed of two
+terms, a terminal state--
+
+00:02:05.080 --> 00:02:10.360
+terminal cost h of x of tf
+evaluated at the final time
+
+00:02:10.360 --> 00:02:11.920
+plus a running cost.
+
+00:02:11.920 --> 00:02:16.140
+Again, I don't want to just--
+don't take too much out of this
+
+00:02:16.140 --> 00:02:18.132
+exactly, because we
+saw this already.
+
+00:02:18.132 --> 00:02:19.840
+And then given that
+we realized that this
+
+00:02:19.840 --> 00:02:23.020
+is an infinite dimensional
+optimization problem,
+
+00:02:23.020 --> 00:02:25.680
+we then went into--
+opened a parenthesis
+
+00:02:25.680 --> 00:02:27.880
+about finite dimensional
+optimization,
+
+00:02:27.880 --> 00:02:30.480
+where we started
+by defining, first
+
+00:02:30.480 --> 00:02:35.400
+of all, what we mean by
+minima or maxima, that are
+
+00:02:35.400 --> 00:02:37.160
+the objects of interest for us.
+
+00:02:37.160 --> 00:02:41.600
+And then we went into defining
+necessary optimality conditions
+
+00:02:41.600 --> 00:02:44.480
+for the unconstrained
+case first,
+
+00:02:44.480 --> 00:02:50.880
+namely the fact that
+gradient of f of x
+
+00:02:50.880 --> 00:02:54.400
+needs to be equal to 0,
+so be a stationary point
+
+00:02:54.400 --> 00:02:58.280
+of our objective function f.
+
+00:02:58.280 --> 00:03:02.200
+And then we did the same for
+the constrained case, namely
+
+00:03:02.200 --> 00:03:04.280
+the equality constraint case.
+
+00:03:04.280 --> 00:03:06.400
+And so for today,
+we'll just quickly
+
+00:03:06.400 --> 00:03:08.320
+wrap up last week's
+lecture, where
+
+00:03:08.320 --> 00:03:11.240
+we will be defining the
+necessary optimality conditions
+
+00:03:11.240 --> 00:03:13.600
+for the inequality
+constrained case.
+
+00:03:13.600 --> 00:03:16.640
+And then s move to the
+content of today's topic,
+
+00:03:16.640 --> 00:03:20.980
+which are then essentially our
+first step into optimal control,
+
+00:03:20.980 --> 00:03:23.720
+where we'll be trying to
+have a similar approach that
+
+00:03:23.720 --> 00:03:26.100
+is defining necessary
+optimality conditions,
+
+00:03:26.100 --> 00:03:28.520
+this time for the infinite
+dimensional optimal control
+
+00:03:28.520 --> 00:03:29.480
+problem.
+
+00:03:29.480 --> 00:03:32.260
+Any questions on the plan
+and does this make sense?
+
+00:03:35.200 --> 00:03:37.740
+All right.
+
+00:03:37.740 --> 00:03:38.240
+OK.
+
+00:03:38.240 --> 00:03:42.320
+So first of all, when we
+say inequality constraints,
+
+00:03:42.320 --> 00:03:45.000
+we essentially refer to
+an optimization problem
+
+00:03:45.000 --> 00:03:45.807
+of this form.
+
+00:03:45.807 --> 00:03:47.640
+So we're minimizing,
+as usual, our objective
+
+00:03:47.640 --> 00:03:51.280
+function f of x subject to some
+equality constraints, which
+
+00:03:51.280 --> 00:03:53.580
+is exactly the setting
+we were seeing last week.
+
+00:03:53.580 --> 00:03:58.080
+So h of i of x needs to be equal
+to 0 for m equality constraints.
+
+00:03:58.080 --> 00:04:01.200
+And then here, we're introducing
+our inequality constraints
+
+00:04:01.200 --> 00:04:03.320
+represented as gj of x.
+
+00:04:03.320 --> 00:04:07.200
+It needs to be less
+than or equal than 0.
+
+00:04:07.200 --> 00:04:11.480
+And we're assuming here that
+f, h, and all the gj's are
+
+00:04:11.480 --> 00:04:14.200
+continuously differentiable.
+
+00:04:14.200 --> 00:04:18.800
+Again, this problem can be
+written in compact form, which
+
+00:04:18.800 --> 00:04:21.720
+we will be referring to as
+the ICP, so the inequality
+
+00:04:21.720 --> 00:04:25.240
+constraint problem, where we
+are essentially compacting
+
+00:04:25.240 --> 00:04:26.860
+this in vector notation.
+
+00:04:26.860 --> 00:04:30.303
+So all the letters become
+basically boldface.
+
+00:04:30.303 --> 00:04:31.720
+But this is the
+kind of problem we
+
+00:04:31.720 --> 00:04:34.680
+are looking at when we say
+inequality constraint optimal
+
+00:04:34.680 --> 00:04:35.700
+control problem.
+
+00:04:38.880 --> 00:04:43.760
+And so when we introduce
+inequality constraints, kind
+
+00:04:43.760 --> 00:04:47.560
+of mathematically, this object
+becomes much more difficult.
+
+00:04:47.560 --> 00:04:50.840
+And we could spend
+a series of lectures
+
+00:04:50.840 --> 00:04:54.840
+into defining the optimality
+constraints for this case.
+
+00:04:54.840 --> 00:04:58.400
+However, what I will do
+today is essentially,
+
+00:04:58.400 --> 00:05:02.800
+I will try to take an
+easy route in defining
+
+00:05:02.800 --> 00:05:04.320
+the optimality constraints.
+
+00:05:04.320 --> 00:05:06.360
+And what I mean by
+easy route is that we
+
+00:05:06.360 --> 00:05:08.280
+will try to reuse as
+much as possible what
+
+00:05:08.280 --> 00:05:11.440
+we derived last week with
+the equality constraints.
+
+00:05:11.440 --> 00:05:15.200
+And the way we do this is
+through something which we
+
+00:05:15.200 --> 00:05:17.880
+refer to as active constraint.
+
+00:05:17.880 --> 00:05:21.160
+So specifically for
+any feasible point,
+
+00:05:21.160 --> 00:05:23.960
+the set of active
+inequality constraints
+
+00:05:23.960 --> 00:05:28.000
+is denoted as this A of
+x, which is essentially
+
+00:05:28.000 --> 00:05:30.520
+the set of all the
+inequality constraints,
+
+00:05:30.520 --> 00:05:36.440
+gj's, that are respected
+at the equality.
+
+00:05:36.440 --> 00:05:39.920
+On the other hand, all
+the other constraints
+
+00:05:39.920 --> 00:05:43.320
+that are not respected at
+the equality, so are strictly
+
+00:05:43.320 --> 00:05:48.120
+less than 0, we will be
+defining them as inactive at x.
+
+00:05:48.120 --> 00:05:55.560
+So more visually,
+say that we have
+
+00:05:55.560 --> 00:05:59.520
+a problem along the
+lines of minimizing
+
+00:05:59.520 --> 00:06:06.720
+x plus y, subject to the fact
+that x and y must be greater
+
+00:06:06.720 --> 00:06:14.823
+than 0, and x plus y
+needs to be less than 3.
+
+00:06:14.823 --> 00:06:16.240
+What we're looking
+at is something
+
+00:06:16.240 --> 00:06:17.657
+where-- first of
+all, it has to be
+
+00:06:17.657 --> 00:06:19.760
+in the positive
+side of the plane.
+
+00:06:19.760 --> 00:06:26.700
+And then we have
+this constraint here,
+
+00:06:26.700 --> 00:06:28.960
+which essentially defines
+the feasible region
+
+00:06:28.960 --> 00:06:31.520
+to be this one over here.
+
+00:06:31.520 --> 00:06:35.120
+Can you guys see from
+the back over there?
+
+00:06:35.120 --> 00:06:36.400
+Yeah.
+
+00:06:36.400 --> 00:06:40.480
+So in this case,
+the minimum-- so
+
+00:06:40.480 --> 00:06:43.000
+if you look at the level curves
+of our objective functions,
+
+00:06:43.000 --> 00:06:46.800
+there are something
+that look like this.
+
+00:06:46.800 --> 00:06:50.440
+And so in this case, the minimum
+point would be at the origin.
+
+00:06:50.440 --> 00:06:55.890
+So if we take this
+point, so 0, 0,
+
+00:06:55.890 --> 00:06:58.250
+at this point out of
+the three constraints,
+
+00:06:58.250 --> 00:07:01.090
+we have that these two are
+respected at the equality.
+
+00:07:01.090 --> 00:07:03.970
+So these two will be active.
+
+00:07:03.970 --> 00:07:06.370
+On the other hand, this
+constraint over here
+
+00:07:06.370 --> 00:07:07.830
+is not respected
+at the equality.
+
+00:07:07.830 --> 00:07:08.950
+So this is inactive.
+
+00:07:13.170 --> 00:07:15.562
+OK.
+
+00:07:15.562 --> 00:07:18.210
+And so given that this
+definition is clear,
+
+00:07:18.210 --> 00:07:22.130
+this point is where
+most of, I would say,
+
+00:07:22.130 --> 00:07:26.770
+the brainpower for understanding
+this easy route goes into.
+
+00:07:26.770 --> 00:07:30.930
+Specifically what we're saying
+here is that if x of star
+
+00:07:30.930 --> 00:07:33.770
+is a local minimum
+of the ICP, which
+
+00:07:33.770 --> 00:07:36.930
+is the full problem that we
+saw on the previous slides,
+
+00:07:36.930 --> 00:07:42.250
+so this one here, what we're
+saying is that then x of star
+
+00:07:42.250 --> 00:07:46.890
+is also a local minimum
+for the identical ICP
+
+00:07:46.890 --> 00:07:50.810
+without the inactive
+constraints.
+
+00:07:50.810 --> 00:07:55.890
+And to give you an intuition,
+the proof for this argument
+
+00:07:55.890 --> 00:07:59.570
+usually goes by contradiction.
+
+00:07:59.570 --> 00:08:01.450
+So we're saying
+that x of star is
+
+00:08:01.450 --> 00:08:03.470
+a local minimum of
+the original ICP,
+
+00:08:03.470 --> 00:08:05.770
+so with all
+constraints included.
+
+00:08:05.770 --> 00:08:07.410
+But let us assume
+that this is not
+
+00:08:07.410 --> 00:08:09.890
+a local minimum for
+the problem without
+
+00:08:09.890 --> 00:08:11.890
+the inactive constraints.
+
+00:08:11.890 --> 00:08:16.290
+So if it is not a local
+minimum, what this would mean
+
+00:08:16.290 --> 00:08:19.890
+is that we would be able to
+move in the neighborhood of that
+
+00:08:19.890 --> 00:08:24.490
+x of star while
+respecting the constraints
+
+00:08:24.490 --> 00:08:29.970
+and still finding a better
+value of the objective function.
+
+00:08:29.970 --> 00:08:33.309
+At the same time, so if we are
+moving into a neighborhood,
+
+00:08:33.309 --> 00:08:35.970
+we can find a neighborhood
+that is arbitrarily
+
+00:08:35.970 --> 00:08:39.370
+small, such that the
+inactive constraints always
+
+00:08:39.370 --> 00:08:41.890
+remain inactive.
+
+00:08:41.890 --> 00:08:45.650
+And if you're following me
+until here, what we're saying
+
+00:08:45.650 --> 00:08:49.130
+is that if this is true,
+then all the constraints
+
+00:08:49.130 --> 00:08:52.307
+of the original problem
+would still be satisfied.
+
+00:08:52.307 --> 00:08:54.890
+And so this would mean that we
+would have found a better point
+
+00:08:54.890 --> 00:08:56.890
+also for the original problem.
+
+00:08:56.890 --> 00:09:03.530
+Therefore, kind of concluding
+the contradiction here.
+
+00:09:03.530 --> 00:09:04.250
+Right.
+
+00:09:04.250 --> 00:09:08.530
+So if you will--
+
+00:09:08.530 --> 00:09:12.090
+again, don't take
+me by the exact word
+
+00:09:12.090 --> 00:09:15.170
+here, but what we are
+saying is that we can always
+
+00:09:15.170 --> 00:09:19.050
+think of a neighborhood
+of this point x star.
+
+00:09:19.050 --> 00:09:21.410
+So if this is not a
+minimum of this problem,
+
+00:09:21.410 --> 00:09:24.650
+we can define a neighborhood
+that is arbitrarily small, such
+
+00:09:24.650 --> 00:09:29.970
+that we can move along this
+minimum and find a new point
+
+00:09:29.970 --> 00:09:35.690
+x prime, such that the value
+of the function at x prime
+
+00:09:35.690 --> 00:09:40.203
+is smaller than the
+original f of x prime.
+
+00:09:40.203 --> 00:09:42.370
+And specifically, since I
+can take this neighborhood
+
+00:09:42.370 --> 00:09:45.770
+to be arbitrarily small, I
+could move in the direction
+
+00:09:45.770 --> 00:09:48.790
+that it satisfies all of
+my original constraints,
+
+00:09:48.790 --> 00:09:52.490
+so the equality constraints, but
+also the ones that are inactive,
+
+00:09:52.490 --> 00:09:54.650
+because the inactive
+ones always have-- you
+
+00:09:54.650 --> 00:09:57.650
+could think about it intuitively
+as there is some margin
+
+00:09:57.650 --> 00:09:59.690
+that I can play with.
+
+00:09:59.690 --> 00:10:01.610
+And so if this is
+true, then I would
+
+00:10:01.610 --> 00:10:04.810
+have found a point that is
+better for the original problem
+
+00:10:04.810 --> 00:10:05.310
+as well.
+
+00:10:05.310 --> 00:10:08.970
+And so this is not the case.
+
+00:10:08.970 --> 00:10:09.950
+Does this make sense?
+
+00:10:13.210 --> 00:10:16.860
+OK.
+
+00:10:16.860 --> 00:10:20.290
+And so what we're seeing here
+is that at the local minimum,
+
+00:10:20.290 --> 00:10:23.010
+active inequality
+constraints can essentially
+
+00:10:23.010 --> 00:10:26.150
+be treated to a large
+extent as equalities.
+
+00:10:28.930 --> 00:10:31.850
+And so you're probably
+starting to guess a little bit
+
+00:10:31.850 --> 00:10:33.130
+where we're going now.
+
+00:10:33.130 --> 00:10:34.930
+So remember, what
+we're trying to do here
+
+00:10:34.930 --> 00:10:37.570
+is define the optimality
+conditions for inequality
+
+00:10:37.570 --> 00:10:38.430
+constraint problems.
+
+00:10:38.430 --> 00:10:41.130
+And we said, we want to take
+the, quote unquote, "easy route"
+
+00:10:41.130 --> 00:10:44.370
+of leveraging as much as
+possible the results that we got
+
+00:10:44.370 --> 00:10:46.170
+in the equality constraint case.
+
+00:10:46.170 --> 00:10:47.890
+And so here what
+we just proved is
+
+00:10:47.890 --> 00:10:51.350
+that if x is a local
+minimum of the full problem,
+
+00:10:51.350 --> 00:10:54.410
+that is the full inequality
+constraint problem,
+
+00:10:54.410 --> 00:10:57.810
+then it is also local minimum
+for the version of the problem
+
+00:10:57.810 --> 00:11:01.610
+where I'm only considering
+the active constraints.
+
+00:11:01.610 --> 00:11:02.930
+Yes?
+
+00:11:02.930 --> 00:11:05.530
+When you're saying that it's
+a local of the constraint,
+
+00:11:05.530 --> 00:11:07.690
+are you assuming that
+you're not on the boundary?
+
+00:11:07.690 --> 00:11:10.490
+Even with that example, if
+you cross the boundary out
+
+00:11:10.490 --> 00:11:12.970
+of the constraints, you
+could be going lower
+
+00:11:12.970 --> 00:11:14.570
+or it would not be local.
+
+00:11:14.570 --> 00:11:15.350
+Yeah, exactly.
+
+00:11:15.350 --> 00:11:18.690
+So this is what I meant by
+don't take it too rigorously
+
+00:11:18.690 --> 00:11:21.050
+here, because here, there
+is actually only this one
+
+00:11:21.050 --> 00:11:23.450
+point that we're considering.
+
+00:11:23.450 --> 00:11:25.770
+But maybe you could
+imagine something
+
+00:11:25.770 --> 00:11:28.850
+like in three
+dimensions, maybe, where
+
+00:11:28.850 --> 00:11:34.210
+I have my inequality constraints
+being some kind of hyperplanes,
+
+00:11:34.210 --> 00:11:39.690
+and satisfying both means lying
+on this subspace over here.
+
+00:11:39.690 --> 00:11:46.730
+Then you could think that moving
+in a neighborhood of this point,
+
+00:11:46.730 --> 00:11:52.470
+I could still respect my
+original equality constraints.
+
+00:11:52.470 --> 00:11:53.570
+Does this [INAUDIBLE]?
+
+00:11:53.570 --> 00:11:55.690
+As long as you are
+not on the boundary,
+
+00:11:55.690 --> 00:11:58.530
+essentially, is what that
+previous point was saying,
+
+00:11:58.530 --> 00:11:59.390
+then that is true.
+
+00:11:59.390 --> 00:12:01.260
+Because we are on the boundary.
+
+00:12:01.260 --> 00:12:03.920
+You can cross the boundary and
+become a lower [INAUDIBLE].
+
+00:12:03.920 --> 00:12:06.170
+No, of course, we want to
+respect all the constraints.
+
+00:12:06.170 --> 00:12:06.690
+Yes.
+
+00:12:06.690 --> 00:12:08.610
+The previous point,
+only-- you're
+
+00:12:08.610 --> 00:12:13.610
+saying only is of concern if
+you are not on the boundary.
+
+00:12:13.610 --> 00:12:15.765
+By previous point, you
+mean that also the--
+
+00:12:15.765 --> 00:12:17.890
+The local minimum of that
+is also the local minimum
+
+00:12:17.890 --> 00:12:18.890
+without the constraints.
+
+00:12:18.890 --> 00:12:21.090
+That's only true if the
+local minimum is only
+
+00:12:21.090 --> 00:12:22.530
+within the boundary and not--
+
+00:12:22.530 --> 00:12:24.710
+If the local minimum
+is a feasible point.
+
+00:12:24.710 --> 00:12:25.650
+Yes.
+
+00:12:25.650 --> 00:12:27.610
+So it's a local--
+it's within the bounds
+
+00:12:27.610 --> 00:12:29.570
+and not on the boundary.
+
+00:12:29.570 --> 00:12:30.610
+If it's on--
+
+00:12:30.610 --> 00:12:32.810
+Well, in this case, it
+is a boundary, right?
+
+00:12:32.810 --> 00:12:33.570
+Yeah.
+
+00:12:33.570 --> 00:12:36.610
+But if crossing the boundary
+outside of the constraints
+
+00:12:36.610 --> 00:12:39.870
+means you have a
+lower point, then--
+
+00:12:39.870 --> 00:12:43.050
+so the local minimum without
+the active rates is a different
+
+00:12:43.050 --> 00:12:46.405
+local minimum than with the
+constraints, because you're--
+
+00:12:46.405 --> 00:12:48.530
+one is in the boundary.
+one is not in the boundary.
+
+00:12:48.530 --> 00:12:49.330
+Yes.
+
+00:12:49.330 --> 00:12:53.630
+Well, if you're going across the
+boundary in the feasible region,
+
+00:12:53.630 --> 00:12:54.728
+then yes.
+
+00:12:54.728 --> 00:12:56.270
+That means you don't
+care about that.
+
+00:12:56.270 --> 00:12:57.090
+Yeah.
+
+00:12:57.090 --> 00:13:01.210
+So then that is only true
+then when you're within--
+
+00:13:01.210 --> 00:13:04.730
+you're not on the
+boundary, right, 0.1?
+
+00:13:04.730 --> 00:13:08.210
+I mean, again, the fact is
+that boundary here it depends,
+
+00:13:08.210 --> 00:13:09.130
+because we--
+
+00:13:09.130 --> 00:13:10.890
+boundary-- I guess,
+you're saying when
+
+00:13:10.890 --> 00:13:13.050
+these constraints are active.
+
+00:13:13.050 --> 00:13:15.710
+So some of them will be at
+the boundaries and some won't.
+
+00:13:15.710 --> 00:13:16.210
+Yeah.
+
+00:13:16.210 --> 00:13:17.585
+So I guess I'm
+confused where you
+
+00:13:17.585 --> 00:13:19.830
+say it's a local minimum
+without the constraints,
+
+00:13:19.830 --> 00:13:22.150
+just because you have a local
+minimum within the constraints.
+
+00:13:22.150 --> 00:13:24.290
+But if you're in the boundary,
+that's not necessarily true.
+
+00:13:24.290 --> 00:13:26.248
+Because when you talk
+about the previous thing,
+
+00:13:26.248 --> 00:13:29.830
+it's like on the boundary,
+you might have a more minimum,
+
+00:13:29.830 --> 00:13:31.850
+you have a lower
+value, but because you
+
+00:13:31.850 --> 00:13:34.950
+can't cross the boundary, you
+have to keep the local boundary.
+
+00:13:34.950 --> 00:13:36.450
+Yeah.
+
+00:13:36.450 --> 00:13:40.410
+So it's only a local minimum
+outside of the constraints
+
+00:13:40.410 --> 00:13:42.350
+if you are within
+the boundary itself.
+
+00:13:42.350 --> 00:13:46.010
+Yes, I think that's about-- yes.
+
+00:13:46.010 --> 00:13:48.990
+Does the general picture
+make sense apart from this?
+
+00:13:48.990 --> 00:13:49.810
+Yeah.
+
+00:13:49.810 --> 00:13:52.550
+Any other questions on this?
+
+00:13:58.090 --> 00:13:58.590
+OK.
+
+00:13:58.590 --> 00:14:00.048
+So basically what
+we're saying here
+
+00:14:00.048 --> 00:14:02.630
+is that x is a local
+minimum of the original ICP,
+
+00:14:02.630 --> 00:14:05.130
+then it is also a local
+minimum for the same problem
+
+00:14:05.130 --> 00:14:08.210
+where we remove the inactive
+inequality constraints
+
+00:14:08.210 --> 00:14:11.890
+and only keep the active ones.
+
+00:14:11.890 --> 00:14:15.510
+And if we think about
+what we did last week,
+
+00:14:15.510 --> 00:14:19.570
+this is an object we can
+basically work with and derive
+
+00:14:19.570 --> 00:14:21.530
+optimality conditions.
+
+00:14:21.530 --> 00:14:35.810
+So remember that last time we
+were defining the Lagrangian
+
+00:14:35.810 --> 00:14:40.450
+as L of x lambda, we're
+introducing some Lagrangian
+
+00:14:40.450 --> 00:14:45.810
+multipliers lambda, equals f
+of x plus the summation from i
+
+00:14:45.810 --> 00:14:48.170
+to m, which is where m
+is the number of equality
+
+00:14:48.170 --> 00:14:56.330
+constraints of lambda i times,
+I think we call them h, so hi
+
+00:14:56.330 --> 00:14:57.170
+of x.
+
+00:14:57.170 --> 00:15:02.810
+And then we use this to derive
+necessary optimality conditions,
+
+00:15:02.810 --> 00:15:06.250
+such that the gradient
+of the Lagrangian
+
+00:15:06.250 --> 00:15:07.770
+needs to be equal to 0.
+
+00:15:15.610 --> 00:15:17.610
+Can you use a darker marker?
+
+00:15:17.610 --> 00:15:19.910
+I think this was
+the darker marker.
+
+00:15:23.690 --> 00:15:27.150
+So again, this is
+from last lecture.
+
+00:15:27.150 --> 00:15:28.650
+So what we're just
+saying is that we
+
+00:15:28.650 --> 00:15:32.450
+use this to define necessary
+optimality conditions.
+
+00:15:32.450 --> 00:15:33.830
+So we define the Lagrangian.
+
+00:15:33.830 --> 00:15:38.610
+And then we just said
+that the gradient
+
+00:15:38.610 --> 00:15:42.530
+with respect to this Lagrangian
+function needs to be equal to 0.
+
+00:15:42.530 --> 00:15:44.210
+So these were the
+optimality conditions
+
+00:15:44.210 --> 00:15:46.330
+in the equality
+constraint case, which
+
+00:15:46.330 --> 00:15:49.170
+boil down to a
+system of n plus n
+
+00:15:49.170 --> 00:15:53.565
+equations in n plus m unknowns.
+
+00:15:53.565 --> 00:15:55.690
+And so what I'm saying here
+is that this is exactly
+
+00:15:55.690 --> 00:16:00.090
+the same case now
+that we did this step.
+
+00:16:00.090 --> 00:16:02.530
+And so we can apply the
+exact same reasoning
+
+00:16:02.530 --> 00:16:07.250
+in defining the optimality
+conditions for the ICP
+
+00:16:07.250 --> 00:16:14.010
+with the inactive constraints
+removed, where again, this
+
+00:16:14.010 --> 00:16:17.850
+is exactly the same necessary
+optimality conditions we derived
+
+00:16:17.850 --> 00:16:21.330
+for the equality constraint case
+with the addition of this term
+
+00:16:21.330 --> 00:16:26.402
+over here, which takes care of
+only the active constraints,
+
+00:16:26.402 --> 00:16:28.610
+that is the inequality
+constraints that are respected
+
+00:16:28.610 --> 00:16:34.170
+at the boundary, where again,
+we have this Lagrangian term mu
+
+00:16:34.170 --> 00:16:37.550
+j star times the gradient of
+the inequality constraints.
+
+00:16:37.550 --> 00:16:40.010
+And everything has
+to be equal to 0.
+
+00:16:40.010 --> 00:16:43.310
+Or equivalently, we can
+write the exact same thing.
+
+00:16:43.310 --> 00:16:46.930
+So here nothing new, just
+rewriting a little bit more
+
+00:16:46.930 --> 00:16:50.290
+elegantly where rather than
+having a summation over only
+
+00:16:50.290 --> 00:16:52.290
+the active
+constraints, I can have
+
+00:16:52.290 --> 00:16:57.010
+a summation over all inequality
+constraints, so from r1 to r,
+
+00:16:57.010 --> 00:17:00.130
+with the additional
+condition that the mu's
+
+00:17:00.130 --> 00:17:06.609
+need to be equal to 0 for
+all the inactive constraints.
+
+00:17:06.609 --> 00:17:08.109
+There is an
+additional condition,
+
+00:17:08.109 --> 00:17:12.210
+that is the
+multipliers mu j that
+
+00:17:12.210 --> 00:17:15.770
+relate with the inequality
+constraints have to be positive.
+
+00:17:15.770 --> 00:17:17.908
+There are some kind of
+geometric interpretations
+
+00:17:17.908 --> 00:17:19.450
+and proofs we could
+do here, but it's
+
+00:17:19.450 --> 00:17:22.290
+beyond the scope
+of this lecture.
+
+00:17:22.290 --> 00:17:22.790
+Yes?
+
+00:17:22.790 --> 00:17:25.890
+For the concept
+of the [INAUDIBLE]
+
+00:17:25.890 --> 00:17:30.810
+for equality constraints also,
+there could be [INAUDIBLE].
+
+00:17:30.810 --> 00:17:33.610
+Well, I mean, the equality--
+either you are at the equality
+
+00:17:33.610 --> 00:17:35.070
+or you're not respecting it.
+
+00:17:35.070 --> 00:17:39.090
+So it's slightly
+different, I think.
+
+00:17:39.090 --> 00:17:41.690
+Does it make sense?
+
+00:17:41.690 --> 00:17:43.890
+If we solve this for the
+global minimum with respect
+
+00:17:43.890 --> 00:17:46.330
+to the active
+constraints, are we
+
+00:17:46.330 --> 00:17:49.430
+guaranteed to also be
+satisfying the inactive ones,
+
+00:17:49.430 --> 00:17:52.070
+or is it something we
+have to iterate on?
+
+00:17:52.070 --> 00:17:54.290
+No, this is exactly
+the point I was
+
+00:17:54.290 --> 00:17:57.490
+trying to make earlier that
+we-- again, we kind of did
+
+00:17:57.490 --> 00:17:59.350
+a sketch of a proof.
+
+00:17:59.350 --> 00:18:01.490
+But what we proved
+here is that if x
+
+00:18:01.490 --> 00:18:03.930
+is a local minimum of
+the original problem,
+
+00:18:03.930 --> 00:18:06.890
+then it is also local minimum
+of the problem removed
+
+00:18:06.890 --> 00:18:08.390
+the inactive constraints.
+
+00:18:08.390 --> 00:18:09.570
+[INAUDIBLE]
+
+00:18:09.570 --> 00:18:10.290
+Yes.
+
+00:18:10.290 --> 00:18:12.610
+So here the entire
+goal is just to come up
+
+00:18:12.610 --> 00:18:15.050
+with optimality conditions.
+
+00:18:15.050 --> 00:18:17.210
+Yeah.
+
+00:18:17.210 --> 00:18:18.510
+So there's more terms here.
+
+00:18:18.510 --> 00:18:25.450
+Can you knock a gh
+of 2, for example?
+
+00:18:25.450 --> 00:18:28.650
+What does any of
+that-- any example?
+
+00:18:28.650 --> 00:18:30.150
+The example, you
+mean this one here?
+
+00:18:30.150 --> 00:18:30.690
+Yeah.
+
+00:18:30.690 --> 00:18:32.490
+Yeah.
+
+00:18:32.490 --> 00:18:34.760
+So in this case,
+there are no h's.
+
+00:18:34.760 --> 00:18:37.140
+So this is f, our
+objective function.
+
+00:18:37.140 --> 00:18:40.660
+There are no h's because h for
+us is the equality constraint.
+
+00:18:40.660 --> 00:18:44.100
+So here, we are assuming we only
+have inequality constraints.
+
+00:18:44.100 --> 00:18:46.160
+And all of these would be g's.
+
+00:18:46.160 --> 00:18:52.980
+So this would be g1, this would
+be g2, and this would be g3.
+
+00:18:52.980 --> 00:18:57.900
+Of course, here, I'm not
+respecting the formalism that
+
+00:18:57.900 --> 00:18:58.460
+I'm--
+
+00:18:58.460 --> 00:19:01.000
+whereby we only use less
+than or equal than 0,
+
+00:19:01.000 --> 00:19:05.140
+but you could just flip
+the sign here and get that.
+
+00:19:05.140 --> 00:19:06.380
+Does this make sense?
+
+00:19:06.380 --> 00:19:08.740
+And then what about A?
+
+00:19:08.740 --> 00:19:11.060
+So A is the set of
+active constraints,
+
+00:19:11.060 --> 00:19:14.340
+A of x is a set of active
+constraint at a point x.
+
+00:19:14.340 --> 00:19:16.220
+So it depends on the point.
+
+00:19:16.220 --> 00:19:20.260
+We were assuming we have
+this point here as our x.
+
+00:19:20.260 --> 00:19:26.860
+In this case, A of 0, 0,
+which is this x over here,
+
+00:19:26.860 --> 00:19:34.460
+would be these two
+constraints, so 1 and 2,
+
+00:19:34.460 --> 00:19:35.840
+because this is inactive.
+
+00:19:38.640 --> 00:19:39.140
+Yeah?
+
+00:19:39.140 --> 00:19:42.924
+Can I [INAUDIBLE]
+point for the region
+
+00:19:42.924 --> 00:19:44.440
+for which the
+[? sign ?] is active?
+
+00:19:44.440 --> 00:19:47.500
+What's the method for that?
+
+00:19:47.500 --> 00:19:49.780
+So here for us,
+we just defining A
+
+00:19:49.780 --> 00:19:52.120
+of x as the set of
+active constraints.
+
+00:19:52.120 --> 00:19:54.420
+So we are not talking
+about regions necessarily.
+
+00:19:54.420 --> 00:19:58.960
+We're just referring-- it's
+literally a set of indices.
+
+00:19:58.960 --> 00:20:01.900
+So in this case,
+it would be 1 and 2
+
+00:20:01.900 --> 00:20:04.900
+referring to constraint number
+1 and constraint number 2.
+
+00:20:04.900 --> 00:20:06.520
+This is the one that
+you just-- point
+
+00:20:06.520 --> 00:20:08.820
+that we'll talked
+about the constraints
+
+00:20:08.820 --> 00:20:12.100
+and see what [INAUDIBLE]
+for any [INAUDIBLE].
+
+00:20:12.100 --> 00:20:13.240
+Sorry, can repeat this?
+
+00:20:13.240 --> 00:20:19.298
+So if you find that constraints,
+just plug-in the values of point
+
+00:20:19.298 --> 00:20:20.340
+and see where it's going?
+
+00:20:20.340 --> 00:20:23.486
+For the example, correct.
+
+00:20:23.486 --> 00:20:24.260
+Yes?
+
+00:20:24.260 --> 00:20:27.900
+So then I guess I
+just [INAUDIBLE].
+
+00:20:27.900 --> 00:20:30.420
+So how would you then identify--
+
+00:20:30.420 --> 00:20:32.620
+for example, you have 0, 0, 1.
+
+00:20:32.620 --> 00:20:34.200
+It's 1 and 2 that are active.
+
+00:20:34.200 --> 00:20:34.980
+3 isn't.
+
+00:20:34.980 --> 00:20:36.900
+Is it like then is
+active if you're
+
+00:20:36.900 --> 00:20:38.420
+like right on the
+boundaries that's
+
+00:20:38.420 --> 00:20:40.180
+why the third constraint
+is not active?
+
+00:20:40.180 --> 00:20:43.740
+If you say moved it to
+3 and 0, would it then
+
+00:20:43.740 --> 00:20:47.800
+be that 2 and 3 would be active?
+
+00:20:47.800 --> 00:20:49.080
+Yeah, exactly.
+
+00:20:49.080 --> 00:20:53.780
+Yeah, so active is when you
+substitute the value of x and y
+
+00:20:53.780 --> 00:20:56.120
+here and you get
+an equality out.
+
+00:21:00.820 --> 00:21:02.740
+OK.
+
+00:21:02.740 --> 00:21:03.380
+Yes?
+
+00:21:03.380 --> 00:21:05.180
+Is there such a thing for
+the inequality contraints?
+
+00:21:05.180 --> 00:21:07.180
+Because if it's constrained
+to be on two lines
+
+00:21:07.180 --> 00:21:08.980
+and you're not on
+there, then that just
+
+00:21:08.980 --> 00:21:11.500
+means that neither of those
+are satisfied as well.
+
+00:21:11.500 --> 00:21:13.480
+Or is it just for
+inequality constraints?
+
+00:21:13.480 --> 00:21:14.940
+I don't think I got that.
+
+00:21:14.940 --> 00:21:17.820
+Is there a similar thing--
+
+00:21:17.820 --> 00:21:21.080
+unless I'm missing the point
+of the active constraint thing.
+
+00:21:21.080 --> 00:21:24.660
+It's just the area that
+satisfied by all of them.
+
+00:21:24.660 --> 00:21:27.740
+So would there--
+like everything--
+
+00:21:27.740 --> 00:21:29.600
+You're talking about
+the physical set?
+
+00:21:29.600 --> 00:21:31.100
+Yeah.
+
+00:21:31.100 --> 00:21:35.740
+For equality, is there
+a version of that?
+
+00:21:35.740 --> 00:21:41.860
+I mean, if the theta we have--
+
+00:21:41.860 --> 00:21:43.040
+indeed this problem here.
+
+00:21:43.040 --> 00:21:45.420
+So you imagine we have
+two equality constraints,
+
+00:21:45.420 --> 00:21:47.320
+such that in--
+
+00:21:47.320 --> 00:21:48.720
+of course, in three dimensions.
+
+00:21:48.720 --> 00:21:52.040
+So one equality constraint is
+we have to lie on this plane.
+
+00:21:52.040 --> 00:21:54.700
+Another equality constraint,
+you have to lie on this plane.
+
+00:21:54.700 --> 00:21:57.660
+Then the feasible region
+is this part over here.
+
+00:22:02.100 --> 00:22:04.905
+OK.
+
+00:22:04.905 --> 00:22:05.640
+All right.
+
+00:22:05.640 --> 00:22:10.260
+So all of this to boils down
+towards the necessary optimality
+
+00:22:10.260 --> 00:22:12.700
+conditions for the inequality
+constraint problems, which
+
+00:22:12.700 --> 00:22:17.300
+are known as Karush-Kuhn-Tucker
+conditions or KKT, which
+
+00:22:17.300 --> 00:22:18.640
+essentially goes as follows.
+
+00:22:18.640 --> 00:22:20.780
+So we, once again,
+define the Lagrangian
+
+00:22:20.780 --> 00:22:24.620
+function L of x lambda
+mu, where lambda mu are
+
+00:22:24.620 --> 00:22:27.380
+Lagrangian multipliers.
+
+00:22:27.380 --> 00:22:30.100
+We used this object
+then to define
+
+00:22:30.100 --> 00:22:32.060
+the optimality conditions.
+
+00:22:32.060 --> 00:22:38.140
+And so the theorem of basically
+the KKT condition states that
+
+00:22:38.140 --> 00:22:43.340
+if x of star is a local
+minimum for the full inequality
+
+00:22:43.340 --> 00:22:49.260
+constraint problem, where f,
+h, and g's are all continuously
+
+00:22:49.260 --> 00:22:53.180
+differentiable, and we assume
+that x of star is [INAUDIBLE],
+
+00:22:53.180 --> 00:22:54.660
+again, kind of--
+
+00:22:54.660 --> 00:22:56.480
+you can ignore this for now.
+
+00:22:56.480 --> 00:22:58.420
+But in general, we're
+saying that the equality
+
+00:22:58.420 --> 00:22:59.980
+and active inequality
+constraints
+
+00:22:59.980 --> 00:23:02.580
+are-- the gradients are
+linearly independent.
+
+00:23:02.580 --> 00:23:05.300
+Then it means that there exists
+a unique Lagrange multiplier
+
+00:23:05.300 --> 00:23:08.500
+vectors, so the lambdas
+and the mu's, such
+
+00:23:08.500 --> 00:23:13.220
+that the gradient of the
+Lagrangian is equal to 0.
+
+00:23:13.220 --> 00:23:17.420
+The mu j's in correspondence
+to the inactive constraints
+
+00:23:17.420 --> 00:23:18.680
+are equal to 0.
+
+00:23:18.680 --> 00:23:21.268
+And in general, they're all
+positive, so non-negative.
+
+00:23:21.268 --> 00:23:23.060
+Again, so here, we're
+just putting together
+
+00:23:23.060 --> 00:23:25.960
+the results we arrived at.
+
+00:23:28.940 --> 00:23:29.520
+OK.
+
+00:23:29.520 --> 00:23:33.740
+So now to ground the
+intuition a little bit--
+
+00:23:33.740 --> 00:23:34.460
+yes?
+
+00:23:34.460 --> 00:23:37.620
+In this case, we are presently
+only checking the boundaries,
+
+00:23:37.620 --> 00:23:39.620
+because we're only checking
+whether it is equal.
+
+00:23:39.620 --> 00:23:42.340
+And so if we find one on the
+boundary, then we're like,
+
+00:23:42.340 --> 00:23:43.260
+oh, we found it.
+
+00:23:43.260 --> 00:23:47.440
+We never checked within
+the boundaries, right?
+
+00:23:47.440 --> 00:23:50.380
+So this is a
+necessary condition.
+
+00:23:50.380 --> 00:23:54.360
+Meaning if a point
+is a local minimum,
+
+00:23:54.360 --> 00:23:57.260
+it has to satisfy this
+condition over here.
+
+00:23:57.260 --> 00:23:59.700
+So it does not mean that all--
+
+00:23:59.700 --> 00:24:01.860
+so what it means is
+that all local minimums
+
+00:24:01.860 --> 00:24:03.480
+satisfy this condition.
+
+00:24:03.480 --> 00:24:03.980
+Yeah.
+
+00:24:03.980 --> 00:24:07.260
+So for example,
+x sub 1, 1, which
+
+00:24:07.260 --> 00:24:09.780
+is none of those
+constraints you have there,
+
+00:24:09.780 --> 00:24:12.740
+in terms of the
+equality constraints.
+
+00:24:12.740 --> 00:24:14.520
+Because it's not x equals 0.
+
+00:24:14.520 --> 00:24:15.600
+It's not y equals 0.
+
+00:24:15.600 --> 00:24:18.220
+And it's not y plus x equals 3.
+
+00:24:18.220 --> 00:24:21.400
+It would never show
+up in your set.
+
+00:24:21.400 --> 00:24:24.820
+The a, 1, 1 would be
+nothing of the set.
+
+00:24:24.820 --> 00:24:27.460
+So you would never
+have it on there,
+
+00:24:27.460 --> 00:24:29.460
+but it could be a
+minimum in this problem.
+
+00:24:29.460 --> 00:24:34.260
+X sub 1, 1 could be a minimum?
+
+00:24:34.260 --> 00:24:37.820
+Yeah, it could be because it
+satisfies all the constraints.
+
+00:24:37.820 --> 00:24:40.200
+And let's say the gradient and--
+
+00:24:40.200 --> 00:24:42.020
+[INAUDIBLE] the
+gradient is, right?
+
+00:24:42.020 --> 00:24:45.820
+But it's never being checked
+in your problem, because a of 1
+
+00:24:45.820 --> 00:24:49.300
+is nothing with that,
+because it's not equal to 0.
+
+00:24:49.300 --> 00:24:50.220
+X is not equal to 0.
+
+00:24:50.220 --> 00:24:51.120
+Y is not equal to 0.
+
+00:24:51.120 --> 00:24:54.020
+And x plus y is not equal to 3.
+
+00:24:54.020 --> 00:24:57.200
+I'm afraid I'm not exactly
+following your argument,
+
+00:24:57.200 --> 00:24:58.940
+but I would have
+to take that on you
+
+00:24:58.940 --> 00:25:00.920
+because we have a
+full lecture to cover.
+
+00:25:00.920 --> 00:25:03.260
+I'm happy to stay afterwards
+if you want offline.
+
+00:25:06.440 --> 00:25:06.940
+Yes?
+
+00:25:06.940 --> 00:25:09.740
+Isn't it necessary
+condition that at least one
+
+00:25:09.740 --> 00:25:13.740
+of the inequality
+constraints is active?
+
+00:25:13.740 --> 00:25:17.060
+The necessary condition on what?
+
+00:25:17.060 --> 00:25:18.260
+To solve the point.
+
+00:25:18.260 --> 00:25:22.700
+To have it be a solution
+for the problems.
+
+00:25:22.700 --> 00:25:28.860
+There are at least-- one of
+the constraints is inner.
+
+00:25:28.860 --> 00:25:32.260
+So it's a property of problems
+that usually solutions
+
+00:25:32.260 --> 00:25:35.500
+are at tension points
+between objective function
+
+00:25:35.500 --> 00:25:36.200
+and constraints.
+
+00:25:36.200 --> 00:25:39.300
+And so usually, yes.
+
+00:25:39.300 --> 00:25:39.840
+All right.
+
+00:25:39.840 --> 00:25:47.060
+So to make a small example of
+what it means to apply this,
+
+00:25:47.060 --> 00:25:51.700
+hopefully to ground
+the intuition,
+
+00:25:51.700 --> 00:25:53.100
+so let us solve
+this problem over
+
+00:25:53.100 --> 00:25:58.500
+here where we want
+to minimize x squared
+
+00:25:58.500 --> 00:26:03.360
+plus epsilon squared subject
+to one inequality constraints.
+
+00:26:03.360 --> 00:26:07.740
+That is 2x plus y less
+than or equal than 2.
+
+00:26:07.740 --> 00:26:09.460
+Can you see with this marker?
+
+00:26:09.460 --> 00:26:10.320
+Is it good enough?
+
+00:26:10.320 --> 00:26:10.820
+Yes.
+
+00:26:10.820 --> 00:26:12.420
+Yeah.
+
+00:26:12.420 --> 00:26:13.040
+All right.
+
+00:26:13.040 --> 00:26:15.520
+And let's be methodical, right?
+
+00:26:15.520 --> 00:26:20.020
+So let's apply the
+KKT conditions.
+
+00:26:20.020 --> 00:26:25.500
+So first of all, what we need is
+we need to compute the gradient
+
+00:26:25.500 --> 00:26:33.760
+of f, which in this case
+is simply 2x and 2y, right?
+
+00:26:33.760 --> 00:26:37.820
+And the gradient of our
+inequality constraints,
+
+00:26:37.820 --> 00:26:43.500
+so grad of g, which
+is 2 and 1, right?
+
+00:26:43.500 --> 00:26:46.220
+So we're using this
+to characterize
+
+00:26:46.220 --> 00:26:52.020
+the gradient of our Lagrangian.
+
+00:26:52.020 --> 00:26:54.860
+And the inequality constraints
+are slightly trickier
+
+00:26:54.860 --> 00:26:57.240
+in the sense that you
+need to consider cases,
+
+00:26:57.240 --> 00:27:00.580
+in the case of the constraints
+are active or inactive.
+
+00:27:00.580 --> 00:27:04.260
+And so let's look at
+the first case, case 1,
+
+00:27:04.260 --> 00:27:07.500
+where we are assuming that
+the constraint is active.
+
+00:27:07.500 --> 00:27:12.760
+That is that 2x plus
+y is equal to 2.
+
+00:27:18.060 --> 00:27:22.260
+Now, we indeed write that the
+gradient of the Lagrangian is
+
+00:27:22.260 --> 00:27:29.580
+equal to 0 condition, which
+essentially means that 2xy plus
+
+00:27:29.580 --> 00:27:37.360
+mu times our gradient of our
+constraints is equal to 0.
+
+00:27:37.360 --> 00:27:43.740
+So this is our gradient of the
+Lagrangian has to be equal to 0.
+
+00:27:43.740 --> 00:27:46.540
+And of course, we also have that
+the mu's need to be positive.
+
+00:27:46.540 --> 00:27:47.720
+Mu needs to be positive.
+
+00:27:47.720 --> 00:27:51.060
+Well, non-negative.
+
+00:27:51.060 --> 00:27:58.360
+From this, we can write
+that 2x plus 2 mu equals 0,
+
+00:27:58.360 --> 00:28:04.300
+2y plus mu equals 0, which
+essentially means that x is
+
+00:28:04.300 --> 00:28:10.560
+equal to negative mu and y is
+equal to negative mu over 2.
+
+00:28:14.700 --> 00:28:17.900
+OK.
+
+00:28:17.900 --> 00:28:20.140
+All right.
+
+00:28:20.140 --> 00:28:25.720
+Now, if we plug these into
+our active constraint,
+
+00:28:25.720 --> 00:28:30.820
+so we have values for
+x and y, what we get
+
+00:28:30.820 --> 00:28:42.860
+is 2 mu equal to 2,
+which essentially
+
+00:28:42.860 --> 00:28:47.540
+means that mu is
+equal to negative 4
+
+00:28:47.540 --> 00:28:52.220
+over 5, which is not
+possible because we
+
+00:28:52.220 --> 00:28:53.880
+want to choose to be positive.
+
+00:28:53.880 --> 00:28:54.760
+Well, non-negative.
+
+00:28:54.760 --> 00:28:59.680
+So this is not
+what we need here.
+
+00:29:14.660 --> 00:29:15.240
+All right.
+
+00:29:15.240 --> 00:29:19.820
+And so we try with a
+second case, case 2,
+
+00:29:19.820 --> 00:29:22.960
+which is where we assume that
+the constraint is now inactive,
+
+00:29:22.960 --> 00:29:30.180
+meaning 2x plus y is
+strictly less than 2.
+
+00:29:30.180 --> 00:29:32.860
+Now, in this case, we know that
+for all inactive constraints,
+
+00:29:32.860 --> 00:29:35.060
+the mu's are equal to 0.
+
+00:29:35.060 --> 00:29:39.500
+And so our gradient of the
+Lagrangian essentially becomes
+
+00:29:39.500 --> 00:29:48.020
+2x to y plus 0, because this is
+mu times the gradient of x of g,
+
+00:29:48.020 --> 00:29:54.740
+which essentially means
+that x and y are equal to 0.
+
+00:29:54.740 --> 00:29:57.180
+Now, this satisfies
+the constraint
+
+00:29:57.180 --> 00:30:02.180
+because if we plug these values
+here, it is indeed less than 2.
+
+00:30:02.180 --> 00:30:06.980
+And so this is indeed a
+candidate for a local optimum.
+
+00:30:06.980 --> 00:30:08.260
+And to convince you that--
+
+00:30:08.260 --> 00:30:10.760
+I mean, this was not
+like a hard problem,
+
+00:30:10.760 --> 00:30:12.780
+because-- just to
+convince you that what
+
+00:30:12.780 --> 00:30:16.910
+we did makes sense, what
+we are characterizing here
+
+00:30:16.910 --> 00:30:23.070
+is a problem where we
+wanted to basically satisfy
+
+00:30:23.070 --> 00:30:26.430
+this inequality
+constraint, which
+
+00:30:26.430 --> 00:30:29.350
+defines this line over here.
+
+00:30:29.350 --> 00:30:32.910
+And so the feasible region
+is in this part of the line.
+
+00:30:32.910 --> 00:30:36.630
+And our objective
+function is like a ball
+
+00:30:36.630 --> 00:30:38.410
+that originates in 0 0.
+
+00:30:42.010 --> 00:30:45.230
+And so indeed, the
+local minimum here--
+
+00:30:45.230 --> 00:30:50.270
+well, global minimum
+in this case is 0 0.
+
+00:30:50.270 --> 00:30:51.210
+Yes?
+
+00:30:51.210 --> 00:30:52.950
+I apologize if I
+missed it before.
+
+00:30:52.950 --> 00:30:56.670
+Could you explain why
+we use 0 in case 2?
+
+00:30:56.670 --> 00:30:58.750
+So here, we defined that--
+
+00:30:58.750 --> 00:31:02.750
+if you remember how we
+derived the KKT conditions,
+
+00:31:02.750 --> 00:31:05.190
+is that we essentially
+define the problem
+
+00:31:05.190 --> 00:31:08.090
+to be identical to the equality.
+
+00:31:08.090 --> 00:31:10.530
+And so we derived this
+condition over here,
+
+00:31:10.530 --> 00:31:13.390
+which could be
+equivalently rewritten such
+
+00:31:13.390 --> 00:31:16.110
+that we were
+iterating or summing
+
+00:31:16.110 --> 00:31:20.150
+over all inequality conditions,
+inequality constraints,
+
+00:31:20.150 --> 00:31:22.350
+with the additional
+condition that the mu has
+
+00:31:22.350 --> 00:31:25.350
+to be 0 for all the
+inactive constraints.
+
+00:31:25.350 --> 00:31:27.510
+And so in this case,
+we were in a case
+
+00:31:27.510 --> 00:31:30.110
+where we were assuming this
+constraint is inactive.
+
+00:31:30.110 --> 00:31:33.110
+And so for this constraint,
+the mu has to be 0.
+
+00:31:33.110 --> 00:31:36.610
+So when the constraint
+is inactive here,
+
+00:31:36.610 --> 00:31:37.830
+the mu is equal to 0.
+
+00:31:37.830 --> 00:31:39.230
+Yes, correct.
+
+00:31:39.230 --> 00:31:41.047
+Again, here, what
+we're saying is that--
+
+00:31:41.047 --> 00:31:42.630
+this is an example
+of how we could use
+
+00:31:42.630 --> 00:31:45.090
+these optimality conditions.
+
+00:31:45.090 --> 00:31:46.550
+So we did all of
+this work to say--
+
+00:31:46.550 --> 00:31:50.910
+to come up with a condition
+that we can use to potentially
+
+00:31:50.910 --> 00:31:52.470
+filter for candidates.
+
+00:31:52.470 --> 00:31:53.290
+So we use this.
+
+00:31:53.290 --> 00:31:55.730
+We find potential
+candidates for optimality.
+
+00:31:55.730 --> 00:31:58.973
+And then we check if
+it makes sense or not.
+
+00:31:58.973 --> 00:31:59.473
+Yes?
+
+00:31:59.473 --> 00:32:02.125
+Why should mu be non-negative
+for the [? active ?]
+
+00:32:02.125 --> 00:32:03.470
+constraints?
+
+00:32:03.470 --> 00:32:04.810
+Yes, this is the point I was--
+
+00:32:04.810 --> 00:32:06.810
+I'm happy to share with
+you some literature.
+
+00:32:06.810 --> 00:32:08.350
+It gets a little bit tricky.
+
+00:32:08.350 --> 00:32:10.570
+There are some geometrical
+interpretations,
+
+00:32:10.570 --> 00:32:12.550
+but they're beyond the
+scope of this class.
+
+00:32:12.550 --> 00:32:13.897
+Yes?
+
+00:32:13.897 --> 00:32:15.230
+Is there a multiple [INAUDIBLE]?
+
+00:32:19.570 --> 00:32:20.070
+Exactly.
+
+00:32:20.070 --> 00:32:21.830
+This is where it
+gets tricky in here.
+
+00:32:21.830 --> 00:32:23.570
+We use only one constraint.
+
+00:32:23.570 --> 00:32:24.070
+Yeah.
+
+00:32:26.910 --> 00:32:30.943
+So in case 1, it would have to
+be greater than or equal to 0.
+
+00:32:30.943 --> 00:32:35.020
+[INAUDIBLE] positive,
+strictly positive.
+
+00:32:35.020 --> 00:32:39.390
+In case 1, mu would have
+to be strictly positive.
+
+00:32:39.390 --> 00:32:41.960
+Well, no, right?
+
+00:32:41.960 --> 00:32:45.138
+Because here, what we're
+saying is that the-- so these
+
+00:32:45.138 --> 00:32:45.930
+are the conditions.
+
+00:32:45.930 --> 00:32:49.590
+So we're just applying
+the conditions nominally.
+
+00:32:49.590 --> 00:32:53.590
+And basically, the conditions
+entail that for all constraints,
+
+00:32:53.590 --> 00:32:57.950
+the mu has to be non-negative,
+except for the ones that
+
+00:32:57.950 --> 00:33:01.030
+are inactive, where they
+actually have to be 0.
+
+00:33:01.030 --> 00:33:03.630
+Yes?
+
+00:33:03.630 --> 00:33:05.750
+So am I understanding
+it correctly
+
+00:33:05.750 --> 00:33:09.150
+that the conclusion that we
+drew from check in case 1
+
+00:33:09.150 --> 00:33:12.670
+is that there just does not
+exist a candidate for optimality
+
+00:33:12.670 --> 00:33:15.590
+that has this active concern?
+
+00:33:15.590 --> 00:33:17.270
+Yeah, correct.
+
+00:33:17.270 --> 00:33:19.230
+Again, here is
+one simple example
+
+00:33:19.230 --> 00:33:21.790
+of how you could use optimality
+conditions just as a way
+
+00:33:21.790 --> 00:33:23.750
+to filter out candidates.
+
+00:33:23.750 --> 00:33:26.190
+Yeah.
+
+00:33:26.190 --> 00:33:27.030
+OK.
+
+00:33:27.030 --> 00:33:35.750
+And so this actually wraps
+the content for lecture 2.
+
+00:33:35.750 --> 00:33:37.450
+So let me just grab--
+
+00:33:41.490 --> 00:33:41.990
+OK.
+
+00:33:41.990 --> 00:33:45.170
+Any other questions on
+this before we move on?
+
+00:33:48.590 --> 00:33:50.190
+Perfect.
+
+00:33:50.190 --> 00:33:53.790
+And so with this,
+now, we essentially
+
+00:33:53.790 --> 00:33:56.830
+laid the foundation
+of some intuitions
+
+00:33:56.830 --> 00:33:59.630
+that relate with finite
+dimensional optimization.
+
+00:33:59.630 --> 00:34:02.030
+And now, we are--
+and this is important
+
+00:34:02.030 --> 00:34:04.630
+because we will be coming
+back to these ideas
+
+00:34:04.630 --> 00:34:06.990
+over and over in this
+class, at the very least
+
+00:34:06.990 --> 00:34:10.870
+for the optimal part
+of this class before we
+
+00:34:10.870 --> 00:34:13.030
+go into learning.
+
+00:34:13.030 --> 00:34:17.429
+And now, we start essentially
+exploring our roadmap.
+
+00:34:17.429 --> 00:34:18.989
+And this is a slide
+we will be coming
+
+00:34:18.989 --> 00:34:21.750
+to over and over because
+it just helps you,
+
+00:34:21.750 --> 00:34:26.070
+I think, in grounding what
+we're covering exactly.
+
+00:34:26.070 --> 00:34:29.150
+And so specifically for the
+next two to three weeks,
+
+00:34:29.150 --> 00:34:32.530
+we will be focused on this
+quadrant of our roadmap.
+
+00:34:32.530 --> 00:34:35.909
+That is open loop methods
+for optimal control, which
+
+00:34:35.909 --> 00:34:39.949
+are to be differentiated from
+closed loop methods, which
+
+00:34:39.949 --> 00:34:43.750
+entail finding a closed
+loop policy for behavior.
+
+00:34:43.750 --> 00:34:48.270
+And specifically for the next
+three lectures within the class
+
+00:34:48.270 --> 00:34:51.610
+of open loop methods, we'll be
+looking at indirect methods,
+
+00:34:51.610 --> 00:34:55.110
+which is historically how
+optimal control started back
+
+00:34:55.110 --> 00:35:00.630
+in the '60s and '70s, which--
+and so we will look at indirect
+
+00:35:00.630 --> 00:35:03.530
+methods and then move towards
+direct methods, which,
+
+00:35:03.530 --> 00:35:06.230
+on the other hand, are
+the more modern and way--
+
+00:35:06.230 --> 00:35:09.610
+modern way to solve optimal
+control problems in practice.
+
+00:35:12.230 --> 00:35:14.790
+So what are indirect methods?
+
+00:35:14.790 --> 00:35:17.270
+So at the high level,
+indirect methods
+
+00:35:17.270 --> 00:35:20.830
+are essentially a mechanism
+for which we basically
+
+00:35:20.830 --> 00:35:23.870
+go and define and determine
+necessary optimality
+
+00:35:23.870 --> 00:35:28.110
+conditions for optimal control
+problems and solve for those.
+
+00:35:28.110 --> 00:35:30.310
+So if you wish,
+everything that we
+
+00:35:30.310 --> 00:35:33.170
+have been doing so far in
+the finite dimensional case.
+
+00:35:33.170 --> 00:35:36.750
+So we have defined these optimal
+control problems depending on
+
+00:35:36.750 --> 00:35:38.810
+if they're constrained or not.
+
+00:35:38.810 --> 00:35:42.190
+We derived optimality
+conditions and used as we just
+
+00:35:42.190 --> 00:35:44.750
+did, for example, these
+optimality conditions to filter
+
+00:35:44.750 --> 00:35:48.430
+out candidates for
+optimal, for minimums.
+
+00:35:48.430 --> 00:35:50.670
+In the exact same
+way, indirect methods
+
+00:35:50.670 --> 00:35:53.370
+try to use the exact
+same formalism.
+
+00:35:53.370 --> 00:35:55.390
+That is, define
+optimality conditions
+
+00:35:55.390 --> 00:35:57.630
+and use those to
+filter out solutions,
+
+00:35:57.630 --> 00:35:59.450
+this time for the
+original problem,
+
+00:35:59.450 --> 00:36:05.110
+which is the one we were looking
+at the beginning, which is
+
+00:36:05.110 --> 00:36:06.690
+the one in infinite dimensions.
+
+00:36:06.690 --> 00:36:16.790
+So we are looking at the
+dynamical system, which
+
+00:36:16.790 --> 00:36:21.410
+is with the objective function
+that we were describing before.
+
+00:36:27.190 --> 00:36:30.790
+And what I mean by the
+fact that this is actually
+
+00:36:30.790 --> 00:36:32.550
+an infinite dimensional
+optimization
+
+00:36:32.550 --> 00:36:36.350
+problem is because while
+here kind of variables
+
+00:36:36.350 --> 00:36:38.730
+are essentially
+vectors, in this case,
+
+00:36:38.730 --> 00:36:44.230
+we are interested in optimizing
+kind of a full signal u of t
+
+00:36:44.230 --> 00:36:48.390
+in between time t0 and tf.
+
+00:36:48.390 --> 00:36:51.910
+So you should imagine
+that for us, u of t
+
+00:36:51.910 --> 00:36:58.030
+is the full signal that we want
+to optimize, not a single point.
+
+00:36:58.030 --> 00:36:59.530
+OK.
+
+00:36:59.530 --> 00:37:02.230
+And indirect methods
+are also known
+
+00:37:02.230 --> 00:37:04.130
+as optimized then discretized.
+
+00:37:04.130 --> 00:37:06.150
+And this is because
+optimize refers
+
+00:37:06.150 --> 00:37:09.190
+to deriving optimality
+conditions, which
+
+00:37:09.190 --> 00:37:11.270
+kind of as a
+spoiler, in the case
+
+00:37:11.270 --> 00:37:13.450
+of infinite
+dimensional problems,
+
+00:37:13.450 --> 00:37:16.230
+these optimality conditions,
+as we will see today,
+
+00:37:16.230 --> 00:37:20.830
+will essentially end up
+being differential equations.
+
+00:37:20.830 --> 00:37:23.330
+And then discretized because
+these differential equations,
+
+00:37:23.330 --> 00:37:25.750
+in order to solve them,
+we typically feed them
+
+00:37:25.750 --> 00:37:28.230
+through solvers,
+numerical solvers, which
+
+00:37:28.230 --> 00:37:30.910
+entail some discretization.
+
+00:37:30.910 --> 00:37:34.550
+And these are to
+be kind of compared
+
+00:37:34.550 --> 00:37:36.770
+to direct methods,
+which, on the other hand,
+
+00:37:36.770 --> 00:37:40.510
+are usually referred to as
+discretized then optimize.
+
+00:37:40.510 --> 00:37:42.470
+So we are given
+an optimal control
+
+00:37:42.470 --> 00:37:44.670
+problem in continuous time.
+
+00:37:44.670 --> 00:37:46.890
+We discretize time
+by, for example,
+
+00:37:46.890 --> 00:37:49.170
+using a specific
+discretization of time,
+
+00:37:49.170 --> 00:37:51.470
+replacing integrals with
+sums-- with summations
+
+00:37:51.470 --> 00:37:54.270
+and so forth, and
+then optimizing
+
+00:37:54.270 --> 00:37:57.830
+this finite-- this
+discrete time problem.
+
+00:37:57.830 --> 00:38:00.750
+And so you can see how these
+two methods are in a way
+
+00:38:00.750 --> 00:38:04.190
+nicely complementary.
+
+00:38:04.190 --> 00:38:07.390
+But so why do we
+bother kind of going
+
+00:38:07.390 --> 00:38:10.730
+through these ancient tools,
+such as indirect methods?
+
+00:38:10.730 --> 00:38:14.950
+And the point is that sometimes
+indirect methods provide
+
+00:38:14.950 --> 00:38:16.790
+a more direct,
+that is analytical
+
+00:38:16.790 --> 00:38:19.790
+or semi-analytical solution
+for the optimal control
+
+00:38:19.790 --> 00:38:23.550
+problem, which is great because
+it means that at deployment
+
+00:38:23.550 --> 00:38:26.150
+on board, we have to do very
+little computation, which
+
+00:38:26.150 --> 00:38:28.070
+is great in the case
+where we have only
+
+00:38:28.070 --> 00:38:30.610
+limited compute environments.
+
+00:38:30.610 --> 00:38:35.030
+For example, in aerospace,
+these are highly, highly used.
+
+00:38:35.030 --> 00:38:37.230
+And at the same time,
+indirect methods
+
+00:38:37.230 --> 00:38:40.350
+are also typically used to
+maybe provide initial guesses
+
+00:38:40.350 --> 00:38:42.550
+for direct methods.
+
+00:38:42.550 --> 00:38:45.370
+And so the message here is
+that I'm not wasting your time.
+
+00:38:49.230 --> 00:38:51.270
+So these techniques
+are usually--
+
+00:38:51.270 --> 00:38:54.390
+can be quite
+mathematically challenging.
+
+00:38:54.390 --> 00:38:58.230
+And this is because, kind of
+as a result of this, books
+
+00:38:58.230 --> 00:39:00.190
+and textbooks and
+material is generally
+
+00:39:00.190 --> 00:39:02.810
+written by mathematicians,
+which is great.
+
+00:39:02.810 --> 00:39:04.790
+They're perfect, but
+also sometimes they
+
+00:39:04.790 --> 00:39:09.250
+do not really follow the
+desiderata of control engineers.
+
+00:39:09.250 --> 00:39:11.070
+And so I definitely
+advise you to go
+
+00:39:11.070 --> 00:39:12.570
+through this
+reference over here,
+
+00:39:12.570 --> 00:39:14.650
+which I think strikes
+a nice middle ground.
+
+00:39:18.050 --> 00:39:18.550
+OK.
+
+00:39:18.550 --> 00:39:21.710
+So in general, so we were
+referring to this problem
+
+00:39:21.710 --> 00:39:24.110
+before, but so now, we
+are taking the first step
+
+00:39:24.110 --> 00:39:26.390
+into tackling the
+optimal control problem
+
+00:39:26.390 --> 00:39:28.870
+kind of at first hand.
+
+00:39:28.870 --> 00:39:31.110
+And again, what we're
+saying is that we
+
+00:39:31.110 --> 00:39:33.590
+want to find an admissible
+control u star, which
+
+00:39:33.590 --> 00:39:36.230
+causes the dynamical system
+defined by a differential
+
+00:39:36.230 --> 00:39:40.390
+equation to follow an admissible
+trajectory x of stars that
+
+00:39:40.390 --> 00:39:43.330
+minimizes the functional j.
+
+00:39:46.190 --> 00:39:49.970
+And what we saw last week,
+and at the beginning today,
+
+00:39:49.970 --> 00:39:52.550
+is that for a function,
+we essentially
+
+00:39:52.550 --> 00:39:55.230
+defined optimality
+conditions that boil down
+
+00:39:55.230 --> 00:39:58.350
+to setting the gradient to
+0 to find stationary points,
+
+00:39:58.350 --> 00:40:01.190
+and then either using higher
+order derivatives to determine
+
+00:40:01.190 --> 00:40:04.110
+whether these are
+maximums or minimums,
+
+00:40:04.110 --> 00:40:07.510
+or just iterate through
+all of the candidates
+
+00:40:07.510 --> 00:40:10.830
+and check if these
+are feasible, and what
+
+00:40:10.830 --> 00:40:14.150
+is the minimum among
+these candidates.
+
+00:40:14.150 --> 00:40:19.110
+We'll do something very
+similar for function out, which
+
+00:40:19.110 --> 00:40:22.410
+is the extension of a function
+in infinite dimensions.
+
+00:40:22.410 --> 00:40:27.510
+So loosely speaking,
+functionals can be thought
+
+00:40:27.510 --> 00:40:32.690
+of as functions over functions.
+
+00:40:37.350 --> 00:40:40.350
+And again, very mechanically
+what we mean by this
+
+00:40:40.350 --> 00:40:44.250
+is that u of t, in this
+case, is an entire signal,
+
+00:40:44.250 --> 00:40:47.150
+an entire function, as
+we were saying before,
+
+00:40:47.150 --> 00:40:49.810
+and j, which in this
+case is a functional,
+
+00:40:49.810 --> 00:40:52.990
+is something that takes
+as input a full function
+
+00:40:52.990 --> 00:40:57.270
+and spits out, in this
+case, a scalar number, which
+
+00:40:57.270 --> 00:40:59.710
+is a measure of optimality.
+
+00:41:03.150 --> 00:41:07.390
+And the tool I'll be using today
+to introduce these and derive
+
+00:41:07.390 --> 00:41:09.990
+these optimality
+conditions is referred
+
+00:41:09.990 --> 00:41:12.270
+to as calculus of
+variations, which
+
+00:41:12.270 --> 00:41:14.310
+is a generalization
+of calculus that
+
+00:41:14.310 --> 00:41:17.690
+allows to find maxima and
+minima of functionals,
+
+00:41:17.690 --> 00:41:19.770
+specifically by
+using variations.
+
+00:41:19.770 --> 00:41:22.330
+And we'll see more
+in the next slides
+
+00:41:22.330 --> 00:41:25.830
+what we mean by variations.
+
+00:41:25.830 --> 00:41:28.270
+Calculus of variations
+is even more ancient
+
+00:41:28.270 --> 00:41:29.710
+than indirect methods.
+
+00:41:29.710 --> 00:41:32.390
+It dates back 300, 400 years.
+
+00:41:32.390 --> 00:41:34.750
+And it's really kind
+of a fundamental kind
+
+00:41:34.750 --> 00:41:38.030
+of subfield of calculus.
+
+00:41:38.030 --> 00:41:41.470
+And once again,
+these topics can be
+
+00:41:41.470 --> 00:41:44.390
+extremely heavy from a
+mathematical standpoint.
+
+00:41:44.390 --> 00:41:47.630
+And so in order to
+be focused on what
+
+00:41:47.630 --> 00:41:50.630
+is the goal for us in this
+class, what I'll try to do here
+
+00:41:50.630 --> 00:41:54.110
+is that I'll essentially
+be constantly mapping
+
+00:41:54.110 --> 00:41:56.310
+between the results
+that we want to obtain
+
+00:41:56.310 --> 00:41:58.160
+in the infinite
+dimensional case,
+
+00:41:58.160 --> 00:42:01.280
+that is, through calculus of
+variation, to the intuitions
+
+00:42:01.280 --> 00:42:04.240
+that we built in the
+finite dimensional case,
+
+00:42:04.240 --> 00:42:06.360
+in order that is probably
+the setting we are all
+
+00:42:06.360 --> 00:42:08.760
+most familiar with.
+
+00:42:08.760 --> 00:42:11.742
+And specifically,
+we will start by--
+
+00:42:11.742 --> 00:42:13.200
+so if you look at
+this agenda, this
+
+00:42:13.200 --> 00:42:15.280
+is essentially the
+one-to-one mapping
+
+00:42:15.280 --> 00:42:18.400
+on what we did on
+last week Monday.
+
+00:42:18.400 --> 00:42:23.760
+So we'll start by introducing
+concepts for functionals.
+
+00:42:23.760 --> 00:42:26.280
+For example, defining
+what is a functional,
+
+00:42:26.280 --> 00:42:30.640
+what it means for two functions
+to be close to each other, what
+
+00:42:30.640 --> 00:42:34.840
+it means to be a minimum or an
+extreme point for functionals.
+
+00:42:34.840 --> 00:42:37.440
+And then we'll
+use this to derive
+
+00:42:37.440 --> 00:42:40.560
+what is referred to as the
+fundamental theorem of calculus
+
+00:42:40.560 --> 00:42:42.280
+of variations.
+
+00:42:42.280 --> 00:42:44.920
+That is the necessary
+and optimality conditions
+
+00:42:44.920 --> 00:42:47.080
+for the infinite
+dimensional problem.
+
+00:42:47.080 --> 00:42:51.640
+And then we will apply
+this to optimal control.
+
+00:42:51.640 --> 00:42:56.460
+Any questions on the plan or
+questions so far in general?
+
+00:43:03.400 --> 00:43:05.792
+OK.
+
+00:43:05.792 --> 00:43:06.540
+All right.
+
+00:43:06.540 --> 00:43:08.800
+So what I'll be doing
+for the next 15 minutes
+
+00:43:08.800 --> 00:43:12.080
+is probably a bit boring, but
+it introduces the terminology
+
+00:43:12.080 --> 00:43:14.840
+and notation that we
+need going forward.
+
+00:43:14.840 --> 00:43:17.080
+And so specifically,
+a functional j
+
+00:43:17.080 --> 00:43:20.920
+is a rule of correspondence
+that assigns to each function
+
+00:43:20.920 --> 00:43:23.960
+x in a certain class
+omega, say the class
+
+00:43:23.960 --> 00:43:28.800
+of continuous functions,
+a unique real number.
+
+00:43:28.800 --> 00:43:31.500
+And it is always useful to
+look through an example.
+
+00:43:31.500 --> 00:43:34.480
+So for example, a
+possible functional
+
+00:43:34.480 --> 00:43:37.000
+is this functional
+j of x, which is
+
+00:43:37.000 --> 00:43:39.240
+the integral between t0 and tf.
+
+00:43:39.240 --> 00:43:41.580
+T0 is just a number say, 3tf.
+
+00:43:41.580 --> 00:43:46.280
+Again, just the number say 6
+of x of t in dt, where x of t
+
+00:43:46.280 --> 00:43:50.480
+could be any continuous
+function, for example.
+
+00:43:50.480 --> 00:43:54.240
+And a specific class of
+functionals we are interested in
+
+00:43:54.240 --> 00:43:58.760
+is the class of
+linear functions,
+
+00:43:58.760 --> 00:44:01.480
+which are defined by
+the fact that they
+
+00:44:01.480 --> 00:44:03.380
+respect two properties.
+
+00:44:03.380 --> 00:44:05.800
+The first one is homogeneity.
+
+00:44:05.800 --> 00:44:10.380
+So the functional of the
+scaled version of a function,
+
+00:44:10.380 --> 00:44:14.320
+so here alpha times x, is
+equal to the scaled version
+
+00:44:14.320 --> 00:44:18.180
+of the function, so
+alpha times g of x.
+
+00:44:24.640 --> 00:44:25.600
+Homogeneity.
+
+00:44:32.960 --> 00:44:33.860
+OK, thanks.
+
+00:44:39.680 --> 00:44:41.860
+And the second
+one is additivity.
+
+00:44:45.680 --> 00:44:47.760
+That is the
+functional of the sum
+
+00:44:47.760 --> 00:44:55.720
+of two functions is equal to the
+sum of the functionals applied
+
+00:44:55.720 --> 00:45:03.720
+to the individual functions,
+which together lead
+
+00:45:03.720 --> 00:45:05.620
+to the superposition property.
+
+00:45:09.680 --> 00:45:12.400
+So, as an example, the
+previous functional
+
+00:45:12.400 --> 00:45:15.780
+is linear because
+say that we are--
+
+00:45:21.960 --> 00:45:26.000
+if you want to do j of alpha
+x, which essentially means
+
+00:45:26.000 --> 00:45:33.920
+the integral between t0 and
+tf of alpha x of t in the t,
+
+00:45:33.920 --> 00:45:45.360
+we can carry out the
+alpha from the integral,
+
+00:45:45.360 --> 00:45:51.080
+which is equivalent to
+saying alpha j of x.
+
+00:45:51.080 --> 00:45:54.280
+Again, nothing deep
+here, but just proving
+
+00:45:54.280 --> 00:45:58.400
+that the example here is indeed
+respecting the homogeneity,
+
+00:45:58.400 --> 00:45:58.900
+for example.
+
+00:45:58.900 --> 00:46:05.260
+And you can do an equally
+simple proof for additivity.
+
+00:46:05.260 --> 00:46:05.760
+OK.
+
+00:46:05.760 --> 00:46:06.820
+So next.
+
+00:46:06.820 --> 00:46:10.440
+So remember that
+to define what is
+
+00:46:10.440 --> 00:46:13.040
+a minimum in the finite
+dimensional case,
+
+00:46:13.040 --> 00:46:17.580
+we use the idea of being
+optimal in a neighborhood.
+
+00:46:17.580 --> 00:46:19.560
+And to define neighborhood,
+we essentially
+
+00:46:19.560 --> 00:46:23.060
+needed to have the concept
+of closeness, right?
+
+00:46:23.060 --> 00:46:27.120
+And to define closeness in
+the case of functionals,
+
+00:46:27.120 --> 00:46:30.200
+we resort to a concept
+that is exactly
+
+00:46:30.200 --> 00:46:32.200
+the one we use also in
+finite dimensions, which
+
+00:46:32.200 --> 00:46:34.160
+is one of norms.
+
+00:46:34.160 --> 00:46:39.840
+And so specifically the norm
+in the case of a function
+
+00:46:39.840 --> 00:46:42.400
+is a rule of
+correspondence that assigns
+
+00:46:42.400 --> 00:46:45.400
+to each function x, again,
+in a specific domain
+
+00:46:45.400 --> 00:46:48.360
+omega, a real number.
+
+00:46:48.360 --> 00:46:52.900
+And it is defined as we
+do in finite dimensions,
+
+00:46:52.900 --> 00:46:54.860
+and it satisfies the
+following properties.
+
+00:46:54.860 --> 00:47:00.880
+That is the norm of a function
+has to be non-negative.
+
+00:47:00.880 --> 00:47:04.100
+And it has to be equal--
+
+00:47:04.100 --> 00:47:07.240
+and the norm is of a
+function is equal to 0
+
+00:47:07.240 --> 00:47:12.800
+if and only if the function
+is equal to 0 for all times.
+
+00:47:12.800 --> 00:47:18.000
+The second property is that
+the norm of the scaled function
+
+00:47:18.000 --> 00:47:22.480
+is equal to the absolute value
+of the scaling factor multiplied
+
+00:47:22.480 --> 00:47:26.600
+by the norm of that function
+for all real numbers alpha,
+
+00:47:26.600 --> 00:47:31.120
+and it has to respect the
+triangular inequality.
+
+00:47:31.120 --> 00:47:34.860
+And in practice to compare
+closeness between two functions,
+
+00:47:34.860 --> 00:47:39.000
+say y and z, what
+we do is we let
+
+00:47:39.000 --> 00:47:42.220
+x be the difference
+between the two functions,
+
+00:47:42.220 --> 00:47:46.640
+and we measure the norm
+of that difference.
+
+00:47:46.640 --> 00:47:48.997
+So it might seem, as
+we are doing nothing,
+
+00:47:48.997 --> 00:47:51.080
+but what we are essentially
+doing is just carrying
+
+00:47:51.080 --> 00:47:52.340
+over all of these results.
+
+00:47:52.340 --> 00:47:54.120
+We have infinite dimensional--
+
+00:47:54.120 --> 00:47:58.840
+infinite dimensions to the
+infinite dimensional case.
+
+00:47:58.840 --> 00:48:04.960
+As an example, consider
+the continuous functions x.
+
+00:48:04.960 --> 00:48:07.760
+A possible definition
+of the norm
+
+00:48:07.760 --> 00:48:10.480
+could be the maximum
+between t that
+
+00:48:10.480 --> 00:48:15.680
+goes from t0 to tf of the
+absolute value of x of t.
+
+00:48:15.680 --> 00:48:22.000
+And you can see that this does
+indeed satisfy these properties.
+
+00:48:22.000 --> 00:48:25.160
+For example, the
+value of the norm
+
+00:48:25.160 --> 00:48:27.660
+is, by definition,
+always non-negative,
+
+00:48:27.660 --> 00:48:30.840
+because we're taking the
+maximum absolute value.
+
+00:48:30.840 --> 00:48:37.020
+And the only way the norm is
+0 if it is 0 across all times,
+
+00:48:37.020 --> 00:48:39.360
+because we're indeed
+taking the maximum.
+
+00:48:39.360 --> 00:48:41.120
+So this is for the
+first property.
+
+00:48:41.120 --> 00:48:43.900
+But indeed, I do invite you to
+check the other two properties.
+
+00:48:43.900 --> 00:48:47.120
+But just as an example
+of what is a norm for us.
+
+00:48:47.120 --> 00:48:48.080
+Yeah?
+
+00:48:48.080 --> 00:48:51.622
+So to set omega, the
+functions in that set
+
+00:48:51.622 --> 00:48:54.080
+have to be related to each
+other at all, or is it something
+
+00:48:54.080 --> 00:48:55.980
+that we choose individually?
+
+00:48:55.980 --> 00:48:58.220
+No, I mean, omega here is
+pretty general definition.
+
+00:48:58.220 --> 00:49:00.640
+It could be the set of
+continuous functions.
+
+00:49:00.640 --> 00:49:01.840
+Yeah.
+
+00:49:01.840 --> 00:49:03.380
+So in this case,
+they are related,
+
+00:49:03.380 --> 00:49:07.940
+but I would say just a
+domain for our functions.
+
+00:49:07.940 --> 00:49:09.120
+Yeah?
+
+00:49:09.120 --> 00:49:10.840
+Could you help bridge the gap?
+
+00:49:10.840 --> 00:49:17.345
+There's a concept here of
+closeness but also [INAUDIBLE].
+
+00:49:17.345 --> 00:49:21.080
+Why are they connecting
+closeness [INAUDIBLE]?
+
+00:49:21.080 --> 00:49:22.320
+Yeah, this is a good point.
+
+00:49:22.320 --> 00:49:27.800
+So essentially, the way
+we do in finite dimensions
+
+00:49:27.800 --> 00:49:31.880
+is we use norm kind of loosely
+speaking, to measure kind
+
+00:49:31.880 --> 00:49:33.580
+of distances between vectors.
+
+00:49:33.580 --> 00:49:36.600
+So usually what works
+in infinite dimensions
+
+00:49:36.600 --> 00:49:39.880
+is literally to revert,
+resort to your intuition
+
+00:49:39.880 --> 00:49:42.280
+in finite dimensions
+and trying to map it
+
+00:49:42.280 --> 00:49:43.940
+to the infinite
+dimensional case.
+
+00:49:43.940 --> 00:49:46.140
+And so here, we're doing
+exactly the same thing.
+
+00:49:46.140 --> 00:49:48.720
+We're using norms
+over functions, not
+
+00:49:48.720 --> 00:49:53.120
+over vectors to measure kind
+of distance between functions.
+
+00:49:53.120 --> 00:49:55.840
+And we can use this distance
+to measure, quote unquote,
+
+00:49:55.840 --> 00:49:57.240
+"closeness".
+
+00:49:57.240 --> 00:49:59.700
+And this will become more
+practical in the next slides,
+
+00:49:59.700 --> 00:50:02.680
+but this is more or
+less what we're doing.
+
+00:50:02.680 --> 00:50:03.640
+Does it make sense?
+
+00:50:03.640 --> 00:50:04.320
+Yeah.
+
+00:50:04.320 --> 00:50:05.440
+OK.
+
+00:50:05.440 --> 00:50:05.960
+Yeah?
+
+00:50:05.960 --> 00:50:08.640
+Just to clarify,
+the norm is being
+
+00:50:08.640 --> 00:50:11.380
+taken of the difference
+of the two functions,
+
+00:50:11.380 --> 00:50:12.920
+not on each function.
+
+00:50:12.920 --> 00:50:13.900
+Yes, correct.
+
+00:50:16.620 --> 00:50:17.120
+OK.
+
+00:50:17.120 --> 00:50:20.620
+So we're getting towards
+what we actually care about.
+
+00:50:20.620 --> 00:50:24.848
+There is this defining
+extrema for functions.
+
+00:50:24.848 --> 00:50:26.640
+So now that we have a
+measure of closeness,
+
+00:50:26.640 --> 00:50:28.520
+we can actually do the
+exact same thing we're
+
+00:50:28.520 --> 00:50:30.060
+doing in finite dimensions.
+
+00:50:30.060 --> 00:50:36.320
+And specifically, a functional
+j has a local minimum
+
+00:50:36.320 --> 00:50:38.620
+at x star of t.
+
+00:50:38.620 --> 00:50:41.440
+Again, x star of
+t is a full signal
+
+00:50:41.440 --> 00:50:44.800
+just so that we don't get
+confused as we would do
+
+00:50:44.800 --> 00:50:47.560
+in the finite dimensional case.
+
+00:50:47.560 --> 00:50:51.840
+If there exists an
+epsilon greater than 0
+
+00:50:51.840 --> 00:50:56.480
+such that for all
+functions that are
+
+00:50:56.480 --> 00:50:59.527
+kind of close to the
+local minimum, that
+
+00:50:59.527 --> 00:51:01.360
+is, the distance between
+these two functions
+
+00:51:01.360 --> 00:51:04.960
+is smaller than this epsilon,
+the value of the function
+
+00:51:04.960 --> 00:51:08.840
+is greater or equal
+than x of star.
+
+00:51:08.840 --> 00:51:10.800
+So again, exact
+same result that we
+
+00:51:10.800 --> 00:51:14.010
+have in finite dimensions,
+exact same means of getting
+
+00:51:14.010 --> 00:51:15.760
+to the result, but
+we're just extending it
+
+00:51:15.760 --> 00:51:18.160
+to the infinite
+dimensional case.
+
+00:51:18.160 --> 00:51:19.200
+Yes?
+
+00:51:19.200 --> 00:51:23.460
+You quote it's
+excellent to use signal.
+
+00:51:23.460 --> 00:51:26.640
+What if the signal be u?
+
+00:51:26.640 --> 00:51:27.820
+Yes, this is a good point.
+
+00:51:27.820 --> 00:51:30.600
+So here we are
+introducing these ideas
+
+00:51:30.600 --> 00:51:33.360
+from a high-level standpoint.
+
+00:51:33.360 --> 00:51:36.160
+For us, we are interested in
+optimizing control signals,
+
+00:51:36.160 --> 00:51:37.220
+which is u.
+
+00:51:37.220 --> 00:51:40.380
+So in general-- here, we're
+using x as a general notation.
+
+00:51:40.380 --> 00:51:42.980
+But in practice, we will
+always be optimizing.
+
+00:51:46.700 --> 00:51:47.200
+OK.
+
+00:51:47.200 --> 00:51:49.880
+And maxima, of course,
+defined similarly
+
+00:51:49.880 --> 00:51:54.720
+just by flipping the sign.
+
+00:51:54.720 --> 00:51:59.840
+Now, to define minimum,
+we need to define
+
+00:51:59.840 --> 00:52:04.960
+something that is similar to
+the differential of a function.
+
+00:52:04.960 --> 00:52:25.320
+And just for-- as a
+reminder, remember
+
+00:52:25.320 --> 00:52:28.200
+that to derive the necessary
+optimality conditions
+
+00:52:28.200 --> 00:52:31.480
+in the finite dimensional
+case, what we did
+
+00:52:31.480 --> 00:52:33.480
+is that we essentially
+were looking
+
+00:52:33.480 --> 00:52:37.440
+at the increment of a function.
+
+00:52:37.440 --> 00:52:40.680
+And we saw how this
+could be approximated
+
+00:52:40.680 --> 00:52:45.040
+by the value of
+the function itself
+
+00:52:45.040 --> 00:52:50.160
+plus the gradient of
+f transpose delta x
+
+00:52:50.160 --> 00:52:58.480
+plus some higher order
+terms, where this is what we
+
+00:52:58.480 --> 00:53:01.940
+called a differential, right?
+
+00:53:01.940 --> 00:53:05.600
+So this is exactly
+what we did on Monday.
+
+00:53:05.600 --> 00:53:09.120
+And specifically,
+the reason why we
+
+00:53:09.120 --> 00:53:10.800
+did this is that
+we used the fact
+
+00:53:10.800 --> 00:53:16.560
+that for small enough increments
+delta x, the value of a function
+
+00:53:16.560 --> 00:53:19.720
+is well approximated
+by this linear part.
+
+00:53:19.720 --> 00:53:24.040
+And then what we did is that we
+essentially derived conditions
+
+00:53:24.040 --> 00:53:26.360
+on this linear part
+to say something
+
+00:53:26.360 --> 00:53:31.080
+about the minimum
+of the function.
+
+00:53:31.080 --> 00:53:36.920
+Specifically, we went from this
+differential to the condition
+
+00:53:36.920 --> 00:53:41.490
+that at the minima, the gradient
+of f needs to be equal to 0.
+
+00:53:41.490 --> 00:53:44.130
+So this is what
+we did on Monday.
+
+00:53:44.130 --> 00:53:46.130
+And so intuitively,
+what we want to do
+
+00:53:46.130 --> 00:53:49.010
+is something very similar,
+actually, exactly the same,
+
+00:53:49.010 --> 00:53:51.270
+but again, in the
+infinite dimensional case.
+
+00:53:54.130 --> 00:53:57.010
+And to do this, we
+start by introducing
+
+00:53:57.010 --> 00:54:00.530
+an increment of a
+function that is defined
+
+00:54:00.530 --> 00:54:04.210
+as the difference between
+the value of the functional
+
+00:54:04.210 --> 00:54:09.570
+evaluated at the function
+plus a variation of x
+
+00:54:09.570 --> 00:54:14.270
+minus the value of the function
+at the function itself.
+
+00:54:18.010 --> 00:54:23.830
+And now is where I think, again,
+most of the brainpower goes.
+
+00:54:26.948 --> 00:54:28.990
+So at the high-level, this
+is what we want to do.
+
+00:54:28.990 --> 00:54:31.770
+So we want to follow
+exactly the same recipe that
+
+00:54:31.770 --> 00:54:35.850
+is defined something
+similar to a differential
+
+00:54:35.850 --> 00:54:40.490
+and use this linear part that
+well approximates our function
+
+00:54:40.490 --> 00:54:43.330
+to derive a condition
+on this linear part
+
+00:54:43.330 --> 00:54:46.330
+in the infinite
+dimensional case.
+
+00:54:46.330 --> 00:54:52.290
+To do this, we need to define
+a notion of differentiability.
+
+00:54:52.290 --> 00:54:52.970
+Yes?
+
+00:54:52.970 --> 00:54:55.890
+The comma is supposed
+to be plus straight?
+
+00:54:55.890 --> 00:54:56.770
+Sorry?
+
+00:54:56.770 --> 00:54:59.650
+The x of t comma
+delta x of t, that's
+
+00:54:59.650 --> 00:55:02.050
+supposed to be a plus straight?
+
+00:55:02.050 --> 00:55:04.150
+That's what you
+thought or is it not--
+
+00:55:04.150 --> 00:55:05.350
+No, this is correct.
+
+00:55:05.350 --> 00:55:07.010
+So we are defining
+the increment,
+
+00:55:07.010 --> 00:55:11.450
+which we express
+basically as a function
+
+00:55:11.450 --> 00:55:16.050
+of-- the original function x
+of t and the variation delta.
+
+00:55:16.050 --> 00:55:18.970
+So that equals what
+you were talking
+
+00:55:18.970 --> 00:55:22.570
+about x plus delta x, right?
+
+00:55:22.570 --> 00:55:28.010
+No, this increment
+would be f of--
+
+00:55:28.010 --> 00:55:30.370
+So it's a completely
+different function than the j
+
+00:55:30.370 --> 00:55:32.542
+that you were
+talking about before?
+
+00:55:32.542 --> 00:55:33.750
+No, it's this part over here.
+
+00:55:33.750 --> 00:55:35.333
+So if we bring this
+on the other side,
+
+00:55:35.333 --> 00:55:37.090
+this is the increment
+because it's
+
+00:55:37.090 --> 00:55:39.350
+the difference of the
+value of the function,
+
+00:55:39.350 --> 00:55:42.250
+and this is the difference of
+the value of the functionals.
+
+00:55:42.250 --> 00:55:44.370
+The function else?
+
+00:55:44.370 --> 00:55:45.350
+Functionals.
+
+00:55:45.350 --> 00:55:45.890
+Functionals?
+
+00:55:45.890 --> 00:55:47.370
+Yes.
+
+00:55:47.370 --> 00:55:48.310
+Does that make sense?
+
+00:55:51.150 --> 00:55:51.650
+OK.
+
+00:55:51.650 --> 00:55:53.410
+So here, what we're
+essentially doing
+
+00:55:53.410 --> 00:55:57.650
+is expanding the concept
+of differentiability.
+
+00:55:57.650 --> 00:56:04.010
+And to do this, we first rewrite
+the increment in this way.
+
+00:56:04.010 --> 00:56:06.690
+And specifically, the
+increment we rewrite it
+
+00:56:06.690 --> 00:56:14.490
+as the sum of delta j, which is
+a linear part plus some stuff.
+
+00:56:14.490 --> 00:56:18.690
+And some stuff is the equivalent
+of the higher order terms
+
+00:56:18.690 --> 00:56:20.650
+in the finite dimensional case.
+
+00:56:20.650 --> 00:56:22.540
+And so here, you
+might say, well, sure,
+
+00:56:22.540 --> 00:56:24.290
+we can always write
+something as something
+
+00:56:24.290 --> 00:56:26.410
+linear plus some stuff.
+
+00:56:26.410 --> 00:56:30.930
+The point is that to define
+what it means for a function
+
+00:56:30.930 --> 00:56:35.650
+to be differentiable, this
+stuff has a specific property.
+
+00:56:35.650 --> 00:56:37.250
+And specifically
+what we're saying
+
+00:56:37.250 --> 00:56:44.450
+is that if this part g goes
+to the limit of smaller
+
+00:56:44.450 --> 00:56:47.930
+and smaller delta
+x goes to 0, we
+
+00:56:47.930 --> 00:56:50.810
+have something that
+goes to 0 times
+
+00:56:50.810 --> 00:56:52.810
+something that also
+goes to 0, which
+
+00:56:52.810 --> 00:56:56.970
+means that this higher order
+terms goes quadratically to 0.
+
+00:56:56.970 --> 00:57:00.530
+Well, this is a linear
+term, linear in delta
+
+00:57:00.530 --> 00:57:04.490
+x, which means that
+goes only linearly to 0,
+
+00:57:04.490 --> 00:57:09.970
+which means that the increment
+of the functional for smaller
+
+00:57:09.970 --> 00:57:16.450
+delta x is well approximated
+by only this linear part.
+
+00:57:16.450 --> 00:57:19.987
+So again, we're trying to
+do the exact same statement
+
+00:57:19.987 --> 00:57:22.070
+that we were doing in the
+finite dimensional case.
+
+00:57:25.330 --> 00:57:28.690
+And so again, so this is the
+notion of differentiability,
+
+00:57:28.690 --> 00:57:30.570
+meaning that given
+that we are rewriting
+
+00:57:30.570 --> 00:57:34.410
+the increment in this way,
+if this condition is true,
+
+00:57:34.410 --> 00:57:38.330
+then the functional j is said
+to be differentiable on x.
+
+00:57:38.330 --> 00:57:41.410
+And delta j, so
+this term over here,
+
+00:57:41.410 --> 00:57:44.190
+is referred to as the
+variation of j at x.
+
+00:57:50.170 --> 00:57:52.730
+Any questions here?
+
+00:57:52.730 --> 00:57:53.690
+Yeah?
+
+00:57:53.690 --> 00:57:56.408
+Is this definition coming
+from the Taylor series
+
+00:57:56.408 --> 00:57:57.950
+or is this just
+completely different?
+
+00:57:57.950 --> 00:57:59.190
+Can you repeat louder?
+
+00:57:59.190 --> 00:58:00.793
+Is this definition
+for the increment
+
+00:58:00.793 --> 00:58:03.210
+coming from the Taylor series
+you're talking about before,
+
+00:58:03.210 --> 00:58:04.590
+or is this completely different?
+
+00:58:04.590 --> 00:58:09.430
+It's a great question,
+because in a way,
+
+00:58:09.430 --> 00:58:11.430
+everything that I'm saying
+here is s actionable.
+
+00:58:11.430 --> 00:58:14.230
+Meaning I haven't told you
+how to get any of this.
+
+00:58:14.230 --> 00:58:17.410
+And so we'll see later in the
+next few slides how to do this.
+
+00:58:17.410 --> 00:58:20.730
+So here, what we're only doing
+is setting the stage for that
+
+00:58:20.730 --> 00:58:23.157
+result. Specifically
+by setting the stage,
+
+00:58:23.157 --> 00:58:25.490
+I mean that we are trying to
+draw parallels between what
+
+00:58:25.490 --> 00:58:27.690
+we're doing in the
+finite dimensional case,
+
+00:58:27.690 --> 00:58:32.890
+and here expanding the
+notion of differentiability.
+
+00:58:32.890 --> 00:58:34.030
+Was that a question or no?
+
+00:58:34.030 --> 00:58:34.530
+Yes.
+
+00:58:34.530 --> 00:58:37.050
+So for now, we'll just
+say it's unrelated.
+
+00:58:37.050 --> 00:58:41.010
+For now, it's just a result
+that is taking a step
+
+00:58:41.010 --> 00:58:45.490
+into how we actually compute.
+
+00:58:45.490 --> 00:58:46.130
+Yes?
+
+00:58:46.130 --> 00:58:46.630
+Sorry.
+
+00:58:46.630 --> 00:58:50.350
+[INAUDIBLE] by what
+the [INAUDIBLE].
+
+00:58:50.350 --> 00:58:50.850
+Yeah.
+
+00:58:50.850 --> 00:58:54.690
+Again, so here, I have
+not defined concretely
+
+00:58:54.690 --> 00:58:57.730
+what any of this is.
+
+00:58:57.730 --> 00:59:00.890
+Intuitively, you can think
+of this part over here
+
+00:59:00.890 --> 00:59:04.170
+as the equivalent
+of the higher order
+
+00:59:04.170 --> 00:59:06.470
+terms in our Taylor expansion.
+
+00:59:06.470 --> 00:59:06.970
+Yeah.
+
+00:59:10.450 --> 00:59:10.950
+OK.
+
+00:59:10.950 --> 00:59:13.450
+And so this-- once
+we have this, we
+
+00:59:13.450 --> 00:59:15.890
+can formally state the
+fundamental theorem
+
+00:59:15.890 --> 00:59:19.650
+of calculus of variations
+or again, kind of i.e.
+
+00:59:19.650 --> 00:59:23.490
+The necessary and optimality
+conditions for our infinite
+
+00:59:23.490 --> 00:59:26.210
+dimensional problem.
+
+00:59:26.210 --> 00:59:28.390
+Specifically, the
+theorem goes as follows.
+
+00:59:28.390 --> 00:59:33.730
+So let x of t be a vector
+function of t in the class
+
+00:59:33.730 --> 00:59:38.610
+omega and j of x be a
+differentiable function of x.
+
+00:59:38.610 --> 00:59:41.650
+Again, differentiable meaning
+that the increment is well
+
+00:59:41.650 --> 00:59:44.930
+approximated by the
+linear term delta
+
+00:59:44.930 --> 00:59:47.050
+j that we were seeing before.
+
+00:59:47.050 --> 00:59:49.290
+Assume that the
+functions in omega
+
+00:59:49.290 --> 00:59:51.310
+are not constrained
+by any boundaries.
+
+00:59:51.310 --> 00:59:53.650
+For now, ignore this sentence.
+
+00:59:53.650 --> 00:59:57.530
+If x of star is an
+extremal, the variation of j
+
+00:59:57.530 --> 01:00:00.170
+must vanish at x of star.
+
+01:00:00.170 --> 01:00:03.450
+That is, the necessary
+optimality conditions
+
+01:00:03.450 --> 01:00:08.970
+for our problems is that the
+variation of j at a local minima
+
+01:00:08.970 --> 01:00:13.930
+x star needs to be equal
+to 0 for all admissible
+
+01:00:13.930 --> 01:00:15.710
+delta x is small enough.
+
+01:00:18.770 --> 01:00:25.290
+So again, here, we won't be
+bringing forward the proof
+
+01:00:25.290 --> 01:00:28.810
+because it's fairly intricate
+and in my opinion, not
+
+01:00:28.810 --> 01:00:30.650
+super insightful.
+
+01:00:30.650 --> 01:00:34.010
+But in a way, how I
+want you to interpret
+
+01:00:34.010 --> 01:00:36.290
+this result is that
+this is exactly
+
+01:00:36.290 --> 01:00:42.650
+the analog of the gradient
+to f transpose delta
+
+01:00:42.650 --> 01:00:47.530
+x equal to 0 condition
+that we saw on Monday.
+
+01:00:47.530 --> 01:00:49.870
+Now, in the finite
+dimensional case,
+
+01:00:49.870 --> 01:00:54.970
+this was directly leading
+towards an actionable thing
+
+01:00:54.970 --> 01:00:57.290
+we could compute, which
+is the gradient of f
+
+01:00:57.290 --> 01:00:59.130
+equal to 0 condition.
+
+01:00:59.130 --> 01:01:01.650
+In this case, this is
+not yet actionable,
+
+01:01:01.650 --> 01:01:03.750
+but we'll build towards it.
+
+01:01:03.750 --> 01:01:05.810
+But intuitively and
+at a high-level,
+
+01:01:05.810 --> 01:01:08.250
+you should map
+this result exactly
+
+01:01:08.250 --> 01:01:10.290
+to the differential
+equal to 0 result
+
+01:01:10.290 --> 01:01:13.050
+in the finite dimensional case.
+
+01:01:13.050 --> 01:01:14.850
+Yes?
+
+01:01:14.850 --> 01:01:17.170
+You use a lower case delta j.
+
+01:01:17.170 --> 01:01:21.530
+In the biggest slide,
+[INAUDIBLE] full delta j.
+
+01:01:21.530 --> 01:01:22.630
+That's the same thing?
+
+01:01:22.630 --> 01:01:27.450
+We're talking about this
+linear part over here.
+
+01:01:27.450 --> 01:01:29.970
+So the capital delta
+is the increment.
+
+01:01:29.970 --> 01:01:33.810
+So the difference between
+the value of the function,
+
+01:01:33.810 --> 01:01:36.450
+well, plus the variation
+minus the original function.
+
+01:01:36.450 --> 01:01:43.930
+And lower delta here is what we
+introduced to be as a variation.
+
+01:01:43.930 --> 01:01:46.010
+Again, kind of in
+your mental model,
+
+01:01:46.010 --> 01:01:49.330
+I would suggest you see
+this as the equivalent
+
+01:01:49.330 --> 01:01:50.530
+of the differential.
+
+01:01:50.530 --> 01:01:53.370
+So it's the linear part
+that approximates very well
+
+01:01:53.370 --> 01:01:54.250
+the increment.
+
+01:01:57.450 --> 01:01:59.990
+And in the finite
+dimensional case,
+
+01:01:59.990 --> 01:02:02.370
+what we did is that once we
+had this linear part that
+
+01:02:02.370 --> 01:02:07.730
+approximates well the increment,
+we derived a condition
+
+01:02:07.730 --> 01:02:10.090
+on this linear part.
+
+01:02:10.090 --> 01:02:13.450
+Here, we're doing
+the exact same thing.
+
+01:02:13.450 --> 01:02:15.970
+Does that make sense?
+
+01:02:15.970 --> 01:02:18.410
+Yeah.
+
+01:02:18.410 --> 01:02:19.830
+What is big?
+
+01:02:19.830 --> 01:02:25.970
+No, I'm not sure
+I understand what
+
+01:02:25.970 --> 01:02:29.410
+the increment and
+the linear part is.
+
+01:02:29.410 --> 01:02:31.810
+Why there's a difference?
+
+01:02:31.810 --> 01:02:33.410
+So the increment,
+we're just defining
+
+01:02:33.410 --> 01:02:35.330
+as the difference
+between the value
+
+01:02:35.330 --> 01:02:39.370
+of a functional at the
+kind of function plus
+
+01:02:39.370 --> 01:02:42.483
+variation minus the value of
+the function at the original--
+
+01:02:42.483 --> 01:02:44.150
+the functional at the
+original function.
+
+01:02:44.150 --> 01:02:47.450
+So this is just a definition.
+
+01:02:47.450 --> 01:02:51.250
+Then what we're saying
+is that we can--
+
+01:02:51.250 --> 01:02:55.610
+for variations of the function
+delta x that are small enough,
+
+01:02:55.610 --> 01:02:59.970
+this increment is well
+approximated by a linear part.
+
+01:02:59.970 --> 01:03:03.090
+And then we use this linear
+part to basically impose
+
+01:03:03.090 --> 01:03:06.570
+a condition on this
+linear part to derive
+
+01:03:06.570 --> 01:03:09.530
+our optimality conditions.
+
+01:03:09.530 --> 01:03:13.050
+Again, I understand how
+this can look a bit vague,
+
+01:03:13.050 --> 01:03:15.830
+because here, it's still
+not really actionable yet.
+
+01:03:15.830 --> 01:03:17.510
+In two slides, it will be.
+
+01:03:20.310 --> 01:03:20.810
+OK.
+
+01:03:20.810 --> 01:03:23.170
+But again, so
+fundamental theorem
+
+01:03:23.170 --> 01:03:26.970
+of the calculus of
+variations is the analog
+
+01:03:26.970 --> 01:03:29.130
+of the differential
+equal to 0 condition
+
+01:03:29.130 --> 01:03:30.850
+in the finite
+dimensional case, so
+
+01:03:30.850 --> 01:03:33.050
+the necessary
+optimality conditions
+
+01:03:33.050 --> 01:03:35.530
+in the infinite
+dimensional case.
+
+01:03:35.530 --> 01:03:36.370
+Yes?
+
+01:03:36.370 --> 01:03:41.250
+The delta x in the delta
+j function there is not
+
+01:03:41.250 --> 01:03:43.010
+the variation of x over time?
+
+01:03:43.010 --> 01:03:45.738
+Yes, correct.
+
+01:03:45.738 --> 01:03:47.030
+Actually, this is a good point.
+
+01:03:47.030 --> 01:03:53.750
+Let me try and give some
+intuition to what delta x is.
+
+01:04:01.610 --> 01:04:11.990
+So say that this is our x of
+t, so our function x of t.
+
+01:04:15.090 --> 01:04:19.650
+We can define-- and
+this is like t0.
+
+01:04:19.650 --> 01:04:21.970
+This is tf.
+
+01:04:21.970 --> 01:04:25.772
+Delta x could be a function.
+
+01:04:25.772 --> 01:04:27.230
+There could be
+something like this.
+
+01:04:27.230 --> 01:04:29.970
+So delta x is, in
+itself, a function,
+
+01:04:29.970 --> 01:04:34.950
+which leads to x plus delta
+x being something like this.
+
+01:04:34.950 --> 01:04:38.170
+So this would be
+delta x and this would
+
+01:04:38.170 --> 01:04:43.610
+be x of t plus delta x.
+
+01:04:43.610 --> 01:04:48.250
+And then j would still be all
+of that flipped into, I guess,
+
+01:04:48.250 --> 01:04:50.730
+the integral that you're
+talking about as the example?
+
+01:04:50.730 --> 01:04:53.930
+We didn't define what
+delta j is here yet.
+
+01:04:53.930 --> 01:04:59.130
+You should just see it as
+the linear part, the analog
+
+01:04:59.130 --> 01:05:03.330
+of the linear part that will
+approximate the increment
+
+01:05:03.330 --> 01:05:05.870
+in the infinite
+dimensional case.
+
+01:05:05.870 --> 01:05:06.370
+Yeah.
+
+01:05:10.410 --> 01:05:10.910
+OK.
+
+01:05:16.130 --> 01:05:18.730
+Now, let's make this actionable.
+
+01:05:18.730 --> 01:05:22.700
+And to do this, let's
+start by applying it
+
+01:05:22.700 --> 01:05:26.660
+to basically an extremely
+simplified optimal control
+
+01:05:26.660 --> 01:05:30.140
+problem, if you wish, the
+simplest possible optimal
+
+01:05:30.140 --> 01:05:32.180
+control problem
+we could think of.
+
+01:05:32.180 --> 01:05:34.140
+Specifically, we
+consider the problem
+
+01:05:34.140 --> 01:05:40.340
+where we want to minimize
+this functional, which
+
+01:05:40.340 --> 01:05:42.820
+is defined as the
+integral between t0
+
+01:05:42.820 --> 01:05:48.100
+and tf of this function g,
+which is a function of x,
+
+01:05:48.100 --> 01:05:51.700
+the derivative of x and n time.
+
+01:05:51.700 --> 01:05:55.660
+So going point to
+the observation
+
+01:05:55.660 --> 01:05:57.460
+that your colleague
+was doing before,
+
+01:05:57.460 --> 01:06:01.020
+here, you should interpret
+this as we want--
+
+01:06:01.020 --> 01:06:03.780
+as if we are directly
+controlling the state
+
+01:06:03.780 --> 01:06:05.160
+trajectory, for example.
+
+01:06:05.160 --> 01:06:08.300
+So there is no control,
+but we are directly
+
+01:06:08.300 --> 01:06:11.080
+steering the state
+trajectory of our system.
+
+01:06:15.980 --> 01:06:20.580
+And so some assumptions here is
+that g is twice differentiable.
+
+01:06:20.580 --> 01:06:23.780
+We are assuming that
+t0 and tf are fixed.
+
+01:06:23.780 --> 01:06:27.540
+Again, this is something
+we will relax on Wednesday.
+
+01:06:27.540 --> 01:06:30.180
+But for now, we assume that the
+initial time and the final time
+
+01:06:30.180 --> 01:06:31.460
+are fixed and given.
+
+01:06:31.460 --> 01:06:35.960
+Same thing for the state at the
+initial time and the final time.
+
+01:06:35.960 --> 01:06:38.540
+X0 and xf are also fixed.
+
+01:06:38.540 --> 01:06:43.940
+So to basically recap
+what we're doing,
+
+01:06:43.940 --> 01:06:46.900
+so far, we have introduced
+the fundamental theorem
+
+01:06:46.900 --> 01:06:50.340
+of calculus of variations, which
+is the optimality conditions
+
+01:06:50.340 --> 01:06:54.420
+in the infinite
+dimensional case, which
+
+01:06:54.420 --> 01:06:58.860
+we said is not really
+actionable and operational yet.
+
+01:06:58.860 --> 01:07:01.460
+So now, we will make it
+operational by starting
+
+01:07:01.460 --> 01:07:04.340
+to look at a simplified
+version of an optimal control
+
+01:07:04.340 --> 01:07:06.180
+problem, which we
+will be building
+
+01:07:06.180 --> 01:07:10.500
+on Wednesday to until we reach
+to the full fledged optimal
+
+01:07:10.500 --> 01:07:11.480
+control problem.
+
+01:07:14.460 --> 01:07:21.860
+So to do this, let's apply
+the fundamental theorem
+
+01:07:21.860 --> 01:07:26.020
+of calculus of variation.
+
+01:07:26.020 --> 01:07:32.260
+And specifically, what we do
+here is we write the increment.
+
+01:07:32.260 --> 01:07:34.800
+So here, we're not really
+doing anything particular.
+
+01:07:34.800 --> 01:07:38.260
+We're just applying the
+definition of an increment.
+
+01:07:38.260 --> 01:07:41.380
+And then we're
+substituting our value of j
+
+01:07:41.380 --> 01:07:43.500
+from our optimal
+control problem.
+
+01:07:43.500 --> 01:07:45.940
+So for us, the increment
+will be defined
+
+01:07:45.940 --> 01:07:50.820
+as the integral between t0
+and tf of g of x plus delta
+
+01:07:50.820 --> 01:07:56.420
+x, x dot plus delta
+x dot t in the t
+
+01:07:56.420 --> 01:08:01.100
+minus the original function g.
+
+01:08:01.100 --> 01:08:05.060
+We can bring the second
+integral inside the first
+
+01:08:05.060 --> 01:08:07.440
+and we get this
+equation over here.
+
+01:08:07.440 --> 01:08:09.840
+So completely nothing new here.
+
+01:08:09.840 --> 01:08:12.380
+We're just applying
+the definition
+
+01:08:12.380 --> 01:08:15.580
+of an increment with
+respect to our definition
+
+01:08:15.580 --> 01:08:19.279
+of j in this problem,
+which was this one here.
+
+01:08:23.859 --> 01:08:26.020
+OK, so just a note on notation.
+
+01:08:26.020 --> 01:08:28.500
+X dot is the
+derivative of x of t
+
+01:08:28.500 --> 01:08:32.220
+and the t and delta x dot is
+also the derivative of delta xt.
+
+01:08:36.680 --> 01:08:37.180
+OK.
+
+01:08:37.180 --> 01:08:45.779
+So remember what we said for the
+fundamental theorem of calculus
+
+01:08:45.779 --> 01:08:50.660
+of variation is that we took
+the expression of the increment.
+
+01:08:50.660 --> 01:08:52.620
+And then we said
+that the increment
+
+01:08:52.620 --> 01:08:58.660
+would be equal to a linear
+part delta j plus some stuff.
+
+01:08:58.660 --> 01:09:02.100
+Now, here, what we want to do
+is from this equation here,
+
+01:09:02.100 --> 01:09:07.899
+we want to extract the linear
+part of this function over here.
+
+01:09:07.899 --> 01:09:15.120
+Now, in general,
+assume a fixed t.
+
+01:09:15.120 --> 01:09:17.819
+So we are considering only
+if you want one element
+
+01:09:17.819 --> 01:09:19.979
+of this integration.
+
+01:09:19.979 --> 01:09:22.300
+What is the tool
+we would usually
+
+01:09:22.300 --> 01:09:26.600
+use to derive a kind of the
+linear part in this case?
+
+01:09:29.350 --> 01:09:30.700
+Taylor series.
+
+01:09:30.700 --> 01:09:31.600
+Yes, exactly.
+
+01:09:31.600 --> 01:09:32.580
+Correct.
+
+01:09:32.580 --> 01:09:35.479
+So we will be using Taylor
+over and over in this class.
+
+01:09:35.479 --> 01:09:37.359
+And so this is exactly
+what we do here.
+
+01:09:37.359 --> 01:09:40.859
+So we basically do
+the Taylor expansion
+
+01:09:40.859 --> 01:09:46.340
+of the term inside the
+integral, whereby essentially,
+
+01:09:46.340 --> 01:09:49.740
+the increment becomes the
+integral between t0 and tf of g
+
+01:09:49.740 --> 01:09:55.900
+x, x dot t, plus the derivative
+of g with respect to x, which we
+
+01:09:55.900 --> 01:10:01.540
+refer to as g of x
+times the variation in x
+
+01:10:01.540 --> 01:10:05.260
+plus the derivative of g
+with respect to x dot times
+
+01:10:05.260 --> 01:10:09.620
+the variation in x dot plus
+some higher order terms.
+
+01:10:09.620 --> 01:10:12.960
+So here, we just expanded
+the first term, if you wish.
+
+01:10:19.580 --> 01:10:23.940
+Now, if you look at this, the
+first term and the last term
+
+01:10:23.940 --> 01:10:25.180
+cancel out.
+
+01:10:25.180 --> 01:10:28.980
+And so what we are
+left with is only
+
+01:10:28.980 --> 01:10:32.660
+with these three
+terms over here.
+
+01:10:32.660 --> 01:10:38.380
+And even by inspection,
+what would you say--
+
+01:10:38.380 --> 01:10:41.540
+out of these three
+terms, where are we
+
+01:10:41.540 --> 01:10:45.740
+sure the linear part
+is not coming from?
+
+01:10:45.740 --> 01:10:49.180
+So I guess you're probably
+guessing this higher order terms
+
+01:10:49.180 --> 01:10:50.540
+element, right?
+
+01:10:50.540 --> 01:10:52.860
+So even just by
+inspection, so we Taylor
+
+01:10:52.860 --> 01:10:58.880
+expanded our increment, and
+we are defining our variation,
+
+01:10:58.880 --> 01:11:02.780
+that is the linear part that
+well approximates our increment,
+
+01:11:02.780 --> 01:11:05.320
+as this guy over here.
+
+01:11:08.260 --> 01:11:11.380
+Does that make sense?
+
+01:11:11.380 --> 01:11:12.060
+Yes?
+
+01:11:12.060 --> 01:11:17.400
+Does the term in
+the parentheses,
+
+01:11:17.400 --> 01:11:20.690
+does that just represent all
+the higher order terms networks
+
+01:11:20.690 --> 01:11:22.080
+that you're not considering?
+
+01:11:22.080 --> 01:11:24.380
+Yeah, exactly.
+
+01:11:24.380 --> 01:11:25.360
+OK.
+
+01:11:25.360 --> 01:11:32.020
+Now, if we look back at the
+fundamental theorem of calculus
+
+01:11:32.020 --> 01:11:34.020
+of variation, which is
+what we want to apply,
+
+01:11:34.020 --> 01:11:35.980
+we are seeing that the
+condition that we had
+
+01:11:35.980 --> 01:11:39.500
+is basically that the
+variation of x delta x
+
+01:11:39.500 --> 01:11:42.100
+needs to be equal to 0.
+
+01:11:42.100 --> 01:11:46.220
+Now, what we got here
+is the variation.
+
+01:11:46.220 --> 01:11:50.260
+But this is also a
+function of x dot.
+
+01:11:50.260 --> 01:11:51.860
+So what we're
+going to do here is
+
+01:11:51.860 --> 01:11:54.900
+we're going to massage this
+term in order to have everything
+
+01:11:54.900 --> 01:11:59.020
+as a function of delta x.
+
+01:11:59.020 --> 01:11:59.543
+Yes?
+
+01:11:59.543 --> 01:12:00.043
+All right.
+
+01:12:00.043 --> 01:12:03.580
+Could you just quickly say
+how you got capital delta J
+
+01:12:03.580 --> 01:12:05.680
+to small delta j?
+
+01:12:05.680 --> 01:12:06.220
+Yeah.
+
+01:12:06.220 --> 01:12:13.820
+So let's see if
+it's somewhere here.
+
+01:12:13.820 --> 01:12:17.180
+So if you remember, the way
+we did it kind of abstractly
+
+01:12:17.180 --> 01:12:21.420
+is that we defined capital
+delta J, so the increment,
+
+01:12:21.420 --> 01:12:25.540
+as some linear part
+plus some stuff.
+
+01:12:25.540 --> 01:12:30.460
+What we're doing here is we
+want to derive the linear part
+
+01:12:30.460 --> 01:12:32.260
+for this specific case.
+
+01:12:32.260 --> 01:12:36.740
+So we started by just applying
+the definition of increment
+
+01:12:36.740 --> 01:12:40.080
+to our specific functional,
+which led us to this.
+
+01:12:43.020 --> 01:12:48.220
+Well, actually, it led
+us to this guy over here.
+
+01:12:48.220 --> 01:12:50.360
+Then we wanted to
+extract the linear part.
+
+01:12:50.360 --> 01:12:52.900
+And so we use Taylor
+expansion of this first term
+
+01:12:52.900 --> 01:12:57.605
+to get the linear part,
+which led us to this.
+
+01:12:57.605 --> 01:12:58.980
+Here, the first
+and the last term
+
+01:12:58.980 --> 01:13:02.940
+cancel out and out
+of these three terms,
+
+01:13:02.940 --> 01:13:05.040
+here, we have this
+higher order terms,
+
+01:13:05.040 --> 01:13:08.060
+which is definitely not the
+linear part we are looking for.
+
+01:13:08.060 --> 01:13:11.460
+And so we're just left
+with the middle two.
+
+01:13:11.460 --> 01:13:13.020
+Yeah.
+
+01:13:13.020 --> 01:13:13.520
+OK.
+
+01:13:13.520 --> 01:13:14.980
+And now, we said
+we want to express
+
+01:13:14.980 --> 01:13:18.140
+this only as a function of
+delta x not delta x dot.
+
+01:13:18.140 --> 01:13:21.220
+And so we want to
+massage this second term.
+
+01:13:21.220 --> 01:13:24.680
+The way we do this is
+through integration by parts.
+
+01:13:34.060 --> 01:13:35.640
+So remember that--
+
+01:13:41.540 --> 01:13:43.280
+I think we lost that print.
+
+01:13:47.985 --> 01:13:52.220
+So remember that we--
+
+01:13:52.220 --> 01:13:56.720
+integration by parts
+essentially entails doing this.
+
+01:13:56.720 --> 01:14:02.460
+So the integral of udv
+is equal to u times
+
+01:14:02.460 --> 01:14:05.660
+v minus the integral of vdu.
+
+01:14:10.620 --> 01:14:12.460
+And now, we want
+to basically apply
+
+01:14:12.460 --> 01:14:14.840
+this in the context
+of our second term.
+
+01:14:14.840 --> 01:14:22.820
+So what we have is this one here
+from integral from t0 to tf of g
+
+01:14:22.820 --> 01:14:31.860
+of x dot x dot t
+delta x dot in the t.
+
+01:14:31.860 --> 01:14:37.700
+So we want to apply integration
+by parts on this one here,
+
+01:14:37.700 --> 01:14:44.480
+where we're considering
+this as u and this as dv.
+
+01:14:47.660 --> 01:14:55.620
+And this essentially means,
+well, applying the integration
+
+01:14:55.620 --> 01:14:56.500
+by parts.
+
+01:14:56.500 --> 01:15:13.100
+So we have g of x dot x, x dot
+t delta x dot delta x t0, tf.
+
+01:15:13.100 --> 01:15:19.060
+So this is the
+first part minus--
+
+01:15:19.060 --> 01:15:20.700
+and I'm not sure if
+you're able to see,
+
+01:15:20.700 --> 01:15:24.240
+but unfortunately, I'm
+out of dark markers now.
+
+01:15:28.220 --> 01:15:34.500
+So the integral between
+t0 and tf, right?
+
+01:15:34.500 --> 01:15:35.360
+Let's try again.
+
+01:15:43.940 --> 01:15:45.180
+This is great.
+
+01:15:45.180 --> 01:15:53.820
+So the integral between
+t0 and tf of delta
+
+01:15:53.820 --> 01:16:03.040
+x times the derivative with
+respect to time of g x dot x,
+
+01:16:03.040 --> 01:16:16.460
+x dot t entity,
+which essentially
+
+01:16:16.460 --> 01:16:24.820
+means that now if we take this
+and we write the full variation
+
+01:16:24.820 --> 01:16:28.820
+delta j, what we're getting
+is the integral with respect--
+
+01:16:28.820 --> 01:16:36.220
+between t0 and tf
+of g of x, x dot
+
+01:16:36.220 --> 01:16:39.900
+t minus the derivative
+with respect
+
+01:16:39.900 --> 01:17:00.900
+to time of g x dot x plus
+the gx dot t also computed
+
+01:17:00.900 --> 01:17:02.220
+between t0 and tf.
+
+01:17:04.750 --> 01:17:07.710
+So here, we use
+integration by parts
+
+01:17:07.710 --> 01:17:10.850
+to massage the second term here.
+
+01:17:10.850 --> 01:17:17.070
+And then we just rewrote
+the full variation delta j.
+
+01:17:17.070 --> 01:17:23.790
+Now, if we look a little
+bit closer at the last term
+
+01:17:23.790 --> 01:17:24.530
+over here--
+
+01:17:27.790 --> 01:17:34.130
+actually, I think I
+forgot delta x here.
+
+01:17:39.890 --> 01:17:40.390
+Yes.
+
+01:17:46.590 --> 01:17:49.590
+So if we look at
+this term over here,
+
+01:17:49.590 --> 01:17:53.770
+we can safely say that
+all of this is equal to 0.
+
+01:17:56.470 --> 01:18:00.430
+Because at t0 and
+tf the variations
+
+01:18:00.430 --> 01:18:04.070
+that are admissible in
+our x are actually none.
+
+01:18:04.070 --> 01:18:08.910
+So we said that x at t0
+and x at tf are fixed.
+
+01:18:08.910 --> 01:18:14.270
+And so the variations that are
+admissible are basically none.
+
+01:18:14.270 --> 01:18:19.510
+Again, visually, what we're
+saying is that in our problem
+
+01:18:19.510 --> 01:18:29.630
+we have fixed x of tf
+and x0 at t0 and tf.
+
+01:18:29.630 --> 01:18:32.390
+And so this means that we
+have some fixed boundary
+
+01:18:32.390 --> 01:18:33.830
+conditions for x.
+
+01:18:33.830 --> 01:18:36.190
+And so the admissible
+delta x here
+
+01:18:36.190 --> 01:18:38.870
+are none because all of my
+points need to pass there.
+
+01:18:38.870 --> 01:18:42.070
+And so if these are all
+zeros, then this entire term
+
+01:18:42.070 --> 01:18:43.510
+is equal to 0.
+
+01:18:43.510 --> 01:18:46.850
+And so we're left with
+this term over here.
+
+01:18:50.110 --> 01:18:51.450
+OK.
+
+01:18:55.150 --> 01:18:58.910
+So for us, we're basically left
+that the fundamental theorem
+
+01:18:58.910 --> 01:19:01.230
+for calculus of
+variation results
+
+01:19:01.230 --> 01:19:04.590
+in this integral over here.
+
+01:19:04.590 --> 01:19:14.230
+It's your tf of g of x, x
+of t minus the derivative
+
+01:19:14.230 --> 01:19:17.150
+with respect to
+time of g of x dot,
+
+01:19:17.150 --> 01:19:24.890
+x dot times dx dt equal to 0.
+
+01:19:24.890 --> 01:19:28.190
+So our condition for fundamental
+calculus of variation
+
+01:19:28.190 --> 01:19:30.470
+is that this guy is equal to 0.
+
+01:19:30.470 --> 01:19:35.830
+And so here, we are just
+setting delta j equal to 0.
+
+01:19:35.830 --> 01:19:37.990
+Yes?
+
+01:19:37.990 --> 01:19:40.670
+Is the admissible dx
+that you're talking about
+
+01:19:40.670 --> 01:19:47.510
+captured in that dx inside the
+bracket, or is it [INAUDIBLE]?
+
+01:19:47.510 --> 01:19:48.647
+It's in the dx.
+
+01:19:48.647 --> 01:19:49.230
+This one here.
+
+01:19:49.230 --> 01:19:52.390
+Is that admissible [INAUDIBLE]?
+
+01:19:52.390 --> 01:19:57.070
+I mean, in general, we are
+looking at the variations
+
+01:19:57.070 --> 01:19:59.630
+of our functions dx.
+
+01:19:59.630 --> 01:20:02.830
+And for the problem
+that we're looking at,
+
+01:20:02.830 --> 01:20:06.790
+the admissible variations
+of x at the boundary points
+
+01:20:06.790 --> 01:20:08.410
+are always 0.
+
+01:20:14.790 --> 01:20:15.750
+OK.
+
+01:20:15.750 --> 01:20:16.650
+That is [INAUDIBLE].
+
+01:20:16.650 --> 01:20:17.150
+OK.
+
+01:20:17.150 --> 01:20:17.650
+Yeah.
+
+01:20:17.650 --> 01:20:19.310
+And so I just want
+to wrap this up,
+
+01:20:19.310 --> 01:20:22.173
+so I don't steal too
+much of your time.
+
+01:20:22.173 --> 01:20:23.590
+But essentially,
+what we're saying
+
+01:20:23.590 --> 01:20:27.150
+is that for us the fundamental
+theorem of calculus of variation
+
+01:20:27.150 --> 01:20:32.990
+leads to exactly that condition
+over there, which is the one I'm
+
+01:20:32.990 --> 01:20:35.990
+written here on the slide.
+
+01:20:35.990 --> 01:20:40.190
+Now, does this tell us
+anything about the inner--
+
+01:20:40.190 --> 01:20:44.390
+like the integrand
+term over here?
+
+01:20:44.390 --> 01:20:45.210
+It does.
+
+01:20:45.210 --> 01:20:47.470
+And it does so through
+the last result
+
+01:20:47.470 --> 01:20:49.070
+that I'm introducing
+today, which
+
+01:20:49.070 --> 01:20:52.510
+is the fundamental lemma of
+calculus of variation, which
+
+01:20:52.510 --> 01:20:57.230
+essentially says that for
+any continuous function h,
+
+01:20:57.230 --> 01:21:00.590
+so any given continuous function
+h, the integral between t0
+
+01:21:00.590 --> 01:21:06.510
+and tf of h of t times
+delta x, so if this is true,
+
+01:21:06.510 --> 01:21:08.550
+so if we have this
+result here, this
+
+01:21:08.550 --> 01:21:13.990
+is only true if
+h is 0 everywhere
+
+01:21:13.990 --> 01:21:18.030
+in the interval t0 tf.
+
+01:21:18.030 --> 01:21:20.910
+What is the intuition
+here is that--
+
+01:21:20.910 --> 01:21:29.750
+say that this is our h of t
+and these are the possible
+
+01:21:29.750 --> 01:21:36.310
+variations delta x of t given--
+if we have any variable function
+
+01:21:36.310 --> 01:21:39.670
+h of t, say one that is none--
+
+01:21:39.670 --> 01:21:42.710
+is positive at
+some time t, if we
+
+01:21:42.710 --> 01:21:46.390
+were to pick our variations
+adversarially, our delta x of t,
+
+01:21:46.390 --> 01:21:48.350
+we could always pick
+the point that kind of
+
+01:21:48.350 --> 01:21:54.830
+matches the variation in x in
+order to make this positive.
+
+01:21:54.830 --> 01:21:57.950
+And so the only way in
+which this entire integral
+
+01:21:57.950 --> 01:22:05.110
+is equal to 0 is if h
+of t is 0 everywhere.
+
+01:22:05.110 --> 01:22:07.830
+Does that make sense?
+
+01:22:07.830 --> 01:22:10.630
+So through this, we essentially
+are finished in the sense
+
+01:22:10.630 --> 01:22:15.670
+that we arrived at
+our condition here.
+
+01:22:15.670 --> 01:22:18.690
+And then we said that
+through the lemma,
+
+01:22:18.690 --> 01:22:24.270
+we know that this essentially
+means that this would be our h.
+
+01:22:24.270 --> 01:22:26.430
+And this is delta x.
+
+01:22:26.430 --> 01:22:28.310
+All of this integral
+is equal to 0
+
+01:22:28.310 --> 01:22:31.470
+only if this part
+here is equal to 0.
+
+01:22:31.470 --> 01:22:33.870
+And so here, we have
+fast tracked Newton.
+
+01:22:33.870 --> 01:22:35.730
+He basically took 20 years.
+
+01:22:35.730 --> 01:22:38.990
+We took 45 minutes to
+reach to the same result.
+
+01:22:38.990 --> 01:22:41.723
+And we arrived to the
+necessary optimality condition
+
+01:22:41.723 --> 01:22:43.390
+for the infinite
+dimensional case, which
+
+01:22:43.390 --> 01:22:45.670
+is known as the Euler equation.
+
+01:22:45.670 --> 01:22:47.450
+I'm out of time, so I
+won't stick further,
+
+01:22:47.450 --> 01:22:50.030
+but I'll recap
+this on Wednesday.
+
+01:22:50.030 --> 01:22:51.860
+Thank you.
+

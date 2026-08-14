@@ -1,0 +1,1582 @@
+So today we're going to continue our
+discussion about uh reachability and
+then we move on to the next topic which
+is that of model predictive control. So
+as you remember from last time we
+discussed how a particularly useful
+application of uh continuous time closed
+loop optimal control is represented by
+uh reachability theory that essentially
+involves computing reachable sets
+through the lens of the habakobi is
+equation. So we discussed last time what
+reachable sets are and what they
+represent. Depending on the
+interpretation for the target set we
+have two main instanc concept of a
+reachable set namely a vodan set and
+reach sets. So what we're going to do
+today is based on these definitions see
+how we can apply the HTOI is equation to
+compute these mathematical objects and
+then I will discuss how once you have
+computed these objects you could use
+those in a control pipeline
+any questions so just as a reminder we
+defined um an
+uh avoidance set which is is a
+particular instantiation of a backward
+reachable set as the set of states at
+time t satisfying the following
+definition. A stand for avoidance.
+This is the set of states for which
+there exist a disturbance such that for
+all possible control the system enters
+the target set at time t equal zero. And
+of course once you have completed this
+set you want to make sure that you start
+outside of this set to guarantee safety.
+For uh the opposite the reachable set is
+actually the set of desirable states and
+is defined as the set set of states at
+time t such that for all disturbances
+there is a control such that the system
+enters target set at time t equals z. So
+in this case you would like to start
+within the set so that no matter what
+natural throws at you you know that
+there is a control I mean the optimal
+control that will still allow you to
+fulfill your control objectives. So this
+naturally become a constraints in your
+trajectory optimization problem. You
+want to ensure that in the case of an
+avoidance set you stay your trajectory
+stays outside of that set. In the case
+of a uh rich uh set you want to make
+sure that you know your initial
+condition is within that set.
+The other question is how do we compute
+these sets.
+So the point is that you can use the
+Hamilton Yakobic E is equation to
+compute these sets in a very procedural
+uh way. Specifically as we will see the
+computation of the backward reachable
+sets both in the avoidance case and the
+reach case entails solving a
+differential game where the outcome is
+boo. What does it mean a differential
+game from last time differential game
+means that there are two players we are
+player one we use the controls at our
+disposal in order to either avoid a
+target set or reach a target set. And
+then there's player two nature that
+through a disturbance control is trying
+to thwart our attempt to fulfill our
+control objectives.
+Now the question is at the level of a
+two-player structure should be quite
+intuitive that actually the hamobi is
+formalism is well set up to address
+these problems. The question though, how
+do we instantiate all the problem
+formulation in a way that is uh aligned
+with the definition of backwardable set
+particularly because uh belonging to a
+set or not is a binary condition while
+in backwardable set sorry in the optimal
+control formulation we only framed it in
+terms of a cost function. So the
+question is can we um
+reframe
+a membership to a set through the lens
+of a cost function so that we can reduce
+everything to the optimal control
+formulation to which we can then apply
+the HT Yakobi EOX equation
+and the short answer is yes we can
+encode this boolean outcome of belonging
+or not to target set uh within the
+Hamington Yakobi EAX formulation by
+removing the running cost. Since we only
+care about being in the target set at
+the final time or not being in the final
+set at the target time, there is no
+notion of
+running cost and by picking the final
+cost to denote set membership.
+The question is how we do that. Turns
+out that this is relatively
+easy and leads to the um
+level set method for backward reachable
+computations.
+Specifically remember the uh equations
+that one needs to solve in order to find
+the optimal control profile in a
+differential game.
+In our problem, we only care about
+getting into the backwardable set at the
+final time. There is no notion of a
+running cost. So accordingly, we set the
+running cost G equal to zero for the
+specific case of computing backward set.
+So we are only left with the final cost
+H which shows up in the boundary
+condition for the partial differential
+equation. Now can we pick a final cost
+that reflects the notion that you either
+belong to a target set or you do not
+belong to the target set and the answer
+is affirmative. So one can always find a
+function h of x such that set t the
+target set is equal to the zero cell
+level set of h that is x
+belong to a given set t if and only if h
+of x is less than or equal to uh zero.
+Let me give you an example and through
+the example you see that this is
+actually quite obvious. So let's assume
+that the set capital T is represented by
+a circle
+with radius R.
+So T is defined as
+the set of point X such that
+X² + Y²
+is less than or equal to r.
+Now you can define a function h that is
+a function of so let's assume that the
+state space of our system is three
+dimensional. So we have a unic cycle
+with state x the longitudinal position y
+the lateral position and theta the
+heading. So we can define the function
+uh h as h of xr y r theta r
+as
+square root of
+so
+if your unicycle whose state space is
+threedimensional xy position and heading
+has a x y coordinates such that h is
+negative. What is the unicycle?
+We assume that uh
+we have a reference frame like this one.
+If the function h is less than equal to
+zero, where is it?
+&gt;&gt; Inside the circle.
+&gt;&gt; Inside the circle. Exactly. Because it
+means that the square the distance is
+less than r. So if h
+less than or equal to zero it means
+x² + y^2 less than or equal to r which
+means that its position its displacement
+from the origin has to be less than r.
+So it's inside the circle. If h is
+greater than zero it means that you are
+outside.
+And of course the more h is negative
+means the deeper you are in the circle
+the more h is positive uh the farther
+you are from the circle. So actually the
+magnitude h also has a uh an
+interpretation in terms of how safe or
+how safe you are. But most importantly
+uh the sub uh level set of h tells you
+whether a system is in the target set or
+is not in the target set.
+So then the idea of uh reframing
+backwardable set through the lens of
+habit of economy is equation is fairly
+straightforward. You remove the running
+cost. This is not not running cost and
+computing backwardable sets. You find a
+function h that represents
+uh belonging to a given set whatever for
+whatever target set t you have defined
+that's always possible. Of course, if
+you have uh something that is a bit more
+complicated than a circle, then a
+function h is going to be a bit more
+complicated, but that's not a problem.
+And thus,
+we have reframed the problem of uh
+avoidance of a [snorts] target set as
+the problem of uh maximizing over u. We
+want to stay outside of the set. So we
+want to make us as player one we want to
+make H positive while the enemy player
+two wants to make H H H H H H H H H H H
+H H H H H H H H H H H H H H H H H H H H
+H H H H H H H H H H negative and so we
+are in the same exact formalism of the
+HTO is problem but the difference is
+that we only have the final cost we
+don't have the running cost remember
+that or the continuous time optimal
+control formulation the final time is a
+zero so we start from some negative time
+and the final time is zero this is more
+more of a convention.
+So this is an example. So this is an
+example where the avoidance set is this
+red circle
+for this trajectory here.
+The cost is positive since the final
+point is outside of the void set which
+means that the h the final cost is
+positive. And then uh opposite to that
+for this blue trajectory the final
+condition is in the circle which means
+that h is negative which means that the
+overall cost is negative.
+So we're not doing anything deep here.
+We're just trying to find a onetoone
+correspondence between the abstract
+problem of backward virtual set
+computation and the tool that we know of
+which is that of y.
+&gt;&gt; Yeah. Yeah. So that's why actually the
+magnitude of age not only allows you to
+reflect the problem of reachable set
+computation in the habit manda framework
+but also gives you some interesting
+additional information which is loosely
+speaking a buffer information about how
+much buffer you have before crossing the
+danger line which is when h is equal to
+zero. So short answer is yes.
+Okay. So we're always they're almost
+there. So this is the formulation for an
+avoidance set. So now that you want to
+uh so if you have a problem where you
+want to find the backward reachable set
+that is the set of initial conditions
+that would lead you to a collision. So
+for your state to enter some unsafe
+region for some adversarial selection of
+the two this profile. The problem that
+you want to solve is minimax problem. We
+already discussed how to pick h and then
+there is nothing else that you have to
+do. You just write down the ham
+is equation for this specific problem.
+Same as last time we don't have the
+running cost. And of course for the
+boundary condition we use the h function
+that represents membership to a given
+set.
+If instead you want to solve the
+opposite problem that of reaching a
+goal. So now you want to enter into the
+set. So you want to make H negative and
+the player wants to make the natural
+wants to make H positive because it
+doesn't want you to go into the set.
+Then the problem formulation is a swap
+in terms of minimax. And now you want to
+minimize H. Player two wants to maximize
+uh the the cost. So all stays the same.
+It's just that the max the max mean and
+min max are swapped in the conditions.
+So you do the same derivation but just
+sweeping swapping max. Yeah
+such that you can enter the testable set
+like
+a setible
+set. [laughter and clears throat]
+&gt;&gt; Yeah I mean there's a backward set but
+by physical set what do you mean
+exactly?
+Of course.
+&gt;&gt; Yeah, of course.
+&gt;&gt; Become then your target set and then you
+complicate dynamics even.
+&gt;&gt; Yeah. Yeah. Of course. And in general,
+we see
+uh so I think your question is pointing
+actually to the next point I want to
+make here which is the following
+that the formulination so far is pretty
+static. So basically I'm telling you
+what is the set of initial conditions
+such that at the end you are in a
+desirable condition but in general you
+want to be desirable along your full
+trajectory not necessarily just at the
+end point
+which leads to the notion of an
+evolution of the concept of reachable
+set into a reachable tube. Specifically
+look at this case. So here we have a
+case where trajectory stays outside of
+the avoidant set
+uh so the cost is positive. Here you
+have
+in particular because the end point is
+outside. Here you have a blue trajectory
+the end point is inside. So the cost is
+negative. Okay. But here there is a case
+whereby the trajectory passes through
+the avoidance set for some time at t
+less than zero. But then t equals z. So
+at the end the state is outside of the
+avoidance set. So the cost because of
+how we formulated the problem before is
+negative. So we deem this trajectory as
+safe.
+Well I mean it's safe for the end point
+but [clears throat] there was a portion
+of time where you were in the danger
+zone. Maybe this is zone where you were
+too close to another aircraft. So you
+might have had an air miss.
+So the question then is how do we make
+sure that we protect the full trajectory
+from being outside of an avoidance set
+as opposed to just the end point. This
+leads to the notion of a cube whereby we
+want to reason not just with respect to
+the final time but across the full
+time horizon. So basically you're
+building a safety tube so that you stay
+you know your trajectory and basically
+tube outside it outside of the abalon
+set. Can we still use
+techniques from eax equation? The answer
+is yes we can. I will just give you the
+intuition here because this gets a bit
+more convoluted but essentially the
+intuition is as follows. So before so in
+the setting of reachable set you cared
+only about the final end point.
+Now you care about making sure that your
+entire trajectory stays out of the
+avoidance set. How do you change the
+problem formulation such as such that
+you encode this objective? So one way
+that you could do that is by replacing h
+of x0 as your cost with the minimum of
+toao in the optimization horizon of h of
+x to. So what this is saying is that you
+are interested in making sure that not
+just h evaluated at x of0 is greater
+than zero which means that you're safe
+but that the minimum of h across all of
+that trajectory is greater than zero
+because if that is the case it means
+that at every single point in time h
+evaluated at x of t is greater than zero
+which means that you are outside of the
+Make sense? So basically you are
+strengthening or actually making your
+cost a bit more sophisticated
+to encode the notion that you don't just
+care about what happens at the end of
+the optimization horizon but you care
+about what happens throughout the
+horizon. In particular, you want to make
+sure that
+you in the worst possible situation
+across your optimization horizon, H
+never dips below zero.
+Now, this is a cost that we haven't seen
+last time. So, actually changes a little
+bit the derivation that we did. We're
+not going to do the derivation but
+basically the ham is equation takes this
+form that is a bit more complicated
+because now we have an additional
+minimization and I'm not going to dig
+much deeper than that. My main point is
+that uh if you care about making sure
+that your entire trajectory stays out of
+danger, there is actually a formulation
+of optimal control that allows you to
+compute that object is a limit of a
+refinement of a yakobi isex equation. We
+are not going to go down this path
+because we have many other concepts to
+discuss in this class. But if you're
+interested, I provided you with the
+references to do so. My most important
+point here is to make sure that you are
+familiar with this problem and you know
+that there are tools at your disposal to
+solve it.
+&gt;&gt; Yeah.
+&gt;&gt; So both the BR and BR like a set of
+initial states.
+&gt;&gt; Yeah.
+&gt;&gt; So what is the different property? So
+here you make sure that is a set of
+initial states such that you don't end
+up in danger at the uh end optimization
+horizon. This is the set of of initial
+states such that throughout the
+optimization horizon you stay out of
+danger.
+Are we solving for either the VR or are
+we solving
+&gt;&gt; for two things? You're solving for the
+VRS and you're solving for the optimal
+control profile U.
+So I mean you start from the uh from a
+state in the backward set. Okay. But if
+you don't use the optimal control
+policy, you might still actually in the
+case of the avoidance set, you start
+with initial condition outside of the
+backward set. But if you don't use the
+optional control policy, actually the
+disturbance might still lead you into
+the avoidance set. So you need both both
+the set and the associated optimal
+control policy. But the optional control
+policy once you have solved for the
+harmonia is equation can be computed
+quite readily. So this is a easy
+computation.
+So once you compute uh the
+backward set, you can also easily
+compute the optimal control.
+&gt;&gt; Yeah.
+&gt;&gt; So like what you were talking about with
+reaching versus avoiding when you hear
+you switch maximum to minmax in the
+value function and the backwards
+reachable two [clears throat] does the
+outside.
+&gt;&gt; So here are two things right. So there
+is avoid versus reach and tube versus
+set. So this slide is only about avoid
+versus reach.
+&gt;&gt; There is no notion of cube here.
+&gt;&gt; Is there any notion of reaching for
+tubes like if you want if you want your
+agent to pass through a certain
+corridor.
+&gt;&gt; Yeah, there is even though it's less
+commonly used. So typically
+in even though I um frame the problem
+also from the point of view of reach
+typically reachability based
+computations are used more for the
+purposes of safety to basically is
+additional constraints you have your
+trajectory optimization process to make
+sure that you have enough buffer uh to
+avoid collisions or stuff like that. So
+the most common fmination is the
+avoidance safety one.
+So let me show you one example. And of
+course the set of initial conditions for
+which you're guaranteed to stay out of
+danger is that such that the value
+function is uh
+uh greater than zero.
+Now let me show you an example to make
+things these things a bit more concrete.
+Yes. Oh, if our dynamics make it such
+that we can never reach our target set,
+what happens when you're trying to
+initialize?
+Yeah, basically your set is empty
+and uh either you change a problem or
+you don't control basically you don't
+deploy your robot but at least it gives
+you a strong information means that uh
+at the way you frame a problem maybe
+because you were too conservative it
+might be that is too your problem
+formulation is too conservative maybe
+you don't have enough control actuation
+so you want to spend a bit more money on
+buying better actuators but is saying
+something about your problem
+formulation. Maybe it's just how you
+find a problem or maybe there is an in
+limitation in your robot your robot and
+then
+for example you have to design a better
+robot have more control authority but
+yeah so let me show one example. So this
+is actually quite illustrative. So we
+have a situation whereby we have two
+airplanes model as um with unicycle
+dynamics. So the equations of motion for
+the first airplanes are x dot= v cos
+theta y dot is equal v sin theta theta
+dot is equal u. So essentially the state
+space is three dimensional xy position
+and heading and you control the heading
+theta. So basically uh uh the time rate
+of change of the heading through the
+control u
+and the vehicle goes at speed v.
+Same equations of motion for the other
+vehicle x dot= vin theta y dot= vin
+theta t dot equ= u.
+So now I pose you this question. So what
+is the initial set of uh what is the set
+of initial conditions joint? So between
+aircraft A and aircraft B
+such that there is a trajectory for
+aircraft B that no matter how much we're
+trying to avoid a collision might lead
+it to a collision where by collision we
+mean that the relative position between
+A and B
+is in
+so the relative distance is less than R.
+So essentially our avoidance set is
+indeed a circle
+in the relative uh position x a - xb and
+y a minus yb. We want the relative
+distance between the two aircraft to be
+less than r. So if we center
+everything around the aircraft A, we
+want to make sure that B is never inside
+this kind of own ship circle.
+So what is the set of initial conditions
+that allow us to make sure that a
+collision or at least a near miss never
+happens.
+So we are exactly in the setting of
+computing an avoidance set and
+associated control profile for player A
+that is us to avoid a collision.
+So I posted a script.
+Is the problem clear?
+Any question about the problem set? I
+mean this is a real stuff. I mean how
+people may want to implement some level
+of collision avoianance for aircraft.
+So
+I implemented
+a haba copy reachability computation. So
+this is useful because it gives you
+reference code base to do this type of
+computation.
+But here in particular I want to show
+the uh main result. So I implemented the
+dynamics of uh these systems. Uh so this
+is not too important but we just
+highlight here
+even though it's a bit small that
+basically the the terminal set the
+terminal values is defined as defined as
+the circles with radius five. So that's
+where I implement uh the h function.
+So I call a package we cod it up in my
+lab called hj reachibility. This is
+essentially the end result of an HJ
+computation. So what this thing saying
+is a weird shape.
+So X
+represents in um relative coordinate the
+relative longitudinal displacement.
+So if this is aircraft
+aircraft
+so this distance here will be X
+this distance here
+will be Y.
+So what we have here and Z is the
+relative heading between the two
+aircraft. Okay.
+So this is the zero level set of the
+cost function as computed through
+kameobi is equation
+which means that if for those set of
+states for which j is negative
+[snorts] namely you are within this
+green uh uh shape
+then you might end up in a collision if
+you're outside you don't end up in a
+condition what is weird shape So to
+illustrate how to interpret this result.
+So this is basically the set of states
+for which J is equal to zero.
+Assume that Z the relative heading
+is um
+this [clears throat] the heading is a
+zero. So basically the aircraft are at
+one
+are aligned.
+Well, so
+if uh this is the case, then in order to
+be out of danger, this is just the
+aircraft can follow each other. Either
+they start outside of the circle and
+they will stay outside of the circle
+forever, or if they are inside the
+circle, we just stay inside the circle
+forever and they are in a dangerous
+situation. So that's why the um backward
+reachable set has simply the shape of
+your set.
+But let's see what happens when Z the
+relative heading is close to three which
+basically means pi.
+So it takes a little bit actually of
+practice to view all of this but then it
+becomes quite intriguing. I know why
+it's not picking this up.
+So this is the part where I had to show
+my computer. It's very difficult to
+show this shape uh on the board.
+Yeah. So let me try to make it a bit
+bigger.
+So say that
+told you that is a little bit tricky.
+Come on.
+So say that you are
+pi = 3 so that the aircraft are opposite
+of each other.
+And
+So this axis is still the longitudinal
+displacement. So what is this saying
+that if
+you are with a positive longitudinal
+displacement namely
+the air so this aircraft A so aircraft B
+is here in order to ensure
+collision avoidance initially the
+aircraft have to be more separated
+because the other aircraft is just
+pointing at you so you need a little bit
+more maneuver in space in order to avoid
+the aircraft. If instead that the
+aircraft is beneath you, then no
+problem. The only thing that you care
+about is that you don't start in a
+situation where you are already within
+the circle. But then otherwise you can
+just escape. So that's why you have this
+kind of protrusion in this direction to
+take into account about the geometric
+uh part and dynamic part of the problem.
+Does it make sense? So this is just
+saying something obvious, right? that if
+the two uh aircraft are on a collision
+course, you need to have a more lateral
+separation. That's what this uh blob
+here is saying.
+But it's kind of nice that we computed
+actually from first principle and we
+know exactly for then each possible uh
+value of the relative heading by how
+much you want to ensure lateral
+separation also take into account
+longitudinal separation also take into
+account about lateral separation. So now
+I can tell you exactly how much
+longitudinal separation you should have
+if if you start from this initial
+condition or if you start from initial
+condition. Of course this one from the
+point of view avoiding collision is
+worse than this one and this is actually
+deflecting this kind of non-symmetrical
+shape of this object. Yeah the same
+constant velocity.
+&gt;&gt; Yes. Yeah. Otherwise that you can also
+choose two different velocities of
+course the shape of the thing will
+change
+just to reiterate on the concept. So
+here I'm showing how the um projection
+of the backward reachable set it changes
+depending on how long the time horizon
+is. For now let's just look at the uh
+black carb here. Blue means negative. I
+mean darker blue means negative
+everything else means positive. So here
+is the scale.
+So this is essentially the projection of
+that weird thing that was three
+dimensional
+on a 2D space where we fix the relative
+heading at 3.7. So be higher than pi x
+still notion of longitudinal distance y
+notion of lateral distance.
+So we're fixing the relative heading at
+a more than pi. So it's basically
+something like that.
+So the vehicle is pointing the vehicle B
+is pointing this direction and then you
+want to understand where it should be
+placed at the beginning to make sure
+that we do not in incur a collision. So
+fix the longitudinal separation equal to
+five.
+So if and and my point is why basically
+the reachable set has this shape that is
+a bit tilted.
+Well, if you fix the longitudinal
+separation at five,
+then
+do you want to add more lateral buffer
+if
+the vehicle so we're fixing the the
+longitudinal separation, right? So the
+question is, do you want to add more
+lateral safety buffer if the vehicle
+starts with a negative lateral distance
+or with a positive lateral distance? In
+other words, do you think that this
+situation is safer or this situation is
+safer?
+Who votes for option one?
+Who votes for option two? Great. Happy
+to fly with all of you. So yeah, of
+course, because this guy in order to
+really collide with us, we need to do a
+much more complicated maneuver and we
+have much more space to evade.
+So that's why now the reachable set is
+tilted. It's simply saying that uh if
+you are in with you start with a
+negative lateral distance, you need less
+buffer with a positive distance, you
+need more buffer, you need up to five uh
+say meters.
+What is saying? Why is [snorts] this
+thing evolving through time? The shape
+of the reachable set of course depends
+on the initial time. So if you are
+computing the backward reachable set
+from the perspective of time equal 2
+minus 2.5 - 3 - 3.5 remember that the
+final time is always zero for these
+computations.
+So it turns out that after 3.5 units of
+time actually the backward reachable set
+goes to a constant. So after 4 -4 -5 - 6
+you always get the same backwardable
+set. Why is that the case is that in
+most of these problems where things are
+stationary after a transent then the
+problem set ups into a stationary
+situation whereby either the player two
+is just chasing us or we have collided.
+So it doesn't change that we have more
+time at our disposal.
+And let me show you some example of uh
+so you do this computation you compute
+the control profiles and then you start
+injecting some possible initial
+conditions. And here I picked three for
+fun. So blue is player one red is player
+two. So [clears throat]
+we want to make sure that player two
+doesn't enter our personal space.
+[snorts] So here is situation where we
+started in terms of relative coordinates
+outside of the uh backwardable set. So
+no matter how hard player two is try to
+play the game to catch with us it can't
+velocity here is the same. You see that
+after a while then you just go into a
+steady state. Additional time doesn't
+really buy you anything.
+So this is a situation where we started
+with player two essentially inside the
+personal space and then it just locks in
+and then it stays in our personal space
+throughout.
+Here is an interesting case that I found
+whereby
+the um player two for a little while a
+transition in our backward reachable set
+sorry in our u protected space but then
+we're able to maneuver out and then the
+other player is unable to catch with us.
+So for the way we frame this problem we
+have succeeded.
+In reality, we should care about the
+fact that for some small portion of time
+actually player two
+enter our personal space. So this is
+undesirable. So this motivation for
+actually switching to backwardable tube
+formulation which is not what we're
+doing here. So that's why for this
+computation actually this is success
+story but in reality probably would like
+to use a backwardable to formulation in
+which case this will be a negative
+story.
+So what I'm doing here is just to
+initialize the two vehicles inside or
+outside the backward set playing the
+game optimally as derived through the
+solution the arbit is equation and then
+displaying the trajectories.
+Isn't this cool? I think it's nice
+and people use this stuff for real. So
+for example
+um in the um uh in several production
+grade autopilots for cars you have
+something that is reminiscent of a
+backward reachable set to ensure that at
+the you know lowest level of safety no
+matter what another driver might do
+close to you uh you still have a safety
+buffer so that you can maneuver around.
+Yeah
+to converge from
+&gt;&gt; the backward tool. So first of all here
+we're not computing backwardable to
+&gt;&gt; we are computing backwardable sets in
+general for a time bing formulation uh
+it converges to a steady state solution.
+I think it's pretty neat. I know that
+mathematically probably this was the
+most sophisticated lecture.
+I tried to give you uh as much intuition
+as I could. The treatment of
+differential games mathematically
+speaking is quite uh involved. Uh but I
+do hope that at least you have an
+understanding of the main ideas about
+what is possible with this formalism and
+also what are the underlying uh
+algorithmic packages that allow you to
+uh algorithm
+concepts and packages that allow you to
+solve these problems.
+And speaking about algorithmic packages,
+how do you solve this stuff? Well,
+solving a partial differential equation
+is hard. Uh actually
+the example that I gave you is based on
+a package we developed in my lab which
+is one of the fastest packages written
+in Python to solve harmonility
+equations. So you could use that. That
+said, typically
+you can solve these problems for
+maybe five dimensional state space, six
+dimensional state space and then things
+break down because of the car
+dimensionality. So the solvers don't you
+know don't don't scale beyond uh uh that
+dimensionality. That said doesn't mean
+that you can't solve problem with more
+than five six dimensions. you just had
+to resort to approximations and this is
+still a fairly active field of research.
+There are many different ways of
+breaking the scalability barrier by
+using approximations through neural
+networks, sampling based methods, giving
+up some guarantees of accuracy and so on
+and so forth. So I won't go into the
+details here but at least you have an
+exact implementation of a ham
+computations through the AJ package that
+I show you before. And then uh just for
+you to know there are a number of
+techniques that are approximate in
+nature that allow you to solve this
+problem beyond five or six dimensions.
+All right, let's move to MPC.
+Any questions in the meantime
+comparatively speaking MPC is going to
+be a walk in the park in terms of
+complexity.
+NPC is actually very
+It's very intuitive in general. It just
+feels right. I think as a control
+strategy as you would see
+going back to road map. So we spend
+quite a bit of time on openloop optimal
+control. We spent quite a bit of time on
+closed loop optimal control.
+This is fast but less powerful because
+you reason in terms of openloop control
+sequences. This is uh powerful. You
+reason in terms of closed loop policies
+but computationally complex both in the
+discrete time formulations through the
+discrete time Bman equation or in the
+continuous time formulations through
+Kobe Bman and Kobe EX. Can we get the
+best of both worlds? Basically the speed
+of an openloop control method with the
+power
+of a closed loop control methodology.
+The answer is yes to a large extent
+through the lens of MPC model data
+control. MPC is really a framework more
+than you know a specific uh control
+strategy. That said, I would say that
+after P controllers is probably the most
+widely used control methodology out
+there. Originally developed in the 70s
+and 80s more as a theoristic promoted in
+the chemical engineering domain. You may
+wonder why chemical engineering because
+um oh two reasons were first there was a
+need you want to reason about
+constraints typically in chemical
+engineering you don't want the
+temperature of the products that you're
+mixing to go out of whack. Uh so you
+really care about constraints otherwise
+the entire thing blows up and
+constraints are difficult to be dealt
+with directly in through frequency based
+controls. But at the same time, chemical
+processes typically evolve on a slower
+time scale, multiple seconds. So even
+though MPC relies on often times online
+optimization and at the time the
+computers were not particularly fast,
+people could still solve those
+optimization problems at a level of you
+know a few seconds. So it was just a
+sweet spot. there was a need and
+actually the problem itself was well
+attuned to solve optimization problems
+at maybe 0.5 htz or 0.1 hertz.
+So what we're going to do today is to
+introduce the basic ideas behind MPC and
+start developing a bit of theory about
+how to apply MPC
+in a principal way. Good re readings
+about MPC are the textbooks from Borelli
+Bur Morari and the textbook from Rings
+and Maine and Teal. These scientists in
+general
+um I mean quite influential in setting
+up the algorithmic foundations of MPC.
+Until the early 90s, MPC was used mostly
+in noistic and then people in the 90s
+and 2000s uh started developing a theory
+about MPC that allow um researchers and
+developers to deploy MPC with
+mathematical
+assurances about the correctness of the
+design.
+Most recently um as you know there have
+been a lot of advantages in terms
+advances in terms of online solvers. So
+that has been the main trend to really
+push MPC into the control loop with
+increasingly most more stringent
+requirements in terms of replanning
+rates 10 herz 30 Hz kilohz and so on and
+so forth.
+So what is MPC? The idea of MPC is
+really really simple and as I said very
+natural.
+So you the underlying idea is that you
+have an infinite horizon optimal control
+problem and you want to solve it
+optimally.
+Uh
+but that is very expensive and so you're
+fine with solving it suboptimally but
+still in closed loop form.
+So what does MPC do? MPC
+measures and keeps basically track of
+previous values of uh the states.
+Based on that information based on
+information about uh the dynamics based
+on the controlling state constraints it
+computes
+a control profile. Here we assume that
+we are solving the problem in discrete
+time. So essentially solves a d it
+solves um an openloop optimal control
+problem over a finite horizon between
+time t at time t + n p.
+You find your openloop control sequence
+along with a predicted sequence of
+states or outputs
+that stem from the application of your
+optimized control sequence
+to dynamics of your system.
+So, so far this is just a openloop
+optimal control.
+But then what MPC does is to use only
+the first control
+that makes the system transition to the
+new state or output at time t + one. And
+then you completely discard everything
+else that you computed at the previous
+planning cycle. And you recomputee
+everything from scratch. But now
+starting at a new state at time t plus
+one.
+with the idea that at every single
+planning cycle you always compute you
+always solve for an openloop control
+problem.
+But since you replan which means that
+you get to observe a new state and based
+on that you solve a new openloop optimal
+control problem. you actually
+um
+endow the entire framework with a notion
+of closed loop because you are closing a
+loop on your most recent observation of
+the state.
+But you're always solving openloop
+control problem. Turns out that is
+really a sweet spot between doing open
+loop optional control and actually using
+close loop information from the
+measurement of the state.
+It seems wasteful, right? because you
+solve the problem over maybe a long
+horizon and then everything that you
+have computed after the first time step
+goes into the trash.
+Not always because you can always use
+this information to inform the solution
+at the next step. But in its simple
+simplest vanilla form, you put
+everything into the trash. There are
+some nuances like for example you may
+want to compute your uh optimal control
+sequences up until horizon t plus n and
+m but keep your predictions going for a
+little bit further. So there are there
+are a lot of variations in the team. So
+NPC is a framework. It's not a specific
+control algorithm. But the main idea is
+that you do um resting horizon
+optimization always moving which again
+is very natural is also what we do as uh
+humans. We optimize our control profile
+then we walk around a little bit. Of
+course we gather information and we
+revise our plan. So the idea shouldn't
+be too surprising.
+Does it make sense?
+There is a little bit of notation here t
++ 1 plus k given t1 t + one. I will
+explain this terminology in a sec.
+So cadious at each sampling time t we
+solve an openloop optimal control
+problem over a finite horizon. How long
+the horizon should be we will discuss in
+later. [snorts]
+We apply the optimal input signal during
+the the sampling interval t+1.
+We throw into the trash everything else.
+Then the system under the application of
+this input evolves into the new state at
+time t plus one. And now at time step
+t+1 we solve a new optimal control
+problem based on new measurements of the
+state of a shifted horizon. So now the
+horizon goes one step into the future.
+So let me give you a little bit more
+concrete formulation.
+particular in the setting
+of linear dynamics. So we consider the
+problem again of regulating to the
+origin uh the discrete time linear time
+environment system xt + 1 equal ax plus
+bu. So very similar to what you would do
+with classical frequency domain control
+but we also have constraints. So this is
+not something that you can do with
+classical frequency based control. So we
+assume that the state X belongs to some
+capital set X. So the set of safe states
+and U belongs to some capital set U. And
+here we're assuming that the sets X and
+and U are polyhedra. That is that are
+sets that can be defined by finitely
+many linear inequalities. So basically
+half planes that defines your physible
+state space.
+a cube for example you're confined
+within a cube
+so what is the basic formulation of MPC
+then assume that
+we can measure fully the state x of t
+then at each replening time at t we
+solve an optimal control problem in open
+loop in terms of the variables ut + one
+all the way to ut plus n minus one to
+minimize an additive cost but now you
+should be very familiar with the
+structure. So you have a terminal cost
+plus the summation of a running cost
+subject to the dynamics state
+constraints control constraints. The
+initial condition has to be XD the state
+you are in right now. That's how you
+close the loop. And also potentially
+adding some terminal constraint. So you
+want to make sure that your predicted
+state after n steps belong to some
+desirable uh set x of f. I will discuss
+later why we may want to add this
+constraint.
+So you solve for this optimal control
+sequence. You use the first term, you
+move into state XD + one, you measure it
+and then you reply.
+Where is all this complicated
+formulation here coming from? You know,
+yes. So this vertical bar T and so on.
+What does that mean?
+So that means the following. So xt + k
+given t
+just terminology is the state vector at
+time t + k predicted at time t via the
+system dynamics. U + k given t is the
+input u at time t plus k computed at
+time t. Note that the state predicted a
+step three from the perspective of time
+one is not necessarily the same state
+three predicted from the perspective of
+time two simply because maybe
+disturbance might have perturbed our
+nominal trajectory.
+Any questions here?
+So here what I want to highlight is
+these two guys.
+So these two guys are
+additional terms that we inject in our
+MPC formulation
+to regularize it.
+You know the our optimal control
+formulation
+basically has the running cost. It has
+the control constraints. where are this
+determinal constraint coming from and
+where is this
+this auxiliary cost that is placed on
+the predicted variable app and coming
+from. So those two terms are actually
+the two designing choices or tuning
+knobs that as MPC designers you can tune
+in order to optimize the performance of
+an MPC an NPC uh control framework. So
+what we will see for the rest of this
+lecture and then the lecture on
+Wednesday will be to see how do we
+tune
+this auxiliary terminal constraint here
+these uh terminal cost here and
+potentially the pen. So how much look
+ahead steps you have to make sure that
+you uh have a good formulation a good uh
+performance once you deploy MPC and in
+general you care about two things first
+of all you care about the so-cal notion
+of a persistent physibility so you want
+to make sure that once you transition
+into the new state the new optimal
+control problem that you're trying to
+solve is still feasible otherwise you're
+stuck I mean that's back to your
+colleagues equation before. What happens
+when the reachable set for example is
+empty? You don't want to end up in that
+situation because it means that you're
+stuck. You have nothing that you can do.
+Whatever you do basically you're going
+to violate a constraint. So how do you
+make sure that that doesn't happen. So
+how do you play with your tuning knobs
+so that that doesn't happen? And then of
+course assuming that that doesn't happen
+how do you make sure that you fulfill
+your task in this case regulating the
+state
+to the origin. So you basically want x
+equal to zero.
+Okay. So we talked about the terminology
+before we address the two equations I
+mentioned before. Let me add a little
+bit more notation but not too much. So
+uh as I said what you do in MPC is you
+take the first control in your in the
+optimal control sequence that you have
+computed
+which is a function of the state because
+the first predicted state has to be
+equal to the current state X of T of
+course
+and that's the control that uh you enact
+on your system.
+Then the optimization problem is
+repeated at time t + one but with a new
+state constraint that the state
+predicted at time t + one from the
+perspective t+1 has to be the state at
+time t+1 as measured.
+So now we can define a closed loop
+policy
+as the first control input that is
+determined when we solve the optimal
+control problem starting from the state
+x of t. You see how actually this is how
+we are closing the loop and bridging the
+gap between closed loop control
+sorry and the open loop optional
+control. Is this point clear? That's a
+bit the cracks of MPC.
+So then the closed loop evolves as x +
+1= ax + b pi which we can abstractly
+written as a closed loop function of x
+and the time.
+So how do we characterize the crucial
+behavior of the system?
+One more thing notationally and I know
+this is a bit boring but uh we need
+later is that in the case that the
+problem is time involving that is a does
+not explicitly depend on the current
+time. So there is no subscript a k b
+does not depend on the current time c
+does not depend on the current time.
+So this problem the only thing that
+changes across planning horizon is the
+initial condition for the state. So
+we can write it in a simpler form where
+we drop all the thing of uh uh
+predicting from perspective time t and
+so on and so forth. We can just drop all
+that terminology and use this simpler uh
+formulation. But with understanding that
+we solve this problem starting a state x
+of t we use the first control u0 we
+transition into a new state xt plus one
+and then we saw the same problem but now
+with x0 equal xt + one yeah
+you have some
+&gt;&gt; oh sorry so does this formulation
+require that our uh like time horizon is
+long enough for the vinyl that stay at
+time n or
+&gt;&gt; yeah otherwise you may not get there yes
+yeah I
+Uh in general
+the best way to see MPC is that the um
+underlying problem you're trying to
+solve is on infinite horizon which as we
+discussed before is bit of an
+abstraction of course was a good
+framing.
+&gt;&gt; Does that
+uh
+make it so if you shorter you might have
+more aggressive control.
+&gt;&gt; Yeah.
+&gt;&gt; Okay. So and actually if it's too short
+you may not actually converge and
+regulate your state. So that's why the
+time horizon the terminal cost
+P and the terminal constraint X of F are
+crucial to tune to make sure that you
+properly balance
+um look ahead capability. So how long in
+the future you optimize over which is in
+general the longer the better. you make
+your decision more informed but you pay
+more competition cost
+and how short your term is in which case
+you might be too greedy or even myopic
+in which case you may not fulfill your
+task. So it's going to be a delicate
+balance between how much computation
+time you want to invest versus uh
+whether you can actually achieve your
+task.
+Okay, so in a simplified notation then
+your optimal control is the first
+control input that you compute in the
+previous optional control formulation
+and then you have a closed loop control
+law.
+Now with what type of cost functions do
+people use here not many surprises.
+So for the running cost quite common to
+use just a quadratic cost similar to LQR
+or you might use also some other uh P
+norms where for example you could use
+the one norm or the infinity norm
+one norm of a vector
+uh I don't have a marker
+A
+is the sum of the absolute value of it
+component
+instead of the square.
+Um
+so to wrap wrap it up to in online
+modity control we measure the state x of
+t we solve finite time optical control
+problem if god forbid
+the problem is invisible you're stuck
+you call for help otherwise you apply
+the first element u zero to the system
+you transition to the new time t + one
+you measure xt + one and you repeat. Why
+online? Because here the idea is that we
+are solving this problem online. So as
+you are deploying your system as we will
+discuss briefly next time there are also
+offline formulation whereby you do the
+optimization offline basically
+anticipating all possible conditions
+that might arise.
+But for most of these exposition of MPC
+we will consider only the online
+version.
+Right. So what I was what I was [snorts]
+mentioning before is that what are the
+things we care about? So
+the two things we care about are
+persistent physibility
+and stability. Persistent physibility we
+want to make sure that uh the optimal
+control problem is always feasible.
+[snorts] That's quite obvious.
+Stability means that uh
+uh we want to make sure that the genetic
+control inputs
+lead to trajectories that converge to
+the origin. So the question is how do we
+tune the three main designs so that
+these two objectives are fulfilled.
+Up until the 90s this was mostly
+holistic. Then between the 90s and 2000
+that's where people started putting some
+theory to allow you to make informed
+choices about how to select those
+students.
+So sorry for the cough.
+That's what we're going to discuss next.
+So there are two possible way of
+approaching a problem. The first one
+is a closed loop system, right? So we
+have xt + one
+equal
+f of a closed loop x of t.
+We try to somewhat analyze how the
+dynamics of this closed loop system
+evolve depending on the three tuning
+knobs and then we optimize the three
+tuning knobs. That's very hard because
+this is a nonlinear system that entail
+an inner optimization. So this closed
+loop function f is b the result of
+applying an optimization step. So it's
+difficult to analyze and that's where
+the people were stuck.
+Then people realize that a better way to
+do that is to directly derive conditions
+and the terminal function P the terminal
+constraint set XF so that the persistent
+physibility closibility are guaranteed
+by design without having to analyze ad
+hoc the uh uh trajectory evolutions.
+So what we're going to do next is to
+first tackle the problem of persistent
+physibility. That's the most basic one
+basic one. If you can even solve the
+optimal control problem then the
+question of stability is not even really
+matter and then we're going to see how
+we can once we solve the problem
+persistent physibility address the
+problem of stability.
+So let's focus on persistent physibility
+first. So the goal is to tune our tuning
+knob so that physibility for all future
+times is guaranteed.
+To test the problem we leverage tools
+from invarance theory. So I'm going to
+give you a little bit more terminology.
+Sorry about that. Um, MPC is a little
+bit less mathematically intense than um,
+reachability, but it's a bit more boring
+in terms of terminology.
+What is an invariant set? So, let me
+first pin down a little bit of
+terminology. So we define the set of
+physible initial state capital X0 as the
+set of states
+that are physible meaning belong to the
+set capital X such that there is a
+physible
+control sequence by physical feasible
+mean that each control UK belongs to
+capital U
+such that the evolution of the state
+trajectories stemming from the
+application of this control sequence
+gives gives rise to states that are
+visible at all times and such that the
+terminal state belongs to the desire to
+the desired final set.
+So this is a set of initial conditions
+for which the optimal control problem
+has at least one solution.
+A control input can be found only if our
+current state belongs to this set.
+Then we define a notion of a
+controllable set
+for an autonomous systems xt + 1 = 5 of
+x of t with a state and control
+constraints. The onestep controllable
+set to set s is defined as the set of
+states such that after one step
+application of our transition dynamics
+we end up into set s.
+Yes. Great. Thank you.
+Specifically
+say that uh you're given a set
+S.
+The question that you are asking is what
+is the set of states referred to as
+P R E or previous of S
+such that if you start here
+and then you apply your dynamics f ofx
+you end up here.
+So you're given a set you're trying to
+answer the question what is the set of
+state such that after one step under the
+natural dynamics of the system I learn
+into S.
+The notion of a one step controllable
+set extends to the case of a control
+system where now X + one is a function
+of X and U where the definition is very
+similar. The only difference is that now
+we define the onestep controllable set
+as the set of states for which there
+exist a u such that a onestep
+application of our dynamics leads us
+into s.
+So there exist a u such that f of xu
+leads me into s in one step. Well that's
+just a definition.
+One more set of definitions. So
+another important uh definition is the
+notion of a control invariant set.
+Actually this is a concept that arises
+quite ubiquitously in model predictive
+control.
+A given set C is a control environment
+set.
+Let's call it DC. A given set C is a
+control environment set for a given
+system XT + 1= F of XU.
+If
+if you start in C, so this is your state
+X of T,
+then there exist a control U such that
+under the state transition dynamics, you
+land in C. So if you start in C, think
+of C say as the safe set, the set of
+related states where you are far enough
+from danger, there exists a U that
+allows you to stay in that set, which
+seems a usable, a useful concept.
+So there exist a U
+such that f of x u
+lands into again c the same set.
+So of course you want to choose the C as
+a set of desirable states. [snorts]
+The sets C infinity this is really just
+a minor notation is set to be the
+maximum control environment set if this
+control environment and contains all
+control environment sets containing X is
+basically the largest possible control
+environment set that you might have for
+a dynamical system.
+Similar definition arises for autonomous
+systems. So systems where you don't have
+explicit dependence on the control a set
+is set to be positive invariant if
+after one application of the uh so if
+you start in uh the set A and you apply
+your dynamics you still remain in A.
+So these sets can be computed by using a
+fairly powerful MATLAB tool called MPT
+and actually you would use this tool as
+part of your homework. Yeah.
+how control it could not be maximal
+but an example said
+&gt;&gt; yeah I mean sure I mean you might have a
+controlling set with this definition but
+no one is telling us that there might
+not be like an extension
+that still has this property so actually
+you must so for example a control
+environment set could be zero for I mean
+literally the set with a single point
+zero whereby if you have a linear system
+and you start a state equals zero and
+use control u equals 0 the next state is
+zero
+so the origin typically you see what I'm
+saying you start at the origin x= 0
+assuming that the control u is a
+physible control then i ax plus b u is
+still zero which means the next state is
+zero so that's a control set but that
+doesn't mean that there might be some
+other states that actually still allow
+you to transition into uh the same set.
+We'll see actually some examples later.
+All right. So let's get to the first
+useful result related to physibility
+which is as follows. So let's define X1
+as the truncated physibility set. So the
+set of uh states for which the problem
+now solve over an horizon n minus one is
+feasible. So this is the set of states
+such that there exists a truncated
+control sequence starting from U1 and
+not U0
+such that uh it it is feasible that UK
+belongs to U and so that under
+application dynamics the states satisfy
+the state constraints and satisfy the
+terminal constraint.
+Key result is as follows. If set X1 is a
+control environment set
+for your system then the MPC low is
+persistently visible.
+The intuition is that basically if X1 is
+control invariant you can use this
+control environment to buy one step of
+staying in that set and then solve the
+problem for n minus one steps.
+Now the result per se I mean we'll prove
+this result next time. The result per se
+is completely useless because your
+tuning knobs are XF
+are the terminal cost P and are the
+horizon N. You don't really control the
+you don't really tune X1. But as we will
+see this is a useful lema that allow us
+to then derive a theorem that is
+actually actionable allows us to tune
+the tuning ups that we have in MPC. So
+we'll prove this lema next time we take
+uh five 10 minutes at most and then we
+continue our exposition about persistent
+physibility and then we move into uh
+stability. The end result will be a set
+of conditions that tells you explicitly
+how to tune a PN and a terminal set X of
+F uh to ensure persistent physibility
+and stability. And then in your P set
+you will solve a few problems so that
+you really you know appreciate um this
+theory. All right.
+Okay.

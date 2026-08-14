@@ -1,0 +1,4916 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:05.640 --> 00:00:10.120
+So welcome to week
+three of AA203.
+
+00:00:10.120 --> 00:00:15.880
+So as per our usual road
+map, today, we are-- today
+
+00:00:15.880 --> 00:00:19.320
+and tomorrow will be still
+in the open-loop quadrant
+
+00:00:19.320 --> 00:00:21.360
+of our road map.
+
+00:00:21.360 --> 00:00:25.320
+Specifically last week, so we
+introduced the general concept
+
+00:00:25.320 --> 00:00:29.960
+of open-loop control,
+which is to be compared
+
+00:00:29.960 --> 00:00:32.159
+to with closed-loop
+control, which
+
+00:00:32.159 --> 00:00:34.595
+will be the topic of next week.
+
+00:00:34.595 --> 00:00:36.220
+And specifically, in
+open-loop control,
+
+00:00:36.220 --> 00:00:38.880
+we highlighted the
+fact that we are
+
+00:00:38.880 --> 00:00:42.960
+interested in control,
+an optimal control
+
+00:00:42.960 --> 00:00:45.680
+signal or trajectory,
+which is only
+
+00:00:45.680 --> 00:00:47.700
+a signal of the initial time t.
+
+00:00:47.700 --> 00:00:51.160
+So we are looking for an optimal
+control trajectory, u of t.
+
+00:00:51.160 --> 00:00:55.340
+And specifically, within
+this class of methods,
+
+00:00:55.340 --> 00:00:59.980
+we discussed that there are
+two macro subcategories,
+
+00:00:59.980 --> 00:01:02.100
+indirect methods
+and direct methods.
+
+00:01:02.100 --> 00:01:04.080
+Last week, we introduced
+indirect methods
+
+00:01:04.080 --> 00:01:07.820
+which, loosely speaking,
+relate with, first of all,
+
+00:01:07.820 --> 00:01:11.080
+deriving optimality conditions
+for the infinite dimensional
+
+00:01:11.080 --> 00:01:14.280
+optimal control problem
+and solving for those.
+
+00:01:14.280 --> 00:01:17.040
+If you wish, the analog
+we usually recalled
+
+00:01:17.040 --> 00:01:19.780
+was the one from finite
+dimensional optimization,
+
+00:01:19.780 --> 00:01:22.080
+whereby the
+optimality conditions
+
+00:01:22.080 --> 00:01:26.080
+were akin to the gradient
+of f equal to 0 conditions.
+
+00:01:26.080 --> 00:01:28.520
+Of course, in finite
+dimensional case,
+
+00:01:28.520 --> 00:01:31.300
+those kind of
+optimality conditions,
+
+00:01:31.300 --> 00:01:33.920
+so gradient equal
+to 0, boil down
+
+00:01:33.920 --> 00:01:36.760
+to a system of
+algebraic equations.
+
+00:01:36.760 --> 00:01:39.120
+In the case of infinite
+dimensional optimization, which
+
+00:01:39.120 --> 00:01:41.840
+is the one you're interested
+in for optimal control--
+
+00:01:41.840 --> 00:01:46.240
+these optimality condition boils
+down to differential equations,
+
+00:01:46.240 --> 00:01:49.680
+but the high level
+picture is the same.
+
+00:01:49.680 --> 00:01:51.960
+And so today, we will be
+finishing our discussion
+
+00:01:51.960 --> 00:01:52.980
+on indirect methods.
+
+00:01:52.980 --> 00:01:58.480
+And then on Wednesday, we'll
+be looking at direct methods.
+
+00:01:58.480 --> 00:02:00.320
+And specifically
+for today, we will
+
+00:02:00.320 --> 00:02:03.560
+start by extending the
+optimality conditions which
+
+00:02:03.560 --> 00:02:06.080
+we introduced last
+time, which assumed
+
+00:02:06.080 --> 00:02:08.280
+that we had unbounded controls.
+
+00:02:08.280 --> 00:02:10.000
+And so today, we
+will be extending
+
+00:02:10.000 --> 00:02:11.680
+those optimality
+conditions specifically
+
+00:02:11.680 --> 00:02:14.120
+for the case of
+bounded controls, which
+
+00:02:14.120 --> 00:02:17.040
+is a very common constraint
+to have in practice
+
+00:02:17.040 --> 00:02:19.740
+when you're dealing with
+optimal control problems.
+
+00:02:19.740 --> 00:02:22.440
+And we will see how this will
+lead towards the celebrated
+
+00:02:22.440 --> 00:02:26.080
+Pontryagin's minimum principle.
+
+00:02:26.080 --> 00:02:29.105
+We'll then look at various
+different examples.
+
+00:02:29.105 --> 00:02:30.480
+Specifically,
+we'll be looking at
+
+00:02:30.480 --> 00:02:34.020
+some archetype optimal control
+problems, first of all,
+
+00:02:34.020 --> 00:02:37.040
+to see how we can use
+these optimality conditions
+
+00:02:37.040 --> 00:02:40.520
+in practice and get
+familiarity with that but also
+
+00:02:40.520 --> 00:02:43.800
+from the perspective of
+inspecting the kind of control
+
+00:02:43.800 --> 00:02:48.040
+profile that we get out of
+these optimality conditions.
+
+00:02:48.040 --> 00:02:49.840
+And then we'll
+conclude this part
+
+00:02:49.840 --> 00:02:51.660
+by looking at
+computational methods.
+
+00:02:51.660 --> 00:02:54.680
+So we have been describing
+indirect methods over and over
+
+00:02:54.680 --> 00:02:59.130
+as optimized then discretized
+methods, again, in comparison
+
+00:02:59.130 --> 00:03:02.050
+to the direct approaches
+which are discretized then
+
+00:03:02.050 --> 00:03:04.450
+optimized methods,
+and specifically
+
+00:03:04.450 --> 00:03:06.390
+the optimized part
+entailed with deriving
+
+00:03:06.390 --> 00:03:08.890
+the optimality conditions and
+solving for those differential
+
+00:03:08.890 --> 00:03:11.370
+equations, and the
+discretized part related
+
+00:03:11.370 --> 00:03:13.250
+with feeding those
+differential equations
+
+00:03:13.250 --> 00:03:15.250
+to a numerical
+solver, which is also
+
+00:03:15.250 --> 00:03:19.890
+what we'll be looking at with
+the computational methods.
+
+00:03:19.890 --> 00:03:22.770
+So just as a
+reminder, so last time
+
+00:03:22.770 --> 00:03:26.450
+we concluded by looking
+at this optimal control
+
+00:03:26.450 --> 00:03:30.730
+problem where we had assumed
+that we had unbounded controls.
+
+00:03:30.730 --> 00:03:33.510
+So, again, to recap
+the notation here,
+
+00:03:33.510 --> 00:03:36.490
+we assume that we have a system
+described by the following
+
+00:03:36.490 --> 00:03:37.850
+dynamics.
+
+00:03:37.850 --> 00:03:41.370
+And the goal is to find an
+admissible control u star, which
+
+00:03:41.370 --> 00:03:45.170
+causes the system to follow
+an admissible trajectory, x
+
+00:03:45.170 --> 00:03:48.110
+star, that minimizes the
+given cost functional,
+
+00:03:48.110 --> 00:03:51.410
+which is a combination
+of a terminal cost h
+
+00:03:51.410 --> 00:03:56.450
+and a state cost g that
+is integrated over time.
+
+00:03:56.450 --> 00:04:01.130
+And indeed, we assumed that
+both the states and the control
+
+00:04:01.130 --> 00:04:06.250
+regions were unbounded.
+
+00:04:06.250 --> 00:04:09.930
+And this led into defining the
+following optimal necessary
+
+00:04:09.930 --> 00:04:13.190
+optimality conditions, which
+at a high level, entailed,
+
+00:04:13.190 --> 00:04:16.410
+first of all, defining the
+Hamiltonian, which is you want
+
+00:04:16.410 --> 00:04:20.089
+acted as the analog of
+the Lagrangian function
+
+00:04:20.089 --> 00:04:22.170
+in finite dimensional
+case, where
+
+00:04:22.170 --> 00:04:24.770
+we basically-- where the
+Hamiltonian is defined
+
+00:04:24.770 --> 00:04:31.130
+as the state cost plus a term
+which represents our dynamic f
+
+00:04:31.130 --> 00:04:34.970
+times a vector of cost--
+or a function of costates p
+
+00:04:34.970 --> 00:04:39.650
+of t, which again represents
+the analog of the Lagrangian
+
+00:04:39.650 --> 00:04:42.050
+multipliers.
+
+00:04:42.050 --> 00:04:45.230
+And infinite dimensional
+optimization--
+
+00:04:45.230 --> 00:04:49.570
+the Lagrange multipliers
+were denoted as lambda.
+
+00:04:49.570 --> 00:04:52.330
+Here, we denote these
+costates as p, which
+
+00:04:52.330 --> 00:04:54.010
+are indeed a function of time.
+
+00:04:54.010 --> 00:04:55.890
+And they're called
+costates because there
+
+00:04:55.890 --> 00:04:59.770
+is one costate variable or
+function for every state
+
+00:04:59.770 --> 00:05:01.570
+function.
+
+00:05:01.570 --> 00:05:03.870
+And so given that we
+define this Hamiltonian,
+
+00:05:03.870 --> 00:05:06.050
+we saw how the optimality
+conditions boil down
+
+00:05:06.050 --> 00:05:08.410
+to defining the
+set of differential
+
+00:05:08.410 --> 00:05:11.850
+equations, the first one
+representing trivially
+
+00:05:11.850 --> 00:05:12.790
+our dynamics.
+
+00:05:12.790 --> 00:05:15.450
+So if we take the partial
+derivative of our Hamiltonian
+
+00:05:15.450 --> 00:05:19.150
+with respect to the costate
+variable p, we get our dynamics,
+
+00:05:19.150 --> 00:05:21.370
+so x dot equals f.
+
+00:05:21.370 --> 00:05:25.590
+The second two set of
+equations are less intuitive,
+
+00:05:25.590 --> 00:05:29.770
+but we saw how the second one
+essentially boiled down to p
+
+00:05:29.770 --> 00:05:31.250
+dot equals the--
+
+00:05:31.250 --> 00:05:33.610
+minus the partial derivative
+of the Hamiltonian
+
+00:05:33.610 --> 00:05:34.970
+with respect to x.
+
+00:05:34.970 --> 00:05:39.730
+And then we saw how the third
+set of algebraic equations
+
+00:05:39.730 --> 00:05:43.410
+represented a stationary
+condition of the control
+
+00:05:43.410 --> 00:05:47.070
+with respect to the Hamiltonian.
+
+00:05:47.070 --> 00:05:49.690
+And so essentially,
+that the derivative
+
+00:05:49.690 --> 00:05:53.770
+of the Hamiltonian with respect
+to u needs to be equal to 0.
+
+00:05:53.770 --> 00:05:56.930
+And we saw how in practice this
+boiled down very mechanically
+
+00:05:56.930 --> 00:06:00.170
+towards usually using this
+last set of algebraic equations
+
+00:06:00.170 --> 00:06:03.290
+to express u as a
+function of x and p.
+
+00:06:03.290 --> 00:06:05.370
+We can then do the
+appropriate substitutions
+
+00:06:05.370 --> 00:06:09.210
+in the differential equations,
+which we can then solve.
+
+00:06:09.210 --> 00:06:10.830
+To solve these
+differential equations,
+
+00:06:10.830 --> 00:06:13.370
+we saw how this generated
+a-- it boiled down
+
+00:06:13.370 --> 00:06:17.090
+into having to pinpoint a number
+of constants of integration.
+
+00:06:17.090 --> 00:06:19.810
+And we saw how we could use
+boundary conditions to pinpoint
+
+00:06:19.810 --> 00:06:22.690
+those constants of integration.
+
+00:06:22.690 --> 00:06:26.710
+Usually, the initial boundary
+conditions are given.
+
+00:06:26.710 --> 00:06:32.650
+So we know the state at time 0,
+and we know what the time 0 is.
+
+00:06:32.650 --> 00:06:36.130
+But the boundary conditions
+at the final time
+
+00:06:36.130 --> 00:06:38.570
+depend a bit on the scenario
+that we're looking at.
+
+00:06:38.570 --> 00:06:42.790
+And so we saw how we could use
+this master boundary condition,
+
+00:06:42.790 --> 00:06:45.530
+depending on whether the
+final time or final state
+
+00:06:45.530 --> 00:06:47.050
+is free or fixed.
+
+00:06:47.050 --> 00:06:52.210
+For example, if the
+final state is fixed,
+
+00:06:52.210 --> 00:06:54.550
+it means that there are
+no admissible variations.
+
+00:06:54.550 --> 00:06:55.970
+Delta xf we can do.
+
+00:06:55.970 --> 00:06:59.170
+And so all of this
+term has to go to 0.
+
+00:06:59.170 --> 00:07:01.610
+And so we're left with this
+other part of the boundary
+
+00:07:01.610 --> 00:07:05.450
+condition and vice versa.
+
+00:07:05.450 --> 00:07:09.990
+Any questions on-- until this as
+a general recap of where we are?
+
+00:07:17.830 --> 00:07:20.310
+And indeed-- so as I
+mentioned before, so far,
+
+00:07:20.310 --> 00:07:23.170
+we have assumed that both
+the admissible controls
+
+00:07:23.170 --> 00:07:27.290
+and state are not constrained
+by any boundaries.
+
+00:07:27.290 --> 00:07:30.570
+But in reality, states
+and control constraints
+
+00:07:30.570 --> 00:07:33.370
+are actually extremely
+common in practice.
+
+00:07:33.370 --> 00:07:36.410
+So, for example, a classical
+control constraints
+
+00:07:36.410 --> 00:07:40.050
+might model that we have
+some limits in our actuation.
+
+00:07:40.050 --> 00:07:45.690
+So again, we cannot impose a
+thrust that is infinitely large.
+
+00:07:45.690 --> 00:07:49.430
+And also, state constraints
+might be quite common.
+
+00:07:49.430 --> 00:07:52.210
+For example, just
+to give you an idea,
+
+00:07:52.210 --> 00:07:53.770
+a classical state
+constraint might
+
+00:07:53.770 --> 00:07:55.770
+represent obstacle
+avoidance, so where
+
+00:07:55.770 --> 00:08:00.050
+we want to avoid some obstacle
+in the physical space.
+
+00:08:00.050 --> 00:08:01.710
+Now, for the purpose
+of this class,
+
+00:08:01.710 --> 00:08:07.290
+we'll focus on including the
+case of bounds on the controls.
+
+00:08:07.290 --> 00:08:09.370
+And we will not
+discuss the case where
+
+00:08:09.370 --> 00:08:12.970
+we include the bounds or
+constraints on the states, first
+
+00:08:12.970 --> 00:08:16.850
+of all, because the mechanics
+become substantially
+
+00:08:16.850 --> 00:08:20.690
+more and more complex and
+also because, in practice,
+
+00:08:20.690 --> 00:08:22.890
+indirect methods are not
+really the tool of choice
+
+00:08:22.890 --> 00:08:25.610
+to handle constraints on states.
+
+00:08:25.610 --> 00:08:27.810
+So what people
+usually do with maybe
+
+00:08:27.810 --> 00:08:30.750
+cast the problem as a
+motion planning problem--
+
+00:08:30.750 --> 00:08:33.850
+we're abstracting away from
+the dynamics, or at least
+
+00:08:33.850 --> 00:08:36.450
+simplifying the dynamics,
+and more geometrically
+
+00:08:36.450 --> 00:08:38.830
+solving the trajectory
+optimization problem.
+
+00:08:38.830 --> 00:08:40.730
+And then you're
+using those insights
+
+00:08:40.730 --> 00:08:43.929
+that you get from these
+more abstract solutions
+
+00:08:43.929 --> 00:08:46.010
+to inform your indirect methods.
+
+00:08:46.010 --> 00:08:48.260
+So long story short, but
+what we're saying here
+
+00:08:48.260 --> 00:08:50.840
+is that we want to
+expand our analysis,
+
+00:08:50.840 --> 00:08:54.860
+and we're going to focus on
+the bounds on the controls.
+
+00:08:54.860 --> 00:08:56.250
+Yes.
+
+00:08:56.250 --> 00:09:00.680
+[INAUDIBLE] last lecture where
+we were using the conditions
+
+00:09:00.680 --> 00:09:03.180
+for optimal control, the one
+you have in the previous slide.
+
+00:09:03.180 --> 00:09:08.100
+And then we had a t final equals
+some expression in terms of a.
+
+00:09:08.100 --> 00:09:12.500
+You were saying that your--
+
+00:09:12.500 --> 00:09:14.900
+was that actually-- when
+we solved that problem,
+
+00:09:14.900 --> 00:09:18.540
+did we actually find that
+optimal control for-- this
+
+00:09:18.540 --> 00:09:20.880
+is what you're saying that
+you could be anything.
+
+00:09:20.880 --> 00:09:22.803
+Therefore, tf could be anything.
+
+00:09:22.803 --> 00:09:24.220
+And now we're going
+to introduce--
+
+00:09:24.220 --> 00:09:27.180
+What setting are
+you referring to?
+
+00:09:27.180 --> 00:09:31.220
+In previous lecture, we did
+an example of the t final
+
+00:09:31.220 --> 00:09:32.400
+in terms of alpha--
+
+00:09:32.400 --> 00:09:33.940
+Yes.
+
+00:09:33.940 --> 00:09:38.260
+Did that correspond to some
+particular optimal control?
+
+00:09:38.260 --> 00:09:41.600
+Or is that what you're saying,
+that it was unconstrained
+
+00:09:41.600 --> 00:09:43.600
+so the control
+could be anything,
+
+00:09:43.600 --> 00:09:45.720
+and therefore, the t
+final could be anything?
+
+00:09:45.720 --> 00:09:46.220
+No.
+
+00:09:46.220 --> 00:09:48.678
+So in that case, we actually
+solved the problem completely.
+
+00:09:48.678 --> 00:09:51.840
+So in this slide, I only
+highlighted the final time tf,
+
+00:09:51.840 --> 00:09:53.840
+which was a complex thing.
+
+00:09:53.840 --> 00:09:57.420
+It's over 1,800 or
+something like that.
+
+00:09:57.420 --> 00:10:00.487
+But, of course, once we solve
+for the necessary optimality
+
+00:10:00.487 --> 00:10:02.820
+conditions, so once we solve
+the differential equations,
+
+00:10:02.820 --> 00:10:04.000
+we have everything.
+
+00:10:04.000 --> 00:10:05.080
+So we have x.
+
+00:10:05.080 --> 00:10:05.900
+We have p.
+
+00:10:05.900 --> 00:10:08.620
+And usually, the controls
+are a function of x and p.
+
+00:10:08.620 --> 00:10:11.140
+And so by just substituting
+those x and p that we
+
+00:10:11.140 --> 00:10:13.460
+get by solving the
+differential equations,
+
+00:10:13.460 --> 00:10:18.020
+we would get the
+shape of our control.
+
+00:10:18.020 --> 00:10:20.260
+So here, what I mean
+by bounds on controls
+
+00:10:20.260 --> 00:10:26.500
+is that we would have something
+like the absolute value of u
+
+00:10:26.500 --> 00:10:29.640
+needs to be smaller or equal
+than 1, something like that.
+
+00:10:32.540 --> 00:10:34.260
+Does this clarify?
+
+00:10:34.260 --> 00:10:35.900
+Is it possible that
+because we didn't
+
+00:10:35.900 --> 00:10:38.340
+have the constraint
+in the other problem
+
+00:10:38.340 --> 00:10:42.180
+that for some given
+alpha and b, it
+
+00:10:42.180 --> 00:10:44.180
+could result in the
+optimal control that
+
+00:10:44.180 --> 00:10:46.540
+violates a constraint?
+
+00:10:46.540 --> 00:10:47.172
+Yes, of course.
+
+00:10:47.172 --> 00:10:48.880
+And we were not imposing
+this constraint.
+
+00:10:48.880 --> 00:10:52.420
+So we are not really
+sure about if we're
+
+00:10:52.420 --> 00:10:54.560
+respecting any kind of
+constraint like this.
+
+00:10:54.560 --> 00:10:55.500
+Yeah.
+
+00:10:55.500 --> 00:10:57.580
+But it will be clear
+in a couple of slides
+
+00:10:57.580 --> 00:11:02.460
+because we'll be making
+some concrete examples.
+
+00:11:02.460 --> 00:11:08.140
+So now, before showing you how
+the optimality conditions will
+
+00:11:08.140 --> 00:11:10.980
+change, I just want to
+give you a small insight
+
+00:11:10.980 --> 00:11:14.860
+into why the bounds
+on the controls
+
+00:11:14.860 --> 00:11:17.220
+complicate the analysis.
+
+00:11:17.220 --> 00:11:21.720
+And the way we'll build this
+intuition is by, as usual,
+
+00:11:21.720 --> 00:11:25.180
+referring to the finite
+dimensional case.
+
+00:11:25.180 --> 00:11:31.500
+And so recall from
+our discussions
+
+00:11:31.500 --> 00:11:33.620
+on finite dimensional
+optimization
+
+00:11:33.620 --> 00:11:36.140
+where in order to derive
+the optimality conditions
+
+00:11:36.140 --> 00:11:39.180
+of the gradient of f
+needs to be equal to 0,
+
+00:11:39.180 --> 00:11:43.500
+we started by looking
+at the increment
+
+00:11:43.500 --> 00:11:48.460
+of our function with respect
+to some displacement delta x.
+
+00:11:48.460 --> 00:11:50.820
+And we saw how this could
+be well approximated
+
+00:11:50.820 --> 00:11:58.440
+by our function f of x plus the
+gradient of f transpose delta x,
+
+00:11:58.440 --> 00:12:07.200
+or we call this the differential
+plus some higher order terms.
+
+00:12:11.866 --> 00:12:15.100
+And essentially, by
+just bringing the f
+
+00:12:15.100 --> 00:12:20.380
+of x on the other side
+of the equation, what
+
+00:12:20.380 --> 00:12:25.500
+we get is that the
+increment of our function
+
+00:12:25.500 --> 00:12:30.960
+is well approximated for a small
+delta x's by our differential,
+
+00:12:30.960 --> 00:12:34.180
+so the linear part of our
+approximation-- of our Taylor
+
+00:12:34.180 --> 00:12:36.620
+expansion.
+
+00:12:36.620 --> 00:12:43.260
+And we know that for a point x
+to be a candidate local minimum,
+
+00:12:43.260 --> 00:12:45.660
+what it means is that for
+any displacement delta
+
+00:12:45.660 --> 00:12:47.500
+x that I make,
+this increment has
+
+00:12:47.500 --> 00:12:49.540
+to be greater or equal than 0.
+
+00:12:49.540 --> 00:12:51.780
+So wherever I move,
+essentially, I'm
+
+00:12:51.780 --> 00:12:53.880
+increasing the value
+of my function.
+
+00:12:57.580 --> 00:13:00.180
+Now, in the
+unconstrained case, we
+
+00:13:00.180 --> 00:13:03.940
+were able to translate this
+expansion so that-- specifically
+
+00:13:03.940 --> 00:13:07.060
+that the differential has to
+be greater or equal than 0
+
+00:13:07.060 --> 00:13:09.500
+to the fact that in order
+for this to be greater
+
+00:13:09.500 --> 00:13:14.180
+or equal than 0, since I can
+take any possible displacement
+
+00:13:14.180 --> 00:13:17.740
+delta x both in the positive
+and in the negative direction,
+
+00:13:17.740 --> 00:13:21.700
+the only way for this to be
+both greater than, equal than 0
+
+00:13:21.700 --> 00:13:25.620
+or less than or equal than
+0 is for the gradient of f
+
+00:13:25.620 --> 00:13:28.380
+to be equal to 0.
+
+00:13:28.380 --> 00:13:33.780
+So this is essentially what we
+said a couple of weeks back.
+
+00:13:33.780 --> 00:13:38.420
+Now, visually,
+what this means is
+
+00:13:38.420 --> 00:13:47.580
+that if we have a function
+that looks something like this,
+
+00:13:47.580 --> 00:13:49.940
+and assuming I'm not
+considering the boundary
+
+00:13:49.940 --> 00:13:53.300
+points of this function,
+the gradient of f equal to 0
+
+00:13:53.300 --> 00:13:57.780
+essentially gives us a
+mechanism to isolate candidates
+
+00:13:57.780 --> 00:14:01.300
+for local minimums, where
+specifically, in this case,
+
+00:14:01.300 --> 00:14:04.240
+one is a local minimum and
+two here are local maximum.
+
+00:14:04.240 --> 00:14:05.940
+But still, they're
+candidates according
+
+00:14:05.940 --> 00:14:07.560
+to our optimality conditions.
+
+00:14:10.500 --> 00:14:15.060
+Now, what happens if we do
+consider the boundaries here?
+
+00:14:15.060 --> 00:14:17.640
+So is this a local minima?
+
+00:14:21.260 --> 00:14:22.620
+I see some nodding.
+
+00:14:22.620 --> 00:14:27.060
+Can you say why this
+is a local minima?
+
+00:14:27.060 --> 00:14:27.740
+Yes.
+
+00:14:27.740 --> 00:14:31.460
+Because if you move
+anywhere on that curve,
+
+00:14:31.460 --> 00:14:33.560
+that's still within
+your boundaries.
+
+00:14:33.560 --> 00:14:34.420
+And they're always--
+
+00:14:34.420 --> 00:14:35.320
+Exactly correct.
+
+00:14:35.320 --> 00:14:38.060
+So in this case, remember that
+here, we're defining minimums
+
+00:14:38.060 --> 00:14:41.810
+as whatever movement
+admissible delta x I take,
+
+00:14:41.810 --> 00:14:44.230
+I'm increasing the
+value of my function.
+
+00:14:44.230 --> 00:14:46.710
+In this case, the only
+displacements I can take
+
+00:14:46.710 --> 00:14:49.650
+are ones on the positive
+direction on the right.
+
+00:14:49.650 --> 00:14:51.670
+And so for all of these
+displacements, the value
+
+00:14:51.670 --> 00:14:53.750
+my function is greater.
+
+00:14:53.750 --> 00:14:56.870
+So this is indeed
+a local minimum.
+
+00:14:56.870 --> 00:15:00.310
+Same thing for this other
+point here, of course,
+
+00:15:00.310 --> 00:15:02.590
+mirrored where the only
+displacements that I can take
+
+00:15:02.590 --> 00:15:04.510
+are in the negative direction.
+
+00:15:04.510 --> 00:15:08.170
+So you see that when I'm
+considering these boundaries,
+
+00:15:08.170 --> 00:15:12.110
+the condition that the
+gradient of f is equal to 0
+
+00:15:12.110 --> 00:15:15.270
+doesn't really cut it anymore.
+
+00:15:15.270 --> 00:15:21.350
+And so going back to this math,
+what we know in the bounded case
+
+00:15:21.350 --> 00:15:23.310
+is that this has to hold.
+
+00:15:23.310 --> 00:15:28.790
+But we're not able to do the
+point that these displacements
+
+00:15:28.790 --> 00:15:31.050
+can be both in the positive
+or negative direction,
+
+00:15:31.050 --> 00:15:32.990
+but they depend on the boundary.
+
+00:15:32.990 --> 00:15:37.030
+And so the optimality
+condition in this case
+
+00:15:37.030 --> 00:15:40.430
+is that the differential has
+to be greater or equal than 0.
+
+00:15:40.430 --> 00:15:43.070
+Now, this complicates a
+series of other discussions
+
+00:15:43.070 --> 00:15:45.250
+when we actually want
+to make this actionable.
+
+00:15:45.250 --> 00:15:47.830
+But this is the
+difference that it makes
+
+00:15:47.830 --> 00:15:50.790
+in the finite dimensional case.
+
+00:15:50.790 --> 00:15:52.570
+In the infinite
+dimensional case,
+
+00:15:52.570 --> 00:15:55.590
+when we move to optimizing
+to calculus of variation,
+
+00:15:55.590 --> 00:15:58.110
+the exact same
+intuition applies.
+
+00:15:58.110 --> 00:16:02.830
+And specifically,
+remember that we
+
+00:16:02.830 --> 00:16:06.230
+derived the optimality
+conditions, again,
+
+00:16:06.230 --> 00:16:10.710
+starting from the variation of
+our cost functional j, which
+
+00:16:10.710 --> 00:16:14.950
+we denoted as delta j.
+
+00:16:14.950 --> 00:16:17.710
+And in order for
+a candidate, you
+
+00:16:17.710 --> 00:16:21.910
+start to be a minimum
+or a relative minimum.
+
+00:16:21.910 --> 00:16:25.530
+We wanted this increment
+is greater than 0,
+
+00:16:25.530 --> 00:16:29.670
+so exactly as in the
+finite dimensional case.
+
+00:16:29.670 --> 00:16:37.510
+Now, what we did last week
+is that we approximated
+
+00:16:37.510 --> 00:16:41.230
+this increment through its
+linear term or the variation
+
+00:16:41.230 --> 00:16:44.590
+delta j plus some
+higher order terms.
+
+00:16:44.590 --> 00:16:46.710
+And then we use the
+fact that these delta
+
+00:16:46.710 --> 00:16:50.390
+u's could be arbitrary to
+derive the fundamental theorem
+
+00:16:50.390 --> 00:16:52.230
+of calculus of variation.
+
+00:16:52.230 --> 00:16:54.750
+That is the delta j, so
+the variation delta j
+
+00:16:54.750 --> 00:16:58.250
+needed to be equal to 0.
+
+00:16:58.250 --> 00:17:02.670
+So I trust that you're
+seeing the analog here.
+
+00:17:02.670 --> 00:17:04.510
+Now, when we talk about--
+
+00:17:04.510 --> 00:17:06.290
+let's open a small parenthesis.
+
+00:17:06.290 --> 00:17:10.390
+When we talk about variations
+in calculus of variation, so
+
+00:17:10.390 --> 00:17:12.550
+what does delta u look like?
+
+00:17:12.550 --> 00:17:16.589
+Because a displacement in delta
+x intuitively makes sense.
+
+00:17:16.589 --> 00:17:19.849
+But here, we're talking
+about functions.
+
+00:17:19.849 --> 00:17:22.630
+So delta u itself is a function.
+
+00:17:22.630 --> 00:17:34.870
+So if you want visually say that
+we have a function over time
+
+00:17:34.870 --> 00:17:41.930
+and that we have some
+bound in our controls,
+
+00:17:41.930 --> 00:17:45.550
+which we denote as u bar,
+meaning that our controls cannot
+
+00:17:45.550 --> 00:17:52.550
+go above this bound, our control
+u of t might look something like
+
+00:17:52.550 --> 00:17:56.830
+this, where for some time we
+are in the admissible region.
+
+00:17:56.830 --> 00:17:59.910
+Then we are still admissible
+but at the boundary.
+
+00:17:59.910 --> 00:18:01.570
+And then perhaps
+we could go down.
+
+00:18:01.570 --> 00:18:06.910
+So this could be a potential
+control function ut.
+
+00:18:06.910 --> 00:18:09.910
+So a displacement
+delta ut in this case
+
+00:18:09.910 --> 00:18:11.170
+is a function in itself.
+
+00:18:11.170 --> 00:18:15.470
+So it could be any variation
+that I do to my function ut.
+
+00:18:15.470 --> 00:18:19.150
+Now, in this part of the region
+where I'm not at the boundary,
+
+00:18:19.150 --> 00:18:24.190
+the variations that I can take
+could be both delta u but also
+
+00:18:24.190 --> 00:18:25.250
+negative delta u.
+
+00:18:25.250 --> 00:18:30.350
+So variations is both
+directions are admissible.
+
+00:18:30.350 --> 00:18:35.350
+But in the case where my control
+lies at the boundary, then here,
+
+00:18:35.350 --> 00:18:40.370
+I can only take the variation
+in only on one-sided,
+
+00:18:40.370 --> 00:18:43.310
+if that makes sense.
+
+00:18:43.310 --> 00:18:47.050
+And so what this boils
+down to-- and in general,
+
+00:18:47.050 --> 00:18:50.310
+whenever I'm trying
+to optimize some--
+
+00:18:53.070 --> 00:18:56.130
+could be final time
+given some constraints,
+
+00:18:56.130 --> 00:18:59.870
+it is very common that u--
+for some portion of my control
+
+00:18:59.870 --> 00:19:03.350
+profile, I will be at the
+boundary at some point.
+
+00:19:03.350 --> 00:19:07.510
+And it turns out that if
+the optimal control lies
+
+00:19:07.510 --> 00:19:11.910
+on a boundary, then the
+necessary conditions, similarly
+
+00:19:11.910 --> 00:19:15.030
+to how it did in the finite
+dimensional case, essentially
+
+00:19:15.030 --> 00:19:19.990
+boils down that the
+variation delta j has
+
+00:19:19.990 --> 00:19:22.210
+to be greater or equal than 0.
+
+00:19:29.070 --> 00:19:36.470
+Any questions on how we got to
+this update to our conditions?
+
+00:19:36.470 --> 00:19:37.470
+Yes.
+
+00:19:37.470 --> 00:19:40.270
+Sorry if you mentioned it
+before, but on that lower plot
+
+00:19:40.270 --> 00:19:42.790
+that you have there,
+what was the connection
+
+00:19:42.790 --> 00:19:45.470
+to that expression to
+the-- you could only
+
+00:19:45.470 --> 00:19:49.530
+vary in one direction point?
+
+00:19:49.530 --> 00:19:50.030
+Sorry.
+
+00:19:50.030 --> 00:19:51.197
+Can you repeat the question?
+
+00:19:51.197 --> 00:19:51.770
+So here?
+
+00:19:51.770 --> 00:19:56.710
+Yeah, I think I'm confused how
+that would be a situation where
+
+00:19:56.710 --> 00:19:57.470
+you could only--
+
+00:19:57.470 --> 00:20:00.370
+I think you said something
+like vary in one direction.
+
+00:20:00.370 --> 00:20:00.870
+Yes.
+
+00:20:00.870 --> 00:20:01.912
+No, it's a good question.
+
+00:20:01.912 --> 00:20:08.990
+So remember that a lot of the
+logic that we're following when
+
+00:20:08.990 --> 00:20:10.810
+we're doing those
+statements over there
+
+00:20:10.810 --> 00:20:15.090
+was that the admissible
+variations were arbitrary.
+
+00:20:15.090 --> 00:20:17.190
+And so this allowed us
+to essentially derive
+
+00:20:17.190 --> 00:20:21.190
+that the variation of j-- so
+delta j has to be equal to 0
+
+00:20:21.190 --> 00:20:23.690
+in the fundamental theorem
+of calculus of variation.
+
+00:20:23.690 --> 00:20:25.870
+So here, I was
+trying to visualize
+
+00:20:25.870 --> 00:20:27.430
+what does it mean
+for, first of all,
+
+00:20:27.430 --> 00:20:30.400
+to be a variation in the
+space of functions, but then
+
+00:20:30.400 --> 00:20:32.880
+also, what does it mean for
+a variation to be bounded
+
+00:20:32.880 --> 00:20:35.740
+so that it's not arbitrary.
+
+00:20:35.740 --> 00:20:39.260
+So in this space of my
+control function, here,
+
+00:20:39.260 --> 00:20:41.800
+my variations are
+actually arbitrary.
+
+00:20:41.800 --> 00:20:43.800
+So admissible variations
+are arbitrary because I
+
+00:20:43.800 --> 00:20:45.920
+could go in both directions.
+
+00:20:45.920 --> 00:20:50.080
+Here, when my control
+is at a boundary,
+
+00:20:50.080 --> 00:20:54.560
+I cannot displace my function in
+the positive direction because I
+
+00:20:54.560 --> 00:20:56.720
+would violate my bounds.
+
+00:20:56.720 --> 00:20:57.240
+Yeah.
+
+00:20:57.240 --> 00:20:58.865
+And so the only thing
+that I meant here
+
+00:20:58.865 --> 00:21:04.560
+is that the boundaries
+essentially break the assumption
+
+00:21:04.560 --> 00:21:07.040
+that my variations are--
+
+00:21:07.040 --> 00:21:09.120
+that any variation
+is admissible.
+
+00:21:09.120 --> 00:21:12.320
+And so this does not allow
+us to make the statement
+
+00:21:12.320 --> 00:21:14.780
+that the delta j is equal to 0.
+
+00:21:14.780 --> 00:21:15.280
+Yeah.
+
+00:21:22.070 --> 00:21:23.720
+Now, this-- of
+course, then you can
+
+00:21:23.720 --> 00:21:27.080
+imagine that the
+consequences of this
+
+00:21:27.080 --> 00:21:31.320
+on our optimality conditions
+are that we have to strengthen
+
+00:21:31.320 --> 00:21:34.480
+our condition on the control u.
+
+00:21:34.480 --> 00:21:38.340
+And specifically, these
+are the updated conditions,
+
+00:21:38.340 --> 00:21:42.080
+which are referred to as the
+Pontryagin's minimum principle,
+
+00:21:42.080 --> 00:21:43.320
+where we are--
+
+00:21:43.320 --> 00:21:45.820
+as it is I highlighted
+here on the slide,
+
+00:21:45.820 --> 00:21:48.320
+we're essentially
+updating and strengthening
+
+00:21:48.320 --> 00:21:52.880
+the condition on the
+stationarity of our control u.
+
+00:21:52.880 --> 00:21:56.000
+So everything stays exactly
+the same as the conditions
+
+00:21:56.000 --> 00:22:00.240
+that we saw before, with the
+addition that-- or modification
+
+00:22:00.240 --> 00:22:01.920
+that before.
+
+00:22:01.920 --> 00:22:05.120
+The optimal control u had
+to be a stationary point
+
+00:22:05.120 --> 00:22:05.980
+of the Hamiltonian.
+
+00:22:05.980 --> 00:22:07.800
+So the gradient of
+h with respect to u
+
+00:22:07.800 --> 00:22:10.120
+had to be equal to 0.
+
+00:22:10.120 --> 00:22:12.520
+Now we want the
+optimal control u
+
+00:22:12.520 --> 00:22:15.680
+to be a global minimizer
+of the Hamiltonian.
+
+00:22:15.680 --> 00:22:19.120
+So essentially, the
+Hamiltonian evaluated
+
+00:22:19.120 --> 00:22:22.720
+at the optimal
+candidate u star is
+
+00:22:22.720 --> 00:22:26.960
+a smaller or equal than
+the Hamiltonian evaluated
+
+00:22:26.960 --> 00:22:31.460
+at any other u of t,
+admissible control u.
+
+00:22:36.680 --> 00:22:39.440
+Of course, there is
+a jump from the fact
+
+00:22:39.440 --> 00:22:41.000
+that the variation
+has to be greater
+
+00:22:41.000 --> 00:22:47.080
+or equal than 0 towards the
+updated optimality conditions.
+
+00:22:47.080 --> 00:22:51.080
+But the bottom line
+here is, again, we
+
+00:22:51.080 --> 00:22:54.000
+want to be pragmatic
+and functional.
+
+00:22:54.000 --> 00:22:59.160
+And when we introduce
+bounds on our controls,
+
+00:22:59.160 --> 00:23:02.240
+it boils down towards
+updating and strengthening
+
+00:23:02.240 --> 00:23:05.120
+some of our optimality
+conditions, which in this case
+
+00:23:05.120 --> 00:23:09.240
+entails having to minimize the
+Hamiltonian rather than only
+
+00:23:09.240 --> 00:23:10.820
+being a stationary point.
+
+00:23:14.480 --> 00:23:15.860
+Any questions here?
+
+00:23:15.860 --> 00:23:18.240
+Again, mechanically, we
+provided some insight
+
+00:23:18.240 --> 00:23:21.480
+into what is more
+complex the moment
+
+00:23:21.480 --> 00:23:24.480
+we consider bounds on controls.
+
+00:23:24.480 --> 00:23:27.660
+And then we stated the
+updated optimality conditions.
+
+00:23:36.160 --> 00:23:42.960
+So let's now make an example
+to operationalize these updated
+
+00:23:42.960 --> 00:23:44.260
+optimality conditions.
+
+00:24:02.120 --> 00:24:09.000
+And so specifically here, we are
+looking at the following system,
+
+00:24:09.000 --> 00:24:14.880
+which is a second-order
+system with linear dynamics
+
+00:24:14.880 --> 00:24:17.680
+and where we want to
+optimize the cost functional
+
+00:24:17.680 --> 00:24:22.120
+that is represented as a squared
+cost function or quadratic cost
+
+00:24:22.120 --> 00:24:24.080
+functional.
+
+00:24:24.080 --> 00:24:26.640
+We are assuming that
+the final time is fixed
+
+00:24:26.640 --> 00:24:28.240
+and the final stage is free.
+
+00:24:28.240 --> 00:24:30.120
+But note that here,
+now we are introducing
+
+00:24:30.120 --> 00:24:32.320
+this bound on the
+controls, specifically
+
+00:24:32.320 --> 00:24:37.320
+that the absolute value has to
+be less than or equal than 1.
+
+00:24:37.320 --> 00:24:39.420
+When we are-- so these
+type of problems,
+
+00:24:39.420 --> 00:24:41.080
+that is, when we are
+trying to minimize
+
+00:24:41.080 --> 00:24:46.080
+the squared of our controls,
+so our quadratic cost are also
+
+00:24:46.080 --> 00:24:49.160
+known as minimum
+energy problems.
+
+00:24:49.160 --> 00:24:50.100
+Yes.
+
+00:24:50.100 --> 00:24:52.440
+I have a question
+about the definition
+
+00:24:52.440 --> 00:24:54.040
+from the previous slide.
+
+00:24:54.040 --> 00:24:58.120
+What does it mean
+to say that you're--
+
+00:24:58.120 --> 00:25:01.960
+you know that inequality of
+h of all the stuff stars--
+
+00:25:01.960 --> 00:25:03.480
+Yeah, yeah.
+
+00:25:03.480 --> 00:25:06.820
+What does it mean for
+u not to be optimal,
+
+00:25:06.820 --> 00:25:09.960
+but x and p's will be--
+
+00:25:09.960 --> 00:25:14.160
+how can you have a non-optimal
+u of the optimal examples?
+
+00:25:14.160 --> 00:25:16.200
+So in general,
+remember that these
+
+00:25:16.200 --> 00:25:21.520
+are a set of conditions for any
+candidate triplet of states,
+
+00:25:21.520 --> 00:25:23.890
+controls, and costates.
+
+00:25:23.890 --> 00:25:27.210
+Now, the first two are
+differential equations.
+
+00:25:27.210 --> 00:25:29.250
+Here, we are basically
+strengthening
+
+00:25:29.250 --> 00:25:32.610
+the algebraic conditions,
+which essentially
+
+00:25:32.610 --> 00:25:35.810
+entail that the controls,
+the candidate control u,
+
+00:25:35.810 --> 00:25:39.570
+have to be a stationary point
+for the Hamiltonian given
+
+00:25:39.570 --> 00:25:41.250
+x and p.
+
+00:25:41.250 --> 00:25:42.930
+And in this, we
+basically strengthening
+
+00:25:42.930 --> 00:25:45.730
+that condition, whereby
+you should basically
+
+00:25:45.730 --> 00:25:47.930
+see that we are trying
+to minimize this function
+
+00:25:47.930 --> 00:25:49.730
+only as a function of u.
+
+00:25:49.730 --> 00:25:53.810
+So given some x and p's, we
+are finding the global minimum
+
+00:25:53.810 --> 00:25:56.823
+with respect to u of h.
+
+00:25:56.823 --> 00:25:57.323
+OK.
+
+00:25:57.323 --> 00:26:02.475
+But [INAUDIBLE] just given
+some u as [INAUDIBLE].
+
+00:26:02.475 --> 00:26:03.850
+If you want there,
+you could also
+
+00:26:03.850 --> 00:26:11.370
+interpret it as u star
+needs to be the arg
+
+00:26:11.370 --> 00:26:18.630
+min of h of x star u t star.
+
+00:26:22.250 --> 00:26:28.250
+So this is basically saying
+that for any candidate u star t,
+
+00:26:28.250 --> 00:26:32.330
+it has to be a global
+minimizer for any other u of t
+
+00:26:32.330 --> 00:26:33.990
+that I could replace it with.
+
+00:26:37.319 --> 00:26:39.650
+I remember we're
+now highlighting
+
+00:26:39.650 --> 00:26:41.510
+that this is a global minimum.
+
+00:26:41.510 --> 00:26:44.750
+Was it not the global
+minimum before?
+
+00:26:44.750 --> 00:26:47.170
+Before, we only
+needed that u had
+
+00:26:47.170 --> 00:26:50.370
+to be a stationary point
+of the Hamiltonian.
+
+00:26:50.370 --> 00:26:53.230
+We only enforced
+that the derivative,
+
+00:26:53.230 --> 00:26:56.170
+the partial derivative of the
+Hamiltonian with respect to u
+
+00:26:56.170 --> 00:26:58.410
+had to be equal to 0.
+
+00:26:58.410 --> 00:27:00.690
+Now, we're actually
+enforcing that
+
+00:27:00.690 --> 00:27:04.330
+for the strengthened
+condition. u not only
+
+00:27:04.330 --> 00:27:06.410
+has to be a stationary
+point, but it
+
+00:27:06.410 --> 00:27:07.910
+has to be a global minimum.
+
+00:27:10.930 --> 00:27:14.850
+So I know that we
+took a big jump
+
+00:27:14.850 --> 00:27:17.810
+in defining this strengthened
+condition, but maybe
+
+00:27:17.810 --> 00:27:20.170
+one way in which
+you could relate
+
+00:27:20.170 --> 00:27:23.330
+this condition to the one
+we had previously, that is,
+
+00:27:23.330 --> 00:27:27.490
+how to relate the global
+minimization of the Hamiltonian
+
+00:27:27.490 --> 00:27:32.130
+with respect to u and the
+stationary point condition,
+
+00:27:32.130 --> 00:27:33.210
+is that--
+
+00:27:33.210 --> 00:27:36.610
+so this condition is essentially
+strengthened because we are
+
+00:27:36.610 --> 00:27:38.610
+introducing bounds on controls.
+
+00:27:38.610 --> 00:27:43.010
+Now, assume that we are
+loosening these bounds
+
+00:27:43.010 --> 00:27:45.633
+on the controls so much.
+
+00:27:45.633 --> 00:27:47.050
+So visually, if
+you remember here,
+
+00:27:47.050 --> 00:27:50.030
+we had this u bar which
+represented our bound.
+
+00:27:50.030 --> 00:27:53.450
+We are increasing it so much
+that is not an issue anymore
+
+00:27:53.450 --> 00:27:56.890
+for our problem.
+
+00:27:56.890 --> 00:27:59.890
+If we are increasing it
+so much that it's not
+
+00:27:59.890 --> 00:28:01.730
+any more an issue
+for our problem,
+
+00:28:01.730 --> 00:28:06.850
+then any global minimum
+of our Hamiltonian
+
+00:28:06.850 --> 00:28:08.570
+is also a stationary point.
+
+00:28:08.570 --> 00:28:10.490
+So there is a link
+here in the sense
+
+00:28:10.490 --> 00:28:14.450
+that if our control bounds
+are so loose that they're not
+
+00:28:14.450 --> 00:28:18.930
+an issue anymore, then a
+necessary condition for control
+
+00:28:18.930 --> 00:28:26.210
+u to be a global minimum of h
+is it to be a stationary point.
+
+00:28:26.210 --> 00:28:29.250
+How do you see here [INAUDIBLE]?
+
+00:28:29.250 --> 00:28:31.470
+No, this is just
+a mental exercise,
+
+00:28:31.470 --> 00:28:35.610
+just to show some link between
+this formulation and the one
+
+00:28:35.610 --> 00:28:38.970
+we had previously.
+
+00:28:38.970 --> 00:28:41.730
+Did this confuse you even more?
+
+00:28:41.730 --> 00:28:42.582
+Oh, yeah.
+
+00:28:46.430 --> 00:28:48.650
+Bottom line here is
+that we want to define
+
+00:28:48.650 --> 00:28:50.610
+these optimality conditions.
+
+00:28:50.610 --> 00:28:53.610
+Now, we are-- compared to the
+one where we had previously,
+
+00:28:53.610 --> 00:28:55.990
+we are introducing some
+bound on the controls.
+
+00:28:55.990 --> 00:28:57.570
+This bound of the
+controls boils down
+
+00:28:57.570 --> 00:29:01.970
+to having to strengthen this
+third algebraic condition.
+
+00:29:01.970 --> 00:29:04.090
+Before, it was just
+enforcing that u
+
+00:29:04.090 --> 00:29:06.350
+had to be a stationary
+point of the Hamiltonian.
+
+00:29:06.350 --> 00:29:10.130
+Now, we want u's to be a global
+minimizer of the Hamiltonian.
+
+00:29:10.130 --> 00:29:11.506
+Yes.
+
+00:29:11.506 --> 00:29:14.650
+[INAUDIBLE] control
+inputs, we would--
+
+00:29:14.650 --> 00:29:18.530
+if my other condition would
+use to find the optimal control
+
+00:29:18.530 --> 00:29:20.530
+inputs and then plug those
+into the differential
+
+00:29:20.530 --> 00:29:21.870
+equations for x and p.
+
+00:29:21.870 --> 00:29:23.370
+But I'm having
+trouble understanding
+
+00:29:23.370 --> 00:29:25.850
+how we would optimize over--
+
+00:29:25.850 --> 00:29:28.330
+we would optimize
+over the Hamiltonian
+
+00:29:28.330 --> 00:29:33.630
+as if we already knew the
+optimal state and x star and t
+
+00:29:33.630 --> 00:29:36.250
+star, because I assume
+that the x and the control
+
+00:29:36.250 --> 00:29:37.870
+inputs in the
+states are a couple.
+
+00:29:37.870 --> 00:29:39.710
+Yeah, it's a great question.
+
+00:29:39.710 --> 00:29:42.450
+And it will be clear I
+think one slide for now
+
+00:29:42.450 --> 00:29:44.270
+because we're exactly
+solving a problem,
+
+00:29:44.270 --> 00:29:45.730
+and so you'll see how we do it.
+
+00:29:45.730 --> 00:29:48.370
+The bottom line is
+that obviously, this
+
+00:29:48.370 --> 00:29:50.970
+is complicating things because
+before, it was just enforcing
+
+00:29:50.970 --> 00:29:53.210
+an algebraic equation
+where we would express
+
+00:29:53.210 --> 00:29:56.610
+x as a functional-- u
+as a function of x and p
+
+00:29:56.610 --> 00:29:58.410
+and then doing the substitution.
+
+00:29:58.410 --> 00:30:00.438
+Now, we will be solving this--
+
+00:30:00.438 --> 00:30:02.730
+we will basically have to
+solve an optimization problem
+
+00:30:02.730 --> 00:30:05.890
+and derive a solution of
+u as a function of x and p
+
+00:30:05.890 --> 00:30:08.190
+and then doing the
+substitution again.
+
+00:30:08.190 --> 00:30:10.422
+So mechanically, it
+doesn't change much.
+
+00:30:10.422 --> 00:30:12.130
+It's just more complex
+because before, it
+
+00:30:12.130 --> 00:30:14.830
+was enforcing an
+algebraic equation.
+
+00:30:14.830 --> 00:30:17.870
+Now, it's solving an
+optimization problem.
+
+00:30:17.870 --> 00:30:18.370
+Yeah.
+
+00:30:23.730 --> 00:30:31.850
+So indeed, we want to approach
+this minimum energy problem
+
+00:30:31.850 --> 00:30:36.547
+where now we have some
+bounds on the controls.
+
+00:30:36.547 --> 00:30:38.630
+And specifically, again,
+we want to be-- as usual,
+
+00:30:38.630 --> 00:30:41.410
+we want to be methodical.
+
+00:30:41.410 --> 00:30:53.290
+So we define the Hamiltonian as
+1/2 x1 squared plus u squared--
+
+00:30:53.290 --> 00:30:56.930
+and here, I'm omitting a
+dependency on time just to save
+
+00:30:56.930 --> 00:30:57.450
+some ink--
+
+00:31:00.162 --> 00:31:09.770
+plus the costate times
+our dynamics function, p1,
+
+00:31:09.770 --> 00:31:29.500
+p2 transpose x2 minus x2 plus
+u, which we can write as 1/2 x1
+
+00:31:29.500 --> 00:31:45.080
+squared plus u squared plus
+p1 x2 minus p2 x2 plus p2 u.
+
+00:31:50.066 --> 00:31:52.580
+So this is just our Hamiltonian.
+
+00:31:52.580 --> 00:31:56.580
+Now, we want to enforce our
+third condition, that is,
+
+00:31:56.580 --> 00:32:00.160
+that u has to be a global
+minimizer of the Hamiltonian,
+
+00:32:00.160 --> 00:32:02.640
+so the new condition that
+we just strengthened.
+
+00:32:05.460 --> 00:32:09.160
+So we basically want to
+solve this problem here.
+
+00:32:09.160 --> 00:32:14.700
+So u star has to be a global
+minimizer of the Hamiltonian.
+
+00:32:14.700 --> 00:32:17.300
+Now, if this is the
+Hamiltonian, the only terms
+
+00:32:17.300 --> 00:32:21.300
+that depend on u's
+are these two here.
+
+00:32:21.300 --> 00:32:29.860
+And so this problem essentially
+boils down to minimizing over u
+
+00:32:29.860 --> 00:32:34.120
+1/2 u squared plus p2 u.
+
+00:32:37.260 --> 00:32:41.100
+Is the marker strong
+enough this week.
+
+00:32:41.100 --> 00:32:42.860
+Not really?
+
+00:32:42.860 --> 00:32:44.700
+All right.
+
+00:32:44.700 --> 00:32:47.980
+Let's try this other one.
+
+00:32:47.980 --> 00:32:50.400
+I love the variance of the--
+
+00:32:50.400 --> 00:32:50.900
+yes.
+
+00:32:53.900 --> 00:32:54.520
+All right.
+
+00:32:54.520 --> 00:32:58.540
+But can you read this one here?
+
+00:32:58.540 --> 00:33:01.880
+Anybody that cannot read it?
+
+00:33:01.880 --> 00:33:02.440
+All right.
+
+00:33:02.440 --> 00:33:06.760
+So notice that this is
+a quadratic function.
+
+00:33:06.760 --> 00:33:08.820
+So in order to minimize
+it, we can just
+
+00:33:08.820 --> 00:33:11.280
+set the gradient
+of this equal to 0.
+
+00:33:14.060 --> 00:33:18.740
+So we can just set the gradient
+with respect to u of this thing
+
+00:33:18.740 --> 00:33:26.580
+here, so 1/2 u squared
+plus p2 u equal to 0,
+
+00:33:26.580 --> 00:33:33.700
+which essentially means that u
+plus p2 has to be equal to 0.
+
+00:33:33.700 --> 00:33:38.840
+And so u star is
+equal to minus p2.
+
+00:33:41.803 --> 00:33:43.220
+So now to answer
+to your question,
+
+00:33:43.220 --> 00:33:45.700
+you see here we solved
+an optimization problem.
+
+00:33:45.700 --> 00:33:47.700
+The output of this
+optimization problem
+
+00:33:47.700 --> 00:33:51.360
+is still expressing u as a
+function of only p in this case.
+
+00:33:51.360 --> 00:33:55.540
+But in general, it could
+be a function of x and p.
+
+00:33:55.540 --> 00:34:00.880
+Now, we have to analyze-- so
+we have-- u has some bounds.
+
+00:34:00.880 --> 00:34:03.200
+So we have some bounds
+on the values of u.
+
+00:34:03.200 --> 00:34:05.220
+And so we need to
+basically look at
+
+00:34:05.220 --> 00:34:08.780
+different case-by-case studies.
+
+00:34:08.780 --> 00:34:20.219
+So specifically, we will
+be looking at three cases
+
+00:34:20.219 --> 00:34:26.540
+where our bounds are that u has
+to be between minus 1 and 1.
+
+00:34:26.540 --> 00:34:28.179
+And so we'll be
+looking at the case
+
+00:34:28.179 --> 00:34:32.739
+where this global
+minimizer, minus p2,
+
+00:34:32.739 --> 00:34:36.020
+is smaller than negative 1.
+
+00:34:36.020 --> 00:34:42.500
+We'll be looking at minus p2
+being between minus 1 and 1
+
+00:34:42.500 --> 00:34:47.639
+or the fact that minus
+p2 is greater than 1.
+
+00:34:47.639 --> 00:34:49.420
+We'll be looking at
+these three cases,
+
+00:34:49.420 --> 00:34:52.620
+because ideally, the optimal
+control will be negative p2,
+
+00:34:52.620 --> 00:34:57.900
+but there are some bounds on
+u that we have to respect.
+
+00:34:57.900 --> 00:35:02.940
+Visually, if you want to have
+a sense of what is happening,
+
+00:35:02.940 --> 00:35:07.540
+this is a quadratic function, so
+something that looks like this.
+
+00:35:07.540 --> 00:35:11.380
+The minimum is at negative p2.
+
+00:35:11.380 --> 00:35:15.100
+And now we'll be analyzing
+different cases depending
+
+00:35:15.100 --> 00:35:18.180
+on where minus p2 falls.
+
+00:35:18.180 --> 00:35:22.800
+So the most obvious one is
+if minus p2 is feasible--
+
+00:35:22.800 --> 00:35:25.820
+so it falls between
+negative 1 and 1, so, say,
+
+00:35:25.820 --> 00:35:27.080
+something like this--
+
+00:35:31.020 --> 00:35:35.340
+then the optimal u
+would just be minus p2.
+
+00:35:41.900 --> 00:35:48.100
+Now, say that negative p2
+is smaller than minus 1.
+
+00:35:48.100 --> 00:35:54.000
+So we are in a situation
+where this is negative.
+
+00:35:54.000 --> 00:35:56.300
+Say that 1, 1 is here.
+
+00:35:56.300 --> 00:35:59.240
+What would be the
+optimum in this case,
+
+00:35:59.240 --> 00:36:00.520
+the optimal u in this case?
+
+00:36:07.140 --> 00:36:09.780
+So this is the function
+we want to minimize,
+
+00:36:09.780 --> 00:36:12.220
+which is our Hamiltonian.
+
+00:36:12.220 --> 00:36:19.220
+We can only choose
+within minus 1 and 1.
+
+00:36:19.220 --> 00:36:21.520
+So in this case, where
+would the minimum be?
+
+00:36:21.520 --> 00:36:22.020
+Yes.
+
+00:36:22.020 --> 00:36:22.980
+It's minus 1.
+
+00:36:22.980 --> 00:36:26.620
+Yeah, exactly.
+
+00:36:26.620 --> 00:36:30.400
+So in this case, the
+minimum would be minus 1.
+
+00:36:30.400 --> 00:36:32.820
+And you can imagine
+a similar argument
+
+00:36:32.820 --> 00:36:36.280
+if negative p2 is
+greater than 1.
+
+00:36:36.280 --> 00:36:40.500
+So the interval now sits
+on the left of negative p2.
+
+00:36:40.500 --> 00:36:43.680
+And the minimum here would be 1.
+
+00:36:48.260 --> 00:36:50.620
+So essentially,
+now we have solved
+
+00:36:50.620 --> 00:36:53.440
+the third and
+strengthened condition.
+
+00:36:53.440 --> 00:36:57.940
+So we found the global
+minimum of the Hamiltonian
+
+00:36:57.940 --> 00:36:59.660
+with respect to u.
+
+00:36:59.660 --> 00:37:01.180
+And now we basically
+have what we
+
+00:37:01.180 --> 00:37:03.140
+need because now we
+have an expression of u
+
+00:37:03.140 --> 00:37:05.450
+as a function of x and p.
+
+00:37:05.450 --> 00:37:08.310
+In this case, only
+the costates p,
+
+00:37:08.310 --> 00:37:12.190
+which we can substitute in the
+differential equations above,
+
+00:37:12.190 --> 00:37:15.210
+feed them into a solver
+and get the solution out.
+
+00:37:18.230 --> 00:37:21.610
+Interestingly enough--
+and this is, I think,
+
+00:37:21.610 --> 00:37:26.750
+one of the strong points
+of indirect methods
+
+00:37:26.750 --> 00:37:29.130
+is that regardless
+of the solution,
+
+00:37:29.130 --> 00:37:32.150
+so what the exact control
+is, we have basically
+
+00:37:32.150 --> 00:37:36.030
+pinpointed the structure of
+how our control looks like.
+
+00:37:36.030 --> 00:37:46.490
+So now, let's plot our
+control u as a function of p2.
+
+00:37:50.910 --> 00:37:52.950
+Well, we have now is
+that our control in
+
+00:37:52.950 --> 00:37:56.550
+between minus 1 and 1.
+
+00:37:56.550 --> 00:37:59.590
+So if p2 is between
+minus 1 and 1,
+
+00:37:59.590 --> 00:38:03.130
+it will basically look
+something like this.
+
+00:38:07.190 --> 00:38:14.130
+On the other hand, when
+it is below negative 1,
+
+00:38:14.130 --> 00:38:17.130
+it will be saturating at 1.
+
+00:38:17.130 --> 00:38:22.810
+And when it is above 1, it
+will be saturating at minus 1.
+
+00:38:22.810 --> 00:38:25.830
+So our control
+profile is essentially
+
+00:38:25.830 --> 00:38:28.610
+linear and saturating
+after some point.
+
+00:38:34.030 --> 00:38:35.630
+Now, of course, in
+the moment where
+
+00:38:35.630 --> 00:38:38.430
+we didn't have those
+bounds, our optimal control
+
+00:38:38.430 --> 00:38:40.630
+would just be the linear point.
+
+00:38:45.210 --> 00:38:46.810
+Any questions on this?
+
+00:38:50.630 --> 00:38:51.990
+Yeah.
+
+00:38:51.990 --> 00:38:56.610
+I understand this is the third
+condition of the Pontryagin's
+
+00:38:56.610 --> 00:38:58.550
+minimum principle.
+
+00:38:58.550 --> 00:39:00.310
+What about the other two?
+
+00:39:00.310 --> 00:39:02.210
+Yes, it's a good question.
+
+00:39:02.210 --> 00:39:04.230
+So basically, now
+here, we express u
+
+00:39:04.230 --> 00:39:06.270
+as a function of x and p.
+
+00:39:06.270 --> 00:39:11.130
+The mechanics of this go that
+then we take this expression.
+
+00:39:11.130 --> 00:39:15.670
+We substitute it in the other
+two differential equation
+
+00:39:15.670 --> 00:39:16.725
+conditions.
+
+00:39:16.725 --> 00:39:18.350
+And we get some
+differential equations,
+
+00:39:18.350 --> 00:39:22.470
+which we then solve either
+analytically as we did last week
+
+00:39:22.470 --> 00:39:25.870
+or as we will see today
+through numerical solvers.
+
+00:39:25.870 --> 00:39:27.230
+So this is the best one.
+
+00:39:27.230 --> 00:39:28.070
+Yes.
+
+00:39:28.070 --> 00:39:30.950
+So here, we basically
+stopped halfway there.
+
+00:39:30.950 --> 00:39:34.070
+So we just derived
+the profile of u.
+
+00:39:34.070 --> 00:39:36.230
+So it's just the
+strengthened condition.
+
+00:39:36.230 --> 00:39:38.350
+If you had to go
+all the way through,
+
+00:39:38.350 --> 00:39:41.070
+you would substitute this in
+the other differential equation
+
+00:39:41.070 --> 00:39:43.070
+then solve those
+differential equations.
+
+00:39:43.070 --> 00:39:45.230
+Here, we just stopped here.
+
+00:39:45.230 --> 00:39:48.450
+But it's already said that
+already at this point,
+
+00:39:48.450 --> 00:39:52.350
+we can basically inspect the
+structure of our control,
+
+00:39:52.350 --> 00:39:55.110
+because whenever we will solve
+those differential equations,
+
+00:39:55.110 --> 00:39:57.550
+we will get x's and p's.
+
+00:39:57.550 --> 00:40:00.030
+And those x's and
+p's-- in this case,
+
+00:40:00.030 --> 00:40:04.250
+only p will allow us to pinpoint
+our actual control, which,
+
+00:40:04.250 --> 00:40:06.950
+regardless of the value of p,
+will look like something like
+
+00:40:06.950 --> 00:40:08.950
+this.
+
+00:40:08.950 --> 00:40:12.670
+How do we use the
+tf [INAUDIBLE]?
+
+00:40:12.670 --> 00:40:14.830
+Those will be used to
+pinpoint the-- those
+
+00:40:14.830 --> 00:40:16.390
+will be boundary
+conditions, which
+
+00:40:16.390 --> 00:40:19.470
+we use to pinpoint the
+constants of integration
+
+00:40:19.470 --> 00:40:20.970
+in our differential equations.
+
+00:40:23.850 --> 00:40:25.350
+Yes.
+
+00:40:25.350 --> 00:40:27.450
+So for the example graph
+that you drew there
+
+00:40:27.450 --> 00:40:30.950
+that explained how you found
+conditions, what would--
+
+00:40:30.950 --> 00:40:35.310
+is the x-axis-- what axis
+represents what-- which one is u
+
+00:40:35.310 --> 00:40:37.870
+and which one-- or
+[INAUDIBLE] misunderstanding.
+
+00:40:37.870 --> 00:40:40.350
+Yeah, so this would
+be u, and this
+
+00:40:40.350 --> 00:40:43.250
+would be the Hamiltonian
+as a function of u.
+
+00:40:47.070 --> 00:40:48.810
+Does that make sense?
+
+00:40:48.810 --> 00:40:49.310
+Yeah.
+
+00:40:54.590 --> 00:40:56.950
+Any other questions on this?
+
+00:40:56.950 --> 00:40:59.490
+We will see three more examples.
+
+00:40:59.490 --> 00:41:03.370
+So now we'll go through
+a few of these cases.
+
+00:41:08.870 --> 00:41:11.750
+And so indeed-- so
+exactly what we get
+
+00:41:11.750 --> 00:41:14.350
+is this control,
+so essentially what
+
+00:41:14.350 --> 00:41:17.330
+we derived here on the
+slide-- on the whiteboard.
+
+00:41:21.710 --> 00:41:26.630
+As a caveat, Pontryagin
+and colleagues
+
+00:41:26.630 --> 00:41:29.030
+derived some additional
+necessary conditions
+
+00:41:29.030 --> 00:41:32.650
+depending on the exact
+structure of the problem.
+
+00:41:32.650 --> 00:41:34.110
+These are not too
+relevant for us
+
+00:41:34.110 --> 00:41:36.190
+for the purposes of
+this class, but I just
+
+00:41:36.190 --> 00:41:39.910
+wanted to mention that there
+are some additional optimality
+
+00:41:39.910 --> 00:41:41.750
+conditions that were derived.
+
+00:41:41.750 --> 00:41:45.030
+Specifically, if the
+final time is fixed
+
+00:41:45.030 --> 00:41:51.390
+and the Hamiltonian does not
+depend explicitly on time,
+
+00:41:51.390 --> 00:41:55.270
+then the optimality condition
+is that the Hamiltonian-- it
+
+00:41:55.270 --> 00:42:00.160
+has to be constant for all
+times between t0 and tf.
+
+00:42:00.160 --> 00:42:03.800
+And on the other hand, if the
+final time and the Hamiltonian
+
+00:42:03.800 --> 00:42:07.080
+is free and Hamiltonian does
+not depend explicitly on time,
+
+00:42:07.080 --> 00:42:09.440
+then the Hamiltonian
+has to be equal to 0
+
+00:42:09.440 --> 00:42:13.200
+for all times between t0 and tf.
+
+00:42:13.200 --> 00:42:14.992
+Now, again, do not read
+too much into this.
+
+00:42:14.992 --> 00:42:17.033
+This is just-- I wanted
+to use this as an example
+
+00:42:17.033 --> 00:42:19.680
+to mention that there have been
+developed additional optimality
+
+00:42:19.680 --> 00:42:22.320
+conditions which, at
+the end of the day,
+
+00:42:22.320 --> 00:42:25.840
+are useful to pinpoint
+even further the structure
+
+00:42:25.840 --> 00:42:27.120
+of your solution.
+
+00:42:27.120 --> 00:42:29.880
+So there are a number
+of optimality conditions
+
+00:42:29.880 --> 00:42:31.920
+which have been
+developed, and these
+
+00:42:31.920 --> 00:42:34.920
+are additional ones compared to
+the ones that we showed before.
+
+00:42:34.920 --> 00:42:38.000
+And if your problem falls
+within these buckets, then
+
+00:42:38.000 --> 00:42:40.520
+the more optimality conditions
+you have, the better,
+
+00:42:40.520 --> 00:42:42.440
+because you can
+characterize even
+
+00:42:42.440 --> 00:42:45.140
+further what your optimal
+solution looks like.
+
+00:42:47.680 --> 00:42:49.680
+So what we'll be doing
+now is that we'll
+
+00:42:49.680 --> 00:42:54.200
+be looking at three archetypes
+essentially of optimal control
+
+00:42:54.200 --> 00:42:55.060
+problems.
+
+00:42:55.060 --> 00:42:58.580
+Specifically, we'll be looking
+at minimum time problems,
+
+00:42:58.580 --> 00:43:01.600
+so get to your goal
+as fast as possible.
+
+00:43:01.600 --> 00:43:05.040
+We'll be looking at minimum
+fuel problems, where
+
+00:43:05.040 --> 00:43:08.000
+the costs will be to
+minimize the absolute value
+
+00:43:08.000 --> 00:43:10.480
+of the control effort.
+
+00:43:10.480 --> 00:43:14.800
+Again, you could see this as
+the analog of minimizing thrusts
+
+00:43:14.800 --> 00:43:17.720
+if you're looking at
+aerospace applications.
+
+00:43:17.720 --> 00:43:22.120
+And then we'll be looking
+at minimum energy problems.
+
+00:43:22.120 --> 00:43:26.520
+And so starting from
+minimum time problems,
+
+00:43:26.520 --> 00:43:28.920
+we'll be looking at the
+case where indeed we have
+
+00:43:28.920 --> 00:43:30.740
+some bounds on the controls.
+
+00:43:30.740 --> 00:43:36.080
+So the control u has to be
+between some lower bound, Mi
+
+00:43:36.080 --> 00:43:39.880
+minus and some
+upper bound Mi plus.
+
+00:43:39.880 --> 00:43:43.500
+And we want to drive a
+control affine system.
+
+00:43:43.500 --> 00:43:45.480
+So for these examples,
+we will always
+
+00:43:45.480 --> 00:43:48.520
+be assuming the exact
+same system, which
+
+00:43:48.520 --> 00:43:52.560
+is a control affine system,
+in the sense that it linearly
+
+00:43:52.560 --> 00:43:56.520
+depends on the control ut.
+
+00:43:56.520 --> 00:44:00.400
+But this may potentially depend
+nonlinearly on the state x.
+
+00:44:00.400 --> 00:44:05.320
+And this is because the a and
+b might be nonlinear in x.
+
+00:44:05.320 --> 00:44:10.920
+But this still-- so it is
+fairly general, dynamical system
+
+00:44:10.920 --> 00:44:13.800
+and formulation, but it does
+simplify slightly things
+
+00:44:13.800 --> 00:44:18.200
+because it is linear
+in the controls.
+
+00:44:18.200 --> 00:44:20.520
+And, again, the purpose
+of minimum time problems
+
+00:44:20.520 --> 00:44:23.080
+is to get to a goal
+as fast as possible.
+
+00:44:23.080 --> 00:44:26.460
+In this case, we want to start
+from an arbitrary state x0,
+
+00:44:26.460 --> 00:44:28.700
+and we want to reach the origin.
+
+00:44:28.700 --> 00:44:31.400
+And the way we encode
+this minimum time--
+
+00:44:31.400 --> 00:44:34.120
+the minimization of time
+in terms of a functional
+
+00:44:34.120 --> 00:44:36.440
+is that we want to
+minimize j, which
+
+00:44:36.440 --> 00:44:39.860
+is just the integral
+between t0 and tf of 1.
+
+00:44:39.860 --> 00:44:42.700
+So we're just summing
+time essentially.
+
+00:44:42.700 --> 00:44:43.200
+Yes.
+
+00:44:43.200 --> 00:44:45.780
+What does i represent here?
+
+00:44:45.780 --> 00:44:47.360
+Is it a time index?
+
+00:44:47.360 --> 00:44:52.320
+Or is it a different
+possible admissible controls?
+
+00:44:52.320 --> 00:44:55.740
+We are assuming that u here
+could be a multivariate.
+
+00:44:55.740 --> 00:44:59.680
+And so we have M
+control variables.
+
+00:44:59.680 --> 00:45:00.730
+Yeah.
+
+00:45:00.730 --> 00:45:01.230
+Oh.
+
+00:45:01.230 --> 00:45:03.070
+And then would you
+know if there's
+
+00:45:03.070 --> 00:45:04.680
+a comparison [INAUDIBLE]?
+
+00:45:04.680 --> 00:45:05.740
+Yes.
+
+00:45:05.740 --> 00:45:08.080
+So imagine maybe
+you can accelerate
+
+00:45:08.080 --> 00:45:09.480
+in different directions.
+
+00:45:09.480 --> 00:45:11.000
+And for each of
+those dimensions,
+
+00:45:11.000 --> 00:45:12.580
+you have some limits.
+
+00:45:18.480 --> 00:45:28.660
+So let's apply what we
+know to solve this problem.
+
+00:45:51.844 --> 00:45:56.260
+So as usual, we want to start
+from defining the Hamiltonian.
+
+00:45:56.260 --> 00:46:01.940
+So the Hamiltonian for us
+entails the state cost g,
+
+00:46:01.940 --> 00:46:09.660
+which for us is just 1 plus the
+costates times our dynamics.
+
+00:46:09.660 --> 00:46:17.860
+And so in this case, it will
+be p transpose a plus b.
+
+00:46:21.280 --> 00:46:25.760
+Now, just as a
+notation, here, we
+
+00:46:25.760 --> 00:46:33.040
+will express b, the matrix b,
+as in terms of its columns.
+
+00:46:33.040 --> 00:46:46.640
+So we can just rewrite b in this
+way, which essentially means
+
+00:46:46.640 --> 00:46:57.840
+that this is equal to 1 plus p
+transpose a plus the sum that
+
+00:46:57.840 --> 00:47:05.160
+goes from i to m of bi, ui.
+
+00:47:05.160 --> 00:47:07.480
+And this is because
+then this product
+
+00:47:07.480 --> 00:47:11.880
+here essentially becomes
+the linear combination
+
+00:47:11.880 --> 00:47:13.340
+of its columns, essentially.
+
+00:47:18.850 --> 00:47:22.600
+And we can rewrite this
+as 1 plus p transpose
+
+00:47:22.600 --> 00:47:28.400
+a plus the summation
+that goes from 1 to m
+
+00:47:28.400 --> 00:47:32.980
+of p transpose bi, ui.
+
+00:47:38.060 --> 00:47:41.360
+So here, we just
+wrote our Hamiltonian.
+
+00:47:41.360 --> 00:47:45.040
+Now, as we did before,
+we want to start
+
+00:47:45.040 --> 00:47:48.850
+from the third-order optimality
+conditions, which in this case
+
+00:47:48.850 --> 00:47:52.750
+and according to the
+Pontryagin's minimum principle,
+
+00:47:52.750 --> 00:47:55.090
+it means that we
+want to find u, that
+
+00:47:55.090 --> 00:47:58.770
+is, the global minimizer
+of the Hamiltonian.
+
+00:47:58.770 --> 00:48:04.210
+So, as usual, u star
+will be the minimum
+
+00:48:04.210 --> 00:48:06.610
+with respect to u
+of the Hamiltonian,
+
+00:48:06.610 --> 00:48:09.170
+which, again, out of
+these three terms,
+
+00:48:09.170 --> 00:48:11.410
+only the last one depends on u.
+
+00:48:11.410 --> 00:48:20.610
+And so this essentially means
+that we want to minimize u
+
+00:48:20.610 --> 00:48:24.190
+of this summation within
+1m of that term over there,
+
+00:48:24.190 --> 00:48:29.090
+so p transpose bi, ui.
+
+00:48:29.090 --> 00:48:33.290
+Now, the controls are
+something that we pick.
+
+00:48:33.290 --> 00:48:37.330
+And these are independent
+according to our problem
+
+00:48:37.330 --> 00:48:40.770
+formulation across m.
+
+00:48:40.770 --> 00:48:44.450
+And so minimizing the
+summation is essentially
+
+00:48:44.450 --> 00:48:47.570
+equivalent to minimizing
+the individual submission
+
+00:48:47.570 --> 00:48:50.510
+terms for all i's
+that go from 1 to m.
+
+00:48:53.490 --> 00:48:56.610
+And so this basically
+maps to minimizing over
+
+00:48:56.610 --> 00:49:05.710
+ui of p transpose bi, ui for
+all i's that goes from 1 to m.
+
+00:49:13.210 --> 00:49:18.090
+Now, does this make sense?
+
+00:49:18.090 --> 00:49:19.370
+Yes.
+
+00:49:19.370 --> 00:49:22.230
+Now, how do we minimize this?
+
+00:49:22.230 --> 00:49:25.970
+So, again, I think it's good
+to consider different cases.
+
+00:49:25.970 --> 00:49:31.050
+So specifically, our
+optimal control u star
+
+00:49:31.050 --> 00:49:38.050
+will depend on whether p
+transpose bi is positive
+
+00:49:38.050 --> 00:49:42.250
+or whether p transpose
+bi is negative.
+
+00:49:42.250 --> 00:49:46.170
+So if p transpose
+bi is positive,
+
+00:49:46.170 --> 00:49:49.110
+what is the minimizer
+u in this case?
+
+00:49:57.490 --> 00:50:01.970
+So we want to minimize this term
+over here as a function of u.
+
+00:50:01.970 --> 00:50:06.410
+This will depend on what
+this term in front of u is.
+
+00:50:06.410 --> 00:50:12.450
+And so if this term is positive
+and u has to be between Mi minus
+
+00:50:12.450 --> 00:50:16.770
+and Mi plus, how would
+you pick u in this case?
+
+00:50:16.770 --> 00:50:18.410
+Negative x's.
+
+00:50:18.410 --> 00:50:20.450
+Yeah, correct, exactly.
+
+00:50:20.450 --> 00:50:29.530
+So Mi And, of course, by
+mirroring, in case p transpose
+
+00:50:29.530 --> 00:50:32.330
+bi is negative, what is u here?
+
+00:50:32.330 --> 00:50:37.870
+It will be the upper
+bound, so Mi plus.
+
+00:50:40.530 --> 00:50:45.223
+Now, are we missing
+something here?
+
+00:50:45.223 --> 00:50:46.210
+0.
+
+00:50:46.210 --> 00:50:47.590
+Yeah, exactly.
+
+00:50:47.590 --> 00:50:53.250
+And the point here is
+that for p transpose
+
+00:50:53.250 --> 00:50:58.570
+bi, for optimal controls
+for which p transpose bi is
+
+00:50:58.570 --> 00:51:02.290
+optimal triplets, so optimal
+x, u, and p, for which
+
+00:51:02.290 --> 00:51:06.850
+p transpose bi's is equal to 0,
+the optimality conditions do not
+
+00:51:06.850 --> 00:51:10.330
+give us any characterization
+of any information about what
+
+00:51:10.330 --> 00:51:13.210
+the optimal control looks like.
+
+00:51:13.210 --> 00:51:22.130
+This is a condition that is
+referred to as singular arcs
+
+00:51:22.130 --> 00:51:25.450
+or singular conditions,
+which essentially says
+
+00:51:25.450 --> 00:51:32.450
+that the optimality conditions
+for some characteristics
+
+00:51:32.450 --> 00:51:35.610
+of our triplet do not
+give us any information
+
+00:51:35.610 --> 00:51:38.570
+about the optimal control u.
+
+00:51:38.570 --> 00:51:40.990
+Now, for the purposes
+of this class,
+
+00:51:40.990 --> 00:51:42.950
+we won't be dealing
+with singular arcs,
+
+00:51:42.950 --> 00:51:46.690
+and so this is not a problem
+that should bother you too much.
+
+00:51:46.690 --> 00:51:50.610
+But I just wanted to
+use this example as--
+
+00:51:50.610 --> 00:51:53.330
+indeed an example
+of the problems
+
+00:51:53.330 --> 00:51:56.710
+that could emerge,
+whereby in this case,
+
+00:51:56.710 --> 00:52:00.970
+there could be the situation
+where my optimal is actually
+
+00:52:00.970 --> 00:52:05.850
+lies in a situation where
+for some portion of my time,
+
+00:52:05.850 --> 00:52:07.870
+p transpose bi is equal to 0.
+
+00:52:07.870 --> 00:52:11.130
+And so I would not know how
+to characterize my controls.
+
+00:52:11.130 --> 00:52:13.770
+Now, there could be some
+much more sophisticated math
+
+00:52:13.770 --> 00:52:17.830
+in order to pinpoint the
+behavior of my control
+
+00:52:17.830 --> 00:52:18.950
+in this case.
+
+00:52:18.950 --> 00:52:20.710
+It is easier for linear systems.
+
+00:52:20.710 --> 00:52:25.770
+It becomes much a
+problem-depending solution
+
+00:52:25.770 --> 00:52:28.970
+in the moment where you're
+looking at nonlinear systems.
+
+00:52:28.970 --> 00:52:30.850
+But I think it's just
+important for you
+
+00:52:30.850 --> 00:52:32.450
+to know that there
+might be situations
+
+00:52:32.450 --> 00:52:35.530
+where these problems emerge.
+
+00:52:35.530 --> 00:52:38.770
+And in a way, this is actually
+where most of the brainpower,
+
+00:52:38.770 --> 00:52:41.530
+when you try to use
+indirect methods goes into,
+
+00:52:41.530 --> 00:52:46.130
+is tackling these
+ill-conditioned situations.
+
+00:52:46.130 --> 00:52:51.515
+For us, assuming
+that the optimal--
+
+00:52:51.515 --> 00:52:52.890
+for our optimal
+control problem--
+
+00:52:52.890 --> 00:52:54.690
+so the optimal
+triplet x, p, and u
+
+00:52:54.690 --> 00:52:57.970
+does not fall into the
+singular conditions--
+
+00:52:57.970 --> 00:53:00.610
+we basically have
+determined that our control
+
+00:53:00.610 --> 00:53:03.250
+has this form
+here, which is also
+
+00:53:03.250 --> 00:53:06.250
+known as a bang-bang control.
+
+00:53:06.250 --> 00:53:08.810
+And this is because
+essentially, the control
+
+00:53:08.810 --> 00:53:13.890
+has a profile that either
+accelerates at max velocity
+
+00:53:13.890 --> 00:53:16.330
+or breaks at its maximum.
+
+00:53:16.330 --> 00:53:19.330
+And if you think about what
+we were doing here, that is,
+
+00:53:19.330 --> 00:53:21.930
+minimizing final
+time, it makes sense.
+
+00:53:21.930 --> 00:53:25.890
+So we have some linear system
+or a control affine system.
+
+00:53:25.890 --> 00:53:27.110
+We want to minimize time.
+
+00:53:27.110 --> 00:53:29.070
+And so we're not messing around.
+
+00:53:29.070 --> 00:53:33.770
+We either go full throttle, or
+we break at our maximum speed.
+
+00:53:33.770 --> 00:53:34.670
+Yes.
+
+00:53:34.670 --> 00:53:36.950
+So [INAUDIBLE] is equal to 0.
+
+00:53:36.950 --> 00:53:38.690
+Does that not necessarily
+mean that it's
+
+00:53:38.690 --> 00:53:40.580
+uncontrollable at that state?
+
+00:53:40.580 --> 00:53:42.820
+It means that the
+optimality conditions do not
+
+00:53:42.820 --> 00:53:46.160
+give us a characterization of
+how the control looks like.
+
+00:53:46.160 --> 00:53:49.980
+So remember, all of these
+are optimality conditions
+
+00:53:49.980 --> 00:53:53.260
+that allow us to pinpoint
+candidates for optimality.
+
+00:53:53.260 --> 00:53:55.320
+And so this means that
+in those situations,
+
+00:53:55.320 --> 00:53:57.820
+these optimality conditions
+do not give us information
+
+00:53:57.820 --> 00:53:59.540
+on what an optimal looks like.
+
+00:53:59.540 --> 00:54:02.340
+Yes.
+
+00:54:02.340 --> 00:54:04.340
+What is singular arcs?
+
+00:54:04.340 --> 00:54:07.700
+What types of problems
+these are unique to?
+
+00:54:07.700 --> 00:54:09.480
+They're not unique
+to specific problems,
+
+00:54:09.480 --> 00:54:11.940
+but singular arc or
+singular condition
+
+00:54:11.940 --> 00:54:16.780
+refers to those situations for
+which the optimality conditions
+
+00:54:16.780 --> 00:54:21.020
+are not able to characterize
+the control essentially.
+
+00:54:21.020 --> 00:54:24.520
+It's not new to the
+application of the Pontryagin's
+
+00:54:24.520 --> 00:54:25.980
+minimum principle?
+
+00:54:25.980 --> 00:54:26.560
+Yes, yes.
+
+00:54:26.560 --> 00:54:29.960
+So if you're applying the
+Pontryagin's minimum principle,
+
+00:54:29.960 --> 00:54:32.780
+that is, the optimality
+conditions for optimal control
+
+00:54:32.780 --> 00:54:38.300
+problems, you might end up in
+situations like these where we--
+
+00:54:38.300 --> 00:54:40.740
+at face value, we don't
+have enough information
+
+00:54:40.740 --> 00:54:42.760
+to characterize what
+the control looks like.
+
+00:54:48.120 --> 00:54:48.620
+Sorry.
+
+00:54:48.620 --> 00:54:51.760
+You said this already,
+but I'm just confused.
+
+00:54:51.760 --> 00:54:54.740
+Did you get that the controller
+is a bang-bang controller
+
+00:54:54.740 --> 00:55:00.100
+from minimizing the Hamiltonian,
+or the problem gave you
+
+00:55:00.100 --> 00:55:01.820
+that this is a
+bang-bang controller?
+
+00:55:01.820 --> 00:55:06.420
+So, again, here, I think the
+mental mindset you should be in
+
+00:55:06.420 --> 00:55:09.117
+is that we are being
+extremely methodical.
+
+00:55:09.117 --> 00:55:10.700
+So we have an optimal
+control problem,
+
+00:55:10.700 --> 00:55:12.240
+and we follow the recipe.
+
+00:55:12.240 --> 00:55:15.220
+So the recipe entails
+defining the Hamiltonian
+
+00:55:15.220 --> 00:55:18.580
+and then enforcing the
+optimality conditions.
+
+00:55:18.580 --> 00:55:21.100
+The way we mechanically
+go through the optimality
+
+00:55:21.100 --> 00:55:24.220
+conditions is by starting
+from the third one, which
+
+00:55:24.220 --> 00:55:28.540
+is the, in this case, finding
+use the globally minimize
+
+00:55:28.540 --> 00:55:32.460
+the Hamiltonian, which
+leads us to this.
+
+00:55:32.460 --> 00:55:36.420
+If we were to continue, we would
+then take this and substitute it
+
+00:55:36.420 --> 00:55:40.420
+in the differential equations.
+
+00:55:40.420 --> 00:55:42.460
+We would then solve those
+differential equations
+
+00:55:42.460 --> 00:55:45.060
+and get the full thing.
+
+00:55:45.060 --> 00:55:48.060
+Here, we're, again,
+stopping before the solution
+
+00:55:48.060 --> 00:55:51.300
+of the differential equations,
+that is, we only get
+
+00:55:51.300 --> 00:55:53.960
+the global minimum
+of the Hamiltonian.
+
+00:55:53.960 --> 00:55:56.060
+And this already
+gives us the profile
+
+00:55:56.060 --> 00:55:59.220
+of our control signal,
+which, in this case,
+
+00:55:59.220 --> 00:56:02.700
+is bang-bang, because we already
+know that we will basically
+
+00:56:02.700 --> 00:56:08.180
+be at the maximum control on
+the boundaries of our control
+
+00:56:08.180 --> 00:56:12.420
+at all times essentially,
+removing the singular arc
+
+00:56:12.420 --> 00:56:13.300
+discussion.
+
+00:56:13.300 --> 00:56:13.800
+Yeah.
+
+00:56:18.380 --> 00:56:24.300
+And so essentially,
+we showed what
+
+00:56:24.300 --> 00:56:28.420
+to do when p transpose
+b is different from 0.
+
+00:56:28.420 --> 00:56:32.260
+It is not obvious what we
+do in the equal to 0 case.
+
+00:56:32.260 --> 00:56:34.020
+And we discussed this--
+
+00:56:34.020 --> 00:56:37.260
+we refer to these situations are
+singular conditions or singular
+
+00:56:37.260 --> 00:56:39.220
+arcs.
+
+00:56:39.220 --> 00:56:42.500
+And I do-- if you're
+interested in learning more,
+
+00:56:42.500 --> 00:56:44.940
+the textbook from Kurt we
+were referring to last week
+
+00:56:44.940 --> 00:56:46.420
+is indeed a good
+reference for this
+
+00:56:46.420 --> 00:56:48.320
+because it has some discussions.
+
+00:56:51.980 --> 00:56:57.180
+OK, so now we move towards a
+second archetype optimal control
+
+00:56:57.180 --> 00:57:00.140
+problem, which is minimum fuel.
+
+00:57:00.140 --> 00:57:05.420
+So in this case, we
+have the same boundary--
+
+00:57:05.420 --> 00:57:06.720
+bounds on the controls.
+
+00:57:06.720 --> 00:57:09.500
+We have the exact same
+control affine system.
+
+00:57:09.500 --> 00:57:14.700
+But now we are changing
+the cost, whereby we
+
+00:57:14.700 --> 00:57:16.480
+start from an arbitrary x of 0.
+
+00:57:16.480 --> 00:57:19.200
+We want to reach the
+origin in a fixed time.
+
+00:57:19.200 --> 00:57:20.260
+So now, time is fixed.
+
+00:57:20.260 --> 00:57:22.420
+It's not a variable
+we're optimizing over.
+
+00:57:22.420 --> 00:57:27.620
+And we want to reach the origin
+by minimizing the absolute value
+
+00:57:27.620 --> 00:57:29.340
+of the control.
+
+00:57:29.340 --> 00:57:30.900
+And these types
+of problems where
+
+00:57:30.900 --> 00:57:32.780
+minimizing absolute
+values of the controls
+
+00:57:32.780 --> 00:57:38.820
+are usually referred to
+as minimum fuel problems.
+
+00:57:38.820 --> 00:57:49.460
+So, again, let's follow
+the usual procedure.
+
+00:57:49.460 --> 00:57:53.140
+So we define the Hamiltonian
+which, in this case,
+
+00:57:53.140 --> 00:57:58.980
+g for us is the sum
+from 1 to m of ci times
+
+00:57:58.980 --> 00:58:06.460
+the absolute value of ui
+plus p transpose a plus
+
+00:58:06.460 --> 00:58:14.100
+the sum that goes from 1
+to m of p transpose bi, ui.
+
+00:58:14.100 --> 00:58:16.640
+Here, I skipped a
+couple of steps,
+
+00:58:16.640 --> 00:58:19.700
+but this is exactly-- because
+the steps are exactly the same
+
+00:58:19.700 --> 00:58:21.280
+as the ones we did before.
+
+00:58:21.280 --> 00:58:26.120
+So we express b as in form--
+in terms of the columns.
+
+00:58:26.120 --> 00:58:28.140
+And then that
+product essentially
+
+00:58:28.140 --> 00:58:31.400
+becomes the linear combination
+of the columns of b.
+
+00:58:38.300 --> 00:58:41.240
+Is it clear how we got to-- how
+we define the Hamiltonian here?
+
+00:58:44.440 --> 00:58:49.380
+So now, we want to enforce
+our optimality condition such
+
+00:58:49.380 --> 00:58:55.540
+that the u has to be a
+minimizer of the Hamiltonian.
+
+00:58:55.540 --> 00:58:58.540
+And, again, in this case, the
+only terms that depend on u
+
+00:58:58.540 --> 00:59:02.860
+are the first and the third.
+
+00:59:02.860 --> 00:59:07.820
+And so this boils down to
+taking the minimum over u
+
+00:59:07.820 --> 00:59:13.860
+of the sum that goes
+from 1 to m of ci times
+
+00:59:13.860 --> 00:59:20.120
+the absolute value of ui
+plus p transpose bi, ui.
+
+00:59:23.830 --> 00:59:26.700
+Now, again, the u's are--
+
+00:59:26.700 --> 00:59:29.240
+the dimensions of
+u are independent.
+
+00:59:29.240 --> 00:59:31.070
+And so we can do
+exactly the same trick
+
+00:59:31.070 --> 00:59:35.470
+that minimizing the summation
+is equal and equivalent
+
+00:59:35.470 --> 00:59:37.670
+to minimizing the
+individual summation
+
+00:59:37.670 --> 00:59:40.210
+term for all i's from 1 to n.
+
+00:59:45.070 --> 00:59:49.310
+And so this means that it's
+equal to minimizing over ui's
+
+00:59:49.310 --> 00:59:57.670
+of ci times the absolute value
+of ui plus p transpose bi, ui.
+
+00:59:57.670 --> 01:00:05.550
+And this is for all
+i's from 1 to m.
+
+01:00:14.014 --> 01:00:23.350
+So now, let's write this
+term slightly more nicely.
+
+01:00:23.350 --> 01:00:33.670
+So this is equal to ci plus
+p transpose bi times ui
+
+01:00:33.670 --> 01:00:42.790
+if ui is greater or
+equal than 0 and is
+
+01:00:42.790 --> 01:00:47.870
+equal to negative ci
+plus P transpose bi,
+
+01:00:47.870 --> 01:00:53.610
+ui if ui is less
+than or equal than 0.
+
+01:00:57.350 --> 01:01:00.930
+And so we want to
+minimize this object.
+
+01:01:00.930 --> 01:01:06.150
+And, again, we have to go
+in a case-by-case analysis.
+
+01:01:06.150 --> 01:01:22.350
+So if p transpose bi is
+greater than ci, what happens
+
+01:01:22.350 --> 01:01:27.630
+is that this term is positive.
+
+01:01:27.630 --> 01:01:33.170
+And so what u would I pick here
+if I want to minimize this term?
+
+01:01:44.296 --> 01:01:46.490
+[INAUDIBLE]
+
+01:01:46.490 --> 01:01:46.990
+Sorry.
+
+01:01:46.990 --> 01:01:48.690
+I think I heard a 0.
+
+01:01:48.690 --> 01:01:50.210
+Yes, which is correct.
+
+01:01:50.210 --> 01:01:52.410
+Did I hear you mean
+something else or--
+
+01:01:52.410 --> 01:01:52.910
+no.
+
+01:01:52.910 --> 01:01:55.270
+So indeed, it is 0.
+
+01:01:55.270 --> 01:01:59.230
+And so indeed-- so in the case
+where p transpose bi is greater
+
+01:01:59.230 --> 01:02:01.310
+than or equal to c than--
+
+01:02:01.310 --> 01:02:04.850
+greater than ci, this
+is greater than 0,
+
+01:02:04.850 --> 01:02:09.470
+which means that, in this case,
+I would pick ui equals to 0.
+
+01:02:09.470 --> 01:02:12.870
+If we're still in that case,
+then this other condition
+
+01:02:12.870 --> 01:02:16.070
+would also be positive.
+
+01:02:16.070 --> 01:02:18.030
+So this term here
+is also positive.
+
+01:02:18.030 --> 01:02:23.990
+And so here, the ui that I
+would pick would be Mi minus.
+
+01:02:23.990 --> 01:02:27.750
+And so in between these two
+cases then for this case
+
+01:02:27.750 --> 01:02:34.170
+here, ui star would
+be equal to MI minus.
+
+01:02:37.436 --> 01:02:42.710
+Now we do another case, that
+is, the case where p transpose
+
+01:02:42.710 --> 01:02:48.990
+bi is between 0 and ci.
+
+01:02:48.990 --> 01:02:52.830
+If this is the case,
+this is still positive.
+
+01:02:52.830 --> 01:02:58.750
+So here, I would also
+pick ui equals 0.
+
+01:02:58.750 --> 01:03:03.830
+If b transpose bi
+is between 0 and ci,
+
+01:03:03.830 --> 01:03:07.070
+this term here is negative.
+
+01:03:07.070 --> 01:03:09.950
+And so the ui that
+I would have to pick
+
+01:03:09.950 --> 01:03:14.230
+would also be 0 to minimize.
+
+01:03:14.230 --> 01:03:20.910
+And so essentially, in this
+case, u star i is equal to 0.
+
+01:03:24.790 --> 01:03:28.430
+Now, just by
+mirroring, I-- yeah,
+
+01:03:28.430 --> 01:03:31.950
+we would go through the other
+two remaining cases, which
+
+01:03:31.950 --> 01:03:43.230
+essentially are that p transpose
+bi are between negative ci and 0
+
+01:03:43.230 --> 01:03:51.550
+and the fact that p transpose
+bi is smaller than negative ci.
+
+01:03:51.550 --> 01:03:55.110
+So these would be
+the other two cases.
+
+01:03:55.110 --> 01:04:00.150
+And here, we would get
+that ui star is equal to 0
+
+01:04:00.150 --> 01:04:03.510
+and that ui star
+is equal Mi plus.
+
+01:04:03.510 --> 01:04:05.110
+This is just by mirroring.
+
+01:04:11.270 --> 01:04:13.430
+And so, again, we
+reached the point
+
+01:04:13.430 --> 01:04:20.470
+where we have expressed u from
+the third of our boundary--
+
+01:04:20.470 --> 01:04:24.600
+from our necessary
+optimality conditions.
+
+01:04:24.600 --> 01:04:26.160
+And we see that we are--
+
+01:04:26.160 --> 01:04:30.300
+again, we are assuming we're not
+in the singular arc conditions.
+
+01:04:30.300 --> 01:04:35.680
+So we are ignoring the equal
+cases of these examples here.
+
+01:04:35.680 --> 01:04:38.920
+But we have, again,
+pinpointed the structure
+
+01:04:38.920 --> 01:04:40.300
+of our control profile.
+
+01:04:40.300 --> 01:04:45.560
+And this is the one that you
+can see here on the slide
+
+01:04:45.560 --> 01:04:50.600
+where ui, depending on the
+value of p transpose bi,
+
+01:04:50.600 --> 01:04:54.320
+is essentially either at
+its minimum value or 0
+
+01:04:54.320 --> 01:04:56.220
+or at its maximum value.
+
+01:04:56.220 --> 01:04:59.720
+And this is known as
+bang-off-bang control.
+
+01:04:59.720 --> 01:05:03.280
+And if you think about
+what we're doing here,
+
+01:05:03.280 --> 01:05:06.480
+it is quite intuitive, again,
+because this essentially
+
+01:05:06.480 --> 01:05:08.960
+describes control
+profiles where I
+
+01:05:08.960 --> 01:05:11.320
+want to get as quickly
+as possible into a state
+
+01:05:11.320 --> 01:05:16.160
+where I'm essentially
+coasting through my dynamics,
+
+01:05:16.160 --> 01:05:18.400
+where I can do
+nothing essentially,
+
+01:05:18.400 --> 01:05:23.840
+and then maybe only at the end
+do another impulsive control.
+
+01:05:23.840 --> 01:05:26.620
+And this aligns with the
+objective of minimizing fuel.
+
+01:05:31.240 --> 01:05:33.480
+Any questions on this example?
+
+01:05:33.480 --> 01:05:38.560
+I think here, it's easy to
+get lost in the technicalities
+
+01:05:38.560 --> 01:05:40.358
+of solving this minimization.
+
+01:05:40.358 --> 01:05:42.400
+But I hope that at a high
+level, what we're doing
+
+01:05:42.400 --> 01:05:45.960
+is starting to become clear,
+because we're essentially
+
+01:05:45.960 --> 01:05:49.440
+repeating ourselves over and
+over where we are enforcing
+
+01:05:49.440 --> 01:05:51.240
+our optimality conditions.
+
+01:05:51.240 --> 01:05:54.040
+By defining the Hamiltonian,
+optimizing the Hamiltonian
+
+01:05:54.040 --> 01:05:57.720
+with respect to u, this
+gives us a control profile,
+
+01:05:57.720 --> 01:06:01.260
+which in order to solve
+the problem fully,
+
+01:06:01.260 --> 01:06:03.880
+we would have to then do
+the appropriate substitution
+
+01:06:03.880 --> 01:06:06.640
+and solve the
+differential equations.
+
+01:06:06.640 --> 01:06:10.400
+But this already gives us a
+way to analyze the structure
+
+01:06:10.400 --> 01:06:12.280
+of our control profile.
+
+01:06:12.280 --> 01:06:14.320
+Yes.
+
+01:06:14.320 --> 01:06:14.820
+Yeah.
+
+01:06:14.820 --> 01:06:15.320
+Sorry.
+
+01:06:15.320 --> 01:06:18.130
+So when you were
+doing the ci plus pt,
+
+01:06:18.130 --> 01:06:20.768
+bi that is just you
+getting that derivative
+
+01:06:20.768 --> 01:06:22.560
+and seeing-- that just
+gave me a derivative
+
+01:06:22.560 --> 01:06:25.520
+based on whatever the
+absolute value is.
+
+01:06:25.520 --> 01:06:28.680
+And then you were looking at
+the different options of pt,
+
+01:06:28.680 --> 01:06:30.217
+bi greater than ci.
+
+01:06:30.217 --> 01:06:31.800
+I'm a little bit
+confused how then you
+
+01:06:31.800 --> 01:06:34.000
+got that they are
+for the minimum based
+
+01:06:34.000 --> 01:06:37.800
+on pt, bi greater than ci,
+because if pti is bigger,
+
+01:06:37.800 --> 01:06:39.480
+then that's not just
+a positive values.
+
+01:06:39.480 --> 01:06:42.000
+And then the [INAUDIBLE]
+of ui is just 0.
+
+01:06:42.000 --> 01:06:46.198
+And then so why is it now
+that the minimum [INAUDIBLE]?
+
+01:06:46.198 --> 01:06:48.240
+You're talking about this
+case here, these cases?
+
+01:06:48.240 --> 01:06:49.680
+Yeah.
+
+01:06:49.680 --> 01:06:52.680
+So here, remember that our
+function we're optimizing
+
+01:06:52.680 --> 01:06:54.180
+is this one here.
+
+01:06:54.180 --> 01:06:56.840
+So it's a function where
+we have an absolute value.
+
+01:06:56.840 --> 01:06:57.440
+Yes.
+
+01:06:57.440 --> 01:07:01.180
+And so we rewrote it
+according to these two cases.
+
+01:07:01.180 --> 01:07:01.880
+Yes.
+
+01:07:01.880 --> 01:07:06.000
+Now, we are doing the
+case where p transpose
+
+01:07:06.000 --> 01:07:07.680
+bi is greater than ci.
+
+01:07:07.680 --> 01:07:12.600
+And we want to find the minimum
+across both of these values.
+
+01:07:12.600 --> 01:07:18.280
+So if p transpose bi is greater
+than ci, this is positive.
+
+01:07:18.280 --> 01:07:21.300
+And in the case where ui
+has to be greater than 0,
+
+01:07:21.300 --> 01:07:23.960
+the minimum would
+be ui equals 0.
+
+01:07:23.960 --> 01:07:26.800
+In this other case,
+this is positive.
+
+01:07:26.800 --> 01:07:32.400
+ui has to be less than 0, and so
+the minimum would be Mi minus.
+
+01:07:32.400 --> 01:07:35.840
+The minimum between the two of
+them is when ui is Mi minus.
+
+01:07:35.840 --> 01:07:36.520
+All right.
+
+01:07:36.520 --> 01:07:38.600
+Thank you.
+
+01:07:38.600 --> 01:07:40.080
+Would this have
+the singular arcs
+
+01:07:40.080 --> 01:07:42.880
+where obviously still the
+0 case but also when they
+
+01:07:42.880 --> 01:07:44.460
+equal to ci and negative ci?
+
+01:07:44.460 --> 01:07:45.420
+Yes, indeed.
+
+01:07:45.420 --> 01:07:48.480
+Here, we are assuming that
+our optimal control does not
+
+01:07:48.480 --> 01:07:50.600
+fall into these conditions.
+
+01:07:50.600 --> 01:07:52.280
+Yeah.
+
+01:07:52.280 --> 01:07:56.200
+Conceptually, I'm wondering, in
+the bang-off-bang bang control
+
+01:07:56.200 --> 01:07:58.920
+sequence, is there
+something in those terms
+
+01:07:58.920 --> 01:08:03.160
+that also weighs total time?
+
+01:08:03.160 --> 01:08:05.520
+Or is it purely just
+minimizing fuel?
+
+01:08:08.720 --> 01:08:11.977
+If you look at the objective
+that we were doing,
+
+01:08:11.977 --> 01:08:14.060
+we didn't have an explicit
+minimization over time,
+
+01:08:14.060 --> 01:08:17.420
+but time was fixed.
+
+01:08:17.420 --> 01:08:17.920
+Yeah.
+
+01:08:21.160 --> 01:08:24.479
+So the third case of the
+minimum energy problem--
+
+01:08:24.479 --> 01:08:27.160
+I would just go through
+this quite quickly
+
+01:08:27.160 --> 01:08:29.840
+because it's exactly
+the same case as the one
+
+01:08:29.840 --> 01:08:34.560
+that we did on our parabola
+and the negative p2
+
+01:08:34.560 --> 01:08:37.040
+that we did just after
+the definition of the PMP.
+
+01:08:37.040 --> 01:08:39.479
+So I would go through
+this quite quickly.
+
+01:08:39.479 --> 01:08:42.000
+Again, here, the cases
+that we're minimizing--
+
+01:08:42.000 --> 01:08:44.660
+R squared cost functional.
+
+01:08:48.120 --> 01:08:50.800
+And we would be doing the
+exact same steps where
+
+01:08:50.800 --> 01:08:52.760
+we define the Hamiltonian.
+
+01:08:52.760 --> 01:08:55.160
+This Hamiltonian,
+because of the-- we
+
+01:08:55.160 --> 01:08:59.479
+are assuming that R is
+positive definite and diagonal.
+
+01:08:59.479 --> 01:09:02.819
+And so because of this,
+everything nicely decouples.
+
+01:09:02.819 --> 01:09:06.600
+And so we get the same situation
+where minimizing this summation
+
+01:09:06.600 --> 01:09:10.040
+terms is equal to minimizing
+an individual term
+
+01:09:10.040 --> 01:09:11.960
+of the summation.
+
+01:09:11.960 --> 01:09:14.200
+And so since this
+is quadratic, we
+
+01:09:14.200 --> 01:09:16.960
+set the derivative
+of this equal to 0.
+
+01:09:16.960 --> 01:09:21.399
+And we will get this optimal
+control, which is exactly
+
+01:09:21.399 --> 01:09:23.960
+the analog of the negative p2.
+
+01:09:23.960 --> 01:09:26.680
+So this is why I'm coasting
+through this because this
+
+01:09:26.680 --> 01:09:29.080
+is exactly the same.
+
+01:09:29.080 --> 01:09:31.939
+And so we would get
+our saturating control,
+
+01:09:31.939 --> 01:09:34.319
+which is the case we were
+looking at the beginning.
+
+01:09:34.319 --> 01:09:38.640
+So we had our control saturating
+when it's out of bounds, linear,
+
+01:09:38.640 --> 01:09:40.800
+and then saturating again.
+
+01:09:40.800 --> 01:09:41.700
+Yes.
+
+01:09:41.700 --> 01:09:45.340
+So we know to pick
+R as a diagonal.
+
+01:09:45.340 --> 01:09:48.040
+If that makes the
+calculation straightforward,
+
+01:09:48.040 --> 01:09:49.160
+why is that applicable?
+
+01:09:49.160 --> 01:09:50.859
+I mean, R-- if you
+think about it,
+
+01:09:50.859 --> 01:09:54.840
+it's a term we pick because we
+are defining the costs that we
+
+01:09:54.840 --> 01:09:55.960
+want to optimize.
+
+01:09:55.960 --> 01:10:00.360
+And so usually, it's good to
+express diagonal cost matrices
+
+01:10:00.360 --> 01:10:03.360
+because it makes things easier.
+
+01:10:03.360 --> 01:10:06.300
+But we could also pick an
+R that is not diagonal.
+
+01:10:06.300 --> 01:10:06.800
+Yeah.
+
+01:10:12.900 --> 01:10:16.290
+So I want to--
+
+01:10:16.290 --> 01:10:18.930
+so I have only 10 minutes
+left, so I'll skip over this
+
+01:10:18.930 --> 01:10:20.430
+and finish it next time.
+
+01:10:20.430 --> 01:10:23.010
+But I want to give you a
+hint on computational methods
+
+01:10:23.010 --> 01:10:25.890
+and show you how to solve
+these problems in practice.
+
+01:10:25.890 --> 01:10:28.730
+And so basically,
+until now, what we did
+
+01:10:28.730 --> 01:10:31.570
+is that we used our
+optimality conditions
+
+01:10:31.570 --> 01:10:36.250
+to derive our systems of
+differential equations
+
+01:10:36.250 --> 01:10:40.730
+and our minimization
+over u condition.
+
+01:10:40.730 --> 01:10:44.810
+And then we always stopped
+at the-- either we solve them
+
+01:10:44.810 --> 01:10:46.870
+analytically as we did
+last week, or here,
+
+01:10:46.870 --> 01:10:50.610
+we stopped at expressing u
+as a function of x and p's.
+
+01:10:50.610 --> 01:10:54.250
+And then we said that
+here, we would substitute
+
+01:10:54.250 --> 01:10:56.250
+these back in our
+differential equations,
+
+01:10:56.250 --> 01:10:59.410
+and we would solve them
+through numerical solvers.
+
+01:10:59.410 --> 01:11:03.090
+And at a high level,
+numerical techniques
+
+01:11:03.090 --> 01:11:06.090
+to solve two-point
+boundary value problems
+
+01:11:06.090 --> 01:11:10.330
+divide themselves in between
+indirect shooting methods
+
+01:11:10.330 --> 01:11:12.690
+and collocation methods.
+
+01:11:12.690 --> 01:11:14.490
+Now, we won't go
+into the details
+
+01:11:14.490 --> 01:11:17.530
+of how these models,
+these techniques
+
+01:11:17.530 --> 01:11:21.370
+solve two-point
+boundary value problems.
+
+01:11:21.370 --> 01:11:24.730
+But at a high level, you
+should see a shooting method
+
+01:11:24.730 --> 01:11:27.650
+as basically a method
+that approximates
+
+01:11:27.650 --> 01:11:30.810
+a two-point boundary value
+problem as an initial value
+
+01:11:30.810 --> 01:11:35.330
+problem where I take a guess
+of what the initial value is.
+
+01:11:35.330 --> 01:11:37.490
+I propagate my system forward.
+
+01:11:37.490 --> 01:11:40.870
+I see my error with respect
+to the final condition.
+
+01:11:40.870 --> 01:11:42.330
+I will get a residual.
+
+01:11:42.330 --> 01:11:46.610
+And then I update my
+guesses iteratively.
+
+01:11:46.610 --> 01:11:48.790
+In direct collocation
+methods, on the other hand,
+
+01:11:48.790 --> 01:11:53.310
+approximate the system dynamics
+through basis functions,
+
+01:11:53.310 --> 01:11:54.890
+for example, polynomials.
+
+01:11:54.890 --> 01:11:58.570
+And they enforce the dynamics
+and the boundary conditions
+
+01:11:58.570 --> 01:12:02.290
+at some specific points, which
+are called collocation points.
+
+01:12:02.290 --> 01:12:05.110
+And so these are-- again,
+don't read too much into this,
+
+01:12:05.110 --> 01:12:06.450
+but this is just--
+
+01:12:06.450 --> 01:12:09.690
+if you want to open the box
+of how these numerical solvers
+
+01:12:09.690 --> 01:12:11.170
+typically operate,
+they're either
+
+01:12:11.170 --> 01:12:14.190
+implementing a shooting method
+or a collocation method.
+
+01:12:17.290 --> 01:12:19.850
+And we will be
+looking at our example
+
+01:12:19.850 --> 01:12:22.170
+that it also came
+up earlier today,
+
+01:12:22.170 --> 01:12:23.850
+where we are
+essentially optimizing
+
+01:12:23.850 --> 01:12:25.490
+the particle on a line.
+
+01:12:25.490 --> 01:12:28.450
+And we solved this
+analytically, where we basically
+
+01:12:28.450 --> 01:12:32.290
+derived the value of tf.
+
+01:12:32.290 --> 01:12:36.130
+But before getting there, I
+wanted to just briefly introduce
+
+01:12:36.130 --> 01:12:43.650
+in an abstract example how these
+numerical solvers look like.
+
+01:12:43.650 --> 01:12:51.530
+And specifically, we'll be using
+the solve_bvp method in SciPy,
+
+01:12:51.530 --> 01:12:55.570
+where, at a high level,
+the solve_bvp essentially
+
+01:12:55.570 --> 01:13:00.370
+takes in a fun argument, which
+represents the right-hand side
+
+01:13:00.370 --> 01:13:03.530
+of our dynamics.
+
+01:13:03.530 --> 01:13:06.250
+BC, which represents
+the boundary conditions,
+
+01:13:06.250 --> 01:13:09.710
+expressed as the residuals
+of the boundary conditions.
+
+01:13:09.710 --> 01:13:13.570
+So it has to be
+something equal to 0.
+
+01:13:13.570 --> 01:13:17.290
+t, which is like a mesh
+of time, meaning we
+
+01:13:17.290 --> 01:13:21.770
+are discretizing time according
+to some discrete bins.
+
+01:13:21.770 --> 01:13:25.530
+And so this will be just a
+sequence of discretization time
+
+01:13:25.530 --> 01:13:29.770
+steps, which is just a
+series of increasing numbers.
+
+01:13:29.770 --> 01:13:34.110
+z will be our
+aggregated up variable.
+
+01:13:34.110 --> 01:13:39.770
+Essentially here, we will have
+all our states and costates
+
+01:13:39.770 --> 01:13:42.090
+stacked together.
+
+01:13:42.090 --> 01:13:44.450
+And so to see this
+in practice, let's
+
+01:13:44.450 --> 01:13:51.050
+look at a simple examples like
+the one here on the slide.
+
+01:13:51.050 --> 01:13:57.130
+So, again, as I said, what
+these solvers usually take
+
+01:13:57.130 --> 01:14:00.490
+is this solve_bvp
+where we need to define
+
+01:14:00.490 --> 01:14:04.350
+first of all the function, so
+our differential equations.
+
+01:14:04.350 --> 01:14:10.770
+And in the example
+that we're looking at,
+
+01:14:10.770 --> 01:14:14.730
+we have this system
+where we have
+
+01:14:14.730 --> 01:14:19.170
+z1 dot equals z2
+and z2 dot equals
+
+01:14:19.170 --> 01:14:24.050
+negative absolute value of z1.
+
+01:14:24.050 --> 01:14:26.770
+And so here, we're
+just basically stacking
+
+01:14:26.770 --> 01:14:29.790
+those dynamics.
+
+01:14:29.790 --> 01:14:34.850
+So we have-- remember that in
+Python, counting starts from 0.
+
+01:14:34.850 --> 01:14:38.670
+So we basically have that
+z1 dot is equal to z2.
+
+01:14:38.670 --> 01:14:41.610
+So here, we're just saying z2.
+
+01:14:41.610 --> 01:14:46.490
+And then we have z2 dot equals
+negative absolute value of z1.
+
+01:14:46.490 --> 01:14:51.490
+And so we have negative
+absolute value of z1.
+
+01:14:51.490 --> 01:14:56.410
+Now we need to enforce our
+boundary conditions, which
+
+01:14:56.410 --> 01:15:00.730
+are that z1 at time 0 is
+equal to 0 and z1 at time 4
+
+01:15:00.730 --> 01:15:03.490
+is equal to negative 2.
+
+01:15:03.490 --> 01:15:09.130
+And so what we have here-- so
+za is intended for the boundary
+
+01:15:09.130 --> 01:15:11.810
+conditions at the initial time.
+
+01:15:11.810 --> 01:15:16.810
+And so we have za0 equal
+to 0, which is essentially
+
+01:15:16.810 --> 01:15:18.730
+this term over here.
+
+01:15:18.730 --> 01:15:25.770
+And then we have
+z1 4 plus 2 equals
+
+01:15:25.770 --> 01:15:30.930
+0, because we have to express
+them in the residual form, which
+
+01:15:30.930 --> 01:15:32.030
+is what we have here.
+
+01:15:34.570 --> 01:15:38.370
+Now, we construct the t_mesh,
+which essentially is, again,
+
+01:15:38.370 --> 01:15:42.850
+just a number which informs what
+is our discretization of time,
+
+01:15:42.850 --> 01:15:44.950
+in this case, from 0 to 4.
+
+01:15:44.950 --> 01:15:49.330
+And we assume we have
+five bins between 0 and 4.
+
+01:15:49.330 --> 01:15:52.490
+And z_guess is just
+an initial guess
+
+01:15:52.490 --> 01:15:57.810
+of our variables at those times.
+
+01:15:57.810 --> 01:16:00.170
+So what happens if
+we just run this
+
+01:16:00.170 --> 01:16:03.970
+is that basically, we get that
+the differential equations are
+
+01:16:03.970 --> 01:16:04.750
+solved.
+
+01:16:04.750 --> 01:16:09.020
+So this is the plot of
+z1 and z2 over time.
+
+01:16:09.020 --> 01:16:11.620
+So first of all, it
+goes from 0 to 4.
+
+01:16:11.620 --> 01:16:17.100
+And note that z1 starts at
+0, which was our boundary
+
+01:16:17.100 --> 01:16:18.080
+condition here.
+
+01:16:18.080 --> 01:16:24.260
+And it ends at negative 2, which
+was our final time boundary
+
+01:16:24.260 --> 01:16:26.380
+condition.
+
+01:16:26.380 --> 01:16:28.620
+And then note that--
+
+01:16:28.620 --> 01:16:35.760
+so z2 is defined as the
+time derivative of z1.
+
+01:16:35.760 --> 01:16:41.980
+And so when z2 is
+positive, z1 grows.
+
+01:16:41.980 --> 01:16:46.020
+When z2 is negative,
+z1 also decreases.
+
+01:16:46.020 --> 01:16:47.780
+So this is just a
+visual inspection
+
+01:16:47.780 --> 01:16:50.520
+that we did indeed solve
+these differential equations.
+
+01:16:56.300 --> 01:16:58.720
+Yeah, I think I'll take
+some questions now,
+
+01:16:58.720 --> 01:17:00.440
+and then I'll wrap
+this up next time.
+
+01:17:00.440 --> 01:17:01.320
+Yes.
+
+01:17:01.320 --> 01:17:09.380
+Is z2 completely
+[INAUDIBLE] because you
+
+01:17:09.380 --> 01:17:16.380
+take the z2 dot equals negative
+z1 and the [INAUDIBLE].
+
+01:17:21.420 --> 01:17:24.780
+So do you [INAUDIBLE]?
+
+01:17:24.780 --> 01:17:27.820
+In this case, z2
+has to basically--
+
+01:17:27.820 --> 01:17:29.700
+is something that
+always decreases,
+
+01:17:29.700 --> 01:17:32.140
+because the time
+derivative of z2
+
+01:17:32.140 --> 01:17:34.420
+is negative and absolute value.
+
+01:17:34.420 --> 01:17:36.900
+And so if you also
+inspect this visually,
+
+01:17:36.900 --> 01:17:38.000
+this is what is happening.
+
+01:17:38.000 --> 01:17:40.860
+But if you're talking about
+other specific constraints
+
+01:17:40.860 --> 01:17:43.680
+on z2, in this case,
+we don't have any.
+
+01:17:43.680 --> 01:17:45.750
+So it can start and
+end at any values?
+
+01:17:45.750 --> 01:17:46.250
+Mm-hmm.
+
+01:17:48.980 --> 01:17:50.100
+All right.
+
+01:17:50.100 --> 01:17:52.460
+So see you on
+Wednesday while we'll
+
+01:17:52.460 --> 01:17:55.000
+be wrapping this
+computational methods.
+
+01:17:55.000 --> 01:17:57.460
+And then we'll introduce
+direct methods.
+
+01:17:57.460 --> 01:17:59.290
+Thank you.
+

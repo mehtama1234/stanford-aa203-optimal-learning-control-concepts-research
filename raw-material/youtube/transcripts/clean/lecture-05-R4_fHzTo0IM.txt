@@ -1,0 +1,2298 @@
+So welcome to week
+three of AA203.
+So as per our usual road
+map, today, we are-- today
+and tomorrow will be still
+in the open-loop quadrant
+of our road map.
+Specifically last week, so we
+introduced the general concept
+of open-loop control,
+which is to be compared
+to with closed-loop
+control, which
+will be the topic of next week.
+And specifically, in
+open-loop control,
+we highlighted the
+fact that we are
+interested in control,
+an optimal control
+signal or trajectory,
+which is only
+a signal of the initial time t.
+So we are looking for an optimal
+control trajectory, u of t.
+And specifically, within
+this class of methods,
+we discussed that there are
+two macro subcategories,
+indirect methods
+and direct methods.
+Last week, we introduced
+indirect methods
+which, loosely speaking,
+relate with, first of all,
+deriving optimality conditions
+for the infinite dimensional
+optimal control problem
+and solving for those.
+If you wish, the analog
+we usually recalled
+was the one from finite
+dimensional optimization,
+whereby the
+optimality conditions
+were akin to the gradient
+of f equal to 0 conditions.
+Of course, in finite
+dimensional case,
+those kind of
+optimality conditions,
+so gradient equal
+to 0, boil down
+to a system of
+algebraic equations.
+In the case of infinite
+dimensional optimization, which
+is the one you're interested
+in for optimal control--
+these optimality condition boils
+down to differential equations,
+but the high level
+picture is the same.
+And so today, we will be
+finishing our discussion
+on indirect methods.
+And then on Wednesday, we'll
+be looking at direct methods.
+And specifically
+for today, we will
+start by extending the
+optimality conditions which
+we introduced last
+time, which assumed
+that we had unbounded controls.
+And so today, we
+will be extending
+those optimality
+conditions specifically
+for the case of
+bounded controls, which
+is a very common constraint
+to have in practice
+when you're dealing with
+optimal control problems.
+And we will see how this will
+lead towards the celebrated
+Pontryagin's minimum principle.
+We'll then look at various
+different examples.
+Specifically,
+we'll be looking at
+some archetype optimal control
+problems, first of all,
+to see how we can use
+these optimality conditions
+in practice and get
+familiarity with that but also
+from the perspective of
+inspecting the kind of control
+profile that we get out of
+these optimality conditions.
+And then we'll
+conclude this part
+by looking at
+computational methods.
+So we have been describing
+indirect methods over and over
+as optimized then discretized
+methods, again, in comparison
+to the direct approaches
+which are discretized then
+optimized methods,
+and specifically
+the optimized part
+entailed with deriving
+the optimality conditions and
+solving for those differential
+equations, and the
+discretized part related
+with feeding those
+differential equations
+to a numerical
+solver, which is also
+what we'll be looking at with
+the computational methods.
+So just as a
+reminder, so last time
+we concluded by looking
+at this optimal control
+problem where we had assumed
+that we had unbounded controls.
+So, again, to recap
+the notation here,
+we assume that we have a system
+described by the following
+dynamics.
+And the goal is to find an
+admissible control u star, which
+causes the system to follow
+an admissible trajectory, x
+star, that minimizes the
+given cost functional,
+which is a combination
+of a terminal cost h
+and a state cost g that
+is integrated over time.
+And indeed, we assumed that
+both the states and the control
+regions were unbounded.
+And this led into defining the
+following optimal necessary
+optimality conditions, which
+at a high level, entailed,
+first of all, defining the
+Hamiltonian, which is you want
+acted as the analog of
+the Lagrangian function
+in finite dimensional
+case, where
+we basically-- where the
+Hamiltonian is defined
+as the state cost plus a term
+which represents our dynamic f
+times a vector of cost--
+or a function of costates p
+of t, which again represents
+the analog of the Lagrangian
+multipliers.
+And infinite dimensional
+optimization--
+the Lagrange multipliers
+were denoted as lambda.
+Here, we denote these
+costates as p, which
+are indeed a function of time.
+And they're called
+costates because there
+is one costate variable or
+function for every state
+function.
+And so given that we
+define this Hamiltonian,
+we saw how the optimality
+conditions boil down
+to defining the
+set of differential
+equations, the first one
+representing trivially
+our dynamics.
+So if we take the partial
+derivative of our Hamiltonian
+with respect to the costate
+variable p, we get our dynamics,
+so x dot equals f.
+The second two set of
+equations are less intuitive,
+but we saw how the second one
+essentially boiled down to p
+dot equals the--
+minus the partial derivative
+of the Hamiltonian
+with respect to x.
+And then we saw how the third
+set of algebraic equations
+represented a stationary
+condition of the control
+with respect to the Hamiltonian.
+And so essentially,
+that the derivative
+of the Hamiltonian with respect
+to u needs to be equal to 0.
+And we saw how in practice this
+boiled down very mechanically
+towards usually using this
+last set of algebraic equations
+to express u as a
+function of x and p.
+We can then do the
+appropriate substitutions
+in the differential equations,
+which we can then solve.
+To solve these
+differential equations,
+we saw how this generated
+a-- it boiled down
+into having to pinpoint a number
+of constants of integration.
+And we saw how we could use
+boundary conditions to pinpoint
+those constants of integration.
+Usually, the initial boundary
+conditions are given.
+So we know the state at time 0,
+and we know what the time 0 is.
+But the boundary conditions
+at the final time
+depend a bit on the scenario
+that we're looking at.
+And so we saw how we could use
+this master boundary condition,
+depending on whether the
+final time or final state
+is free or fixed.
+For example, if the
+final state is fixed,
+it means that there are
+no admissible variations.
+Delta xf we can do.
+And so all of this
+term has to go to 0.
+And so we're left with this
+other part of the boundary
+condition and vice versa.
+Any questions on-- until this as
+a general recap of where we are?
+And indeed-- so as I
+mentioned before, so far,
+we have assumed that both
+the admissible controls
+and state are not constrained
+by any boundaries.
+But in reality, states
+and control constraints
+are actually extremely
+common in practice.
+So, for example, a classical
+control constraints
+might model that we have
+some limits in our actuation.
+So again, we cannot impose a
+thrust that is infinitely large.
+And also, state constraints
+might be quite common.
+For example, just
+to give you an idea,
+a classical state
+constraint might
+represent obstacle
+avoidance, so where
+we want to avoid some obstacle
+in the physical space.
+Now, for the purpose
+of this class,
+we'll focus on including the
+case of bounds on the controls.
+And we will not
+discuss the case where
+we include the bounds or
+constraints on the states, first
+of all, because the mechanics
+become substantially
+more and more complex and
+also because, in practice,
+indirect methods are not
+really the tool of choice
+to handle constraints on states.
+So what people
+usually do with maybe
+cast the problem as a
+motion planning problem--
+we're abstracting away from
+the dynamics, or at least
+simplifying the dynamics,
+and more geometrically
+solving the trajectory
+optimization problem.
+And then you're
+using those insights
+that you get from these
+more abstract solutions
+to inform your indirect methods.
+So long story short, but
+what we're saying here
+is that we want to
+expand our analysis,
+and we're going to focus on
+the bounds on the controls.
+Yes.
+[INAUDIBLE] last lecture where
+we were using the conditions
+for optimal control, the one
+you have in the previous slide.
+And then we had a t final equals
+some expression in terms of a.
+You were saying that your--
+was that actually-- when
+we solved that problem,
+did we actually find that
+optimal control for-- this
+is what you're saying that
+you could be anything.
+Therefore, tf could be anything.
+And now we're going
+to introduce--
+What setting are
+you referring to?
+In previous lecture, we did
+an example of the t final
+in terms of alpha--
+Yes.
+Did that correspond to some
+particular optimal control?
+Or is that what you're saying,
+that it was unconstrained
+so the control
+could be anything,
+and therefore, the t
+final could be anything?
+No.
+So in that case, we actually
+solved the problem completely.
+So in this slide, I only
+highlighted the final time tf,
+which was a complex thing.
+It's over 1,800 or
+something like that.
+But, of course, once we solve
+for the necessary optimality
+conditions, so once we solve
+the differential equations,
+we have everything.
+So we have x.
+We have p.
+And usually, the controls
+are a function of x and p.
+And so by just substituting
+those x and p that we
+get by solving the
+differential equations,
+we would get the
+shape of our control.
+So here, what I mean
+by bounds on controls
+is that we would have something
+like the absolute value of u
+needs to be smaller or equal
+than 1, something like that.
+Does this clarify?
+Is it possible that
+because we didn't
+have the constraint
+in the other problem
+that for some given
+alpha and b, it
+could result in the
+optimal control that
+violates a constraint?
+Yes, of course.
+And we were not imposing
+this constraint.
+So we are not really
+sure about if we're
+respecting any kind of
+constraint like this.
+Yeah.
+But it will be clear
+in a couple of slides
+because we'll be making
+some concrete examples.
+So now, before showing you how
+the optimality conditions will
+change, I just want to
+give you a small insight
+into why the bounds
+on the controls
+complicate the analysis.
+And the way we'll build this
+intuition is by, as usual,
+referring to the finite
+dimensional case.
+And so recall from
+our discussions
+on finite dimensional
+optimization
+where in order to derive
+the optimality conditions
+of the gradient of f
+needs to be equal to 0,
+we started by looking
+at the increment
+of our function with respect
+to some displacement delta x.
+And we saw how this could
+be well approximated
+by our function f of x plus the
+gradient of f transpose delta x,
+or we call this the differential
+plus some higher order terms.
+And essentially, by
+just bringing the f
+of x on the other side
+of the equation, what
+we get is that the
+increment of our function
+is well approximated for a small
+delta x's by our differential,
+so the linear part of our
+approximation-- of our Taylor
+expansion.
+And we know that for a point x
+to be a candidate local minimum,
+what it means is that for
+any displacement delta
+x that I make,
+this increment has
+to be greater or equal than 0.
+So wherever I move,
+essentially, I'm
+increasing the value
+of my function.
+Now, in the
+unconstrained case, we
+were able to translate this
+expansion so that-- specifically
+that the differential has to
+be greater or equal than 0
+to the fact that in order
+for this to be greater
+or equal than 0, since I can
+take any possible displacement
+delta x both in the positive
+and in the negative direction,
+the only way for this to be
+both greater than, equal than 0
+or less than or equal than
+0 is for the gradient of f
+to be equal to 0.
+So this is essentially what we
+said a couple of weeks back.
+Now, visually,
+what this means is
+that if we have a function
+that looks something like this,
+and assuming I'm not
+considering the boundary
+points of this function,
+the gradient of f equal to 0
+essentially gives us a
+mechanism to isolate candidates
+for local minimums, where
+specifically, in this case,
+one is a local minimum and
+two here are local maximum.
+But still, they're
+candidates according
+to our optimality conditions.
+Now, what happens if we do
+consider the boundaries here?
+So is this a local minima?
+I see some nodding.
+Can you say why this
+is a local minima?
+Yes.
+Because if you move
+anywhere on that curve,
+that's still within
+your boundaries.
+And they're always--
+Exactly correct.
+So in this case, remember that
+here, we're defining minimums
+as whatever movement
+admissible delta x I take,
+I'm increasing the
+value of my function.
+In this case, the only
+displacements I can take
+are ones on the positive
+direction on the right.
+And so for all of these
+displacements, the value
+my function is greater.
+So this is indeed
+a local minimum.
+Same thing for this other
+point here, of course,
+mirrored where the only
+displacements that I can take
+are in the negative direction.
+So you see that when I'm
+considering these boundaries,
+the condition that the
+gradient of f is equal to 0
+doesn't really cut it anymore.
+And so going back to this math,
+what we know in the bounded case
+is that this has to hold.
+But we're not able to do the
+point that these displacements
+can be both in the positive
+or negative direction,
+but they depend on the boundary.
+And so the optimality
+condition in this case
+is that the differential has
+to be greater or equal than 0.
+Now, this complicates a
+series of other discussions
+when we actually want
+to make this actionable.
+But this is the
+difference that it makes
+in the finite dimensional case.
+In the infinite
+dimensional case,
+when we move to optimizing
+to calculus of variation,
+the exact same
+intuition applies.
+And specifically,
+remember that we
+derived the optimality
+conditions, again,
+starting from the variation of
+our cost functional j, which
+we denoted as delta j.
+And in order for
+a candidate, you
+start to be a minimum
+or a relative minimum.
+We wanted this increment
+is greater than 0,
+so exactly as in the
+finite dimensional case.
+Now, what we did last week
+is that we approximated
+this increment through its
+linear term or the variation
+delta j plus some
+higher order terms.
+And then we use the
+fact that these delta
+u's could be arbitrary to
+derive the fundamental theorem
+of calculus of variation.
+That is the delta j, so
+the variation delta j
+needed to be equal to 0.
+So I trust that you're
+seeing the analog here.
+Now, when we talk about--
+let's open a small parenthesis.
+When we talk about variations
+in calculus of variation, so
+what does delta u look like?
+Because a displacement in delta
+x intuitively makes sense.
+But here, we're talking
+about functions.
+So delta u itself is a function.
+So if you want visually say that
+we have a function over time
+and that we have some
+bound in our controls,
+which we denote as u bar,
+meaning that our controls cannot
+go above this bound, our control
+u of t might look something like
+this, where for some time we
+are in the admissible region.
+Then we are still admissible
+but at the boundary.
+And then perhaps
+we could go down.
+So this could be a potential
+control function ut.
+So a displacement
+delta ut in this case
+is a function in itself.
+So it could be any variation
+that I do to my function ut.
+Now, in this part of the region
+where I'm not at the boundary,
+the variations that I can take
+could be both delta u but also
+negative delta u.
+So variations is both
+directions are admissible.
+But in the case where my control
+lies at the boundary, then here,
+I can only take the variation
+in only on one-sided,
+if that makes sense.
+And so what this boils
+down to-- and in general,
+whenever I'm trying
+to optimize some--
+could be final time
+given some constraints,
+it is very common that u--
+for some portion of my control
+profile, I will be at the
+boundary at some point.
+And it turns out that if
+the optimal control lies
+on a boundary, then the
+necessary conditions, similarly
+to how it did in the finite
+dimensional case, essentially
+boils down that the
+variation delta j has
+to be greater or equal than 0.
+Any questions on how we got to
+this update to our conditions?
+Yes.
+Sorry if you mentioned it
+before, but on that lower plot
+that you have there,
+what was the connection
+to that expression to
+the-- you could only
+vary in one direction point?
+Sorry.
+Can you repeat the question?
+So here?
+Yeah, I think I'm confused how
+that would be a situation where
+you could only--
+I think you said something
+like vary in one direction.
+Yes.
+No, it's a good question.
+So remember that a lot of the
+logic that we're following when
+we're doing those
+statements over there
+was that the admissible
+variations were arbitrary.
+And so this allowed us
+to essentially derive
+that the variation of j-- so
+delta j has to be equal to 0
+in the fundamental theorem
+of calculus of variation.
+So here, I was
+trying to visualize
+what does it mean
+for, first of all,
+to be a variation in the
+space of functions, but then
+also, what does it mean for
+a variation to be bounded
+so that it's not arbitrary.
+So in this space of my
+control function, here,
+my variations are
+actually arbitrary.
+So admissible variations
+are arbitrary because I
+could go in both directions.
+Here, when my control
+is at a boundary,
+I cannot displace my function in
+the positive direction because I
+would violate my bounds.
+Yeah.
+And so the only thing
+that I meant here
+is that the boundaries
+essentially break the assumption
+that my variations are--
+that any variation
+is admissible.
+And so this does not allow
+us to make the statement
+that the delta j is equal to 0.
+Yeah.
+Now, this-- of
+course, then you can
+imagine that the
+consequences of this
+on our optimality conditions
+are that we have to strengthen
+our condition on the control u.
+And specifically, these
+are the updated conditions,
+which are referred to as the
+Pontryagin's minimum principle,
+where we are--
+as it is I highlighted
+here on the slide,
+we're essentially
+updating and strengthening
+the condition on the
+stationarity of our control u.
+So everything stays exactly
+the same as the conditions
+that we saw before, with the
+addition that-- or modification
+that before.
+The optimal control u had
+to be a stationary point
+of the Hamiltonian.
+So the gradient of
+h with respect to u
+had to be equal to 0.
+Now we want the
+optimal control u
+to be a global minimizer
+of the Hamiltonian.
+So essentially, the
+Hamiltonian evaluated
+at the optimal
+candidate u star is
+a smaller or equal than
+the Hamiltonian evaluated
+at any other u of t,
+admissible control u.
+Of course, there is
+a jump from the fact
+that the variation
+has to be greater
+or equal than 0 towards the
+updated optimality conditions.
+But the bottom line
+here is, again, we
+want to be pragmatic
+and functional.
+And when we introduce
+bounds on our controls,
+it boils down towards
+updating and strengthening
+some of our optimality
+conditions, which in this case
+entails having to minimize the
+Hamiltonian rather than only
+being a stationary point.
+Any questions here?
+Again, mechanically, we
+provided some insight
+into what is more
+complex the moment
+we consider bounds on controls.
+And then we stated the
+updated optimality conditions.
+So let's now make an example
+to operationalize these updated
+optimality conditions.
+And so specifically here, we are
+looking at the following system,
+which is a second-order
+system with linear dynamics
+and where we want to
+optimize the cost functional
+that is represented as a squared
+cost function or quadratic cost
+functional.
+We are assuming that
+the final time is fixed
+and the final stage is free.
+But note that here,
+now we are introducing
+this bound on the
+controls, specifically
+that the absolute value has to
+be less than or equal than 1.
+When we are-- so these
+type of problems,
+that is, when we are
+trying to minimize
+the squared of our controls,
+so our quadratic cost are also
+known as minimum
+energy problems.
+Yes.
+I have a question
+about the definition
+from the previous slide.
+What does it mean
+to say that you're--
+you know that inequality of
+h of all the stuff stars--
+Yeah, yeah.
+What does it mean for
+u not to be optimal,
+but x and p's will be--
+how can you have a non-optimal
+u of the optimal examples?
+So in general,
+remember that these
+are a set of conditions for any
+candidate triplet of states,
+controls, and costates.
+Now, the first two are
+differential equations.
+Here, we are basically
+strengthening
+the algebraic conditions,
+which essentially
+entail that the controls,
+the candidate control u,
+have to be a stationary point
+for the Hamiltonian given
+x and p.
+And in this, we
+basically strengthening
+that condition, whereby
+you should basically
+see that we are trying
+to minimize this function
+only as a function of u.
+So given some x and p's, we
+are finding the global minimum
+with respect to u of h.
+OK.
+But [INAUDIBLE] just given
+some u as [INAUDIBLE].
+If you want there,
+you could also
+interpret it as u star
+needs to be the arg
+min of h of x star u t star.
+So this is basically saying
+that for any candidate u star t,
+it has to be a global
+minimizer for any other u of t
+that I could replace it with.
+I remember we're
+now highlighting
+that this is a global minimum.
+Was it not the global
+minimum before?
+Before, we only
+needed that u had
+to be a stationary point
+of the Hamiltonian.
+We only enforced
+that the derivative,
+the partial derivative of the
+Hamiltonian with respect to u
+had to be equal to 0.
+Now, we're actually
+enforcing that
+for the strengthened
+condition. u not only
+has to be a stationary
+point, but it
+has to be a global minimum.
+So I know that we
+took a big jump
+in defining this strengthened
+condition, but maybe
+one way in which
+you could relate
+this condition to the one
+we had previously, that is,
+how to relate the global
+minimization of the Hamiltonian
+with respect to u and the
+stationary point condition,
+is that--
+so this condition is essentially
+strengthened because we are
+introducing bounds on controls.
+Now, assume that we are
+loosening these bounds
+on the controls so much.
+So visually, if
+you remember here,
+we had this u bar which
+represented our bound.
+We are increasing it so much
+that is not an issue anymore
+for our problem.
+If we are increasing it
+so much that it's not
+any more an issue
+for our problem,
+then any global minimum
+of our Hamiltonian
+is also a stationary point.
+So there is a link
+here in the sense
+that if our control bounds
+are so loose that they're not
+an issue anymore, then a
+necessary condition for control
+u to be a global minimum of h
+is it to be a stationary point.
+How do you see here [INAUDIBLE]?
+No, this is just
+a mental exercise,
+just to show some link between
+this formulation and the one
+we had previously.
+Did this confuse you even more?
+Oh, yeah.
+Bottom line here is
+that we want to define
+these optimality conditions.
+Now, we are-- compared to the
+one where we had previously,
+we are introducing some
+bound on the controls.
+This bound of the
+controls boils down
+to having to strengthen this
+third algebraic condition.
+Before, it was just
+enforcing that u
+had to be a stationary
+point of the Hamiltonian.
+Now, we want u's to be a global
+minimizer of the Hamiltonian.
+Yes.
+[INAUDIBLE] control
+inputs, we would--
+if my other condition would
+use to find the optimal control
+inputs and then plug those
+into the differential
+equations for x and p.
+But I'm having
+trouble understanding
+how we would optimize over--
+we would optimize
+over the Hamiltonian
+as if we already knew the
+optimal state and x star and t
+star, because I assume
+that the x and the control
+inputs in the
+states are a couple.
+Yeah, it's a great question.
+And it will be clear I
+think one slide for now
+because we're exactly
+solving a problem,
+and so you'll see how we do it.
+The bottom line is
+that obviously, this
+is complicating things because
+before, it was just enforcing
+an algebraic equation
+where we would express
+x as a functional-- u
+as a function of x and p
+and then doing the substitution.
+Now, we will be solving this--
+we will basically have to
+solve an optimization problem
+and derive a solution of
+u as a function of x and p
+and then doing the
+substitution again.
+So mechanically, it
+doesn't change much.
+It's just more complex
+because before, it
+was enforcing an
+algebraic equation.
+Now, it's solving an
+optimization problem.
+Yeah.
+So indeed, we want to approach
+this minimum energy problem
+where now we have some
+bounds on the controls.
+And specifically, again,
+we want to be-- as usual,
+we want to be methodical.
+So we define the Hamiltonian as
+1/2 x1 squared plus u squared--
+and here, I'm omitting a
+dependency on time just to save
+some ink--
+plus the costate times
+our dynamics function, p1,
+p2 transpose x2 minus x2 plus
+u, which we can write as 1/2 x1
+squared plus u squared plus
+p1 x2 minus p2 x2 plus p2 u.
+So this is just our Hamiltonian.
+Now, we want to enforce our
+third condition, that is,
+that u has to be a global
+minimizer of the Hamiltonian,
+so the new condition that
+we just strengthened.
+So we basically want to
+solve this problem here.
+So u star has to be a global
+minimizer of the Hamiltonian.
+Now, if this is the
+Hamiltonian, the only terms
+that depend on u's
+are these two here.
+And so this problem essentially
+boils down to minimizing over u
+1/2 u squared plus p2 u.
+Is the marker strong
+enough this week.
+Not really?
+All right.
+Let's try this other one.
+I love the variance of the--
+yes.
+All right.
+But can you read this one here?
+Anybody that cannot read it?
+All right.
+So notice that this is
+a quadratic function.
+So in order to minimize
+it, we can just
+set the gradient
+of this equal to 0.
+So we can just set the gradient
+with respect to u of this thing
+here, so 1/2 u squared
+plus p2 u equal to 0,
+which essentially means that u
+plus p2 has to be equal to 0.
+And so u star is
+equal to minus p2.
+So now to answer
+to your question,
+you see here we solved
+an optimization problem.
+The output of this
+optimization problem
+is still expressing u as a
+function of only p in this case.
+But in general, it could
+be a function of x and p.
+Now, we have to analyze-- so
+we have-- u has some bounds.
+So we have some bounds
+on the values of u.
+And so we need to
+basically look at
+different case-by-case studies.
+So specifically, we will
+be looking at three cases
+where our bounds are that u has
+to be between minus 1 and 1.
+And so we'll be
+looking at the case
+where this global
+minimizer, minus p2,
+is smaller than negative 1.
+We'll be looking at minus p2
+being between minus 1 and 1
+or the fact that minus
+p2 is greater than 1.
+We'll be looking at
+these three cases,
+because ideally, the optimal
+control will be negative p2,
+but there are some bounds on
+u that we have to respect.
+Visually, if you want to have
+a sense of what is happening,
+this is a quadratic function, so
+something that looks like this.
+The minimum is at negative p2.
+And now we'll be analyzing
+different cases depending
+on where minus p2 falls.
+So the most obvious one is
+if minus p2 is feasible--
+so it falls between
+negative 1 and 1, so, say,
+something like this--
+then the optimal u
+would just be minus p2.
+Now, say that negative p2
+is smaller than minus 1.
+So we are in a situation
+where this is negative.
+Say that 1, 1 is here.
+What would be the
+optimum in this case,
+the optimal u in this case?
+So this is the function
+we want to minimize,
+which is our Hamiltonian.
+We can only choose
+within minus 1 and 1.
+So in this case, where
+would the minimum be?
+Yes.
+It's minus 1.
+Yeah, exactly.
+So in this case, the
+minimum would be minus 1.
+And you can imagine
+a similar argument
+if negative p2 is
+greater than 1.
+So the interval now sits
+on the left of negative p2.
+And the minimum here would be 1.
+So essentially,
+now we have solved
+the third and
+strengthened condition.
+So we found the global
+minimum of the Hamiltonian
+with respect to u.
+And now we basically
+have what we
+need because now we
+have an expression of u
+as a function of x and p.
+In this case, only
+the costates p,
+which we can substitute in the
+differential equations above,
+feed them into a solver
+and get the solution out.
+Interestingly enough--
+and this is, I think,
+one of the strong points
+of indirect methods
+is that regardless
+of the solution,
+so what the exact control
+is, we have basically
+pinpointed the structure of
+how our control looks like.
+So now, let's plot our
+control u as a function of p2.
+Well, we have now is
+that our control in
+between minus 1 and 1.
+So if p2 is between
+minus 1 and 1,
+it will basically look
+something like this.
+On the other hand, when
+it is below negative 1,
+it will be saturating at 1.
+And when it is above 1, it
+will be saturating at minus 1.
+So our control
+profile is essentially
+linear and saturating
+after some point.
+Now, of course, in
+the moment where
+we didn't have those
+bounds, our optimal control
+would just be the linear point.
+Any questions on this?
+Yeah.
+I understand this is the third
+condition of the Pontryagin's
+minimum principle.
+What about the other two?
+Yes, it's a good question.
+So basically, now
+here, we express u
+as a function of x and p.
+The mechanics of this go that
+then we take this expression.
+We substitute it in the other
+two differential equation
+conditions.
+And we get some
+differential equations,
+which we then solve either
+analytically as we did last week
+or as we will see today
+through numerical solvers.
+So this is the best one.
+Yes.
+So here, we basically
+stopped halfway there.
+So we just derived
+the profile of u.
+So it's just the
+strengthened condition.
+If you had to go
+all the way through,
+you would substitute this in
+the other differential equation
+then solve those
+differential equations.
+Here, we just stopped here.
+But it's already said that
+already at this point,
+we can basically inspect the
+structure of our control,
+because whenever we will solve
+those differential equations,
+we will get x's and p's.
+And those x's and
+p's-- in this case,
+only p will allow us to pinpoint
+our actual control, which,
+regardless of the value of p,
+will look like something like
+this.
+How do we use the
+tf [INAUDIBLE]?
+Those will be used to
+pinpoint the-- those
+will be boundary
+conditions, which
+we use to pinpoint the
+constants of integration
+in our differential equations.
+Yes.
+So for the example graph
+that you drew there
+that explained how you found
+conditions, what would--
+is the x-axis-- what axis
+represents what-- which one is u
+and which one-- or
+[INAUDIBLE] misunderstanding.
+Yeah, so this would
+be u, and this
+would be the Hamiltonian
+as a function of u.
+Does that make sense?
+Yeah.
+Any other questions on this?
+We will see three more examples.
+So now we'll go through
+a few of these cases.
+And so indeed-- so
+exactly what we get
+is this control,
+so essentially what
+we derived here on the
+slide-- on the whiteboard.
+As a caveat, Pontryagin
+and colleagues
+derived some additional
+necessary conditions
+depending on the exact
+structure of the problem.
+These are not too
+relevant for us
+for the purposes of
+this class, but I just
+wanted to mention that there
+are some additional optimality
+conditions that were derived.
+Specifically, if the
+final time is fixed
+and the Hamiltonian does not
+depend explicitly on time,
+then the optimality condition
+is that the Hamiltonian-- it
+has to be constant for all
+times between t0 and tf.
+And on the other hand, if the
+final time and the Hamiltonian
+is free and Hamiltonian does
+not depend explicitly on time,
+then the Hamiltonian
+has to be equal to 0
+for all times between t0 and tf.
+Now, again, do not read
+too much into this.
+This is just-- I wanted
+to use this as an example
+to mention that there have been
+developed additional optimality
+conditions which, at
+the end of the day,
+are useful to pinpoint
+even further the structure
+of your solution.
+So there are a number
+of optimality conditions
+which have been
+developed, and these
+are additional ones compared to
+the ones that we showed before.
+And if your problem falls
+within these buckets, then
+the more optimality conditions
+you have, the better,
+because you can
+characterize even
+further what your optimal
+solution looks like.
+So what we'll be doing
+now is that we'll
+be looking at three archetypes
+essentially of optimal control
+problems.
+Specifically, we'll be looking
+at minimum time problems,
+so get to your goal
+as fast as possible.
+We'll be looking at minimum
+fuel problems, where
+the costs will be to
+minimize the absolute value
+of the control effort.
+Again, you could see this as
+the analog of minimizing thrusts
+if you're looking at
+aerospace applications.
+And then we'll be looking
+at minimum energy problems.
+And so starting from
+minimum time problems,
+we'll be looking at the
+case where indeed we have
+some bounds on the controls.
+So the control u has to be
+between some lower bound, Mi
+minus and some
+upper bound Mi plus.
+And we want to drive a
+control affine system.
+So for these examples,
+we will always
+be assuming the exact
+same system, which
+is a control affine system,
+in the sense that it linearly
+depends on the control ut.
+But this may potentially depend
+nonlinearly on the state x.
+And this is because the a and
+b might be nonlinear in x.
+But this still-- so it is
+fairly general, dynamical system
+and formulation, but it does
+simplify slightly things
+because it is linear
+in the controls.
+And, again, the purpose
+of minimum time problems
+is to get to a goal
+as fast as possible.
+In this case, we want to start
+from an arbitrary state x0,
+and we want to reach the origin.
+And the way we encode
+this minimum time--
+the minimization of time
+in terms of a functional
+is that we want to
+minimize j, which
+is just the integral
+between t0 and tf of 1.
+So we're just summing
+time essentially.
+Yes.
+What does i represent here?
+Is it a time index?
+Or is it a different
+possible admissible controls?
+We are assuming that u here
+could be a multivariate.
+And so we have M
+control variables.
+Yeah.
+Oh.
+And then would you
+know if there's
+a comparison [INAUDIBLE]?
+Yes.
+So imagine maybe
+you can accelerate
+in different directions.
+And for each of
+those dimensions,
+you have some limits.
+So let's apply what we
+know to solve this problem.
+So as usual, we want to start
+from defining the Hamiltonian.
+So the Hamiltonian for us
+entails the state cost g,
+which for us is just 1 plus the
+costates times our dynamics.
+And so in this case, it will
+be p transpose a plus b.
+Now, just as a
+notation, here, we
+will express b, the matrix b,
+as in terms of its columns.
+So we can just rewrite b in this
+way, which essentially means
+that this is equal to 1 plus p
+transpose a plus the sum that
+goes from i to m of bi, ui.
+And this is because
+then this product
+here essentially becomes
+the linear combination
+of its columns, essentially.
+And we can rewrite this
+as 1 plus p transpose
+a plus the summation
+that goes from 1 to m
+of p transpose bi, ui.
+So here, we just
+wrote our Hamiltonian.
+Now, as we did before,
+we want to start
+from the third-order optimality
+conditions, which in this case
+and according to the
+Pontryagin's minimum principle,
+it means that we
+want to find u, that
+is, the global minimizer
+of the Hamiltonian.
+So, as usual, u star
+will be the minimum
+with respect to u
+of the Hamiltonian,
+which, again, out of
+these three terms,
+only the last one depends on u.
+And so this essentially means
+that we want to minimize u
+of this summation within
+1m of that term over there,
+so p transpose bi, ui.
+Now, the controls are
+something that we pick.
+And these are independent
+according to our problem
+formulation across m.
+And so minimizing the
+summation is essentially
+equivalent to minimizing
+the individual submission
+terms for all i's
+that go from 1 to m.
+And so this basically
+maps to minimizing over
+ui of p transpose bi, ui for
+all i's that goes from 1 to m.
+Now, does this make sense?
+Yes.
+Now, how do we minimize this?
+So, again, I think it's good
+to consider different cases.
+So specifically, our
+optimal control u star
+will depend on whether p
+transpose bi is positive
+or whether p transpose
+bi is negative.
+So if p transpose
+bi is positive,
+what is the minimizer
+u in this case?
+So we want to minimize this term
+over here as a function of u.
+This will depend on what
+this term in front of u is.
+And so if this term is positive
+and u has to be between Mi minus
+and Mi plus, how would
+you pick u in this case?
+Negative x's.
+Yeah, correct, exactly.
+So Mi And, of course, by
+mirroring, in case p transpose
+bi is negative, what is u here?
+It will be the upper
+bound, so Mi plus.
+Now, are we missing
+something here?
+0.
+Yeah, exactly.
+And the point here is
+that for p transpose
+bi, for optimal controls
+for which p transpose bi is
+optimal triplets, so optimal
+x, u, and p, for which
+p transpose bi's is equal to 0,
+the optimality conditions do not
+give us any characterization
+of any information about what
+the optimal control looks like.
+This is a condition that is
+referred to as singular arcs
+or singular conditions,
+which essentially says
+that the optimality conditions
+for some characteristics
+of our triplet do not
+give us any information
+about the optimal control u.
+Now, for the purposes
+of this class,
+we won't be dealing
+with singular arcs,
+and so this is not a problem
+that should bother you too much.
+But I just wanted to
+use this example as--
+indeed an example
+of the problems
+that could emerge,
+whereby in this case,
+there could be the situation
+where my optimal is actually
+lies in a situation where
+for some portion of my time,
+p transpose bi is equal to 0.
+And so I would not know how
+to characterize my controls.
+Now, there could be some
+much more sophisticated math
+in order to pinpoint the
+behavior of my control
+in this case.
+It is easier for linear systems.
+It becomes much a
+problem-depending solution
+in the moment where you're
+looking at nonlinear systems.
+But I think it's just
+important for you
+to know that there
+might be situations
+where these problems emerge.
+And in a way, this is actually
+where most of the brainpower,
+when you try to use
+indirect methods goes into,
+is tackling these
+ill-conditioned situations.
+For us, assuming
+that the optimal--
+for our optimal
+control problem--
+so the optimal
+triplet x, p, and u
+does not fall into the
+singular conditions--
+we basically have
+determined that our control
+has this form
+here, which is also
+known as a bang-bang control.
+And this is because
+essentially, the control
+has a profile that either
+accelerates at max velocity
+or breaks at its maximum.
+And if you think about what
+we were doing here, that is,
+minimizing final
+time, it makes sense.
+So we have some linear system
+or a control affine system.
+We want to minimize time.
+And so we're not messing around.
+We either go full throttle, or
+we break at our maximum speed.
+Yes.
+So [INAUDIBLE] is equal to 0.
+Does that not necessarily
+mean that it's
+uncontrollable at that state?
+It means that the
+optimality conditions do not
+give us a characterization of
+how the control looks like.
+So remember, all of these
+are optimality conditions
+that allow us to pinpoint
+candidates for optimality.
+And so this means that
+in those situations,
+these optimality conditions
+do not give us information
+on what an optimal looks like.
+Yes.
+What is singular arcs?
+What types of problems
+these are unique to?
+They're not unique
+to specific problems,
+but singular arc or
+singular condition
+refers to those situations for
+which the optimality conditions
+are not able to characterize
+the control essentially.
+It's not new to the
+application of the Pontryagin's
+minimum principle?
+Yes, yes.
+So if you're applying the
+Pontryagin's minimum principle,
+that is, the optimality
+conditions for optimal control
+problems, you might end up in
+situations like these where we--
+at face value, we don't
+have enough information
+to characterize what
+the control looks like.
+Sorry.
+You said this already,
+but I'm just confused.
+Did you get that the controller
+is a bang-bang controller
+from minimizing the Hamiltonian,
+or the problem gave you
+that this is a
+bang-bang controller?
+So, again, here, I think the
+mental mindset you should be in
+is that we are being
+extremely methodical.
+So we have an optimal
+control problem,
+and we follow the recipe.
+So the recipe entails
+defining the Hamiltonian
+and then enforcing the
+optimality conditions.
+The way we mechanically
+go through the optimality
+conditions is by starting
+from the third one, which
+is the, in this case, finding
+use the globally minimize
+the Hamiltonian, which
+leads us to this.
+If we were to continue, we would
+then take this and substitute it
+in the differential equations.
+We would then solve those
+differential equations
+and get the full thing.
+Here, we're, again,
+stopping before the solution
+of the differential equations,
+that is, we only get
+the global minimum
+of the Hamiltonian.
+And this already
+gives us the profile
+of our control signal,
+which, in this case,
+is bang-bang, because we already
+know that we will basically
+be at the maximum control on
+the boundaries of our control
+at all times essentially,
+removing the singular arc
+discussion.
+Yeah.
+And so essentially,
+we showed what
+to do when p transpose
+b is different from 0.
+It is not obvious what we
+do in the equal to 0 case.
+And we discussed this--
+we refer to these situations are
+singular conditions or singular
+arcs.
+And I do-- if you're
+interested in learning more,
+the textbook from Kurt we
+were referring to last week
+is indeed a good
+reference for this
+because it has some discussions.
+OK, so now we move towards a
+second archetype optimal control
+problem, which is minimum fuel.
+So in this case, we
+have the same boundary--
+bounds on the controls.
+We have the exact same
+control affine system.
+But now we are changing
+the cost, whereby we
+start from an arbitrary x of 0.
+We want to reach the
+origin in a fixed time.
+So now, time is fixed.
+It's not a variable
+we're optimizing over.
+And we want to reach the origin
+by minimizing the absolute value
+of the control.
+And these types
+of problems where
+minimizing absolute
+values of the controls
+are usually referred to
+as minimum fuel problems.
+So, again, let's follow
+the usual procedure.
+So we define the Hamiltonian
+which, in this case,
+g for us is the sum
+from 1 to m of ci times
+the absolute value of ui
+plus p transpose a plus
+the sum that goes from 1
+to m of p transpose bi, ui.
+Here, I skipped a
+couple of steps,
+but this is exactly-- because
+the steps are exactly the same
+as the ones we did before.
+So we express b as in form--
+in terms of the columns.
+And then that
+product essentially
+becomes the linear combination
+of the columns of b.
+Is it clear how we got to-- how
+we define the Hamiltonian here?
+So now, we want to enforce
+our optimality condition such
+that the u has to be a
+minimizer of the Hamiltonian.
+And, again, in this case, the
+only terms that depend on u
+are the first and the third.
+And so this boils down to
+taking the minimum over u
+of the sum that goes
+from 1 to m of ci times
+the absolute value of ui
+plus p transpose bi, ui.
+Now, again, the u's are--
+the dimensions of
+u are independent.
+And so we can do
+exactly the same trick
+that minimizing the summation
+is equal and equivalent
+to minimizing the
+individual summation
+term for all i's from 1 to n.
+And so this means that it's
+equal to minimizing over ui's
+of ci times the absolute value
+of ui plus p transpose bi, ui.
+And this is for all
+i's from 1 to m.
+So now, let's write this
+term slightly more nicely.
+So this is equal to ci plus
+p transpose bi times ui
+if ui is greater or
+equal than 0 and is
+equal to negative ci
+plus P transpose bi,
+ui if ui is less
+than or equal than 0.
+And so we want to
+minimize this object.
+And, again, we have to go
+in a case-by-case analysis.
+So if p transpose bi is
+greater than ci, what happens
+is that this term is positive.
+And so what u would I pick here
+if I want to minimize this term?
+[INAUDIBLE]
+Sorry.
+I think I heard a 0.
+Yes, which is correct.
+Did I hear you mean
+something else or--
+no.
+So indeed, it is 0.
+And so indeed-- so in the case
+where p transpose bi is greater
+than or equal to c than--
+greater than ci, this
+is greater than 0,
+which means that, in this case,
+I would pick ui equals to 0.
+If we're still in that case,
+then this other condition
+would also be positive.
+So this term here
+is also positive.
+And so here, the ui that I
+would pick would be Mi minus.
+And so in between these two
+cases then for this case
+here, ui star would
+be equal to MI minus.
+Now we do another case, that
+is, the case where p transpose
+bi is between 0 and ci.
+If this is the case,
+this is still positive.
+So here, I would also
+pick ui equals 0.
+If b transpose bi
+is between 0 and ci,
+this term here is negative.
+And so the ui that
+I would have to pick
+would also be 0 to minimize.
+And so essentially, in this
+case, u star i is equal to 0.
+Now, just by
+mirroring, I-- yeah,
+we would go through the other
+two remaining cases, which
+essentially are that p transpose
+bi are between negative ci and 0
+and the fact that p transpose
+bi is smaller than negative ci.
+So these would be
+the other two cases.
+And here, we would get
+that ui star is equal to 0
+and that ui star
+is equal Mi plus.
+This is just by mirroring.
+And so, again, we
+reached the point
+where we have expressed u from
+the third of our boundary--
+from our necessary
+optimality conditions.
+And we see that we are--
+again, we are assuming we're not
+in the singular arc conditions.
+So we are ignoring the equal
+cases of these examples here.
+But we have, again,
+pinpointed the structure
+of our control profile.
+And this is the one that you
+can see here on the slide
+where ui, depending on the
+value of p transpose bi,
+is essentially either at
+its minimum value or 0
+or at its maximum value.
+And this is known as
+bang-off-bang control.
+And if you think about
+what we're doing here,
+it is quite intuitive, again,
+because this essentially
+describes control
+profiles where I
+want to get as quickly
+as possible into a state
+where I'm essentially
+coasting through my dynamics,
+where I can do
+nothing essentially,
+and then maybe only at the end
+do another impulsive control.
+And this aligns with the
+objective of minimizing fuel.
+Any questions on this example?
+I think here, it's easy to
+get lost in the technicalities
+of solving this minimization.
+But I hope that at a high
+level, what we're doing
+is starting to become clear,
+because we're essentially
+repeating ourselves over and
+over where we are enforcing
+our optimality conditions.
+By defining the Hamiltonian,
+optimizing the Hamiltonian
+with respect to u, this
+gives us a control profile,
+which in order to solve
+the problem fully,
+we would have to then do
+the appropriate substitution
+and solve the
+differential equations.
+But this already gives us a
+way to analyze the structure
+of our control profile.
+Yes.
+Yeah.
+Sorry.
+So when you were
+doing the ci plus pt,
+bi that is just you
+getting that derivative
+and seeing-- that just
+gave me a derivative
+based on whatever the
+absolute value is.
+And then you were looking at
+the different options of pt,
+bi greater than ci.
+I'm a little bit
+confused how then you
+got that they are
+for the minimum based
+on pt, bi greater than ci,
+because if pti is bigger,
+then that's not just
+a positive values.
+And then the [INAUDIBLE]
+of ui is just 0.
+And then so why is it now
+that the minimum [INAUDIBLE]?
+You're talking about this
+case here, these cases?
+Yeah.
+So here, remember that our
+function we're optimizing
+is this one here.
+So it's a function where
+we have an absolute value.
+Yes.
+And so we rewrote it
+according to these two cases.
+Yes.
+Now, we are doing the
+case where p transpose
+bi is greater than ci.
+And we want to find the minimum
+across both of these values.
+So if p transpose bi is greater
+than ci, this is positive.
+And in the case where ui
+has to be greater than 0,
+the minimum would
+be ui equals 0.
+In this other case,
+this is positive.
+ui has to be less than 0, and so
+the minimum would be Mi minus.
+The minimum between the two of
+them is when ui is Mi minus.
+All right.
+Thank you.
+Would this have
+the singular arcs
+where obviously still the
+0 case but also when they
+equal to ci and negative ci?
+Yes, indeed.
+Here, we are assuming that
+our optimal control does not
+fall into these conditions.
+Yeah.
+Conceptually, I'm wondering, in
+the bang-off-bang bang control
+sequence, is there
+something in those terms
+that also weighs total time?
+Or is it purely just
+minimizing fuel?
+If you look at the objective
+that we were doing,
+we didn't have an explicit
+minimization over time,
+but time was fixed.
+Yeah.
+So the third case of the
+minimum energy problem--
+I would just go through
+this quite quickly
+because it's exactly
+the same case as the one
+that we did on our parabola
+and the negative p2
+that we did just after
+the definition of the PMP.
+So I would go through
+this quite quickly.
+Again, here, the cases
+that we're minimizing--
+R squared cost functional.
+And we would be doing the
+exact same steps where
+we define the Hamiltonian.
+This Hamiltonian,
+because of the-- we
+are assuming that R is
+positive definite and diagonal.
+And so because of this,
+everything nicely decouples.
+And so we get the same situation
+where minimizing this summation
+terms is equal to minimizing
+an individual term
+of the summation.
+And so since this
+is quadratic, we
+set the derivative
+of this equal to 0.
+And we will get this optimal
+control, which is exactly
+the analog of the negative p2.
+So this is why I'm coasting
+through this because this
+is exactly the same.
+And so we would get
+our saturating control,
+which is the case we were
+looking at the beginning.
+So we had our control saturating
+when it's out of bounds, linear,
+and then saturating again.
+Yes.
+So we know to pick
+R as a diagonal.
+If that makes the
+calculation straightforward,
+why is that applicable?
+I mean, R-- if you
+think about it,
+it's a term we pick because we
+are defining the costs that we
+want to optimize.
+And so usually, it's good to
+express diagonal cost matrices
+because it makes things easier.
+But we could also pick an
+R that is not diagonal.
+Yeah.
+So I want to--
+so I have only 10 minutes
+left, so I'll skip over this
+and finish it next time.
+But I want to give you a
+hint on computational methods
+and show you how to solve
+these problems in practice.
+And so basically,
+until now, what we did
+is that we used our
+optimality conditions
+to derive our systems of
+differential equations
+and our minimization
+over u condition.
+And then we always stopped
+at the-- either we solve them
+analytically as we did
+last week, or here,
+we stopped at expressing u
+as a function of x and p's.
+And then we said that
+here, we would substitute
+these back in our
+differential equations,
+and we would solve them
+through numerical solvers.
+And at a high level,
+numerical techniques
+to solve two-point
+boundary value problems
+divide themselves in between
+indirect shooting methods
+and collocation methods.
+Now, we won't go
+into the details
+of how these models,
+these techniques
+solve two-point
+boundary value problems.
+But at a high level, you
+should see a shooting method
+as basically a method
+that approximates
+a two-point boundary value
+problem as an initial value
+problem where I take a guess
+of what the initial value is.
+I propagate my system forward.
+I see my error with respect
+to the final condition.
+I will get a residual.
+And then I update my
+guesses iteratively.
+In direct collocation
+methods, on the other hand,
+approximate the system dynamics
+through basis functions,
+for example, polynomials.
+And they enforce the dynamics
+and the boundary conditions
+at some specific points, which
+are called collocation points.
+And so these are-- again,
+don't read too much into this,
+but this is just--
+if you want to open the box
+of how these numerical solvers
+typically operate,
+they're either
+implementing a shooting method
+or a collocation method.
+And we will be
+looking at our example
+that it also came
+up earlier today,
+where we are
+essentially optimizing
+the particle on a line.
+And we solved this
+analytically, where we basically
+derived the value of tf.
+But before getting there, I
+wanted to just briefly introduce
+in an abstract example how these
+numerical solvers look like.
+And specifically, we'll be using
+the solve_bvp method in SciPy,
+where, at a high level,
+the solve_bvp essentially
+takes in a fun argument, which
+represents the right-hand side
+of our dynamics.
+BC, which represents
+the boundary conditions,
+expressed as the residuals
+of the boundary conditions.
+So it has to be
+something equal to 0.
+t, which is like a mesh
+of time, meaning we
+are discretizing time according
+to some discrete bins.
+And so this will be just a
+sequence of discretization time
+steps, which is just a
+series of increasing numbers.
+z will be our
+aggregated up variable.
+Essentially here, we will have
+all our states and costates
+stacked together.
+And so to see this
+in practice, let's
+look at a simple examples like
+the one here on the slide.
+So, again, as I said, what
+these solvers usually take
+is this solve_bvp
+where we need to define
+first of all the function, so
+our differential equations.
+And in the example
+that we're looking at,
+we have this system
+where we have
+z1 dot equals z2
+and z2 dot equals
+negative absolute value of z1.
+And so here, we're
+just basically stacking
+those dynamics.
+So we have-- remember that in
+Python, counting starts from 0.
+So we basically have that
+z1 dot is equal to z2.
+So here, we're just saying z2.
+And then we have z2 dot equals
+negative absolute value of z1.
+And so we have negative
+absolute value of z1.
+Now we need to enforce our
+boundary conditions, which
+are that z1 at time 0 is
+equal to 0 and z1 at time 4
+is equal to negative 2.
+And so what we have here-- so
+za is intended for the boundary
+conditions at the initial time.
+And so we have za0 equal
+to 0, which is essentially
+this term over here.
+And then we have
+z1 4 plus 2 equals
+0, because we have to express
+them in the residual form, which
+is what we have here.
+Now, we construct the t_mesh,
+which essentially is, again,
+just a number which informs what
+is our discretization of time,
+in this case, from 0 to 4.
+And we assume we have
+five bins between 0 and 4.
+And z_guess is just
+an initial guess
+of our variables at those times.
+So what happens if
+we just run this
+is that basically, we get that
+the differential equations are
+solved.
+So this is the plot of
+z1 and z2 over time.
+So first of all, it
+goes from 0 to 4.
+And note that z1 starts at
+0, which was our boundary
+condition here.
+And it ends at negative 2, which
+was our final time boundary
+condition.
+And then note that--
+so z2 is defined as the
+time derivative of z1.
+And so when z2 is
+positive, z1 grows.
+When z2 is negative,
+z1 also decreases.
+So this is just a
+visual inspection
+that we did indeed solve
+these differential equations.
+Yeah, I think I'll take
+some questions now,
+and then I'll wrap
+this up next time.
+Yes.
+Is z2 completely
+[INAUDIBLE] because you
+take the z2 dot equals negative
+z1 and the [INAUDIBLE].
+So do you [INAUDIBLE]?
+In this case, z2
+has to basically--
+is something that
+always decreases,
+because the time
+derivative of z2
+is negative and absolute value.
+And so if you also
+inspect this visually,
+this is what is happening.
+But if you're talking about
+other specific constraints
+on z2, in this case,
+we don't have any.
+So it can start and
+end at any values?
+Mm-hmm.
+All right.
+So see you on
+Wednesday while we'll
+be wrapping this
+computational methods.
+And then we'll introduce
+direct methods.
+Thank you.

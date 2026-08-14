@@ -1,0 +1,1830 @@
+Okay. So, uh welcome to another week of
+uh AA 203. Um so, starting from our
+usual road map in the last week or so,
+we have started basically we finished
+the optimal uh base uh optimal control
+part of the class and we moved into the
+top half which basically relates with
+learning based methods for optimal
+control. Uh last week we focused a lot
+on uh well on Monday we focused on more
+classical methods to learning based
+control. So we looked at things such as
+system identification and adaptive
+control. And then uh on last week
+Wednesday we started to introduce the
+general framework and terminology for
+imitation learning and reinforcement
+learning and kind of starting to build a
+bit of a mental model about how to see
+different methods and different
+algorithms within these two uh subasses.
+And so specifically today, we'll then
+zoom into the specifically imitation
+learning section of of what we discussed
+on uh on Wednesday.
+And so if you remember, we basically
+introduced imitation learning as uh uh
+basically a an umbrella term that
+encompasses broadly speaking kind of two
+main classes of approaches. We started
+from uh behavior cloning as essentially
+a mechanism where we want to have
+access. So we take we always assume we
+have access to a data set of um couples
+of states and controls which we
+collected by observing some expert uh
+kind of executing some demonstrations in
+the real world for example.
+And then in behavior cloning we want to
+use this data set to uh kind of directly
+learn a policy uh or approximate the
+policy that is being used by the expert.
+Uh concretely the object that we wish to
+learn will be something along the lines
+of a policy pi of theta uh for example a
+parameterized policy with some
+parameters theta that is essentially
+representing a distribution over
+controls given states and we want to
+approximate this from the examples that
+we get in our demonstrations.
+We then also uh loosely introduce
+inverse reinforcement training whereby
+in this case the objective is to
+approximate the reward function or
+objective that is optimized that we
+think is being optimized under the hood
+by the expert itself.
+And specifically here the object of
+learning will be to approximate or
+estimate a reward function R that is
+basically a measure that uh maps uh
+couples of states and controls to a
+scalar measure of success.
+And so for today kind of co coherent
+with this with this general road map
+we'll be uh discussing behavior cloning
+first we'll be introducing a number of
+common pitfalls uh which we already
+slightly hinted to in uh in our last
+lecture on Wednesday and specifically I
+would say um starting to look at
+traditional mechanism for which these
+pitfalls are being addressed
+um and then we'll have a brief mention
+on other paradigms that fall within the
+behavior cloning
+um hat and then we'll look at inverse
+enforcement learning.
+So just to uh briefly recap in one slide
+the lecture from Wednesday we started by
+seeing behavior cloning essentially as
+supervised learning of behavior right so
+we introduced the general notation of
+supervised learning whereby we
+essentially want to learn a parametric
+mapping that maps some inputs x to some
+outputs y. uh kind of uh prototypical
+example would be the classification
+problem where we want to map some image
+representation. For example, an RGB
+image, an RGB that represents the image
+of a cat to the its label with of the
+respective object or thing that is
+actually being represented in that
+image. And the way to do this is by
+taking a data set of pairs of of this
+mapping that we want to estimate and
+then learn it through some sort of uh
+loss minimization.
+In behavior cloning, we want to do
+something very similar to some extent
+because we want to collect a data set of
+these expert demonstrations and exactly
+as we would be doing in supervised
+learning, we'd want to train a policy
+that is this mapping that uh optimizes
+some metric of performance. And so we
+saw how kind of the general skeleton of
+behavior cloning algorithm loosely
+speaking really looks like something
+like take supervised learning and now
+applied to trying to estimate behavior.
+So but but the the question here is is
+this really it right does this work or
+are we done and in practice as you can
+imagine uh most of the times this is not
+it in the sense that there are a number
+of common pitfalls and failure modes
+that could happen. And so today we'll
+basically be looking at strategies to
+address these failure modes. And I would
+say look at different techniques that uh
+kind of frontier approaches specifically
+in learning based control and robotics
+are are currently doing to um to make
+these techniques work.
+Okay. And so let us start from
+introducing the common pitfalls that
+that could emerge. And the first one is
+the one of uh compounding errors.
+Specifically uh we mentioned multiple
+times how in statistical learning theory
+kind of a classical assumption that is
+made is that data is independent and
+identically distributed or iid for
+short. Loosely speaking this means that
+we are taking some um distribution of p
+of x which we wish to approximate. To do
+this we only have access to samples or
+realizations of that distributions x1 to
+x3 here on the slide. And we want to
+learn typically a parametric model that
+approximates this P of X that we carry
+in learning. And we saw that again
+generally speaking in statistical
+learning theory we assume that the
+samples and realization that we observe
+are IID from the distribution that we
+care about in when trying to learn
+behaviors. However, kind of predictive
+controls influence the future states
+that we observe. And we loosely and
+briefly discussed this idea of the fact
+that since we are agents within our
+environment, there could be this problem
+and issue of compounding errors whereby
+if our policy is making even very small
+errors, it could compound over time that
+is throughout the uh temporal kind of
+unrolling of our trajectory which lead
+to making bigger and bigger errors over
+time.
+Slightly more formally uh kind of theory
+here formalizes this problem as the fact
+that the state distribution induced by
+the expert policy and the state
+distribution induced by the learner that
+is the policy that we we wish to to
+learn essentially diverge and are not
+the same and this is in in theory
+referred to as the coariate shift uh
+problem. So to make the notation on the
+slide more concrete when we say the
+distribution the state distribution are
+under the expert that is P of expert
+of X. What we're essentially saying is
+for example the probability of the
+initial state times the product T that
+goes from one to T of the expert policy
+you. So the probability over the action
+induced by the expert policy given the
+state xt times the uh transition
+function of our environment.
+Right? So this is basically encodes the
+probability distribution of all the
+states that we could observe by
+following the policy or the distribution
+of our actions induced by the expert.
+Very similarly kind of the
+state distribution under our policy P of
+U pi theta would essentially be designed
+ex defined exactly the same where here
+we just used the distribution over
+controls induced by the policy that we
+are uh that we're currently learning
+and there is so there's this I would
+definitely advise you to check out this
+this reference here on the slide
+um because there is theory that
+basically shows that um the probability
+of making mistakes
+um under our policy essentially grows
+quadratically with the length of the
+trajectory. So here assuming that there
+is a probability epsilon to make a
+mistake in our prediction from our
+policy uh then the uh probability of
+making mistakes grows quadratically with
+the length t of our trajectory.
+Of course here the error kind of assumes
+that we are working in a discrete world
+where we have to pick between one of n
+possible actions and epsilon is the
+probability of making an error in that
+prediction but there is a lot of theory
+that goes about formulating this co
+shift problem more theoretically but I
+hope the intuition here it's clear yes
+or
+uh the trajectory itself are
+independent. Yes,
+&gt;&gt; you have
+&gt;&gt; this is a good question. So in general
+for now and I would say throughout the
+rest of the this lecture we're assuming
+that you're interested in learning the
+feedback policy. So there is a mapping
+from the instantaneous state XT to the
+instantaneous control UT. And our data
+set therefore is just a collection of
+tupoles of this realization.
+Okay.
+And so this is for the compounding error
+uh problem. A second problem is the one
+that here I refer to as multimodel
+behavior. [snorts] And specifically uh
+in many tasks uh there is this uh kind
+of you know there is this
+characteristics whereby there are there
+could exist multiple and equivalent
+solutions to solving a control task
+right. So take the pictorial example of
+flying a drone past a tree here on the
+slide. uh if you know we were to be
+human experts or human that are kind of
+joysticking this uh drone around we
+would be in a situation where you know
+flying to the right or to the left of
+the tree would be equivalently good to
+some extent
+and the problem here arises in when we
+want to take this data set of collected
+demonstrations from for example human
+rollouts
+and use these data sets to kind of
+compile or learn a policy that tries to
+approximate uh this behavior
+slightly more formally. The problem here
+is that we find ourselves in our
+situation whereby the uh policy that we
+wish to estimate is actually
+representing a multimodel distribution
+over controls given states.
+For example, like in this case, we might
+want our policy p of theta to perfectly
+approximate this bodel distribution over
+here.
+And the problem here emerges in the
+moment where we for example try to
+estimate things or kind of fit this
+distribution through pretty standard
+metrics for example mean squared error
+minimization. And the point is that if
+we were to take uh say a neural network
+and try to fit our data through mean
+squed error minimization we would be
+essentially learning a policy that tries
+to uh predict exactly the mean of our
+distributions. Right? So
+what we're saying is that we are in a
+situation where we would like to
+approximate a ground truth behavior uh
+uh distribution that looks something
+like this. That is my model. But if we
+were to use mean squed error as our loss
+for a model for for data fitting, we our
+policy would then be uh incentivized to
+learn something that correctly predicts
+the mean of this multimodel
+distribution. And you see how in this
+case this is actually probably the worst
+thing that we could do because it fits
+exactly in the middle because it tries
+to kind of balance out errors between
+both both modes.
+And this is actually a problem that is
+extremely common in practice. For
+example, just consider where we are
+collecting data from from multiple
+experts which might behave differently
+in the same condition. And so this is
+something that we will have to uh to
+take care of.
+Does this make sense? any any questions
+on this?
+Okay.
+And so for the rest of today, we'll
+basically be building uh what I'm
+calling here a useful mental model for
+it tries to for basically developing
+techniques that are remedies for for
+these issues. Specifically, we'll be
+looking at um algorithms which basically
+try to address these problems
+specifically or at least from an
+algorithmic standpoint. We'll be looking
+at uh ways in which we could address
+these problems from a data collection uh
+perspective and then we'll see we'll be
+seeing how we can use expressive model
+classes to better represent the
+distribution of our data. And so
+specifically the first two bullet points
+here on the slide that is targeted
+algorithms and uh data collection will
+be focusing on the compounding errors um
+kind of issue while the third one will
+focus on the multimodality of our uh
+policy in our data.
+Okay. So let us start from the uh first
+one. algorithms that try to specifically
+devise methods to to target these these
+issues
+and um very important aspect which I I
+want to highlight is the is essentially
+the the value that there is in
+corrective data. So until now we're
+basically discussing a situation where
+we are collecting data from an expert
+which and we are always kind of hinted
+at this uh fact where we basically want
+to compile the performance of our expert
+into a learned model a parametric
+function and we always said that the
+performance of our model is at least at
+the kind of ideally as good as the
+quality in our data. And so kind of it
+it probably came as a as a following
+thought. The fact that we want to keep
+our data kind of the best possible,
+right? So we want to collect
+demonstrations that are exceptionally
+good in solving the the task. The
+problem is that if we do so, most likely
+we'll be uh ending up with a data set
+that is extremely narrow around a
+specific kind of behavior in solving
+that task.
+And if you if you wish kind of this kind
+of leads to the
+um uh kind of a counterintuitive fact
+because in general if we want to apply
+kind of behavior cloning um to our
+learning based control problem.
+There is a lot of value in leveraging
+examples of errors u that have been
+taken by the experts and ways to
+recovers from those errors because in
+practice whenever we deploy our policies
+in the real world the policy will be
+making some errors and so if we have an
+extremely perfect data with no errors
+whatsoever in those states where the
+policy actually makes errors it will
+have no clue of how to uh recover from
+those errors. And so there is this
+paradox whereby learning from a broader
+set of trajectories that makes some
+mistakes but also shows ways to correct
+from these mistakes is in general more
+valuable than learning from a narrow set
+of perfect demonstrations.
+And one way to kind of automate this um
+labeling and collection of corrective
+data is uh through an algorithm is known
+as dagger. Um and specifically dagger is
+a well-known method to address this
+coarate shift problem through what are
+called data aggregation techniques which
+is also where the the name comes from.
+And I think it's probably useful to go
+through um a pseudo code of uh how at
+least the plain version of Dagger looks
+like and then we uh we discuss this a
+little bit more in detail. And
+specifically in Dagger we start from an
+initial data set of expert
+demonstrations things that we have
+collected by running some policy in the
+wild or observing some human. We'll have
+an initial policy pi theta superscript
+one where here the superscript refers to
+the number of iterations of the dagger
+algorithm. So dagger will be an
+iterative algorithm where we are
+iterating from one to n iterations and
+so here the superscript refers to the
+policy that is derived at iteration i.
+So um indeed so what Dagger does is we
+start our iterations and for each of
+these iterations we will be collecting
+some trajectories taile uh which
+basically represent the uh couples of
+states and controls which we observe by
+letting the learner policy interact with
+our environment. So we have a given
+policy, we let it interact with the
+environment and we collect data from
+these rollouts.
+Um what we want to do is then we want to
+take these states that we have visited
+during our rollouts and in these states
+we want to query our expert for
+reabeling. that is we want to take those
+same states XT and for those states we
+want to re label the control that was
+originally uh taken from the learner
+with the control uh from the expert.
+Once this is done we have a new version
+of our data set the superscript I and we
+aggre aggregate it with the original
+data set which we had for for learning
+and so this is where the aggregation
+part comes from. We then take this
+aggregated data set D and use this to
+train a new version of our policy.
+Right? So maybe slightly more visually
+we are saying that we have um a policy
+pythea one given to us. This could have
+been given to us by an offline data set
+that we have and trained on this.
+&gt;&gt; [snorts]
+&gt;&gt; We then have our environment which might
+look like something where we want to go
+from some starting points to some goal
+points
+where we are seeing examples of rollouts
+of our policy
+and and and this leads to a data set of
+states and controls where the controls
+are the ones uh that the learner
+executed.
+So we can then use these this data set
+to basically relabel those controls
+with controls given by the expert.
+This creates a new data set the
+superscript I which we aggregate it to
+the previous one and train on the
+updated uh data set. So why is this uh
+useful? The problem the like the point
+here is that by doing so we are directly
+querying the expert to reabel states
+exactly in those states where uh that
+are currently being visited by the
+learner itself. Right? So we were
+talking about this discrepancy between
+uh the distribution of a states induced
+by the learner and the one induced by
+the expert. In this case, we are
+explicitly querying the expert in those
+states that are that would be followed
+and are essentially drawn from the state
+distribution under the learner.
+Yeah.
+&gt;&gt; Are you justing there as a successful
+control and then reabeling it as an
+expert and retraining that now that as
+the expert or training it from your
+original expert? Um uh so here we are
+assuming we have access to an expert
+that we can query. Uh this could be any
+policy that we think is good enough for
+us to be an expert and we are using this
+to basically generate new label data for
+us in some way.
+&gt;&gt; Does it make does it answer your
+question?
+&gt;&gt; Yeah.
+&gt;&gt; Yes. In practice, if the [clears throat]
+source of the expert policy is a human,
+is this kind of like a discrete process
+where you would have to like step
+through because if you want the exact
+same states, do you have to like step
+through and like not continuously
+provide input but like go like state to
+state to state and provide the screen
+input and then that is the releabeling
+process.
+&gt;&gt; Yeah, it's a great question because this
+is like if you wish like one version of
+this is like you would see dagger v
+0ero, right? So this is the base version
+of dagger. There is an extension to this
+which is referred to as human gated
+dagger. Uh whereby which will be in the
+next slide which where basically here we
+would be picking a specific point in our
+trajectory where we think the maybe the
+learner made the mistake and here we
+assume we have a human that basically
+intervenes and generates a new full uh
+kind of continuation of that trajectory.
+Concretely kind of you have a robot arm
+that is doing some task. uh you're
+physically looking at the arm while it's
+doing things. But here you're seeing
+that maybe it's you know it's spilled
+over something and so you're taking over
+and from there you're maybe
+teleoperating the arm to generate a new
+trajectory
+&gt;&gt; and in that case you would be limiting
+the augmented data set to have the exact
+same states as the original and you
+allow yourself to like explore a
+different part after the mistake.
+&gt;&gt; Yeah. Which in a way um this is a nice
+segue because if you think about it this
+is only one iteration of the algorithm
+but if you repeat this then you're
+basically you will be having rollouts of
+a new policy pi 2 which has a different
+state distribution right and so here you
+will be covering new set of states so
+kind of very high level kind of dagger
+is an automated way to take your given
+policy you uh let it interact in your
+environment and you basically expose
+failure modes instead, [snorts] right?
+You basically follow what the policy
+will be doing and you correct those
+failure modes. Once you've done this,
+you might be maybe creating new failure
+modes or you might be just observing new
+failure modes and you keep iterating
+this process.
+Okay. And so essentially kind of Dagger
+really operates as a form of iterative
+uh supervised learning because we're
+using supervised learning as this inner
+learning component but we're really
+creating this iterative scheme where we
+query the expert um from in order to
+reabel states that are based under
+evolving versions of the policy itself.
+And if you think about it kind of at a
+high level, what we're saying here is
+that we are you can see Dagger as a data
+efficient way of querying the expert
+because we we're saying we want to use
+the expert as a mechanism to
+uh generate corrective behavior when the
+policy fails. And in this way we are
+directly probing the expert exactly on
+those states that are visited by the
+policy where it fails. Right? So here we
+are basically following the state
+distribution under the policy seeing
+where where it failed and reabeling
+which is a pretty data efficient way of
+collecting these uh corrective
+behaviors. kind of the other extreme
+would be that in order to collect all
+[snorts] the corrective behaviors that
+you care about, you would have to run
+this maybe on kind of all the possible
+states that your policy uh would ever
+encounter and re label everything which
+is extremely expensive.
+So this is in a way pretty data
+efficient but quering the expert
+depending on your scenario is in general
+something very expensive. So again
+depending on the task dagger might or
+might not be something feasible.
+And so here we looked at the naive
+version of dagger but there are
+different ways that uh you can maybe
+modify the basic algorithm. One could be
+uh confidence-based methods whereby here
+we are quering the expert on basically
+all the states that the policy visits
+during those rollouts. But we could
+maybe select some metric of uncertainty
+from the learner itself and only query
+the expert on those states where the
+learner was particularly uncertain about
+its answer. The other mechanism is also
+as your colleague was referring to is
+this human gated dagger where we have
+some humans that are kind of supervising
+the operation of uh our learner and
+directly intervening uh when there is a
+mistake.
+&gt;&gt; Yes. So if you don't is the benefit of
+this like trying to make like a lighter
+weight policy because you have an expert
+policy already but you're not using it
+for some reason. So this makes it like
+runs faster online
+&gt;&gt; for example that would be one way. So I
+would say
+in general like if you kind of zoom out
+in all the methods that we're seeing in
+this class I would say all of these are
+relevant although definitely there is
+being a shift towards a learning based
+or more end to end uh architectures.
+Um the point is that kind of getting
+reliable data for these end-to-end
+architecture nowadays I would say even
+in frontier models typically relies on
+some more classical approach to generate
+labels for those and so in some way you
+could see this as a way of distilling
+some maybe extremely expensive you know
+uh indirect method for optimal control
+into a fast uh neural network that can
+approximate it. Yeah.
+Okay, any questions on on Dagger before
+before me we move on?
+Okay,
+so we saw how Dagger is one example of
+an algorithm that directly tries to
+target these uh collar shift issues. uh
+let us look at how we could do this
+through uh data collection and I want to
+do this through uh two case studies and
+going through two examples of this. So
+in this case this was I think one of the
+early works from Nvidia on autonomous
+driving. I think it dates back around um
+2016.
+What they basically try to do is uh
+learn uh
+uh a neural network uh for um basically
+deciding uh kind of the steering angle
+of the car uh while receiving as input
+some uh images coming from some uh uh
+cameras that were mounted on on on board
+the the car.
+And
+let's see. Yeah. So basically in this
+study which again was uh now more or
+less 10 years ago what you would see
+they started from something which was
+clearly not working uh also maybe being
+a little bit dangerous. But then the
+point of this work is that they started
+collecting more data for uh for
+basically more demonstrations of humans
+driving cars and recording these couples
+these tupils of images and steering
+angle decisions. And they at the end
+reached a performance that was to some
+extent impressive especially at the time
+and showed some pretty consistent uh
+behavior. [snorts]
+The point is that of course this was
+pretty uh exciting at the time. Nowadays
+we have made clearly some leaps from
+this. uh but one thing that I want to
+highlight from this work is um something
+that you will observe if you read
+through that paper and look at the
+specific framework and architecture that
+they uh they designed
+specifically again as we were saying the
+overall problem was taking some camera
+images here they had three kind of a
+center left and a right camera uh they
+have some recorded steering wheel angles
+from human drivers and the overall goal
+was to learn a convolutional neural
+network to basically basically learn to
+you know approximate and predict those
+steering wheel angles from the images
+here I'm glossing over this box because
+this is exactly the I think interesting
+part from uh data collection uh
+technique and specifically data
+augmentation technique so again uh kind
+of pictorially this is the kind of
+situation we are in we have a car we
+have our three uh cameras and we have
+one recording of a steering wheel angle
+right so the one that the human actually
+um executed.
+However, if we think about it a little
+bit more closely, the two side cameras
+could be used as an example of the car
+slightly drifting off the center of the
+lane. [snorts] And we could use these
+observations to fictitiously augment the
+data set with some steering angles that
+that are actually seeing this camera uh
+camera image and then correcting from
+this camera image to kind of recenter
+itself in the middle of the lane. Right?
+So in general correcting data set of
+driving mistakes is something that is
+very dangerous and expensive. You don't
+want to be collecting on purpose
+corrective m data where you're driving
+off the road and then going back again
+on the road. And so in this work they
+actually came up with this pretty neat
+trick whereby they are augmenting the
+data they collect from human drivers to
+fictitiously generate these corrected
+data by taking the uh side cameras as if
+they were front cameras and manually
+adjusting the steering angle for uh that
+camera.
+And so this is I think an example of how
+you could try to embed this corrective
+uh corrective behavior not from a
+perspective of the algorithm but from
+the perspective of data collection and
+augmentation.
+A very similar idea um um was also
+presented in this work from the
+University of Zurich where here uh the
+the goal was controlling some uh
+quadrotors to indeed um navigate some
+hiking trails I think in the Swiss ops
+or mountains um from camera images. The
+setting is very very similar to some
+extent. We have some image camera
+specifically a front camera view and we
+want to output this time a discrete
+distribution over actions that is go
+straight, turn left, turn right
+and
+once again very similarly what you see
+in this work is something that really
+resembles the previous work from uh
+Nvidia where here you had the
+researchers actually wearing this fancy
+headband uh with I think three GoPros
+mounted on
+and collecting data by literally walking
+uh over hiking trails and specifically
+labeling um the [snorts] actions
+according to those same augmentations.
+Right? So here for the frontal camera
+they were labeling it go as a go
+straight action. For the left one they
+were labeling it as a turn right and on
+the right one they were labeling as a
+turn left action.
+[snorts]
+Indeed, here's the the fancy headlamp.
+And uh uh and so you would see that this
+kind of works in practice. Uh and so
+they got something that was at the time
+pretty reliable in in navigating those
+hiking trails.
+Okay. And so here we saw two examples.
+But I think the main message that I'm
+trying to uh bring along is this idea
+that we in trying to address co shift
+from a data perspective, we want to be
+intentional with data collection, right?
+And specifically we want to
+intentionally add mistakes and
+correction for those mistakes in in our
+data.
+Um so this could be as in these examples
+where we want to uh add some fake
+demonstration of corrections. this
+example of the side cameras or from an
+algorithmic perspective we want to use
+algor algorithms that automate the
+collection of this corrective data as in
+[snorts] as in dagger.
+&gt;&gt; Yes. on the prior example the drone
+[snorts]
+made me wonder um when you're collecting
+this data to train whatever model is
+being used is it possible
+to train like in the case
+[clears throat] of the drone moving
+training based on the decisions that are
+being made like this is why you go left
+and not the tree while also having it
+not be relying on the dynamics that are
+inherent to train data like the way that
+a human moves with something on their
+head
+down
+suddenly fly up two feet higher than you
+are which for a drone you know that
+might be advantageous or something take
+advantage of things you can't do but if
+they're trying data that comes from
+something that's constrained to like
+human dynamics
+&gt;&gt; is there a way to detach the [laughter]
+behavior of the drone from the dynamics
+necessary sort of built into the data
+that's trained on
+&gt;&gt; I would say um not from the perspective
+of imitation learning. So in imitation
+learning we are
+again at face value we are trying to
+approximate and imitate the behavior of
+some expert um and that's about it. So
+we don't we don't really want to go
+beyond what the expert is able to do. uh
+and we typically won't have access to
+data that is beyond what the expert is
+is able to uh experience. So in general
+I would say no. Uh this will probably be
+something uh that will be extremely
+relevant from the perspective of
+reinforcement training where there we
+are not trying to approximate some
+behavior that is being shown to us by
+some experts but we want to interact
+with that environment maybe a simulator
+of um of the real world and experiment
+with different strategies. Yeah. Yeah.
+[clears throat]
+Okay. And so um so we covered it uh we
+covered algorithms, we covered uh data
+collection. Let us look at uh using
+expressive models uh to address or
+partially solve um the issue that comes
+with multimodel behavior.
+And specifically we'll be looking at two
+main classes of of methods. The first
+one will be including history of
+observations. Uh we'll see slightly uh
+we'll see shortly in the next slide or
+using expressive uh function classes to
+better approximate and capture the
+multimodality in our data.
+So a brief mention on um using history
+of observations is that until now and
+you know whenever we are we framed the
+MDP problem um theoretically we always
+assume that the state is a perfect
+representation and like you know
+capturing all previous history in um in
+our system. In reality, especially if we
+are working with, you know, images, we
+won't be dealing with the ground truth
+full state representation of our system,
+but we will most likely be dealing with
+observations of the system, right? Which
+are only partial informations or partial
+observations of the actual system. And
+so in this case um there is benefit uh
+sometimes depending on the applications
+on rather than defining a policy as a
+distribution over actions given the
+instantaneous observation uh xt in
+adding a sequence of past observations
+to our context. Essentially
+in the case of behavior cloning, this is
+particularly relevant in the case where
+we're maybe collecting data of these um
+to both states controls from humans
+demonstrations. Because if you think
+about it here, if we try to learn this
+uh policy from data, we are basically
+assuming that the human that has been
+collecting data for us given the same
+observation will always behave in the
+same way. Right? On the other hand,
+history could be an interesting
+confounding factor to basically add to
+our context to differentiate between
+different observations.
+Again, let's make a concrete example.
+Say that we our X for us is just the
+front camera of our car and U is our
+steering angle. Then if X is only one
+snapshot of the current history, we
+basically have no idea of maybe the
+speed of our car or any other relevant
+measure of uh that could be useful for
+decision- making and we are implicitly
+assuming that given the same uh kind of
+front car camera image we would be
+always behaving in the same way. On the
+other hand, if we assume to have a
+history of previous camera images, then
+we might be capturing more useful
+information for for decision- making.
+In practice, um, this is typically
+handled through basically your favorite
+sequence model where could be
+transformers, could be recurring neural
+nets or something of the sort where, uh,
+the policy then basically be becomes
+something that takes a sequence of
+states or observations and outputs the
+uh, next action. So again, pretty uh,
+pretty high level discussion, but I
+think it's worth worth mentioning in
+practice. uh I would say also my
+experience with uh with including
+history in defining uh the behavior
+policies is usually very empirical. So
+you you will be doing some sort of
+ablation where you're maybe uh trying
+out the training your policy on your
+same data set with uh varying number of
+uh history time steps in the past and
+seeing what works best.
+Okay. Um but let's let us move to I
+think something that is more uh
+fundamental which is the this issue of
+wanting to capture the full data
+distribution. Right? So we made before
+this example of the drone flying past
+the tree and we could have these two
+equivalent solution modes or behavior
+modes for our policy.
+And so the goal for us rather than
+fitting this mean value of this
+potentially multimodel distribution what
+we want to do is represent the entire
+distribution.
+And to do so uh let us briefly revisit
+what it actually means for um [snorts]
+for us to parameterize or deise a
+parametric function to express full
+distributions. And this will loosely
+depend on whether the distribution that
+we want to um output is discrete. So
+something like a categorical
+distribution over a finite set of
+possible actions. Say the four cardinal
+directions moving up, down, left or
+right. Or if this is continuous, it
+could be something like uh capturing the
+mean and the standard deviation of what
+our desired steering angle is. In
+practice, how we do this is we would say
+that we wish to define a neural network
+that outputs these parameters of our
+distributions. We could either have a
+neural net output the logits or the
+individual probabilities for each of our
+discrete actions or we could have a
+neural net that basically represents the
+mean and standard deviation of a
+candidate gausion over kind of possible
+steering angle commands.
+The benefit of the discrete distribution
+is that it naturally handles
+multimodality.
+Right? So say that
+again this is the
+distribution that we wish to um have our
+model output in. If we discretize this
+naturally continuous state into bins
+and then assign a probability to each of
+those bins that sums up to one, we might
+be very well able to uh capture this
+multimodality by learning something uh
+of the sort.
+Right? So discret discretized
+representations are actually very
+powerful because they it's something we
+can do very well. So we could just learn
+this through cross entropy which is
+pretty standard in supervised learning
+and get out of this something that
+naturally represents multimodel
+distributions.
+At the same time, uh I I think pretty
+obvious downside is that depending on
+the dimensionality of our output and the
+discretization that we're interested in
+and that is maybe relevant for our
+application, the we could have a lot of
+bins to to and a lot of probability um
+kind of logits to u to estimate and so
+this scales poorly with the
+dimensionality of our action space. In
+this case,
+the pro of using kind of a continuous
+distribution as our output
+representation is obviously that this
+naturally captures the continuous nature
+of our actions. So no discretization uh
+required. Uh but this might not be very
+expressive, right? So if we wish to use
+a gausian and we want to fit a gausian
+to this uh real underlying biodal
+distribution then probably what we will
+learn is uh something like this right
+and this is because we are trying to
+represent a biodal distribution through
+a unimodal distribution.
+Does this make sense? Any any questions
+or doubts here?
+&gt;&gt; Is there like scaling or continuous
+distribution as well?
+&gt;&gt; Sorry. like for higher dimensional
+distributions. So like scale
+&gt;&gt; the continuous distribution of course
+depending on the um distribution that
+you care about this might or might not
+scale well in general like say we are
+just looking at an n dimensional
+gausian. This is pretty compactly
+represented by a mean vector and a
+coarance matrix uh which might be much
+cheaper compared to having a bin uh in n
+dimensional space.
+&gt;&gt; Yeah.
+&gt;&gt; And could you also just account for
+different loads by just adding more
+sigma on like rasrees?
+&gt;&gt; Yes, exactly. So this is a great segue
+to the next slide. Um
+[laughter]
+&gt;&gt; and uh so the in the point is so these
+are ways of uh representing uh
+distributions. Um how can we be more
+expressive in representing multimodel
+distributions. One example could be as
+you were exactly saying let's fit a
+gausian mixer model to our data. Uh what
+is a gausian mixer model or GMM for
+short is that we're basically defining
+rather than a single unimodel gausian we
+want to learn the parameters of a
+mixture of gausian distributions which
+is usually comprised by k gausian. So we
+will be defining the mean and um
+coariance matrix for each of those k
+gausians together with a waiting factor
+uh or these k waiting factors w1 to w k
+which basically define the weighted
+average of these individual gions.
+Right? So in practice the gausian
+mixture distributions are um quite
+powerful and expressive because through
+uh gausian we can easily approximate uh
+potentially complex uh functions right.
+So we could have indeed um kind of these
+three gapions being somehow combined
+through appropriate choice of the
+weights to maybe measure to represent a
+distribution that is extremely non
+non-unimodal. Right?
+A caveat of course in general models is
+that the choice of K is a hyperparameter
+and has to be chosen in advance. Um
+again this is usually something pretty
+empirical that is you just try different
+numbers of K and see what uh what works
+best. The trade-offs here could be uh
+the usual ones that come with respect to
+overfitting and underfitting of data. If
+I have very high K, I might be fitting
+very well my training data but this
+doesn't really generalize to my um
+testing data or inference.
+Or we could define K based on some
+domain knowledge, right? So we may know
+that the policy actually has three
+distinct modes and so we might just pick
+that as K. But in general it's a
+hyperparameter.
+Uh a second class of um approaches to
+represent uh or expressive ways of
+representing multimodal distributions is
+what I'm referring to here as the
+discretise plus autogressive approach.
+So we introduced before this idea of uh
+discretization uh to represent
+multimodel distributions but we
+mentioned that scaling this to
+highdimensional actions for us or in
+general high dimensional distributions
+could be expensive.
+Again, I think a nice visualization
+could be something where [snorts]
+say that we have our a two-dimensional
+distribution that we wish to estimate.
+The discretization in this case would
+essentially be equivalent to picking a
+discretization in our two-dimensional
+space and having to pick a specific
+value for each of these grid cells.
+You see how this scales uh very badly
+and specifically not only does it scale
+badly in the sense of number of
+parameters that we that we want to
+estimate. It also um clearly suffers
+from the curse of dimensionality when we
+look at uh model learning. And this is
+because in reality we only be estimating
+our distribution from samples from our
+underlying distribution, right? And so
+in order to populate all of the grid
+cells, you see how we would need an
+exponentially large number of samples
+from our distribution. So a nitric is
+the one of basically decomposing uh auto
+reggressively this um this
+two-dimensional uh distribution.
+What does this mean? In general, uh we
+could uh represent exactly a joint
+distribution over um
+x1 and x2
+as the
+basically the product
+of the conditional distribution x1 times
+the so the probability of x1 times the
+probability of x2 given x1.
+And this is an exact uh reformulation,
+right? So we're not losing anything. Uh
+but what we're gaining is that rather
+than having to uh discretise uh n
+dimensional space, we only do
+one-dimensional discretizations. Right?
+So in practice, this would mean
+something like we only need to
+discretise the onedimensional version uh
+vector.
+So this would be like P of X1 and this
+would be P of X2 given X1
+and only have to learn these two uh
+one-dimensional discretized
+representations.
+And here not only this is more efficient
+from the perspective of total total
+parameter count, it is also more
+efficient with respect to the course of
+dimensionality issue that we were
+describing because here while this the
+samples in this 2D grid are pretty
+sparse, the same four samples would be
+clearly denser in these one-dimensional
+vectors, right?
+Because we would be using the same four
+samples something like that.
+In practice, this is exactly what people
+do when using transformer models for uh
+robot policies. So in this case, you
+would be your um one-step probability
+distribution would just be the
+transformer. You would have some context
+which could be maybe some camera image,
+maybe some natural language prompts that
+describe your task. and you're learning
+your distribution over next element in
+that sequence. Um where this could
+essentially be again let us look at this
+more visually. So in natural language in
+in LLMs you typically have you know some
+transformer block
+that takes an input like
+&gt;&gt; [snorts]
+&gt;&gt; u
+a token here uh maybe a sequence of
+those and basically predicts the next
+token in that sequence right we can just
+call it uh maybe xt in order to predict
+this then you would be auto reggressive
+ly introducing
+the predicted XT here, predict XT + one
+and so forth kind of doing this auto
+reagive prediction. Um here we would be
+taking this exact framework that is we
+only learn this one step uh prediction
+rule where XT rather than being tokens
+or words in uh as you would do in LLM
+here the XT could be one dimension of
+our action right so if if we have an
+action vector
+a Q that is comprised of like a a
+steering angle
+and an acceleration
+We might have uh this deco composed such
+we that we first predict the steering
+angle and then we feed the steering
+angle to our back to our model and
+predict the acceleration. Does that make
+sense?
+&gt;&gt; Yes.
+&gt;&gt; You still have to go through understand
+before you can run this online
+[clears throat] and narrow things down.
+I would say in terms of dimensionality,
+no. But here you're basically trading
+off a kind of ease of representation
+with compute because now you would not
+be sampling all at once, but you're
+sampling autogressively. So in order to
+generate the full vector, which might
+be, you know, n dimensional, you would
+have to do n steps and calls to your in
+this case transform block.
+Okay. Again, so this is uh very uh very
+popular in practice. Um another class of
+u models uh also very popular especially
+over the last couple of years um is
+basically relates with diffusion
+processes and diffusion models and even
+more recently I would say over the last
+couple of years um flow matching. And
+the idea of diffusion in general is that
+so we're saying we want to sample from
+you know a potentially complex
+distribution.
+Uh but we don't obviously we don't know
+how to sample from this uh potentially
+wild distribution.
+But in general we might have some easy
+distribution say a gausian
+from which we know exactly how to to
+sample and this is easy. And so in
+diffusion processes in general kind of
+cast uh the problem as wanting to
+transform a sample from a simple
+distribution which we know how to sample
+from and then transform these samples
+such that they match the target
+distribution that we care about
+learning. [snorts] And so in practice uh
+what diffusion um typically defines is a
+process whereby we at sampling time we
+would go from noise to the actual
+realization that we that we care about.
+So we want to learn uh this
+transformation
+diffusion models uh were originally
+introduced for generating images. So I
+would say nowadays basically any image
+generation out there is using some form
+of diffusion model or a flow matching
+representation. Um and the goal here is
+to map from pure noise given some
+conditioning for example you know
+generate an image of a cat uh to the
+actual uh image that we care about
+generating. So the sampling direction is
+pretty straightforward. We want to take
+noise. we have a learned um
+kind of transformation and we use this
+to gradually and iteratively the noise
+uh going from noise to actual image. The
+tricky one and interesting is of course
+the uh backward direction, right? So how
+do we learn how do we learn this
+mapping? In practice for uh diffusion
+models, this is done by learning this
+individual uh denoising step. So you
+what you would do is you would take your
+data set of images and define kind of
+gradually more noisy versions of those
+images, right? So we would take like x0
+and then define kind of x0 plus some
+noise and then define and this would be
+x1
+and then we define x1 plus some noise.
+This would be x2. And so we gradually
+generate more and more noisy versions of
+this image until we get pure noise.
+And the goal in diffusion models, we
+then want to approximate uh these this
+noise term to basically being able to
+reverse the process. Right? So at data
+generation time, we basically have the
+forward gener the forward generation
+where we just add noise to our image and
+then we want to approximate this noise
+through a learned parametric mapping f
+of theta which then allows us to go in
+the reverse direction.
+Again, I'm aware this is pretty handwavy
+description uh but I'm happy to provide
+references for diffusion models in
+practice. But the bottom line here is
+that diffusion models and flow matching
+models are extremely uh powerful ways of
+representing these multimodel uh
+distributions.
+Um but let us look a little bit more
+closely to into flow matching. And the
+idea is that if in diffusion models we
+are interested in learning this error
+term epsilon, this noise term epsilon to
+be able to reverse the um the kind of
+the denoising process in flow matching.
+What we want to learn essentially is a
+vector field to do this iterative
+denoising. So we're basically describing
+this um statistical transport problem
+where we want to move samples from a
+simple noise distribution into samples
+from a potentially uh complex uh
+distribution.
+So in practice at inference the way this
+goes is that assume we have learned a
+vector field v of theta.
+At inference, we would be sampling a
+point x0 from our noise distribution and
+[snorts] then we would kind of
+generating u a data point from our
+target distribution essentially entails
+integrating forward this vector field
+and [snorts] we can do this through uler
+integration for example.
+Again kind of the caveat here is how do
+we train and how do we learn this vector
+field and at training time what we would
+be doing is that we sample a couple. So
+we would sample a sample um x0 from a
+candidate initial distribution say a
+gausian we would sample a point x1 from
+our data set that is a sample from the
+target distribution that care about
+learning. We would sample a time step t
+usually as a from a uniform distribution
+between zero and one because we are
+assuming that our kind of denoising step
+goes from time zero to time one
+and then in uh flow matching we
+basically linearly interpolate between
+these two points. This would essentially
+mean kind of drawing a straight line
+from our sample to the uh target sample
+from the target distribution. And we
+basically update the parameters of our
+learned uh vector field such as to
+minimize um the distance between our
+prediction of the velocity essentially
+with the target velocity between those
+two points because x1 - x0 is
+essentially the target velocity, right?
+And so in practice, what this would
+[snorts]
+look like is something where we have our
+easy distribution, say a normal
+distribution here. We have our complex
+distribution here. And what we would do
+is we essentially learn a vector field
+that kind of
+you know guides us from every point
+uh into
+you know sampling from this other
+distribution. Of course imagine this
+vector field to be complete. But then in
+practice we would be sampling from our
+distribution and just integrating
+forward for example through uler
+discretization uler integration our our
+samples to generate samples from this
+other distribution.
+And I would say flow matching is is is
+very popular these days because it's
+extremely powerful at representing
+continuous distributions which are
+ultimately what we care about in um
+robot control for example.
+Any questions here?
+Okay.
+A last trick that I uh wanted to make
+sure we covered is the one of action
+chunking. So um
+until now and you know throughout this
+course we've always been discussing kind
+of uh feedback policy in the form of
+um a distribution over next controls
+given states. And so in general the
+framework is something where we observed
+some state xt we had some policy from
+which which allows us to basically
+sample an action uh in that specific
+state. We would be executing this action
+in the environment and then we would
+observe a new state and repeat this
+process.
+And so visually this would look like uh
+at all time steps from zero to seven we
+would be generating one action executing
+that in the respective time steps and
+moving forward over time.
+action chunking which I would say right
+now is the most popular way of
+parameterizing uh kind of robust
+learning policies is something where
+rather than predicting a single action
+we are basically predicting actions over
+a specific planning horizon of length K.
+So if you wish this looks like something
+like uh model predictive control right
+so we're basically predicting K actions
+in the futures and executing those K
+actions um in our environment
+um
+so this became pretty popular first of
+all because it tends to work quite well
+so people just adopted it in general I
+would say that a clear benefit is that
+this allows more time for inference so
+if we have premputed the actions for the
+next k time steps then we can just trust
+our predictions for the next k time
+steps and only have to recomputee new
+ones after k.
+[snorts]
+Another more subtle motivation for which
+it is believed that these you know these
+models perform and it's been shown that
+these models perform better is that in
+general these leads to smoother controls
+uh control trajectories. So if you look
+again at what we're doing here,
+typically our policy pi would be a
+learned object. So pi of theta and we
+would be calling this object essentially
+at each time step. And since this
+learned policy might not be perfect, the
+learning signal might be a little bit
+jiggory because we might be we are
+basically introducing some randomness at
+every call. Right?
+If we however predict a full uh
+prediction sequence then kind of within
+this short horizon sequence typically
+the generations are more coherent uh
+between it between each other and so
+this leads to smoother controls which
+typically are kind of deployed uh with
+better performance.
+But this is definitely another um trick
+of the trade if you wish that that is
+worth knowing about. [snorts]
+And so some examples um this this work
+uh the fusion policy uh was pretty
+popular probably now dating back three
+or four years ago. Um it was one of the
+first examples of leveraging kind of the
+fusion uh models and the fusion policies
+at scale. Um so in general what you know
+here we're going from an image um
+representation observation of our state
+uh and using diffusion models to
+generate uh a full um
+uh trajectory of behavior for our
+robotic arm and it was shown to be able
+to do extremely challenging tasks um
+generalize across different conditions
+and so the results here were um were
+very good and exciting at the time. um
+you will so not only are we using
+diffusion models you'll also notice that
+here we're using this action chunking
+idea so we're generating a full
+trajectory rather than a single action
+and so this is definitely a work that
+you know you I suggest you uh you go
+check out
+uh another example uh will be the kind
+of robotics transformer series of works
+um there have been follow-ups to this
+work but at the high level here I wanted
+to show the case where in general
+general here we're learning a mapping in
+the form of a transformer model that
+maps from a history of images. So again
+uh if you think back about our multiple
+uh time steps multiple observations of
+history and a language description of
+the task that we wish to execute
+to a discretized representation of our
+action where we have been essentially
+doing this discretization plus auto
+reggressive uh generation. So here the
+arm had different actions uh that it had
+to um execute and we were basically in
+this in this work they basically
+generated each of these dimensions
+individually and conditioning on the
+previous one to do so.
+So these are just examples of um the
+topics that we have been discussing
+today.
+And so um at a high level kind of I
+would say that you know we have been
+touching these uh common pitfalls and
+possible strategies to remedy for for
+these pitfalls that range from
+algorithms that were targeting those
+pitfalls. For example, Dagger, we looked
+at smart data collection and
+augmentations.
+take the three cameras and the
+fictitious augmentations and we had kind
+of a big parenthesis on how can we
+represent the full distribution of our
+data because this is ultimately what we
+care about when learning from
+demonstrations.
+And so I would say that we have seen
+behavior cloning um and kind of a a
+usual a classical you know benefit and
+pro of uh behavior cloning is that at
+its core it's essentially supervised
+learning right plus minus some kind of
+deltas and I would say that supervised
+learning is definitely easy to implement
+and monitor. We have good metrics we
+know it's usually well behaved from the
+perspective of gradient descent and so
+this is usually pretty simple to
+implement. Um it's also pretty
+efficient. So there is no need for trial
+and error learning as we'll see starting
+Wednesday in reinforcement learning. Um
+and there is no need for an explicit
+reward signal. So in some cases defining
+a reward might be harder than learning
+to um kind of devising a policy itself.
+Take the case of driving. How do we
+quantify numerically what good driving
+is? On the other hand, learning a policy
+to mimic expert demonstrations of
+driving is actually much more
+attractable.
+On the cons side, um, of course, kind of
+all of this, um, assumes that we have a
+strong dependency on the quality of the
+demonstrations. So, if the
+demonstrations are bad, then there is no
+way that the learned policy will be
+good.
+Uh, of course these strategies that we
+discussed today are ways of addressing
+kind of the compounding errors problems,
+but these problems remain. Uh, and in
+general, generalization of learned
+policies is a is a big topic
+and linked with the first one in
+behavior cloning, there is no
+exploration whatsoever, right? So we we
+will have no way of discovering new
+solutions for for for the task that have
+not been um kind of demonstrated uh from
+an expert. And so this is where kind of
+reinforcement learning will will come in
+the picture.
+Okay. Any any questions on behavior
+cloning?
+Okay. So I want to quickly touch on a
+couple of uh actually one other paradigm
+for behavior cloning and then give some
+pointers to uh inversion forcement
+training uh methods.
+So one interesting um idea um is that
+[snorts] can we use kind of ideas from
+behavior cloning to try to approximate
+the objective of reinforcement learning.
+That is can we go beyond the or at least
+filter out
+uh the performance of demonstrations in
+our data set such that we are able to
+get as close as possible to the best
+kind of performance that has been shown
+in the data set and potentially uh kind
+of improve on it. And so the idea here
+is that rather than um
+relying on solely optimal demonstrations
+for a specific task, we might want to
+leverage a broader set of demonstrations
+um for example from suboptimal policies
+or related tasks or things of the sort.
+um and slightly shift the learning
+problem that we are uh positing in order
+to uh to get the best from our data and
+I would say two main classes of methods
+are the filtering or waiting of
+demonstrations or devising different
+conditionings for our policy. So let us
+go into the details because I think this
+will be more um uh will be clear. So in
+general we have been discussing the idea
+of behavior cloning completely detached
+from performance right we had no measure
+of reward that was scoring how good the
+trajectory was with respect to another
+and so a kind of very simple idea is can
+we introduce some of these uh
+considerations by essentially
+reintroducing the kind of the reward
+function as a as a player in this game
+whereby we might for For example, a
+simple idea would just be doing
+filtering. So say we have a reward
+function that is able to score a
+specific action in a kind of how good
+was an action UT in a specific state.
+This may allow us to score the quality
+of entire trajectories because we could
+just score we have a roll out in our
+data set. We might just be summing up
+the reward uh accumulated over this
+trajectory and then we could basically
+filter out our data set such to only
+keep the trajectories that are better
+than some uh value or uh bar that we
+fix. Right? Um so here is a very simple
+example in which we know that there is
+performance in place. let us just focus
+ourselves on the uh good ones on the
+ones that are exceeding some threshold.
+Another mechanism could be to do
+waiting. So we have again some mechanism
+of scoring uh our uh transitions and
+trajectories through our reward. So let
+us modify the learning problem for
+example the uh maximum likelihood
+estimation objective such that it
+becomes a weighted version of the
+original objective where the weights
+come from the performer itself. Right?
+So we don't want to mimic all
+trajectories blindly. So maximize the
+probability of all trajectories blindly.
+But what we want to do is maximize the
+the weighted probability where the
+weight is essentially the performance.
+Yes,
+&gt;&gt; filtering the quoteunquote best
+trajectories from what we were talking
+about before where we want to like
+purposefully on the suboptimal
+trajectories.
+&gt;&gt; Yeah, it's it's a very good question and
+I would say that the answer here is very
+case dependent. So it will really it'll
+depend on the application that we're
+that you're working with. Um,
+I would say that these filtering
+techniques are
+particularly good in the case where you
+have a very narrow task and where you
+don't need to collect this uh corrective
+behavior and but while here what you
+care about is really focusing on I have
+these very good trajectories and I want
+to learn to um exploit them. This could
+also be very good if your data set
+quality is is just very broad. So maybe
+I just have trajectories that are
+extremely bad in here and and maybe my
+data set is also extremely large and so
+you have no ways of manually annotating
+what is useful and what is not and so
+you devise some simple strategy to
+filter out uh bad things. Yeah. So I
+would say it's kind of you know parallel
+axis uh in devising your in kind of
+towards your solution. Yeah.
+Okay. And another idea is that um we
+might want to enrich the kind of
+conditioning that we do that we have in
+our policy. So until now the policy for
+us was you know distribution over
+controls given states. Um but I think
+two particularly popular um approaches
+are to condition the policy on maybe a
+candidate goal state for goal condition
+policies uh or a candidate performance
+that we wish we we'd have from our
+model. So something where we might
+condition it on a candidate uh total
+reward for our trajectory.
+Um why are these reformulations useful?
+uh and I think this is can be easily
+observed from the uh goal conditioned
+one. So say that we have
+uh some data set where we have you know
+a number of trajectories say that go you
+know from some x1 to some candidate xt.
+Now maybe from the perspective of the
+task this trajectory is very bad because
+maybe XT is very different from the
+actual goal uh that we had over here.
+However, this is a good trajectory for
+showing how we are reaching uh maybe
+state Xi. Right? So if the goal is not
+to solve a task but to reach a state
+then every trajectory is a valid
+trajectory for showing an example of how
+we are reaching a candidate goal. Right?
+So in our case this trajectory here
+despite being bad for you know the task
+of reaching this goal state learning
+from this trajectory as a means of
+having a general trajectory that could
+reach any candidate goal. This is
+actually a good thing to do. Right? So
+in some way once we have learned this
+goal reaching policy then the problem
+becomes
+um at inference I want to query my
+policy to reach to reach a state that is
+good for me right so I'm I'm I'm
+basically learning a general mechanism
+to reach any candidate goal point goal
+state from my state and then at test
+time I want to condition this policy on
+reaching a state that is good for me
+Right? [snorts]
+But in this case, all trajectories are
+useful with this regard because all
+trajectories are good realizations of
+reaching all the states along that
+trajectory.
+[snorts]
+Okay. And same thing for reward
+conditioning.
+Okay. So just a quick mention on inverse
+reinforcement learning. more than I
+mentioned I would say pointers for you
+to uh dive deeper if you're interested
+um remember that in you know in behavior
+cloning we wish to estimate the policy
+that approximates or mimics the behavior
+of an expert in inverse re reinforcement
+learning we care about learning the
+objective that is being optimized by the
+expert
+and in general I would say that so more
+formally the goal of reinforcement
+learning is to recover the reward
+function which we think is being
+optimized by the expert
+Um in practice this means that we will
+be often parameterizing a reward by some
+parameters W and the goal is to find the
+the values of those parameters that
+better explain the expert
+demonstrations.
+There are a number of um inverse
+enforcement algorithms as you can
+imagine. But I would say that a high
+level kind of the skeleton of most of
+these algorithms is something like the
+pseudo code here on the on the slide
+whereby we will start from a data set of
+expert demonstrations. And we will have
+some initialized reward function
+parameters W and policy parameters
+theta.
+And then most algorithms typically
+alternate between two separate
+processes. We'll have a first process
+whereby we update the reward function
+parameters according to some objective
+and then we will use these
+newly computed parameters W to optimize
+for the parameters of the policy. So we
+will have an estimate of W. We will use
+this estimate to basically maximize the
+policy with respect to that uh objective
+and then use this policy to increase to
+improve the estimate of W
+again. So this is very high level
+discussion but just to let you know that
+most of these algorithms should be seen
+from from this lens
+and kind of popular algorithms are
+apprenticeship learning maximum margin
+planning and maximum entropy RL. So we
+definitely start from those and these
+algorithms at kind of to some extent all
+try to address uh the the challenge or
+one of the key challenges for uh inverse
+reinforcement learning which is the one
+of reward ambiguity.
+And this is basically the problem where
+um there could be many reward functions
+that explain the same data. And so these
+mechanisms really try to you know design
+these two individual processes such that
+we don't fall in this reward ambiguity.
+Okay.
+So just to conclude um we have been
+introducing I would say most of the
+techniques to basically build a mental
+model I would say of how to deal with
+imitation learning. We focus most of our
+narrative on behavior cloning where kind
+of the you know the vzero kind of naive
+uh formalism of behavior cloning is that
+we have a data set of expert
+demonstrations and we want to learn a
+mapping that approximates um the
+behaviors in our data. We saw how this
+um naive version is basically prone to
+suffering from two main challenges
+compounding errors and the multiodality
+of behavior data. And we saw how we
+could tackle this from a perspective of
+data collection through smart
+augmentations, a perspective of
+algorithms, say Dagger, and expressive
+models that try to capture the
+multimodality of the of the data itself.
+And then briefly mentioned two
+alternative formulations such as
+reinforcement uh learning through uh via
+supervised learning and inverse RL.
+Any questions on this? All
+right, then. See you on Maz.

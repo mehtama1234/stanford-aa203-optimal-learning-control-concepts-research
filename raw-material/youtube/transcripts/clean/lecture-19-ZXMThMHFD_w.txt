@@ -1,0 +1,2155 @@
+Well, welcome to the last lecture in for
+this quarter.
+Today we will be completing our road
+map. Specifically, we'll be starting by
+wrapping up our discussion on model-free
+reinforcement learning first, where
+we're looking at policy optimization
+methods, and then we'll discuss
+model-based RL.
+So, if you recall, basically what we're
+saying last time is that we started
+looking at policy optimization
+approaches for model-free reinforcement
+learning, whereby the main idea was to
+basically build these and compute these
+policy gradients,
+which are basically the gradients of the
+kind of ground truth reinforcement
+learning objective that we're interested
+in optimizing, which enabled us to
+basically derive the number of
+algorithms ranging from reinforce to
+actor-critic algorithms.
+And then
+we basically
+concluded with
+kind of having to basically discuss some
+more recent reinforcement learning
+algorithms that relate with policy
+optimization.
+And if we kind of kind of take a step
+back and and think about how kind of
+state-of-the-art algorithms in machine
+learning more broadly typically work,
+they ultimately boil down learning to a
+numerical optimization problem, right?
+So, let's think back for example at our
+classical regression problem, you know,
+which is described as a supervised
+learning problem, where we typically
+formulate it as a
+training error minimization problem,
+which we can optimize sequentially
+taking a data set of observation until
+we converge to some
+to some local optimum.
+And this is fundamentally different from
+what we've been doing so far in
+reinforcement learning, because if we
+think back at value-based methods, kind
+of Q-learning being a prototypical
+example, this is well, first of all,
+fundamentally different because we're
+not really optimizing an objective, but
+we're doing fixed point iteration, uh
+which can in principle include kind of
+all of the transitions from an offline
+data set, uh but uh from the perspective
+of trying to mirror this same uh
+formalism, this is not really optimizing
+the ground truth reinforcement learning
+optimization problem.
+On the other hand, we saw how policy
+optimization methods on one hand do
+optimize for the ground truth
+reinforcement learning objective, but we
+only do basically one step of gradient
+descent at a time, right? So, we saw
+these how at least nominally these are
+on-policy algorithms, where we have some
+interactions with the environment, we
+collect data, take one gradient step,
+and repeat, right? So, this is really in
+a way fundamentally different from just
+positing this as a numerical
+optimization problem and kind of
+crunching the numbers until we converge,
+if that makes sense.
+So, we'll discuss two specific
+algorithms, uh namely uh trust region
+policy optimization, TRPO for short, and
+proximal policy optimization or PPO for
+short, uh which originally kind of um
+were born by trying to replicate this
+sort of formalism of positing an
+optimization problem and crunching it
+until convergence
+uh for the purpose of reinforcement
+learning.
+Where the goal therefore will be to
+define a kind of a surrogate problem and
+have it such that we can take continuous
+updates to our policy before potentially
+grabbing new experience from our from
+our environment.
+And so, we saw how in in policy
+optimization, um
+kind of what we want to do uh kind of at
+least value is to compute the policy
+gradient, right? Which uh last Monday we
+defined as being the expected value of
+the grad log pies multiplied by some
+quantity, which is a a metric of the
+reward to go, right? We saw how how an
+attractive um
+kind of quantity to have here is the
+advantage, A.
+Now, kind of the first idea is that what
+we would like to have is define this
+surrogate optimization problem where
+whereby if we were to take gradients of
+this objective function which we define,
+the gradients would themselves be the
+policy gradient
+which are interested in following. And
+so kind of
+a simple idea which is also how you
+might have seen by playing with your
+presets
+is that when you want to introduce kind
+of concretely implement these kind of
+things and solve them through automatic
+differentiation, since we're interested
+at the end of the day in following this
+object over here, kind of
+pragmatic way of doing so is to define a
+surrogate objective
+which is a quantity that we don't
+necessarily care too much about in
+practice, but if we were to take the
+gradient of this objective, we would
+actually get the policy gradient, right?
+So, in practice this is how we would
+normally implement this through auto
+differentiation methods. We would define
+the surrogate objective and auto diff
+will basically give us the gradient of
+this object which is the policy gradient
+and we can follow that.
+An alternative
+kind of representation of this surrogate
+objective which we might want to use in
+the exact same way
+is what I'm referring here as the
+um kind of loss
+IS where IS stands for important
+sampling
+which is essentially an equivalent
+objective to the one shown here above
+whereby
+rather than having this defined as the
+log pi multiplied by the advantage, we
+have this
+probability density ratio which comes
+from an old version of our policy pi
+described by some old parameters theta
+old and a potentially new version of
+that same policy described by some
+current parameters theta.
+So, first of all, kind of to sanity
+check that the gradient that we get from
+these two is equivalent, just by
+applying the chain rule, we will see
+that the
+well, the the grad of the logarithm of a
+function is actually equal to the
+gradient of this ratio.
+So, the gradient gradient of the
+function divided by the function
+evaluated
+at the at theta old.
+And [snorts] so,
+long story short is that these are kind
+of two separate surrogate functions we
+could use to nominally get the policy
+gradient out of it in the same way.
+However, the second one, that is the
+important sampling one, has this nice
+interpretation whereby this objective is
+actually well-defined even if you are
+using uh
+kind of collecting data according to a
+previous version of the policy. In this
+case, theta
+pi theta old.
+So, you're probably starting to imagine
+how this form this objective is still
+valid in the moment where I'm updating
+my policy kind of multiple steps
+sequentially in a row. So, I'm kind of
+diverging from my original theta old
+policy.
+And this objective is still valid in the
+sense that the important sampling is
+kind of re-weighting my
+probability that I give to the action
+with respect to my previous version of
+the policy.
+So, I I'm aware that I'm going through
+this quite fast,
+but the main idea is that
+we want to
+um
+kind of reach the state where we are
+defining a surrogate surrogate objective
+which
+still follows the main ideas of policy
+gradient.
+Here we're seeing two different
+alternatives which are equivalent in
+that sense because these are two loss
+functions which if we differentiate
+we'll still get the policy gradient.
+Uh but this important sampling version
+has this nice interpretation which still
+holds when we are actually considering
+data collected according to a previous
+version of our same policy.
+Does this make sense?
+And so, of course, this uh uh
+is So, this is the objective that kind
+of is used within the uh trust region
+policy optimization algorithm with a
+caveat. And the caveat, which we didn't
+discuss here, is that So, here we are
+mentioning this this idea of
+uh taking multiple steps and therefore
+starting to diverge from our original
+theta old.
+Uh but of course, the more we go uh
+further away, so the more we move from
+our original theta old, the our
+estimate, for example, of the advantage
+will be uh less accurate.
+Uh
+and the more potentially this ratio will
+kind of stagnate uh learning to some
+extent, right? And so, what we want to
+do is we want to potentially take
+multiple steps sequentially, as we were
+saying, uh but we want to do this while
+remaining within uh kind of a
+neighborhood uh
+of the original policy,
+within which we are kind of confident
+that what we're doing is still
+meaningful.
+And so, this is the idea of introducing
+what is uh often referred to as a trust
+region. This is a uh pretty common
+technique in optimization, whereby uh
+given that same objective that we were
+discussing before, we're now introducing
+this constraint, which is basically
+expressed expressed through the KL
+divergence, that is a measure of
+divergence between uh distributions,
+such that we want that the distribution
+of our action induced by our old policy,
+theta old,
+has to be closer uh with kind of delta
+close uh
+to the new policy, to the new
+distribution of our action induced by
+the new policy, by theta, to some
+extent.
+So, why is this interesting? It's
+because of course, there could be many
+possible ways of um
+defining closeness for two policies.
+Maybe one more intuitive way would be to
+just measure distance in parameter
+space.
+Um for example, penalizing like the the
+norm of the distance between the two
+theta vectors. Uh but this is pretty
+attractive because this is directly
+evaluating distance in uh kind of policy
+distribution space. Which is ultimately
+what we care about. Right? So, we are
+measuring distance with respect to the
+distribution of actions induced by the
+two policies. So, maybe the parameters
+vary
+quite a lot, but ultimately what we care
+about is that the distribution induced
+by the policies remains uh similar.
+Yeah.
+Mhm. Yeah, so this kind of depends also
+um
+if you're averaging over different
+trajectories. So, remember that this
+will be doing kind of an empirical
+evaluation of this. Right? So, we'll be
+sampling multiple trajectories over time
+and kind of doing empirical means
+instead of expectations. But this is
+why. Yeah.
+So, this was
+um
+incredibly successful at the time. Uh
+meaning it it was able to, you know, be
+a pretty reliable uh reinforcement
+learning algorithm, especially for a
+continuous control problems.
+Uh however, it came with its own set of
+limitations because of course uh now we
+are changing we changing from having to
+solve an unconstrained to actually
+having a constraint in our formulation,
+which complicates things.
+Um specifically, uh in order to solve
+these problems, uh people usually use
+conjugate gradient methods, which can be
+tricky to implement.
+And empirically, uh this also see this
+algorithm um
+usually seemed uh to perform pretty
+weakly when we're using maybe deep
+neural networks such as convolutional
+neural networks or large transformer
+networks. Um which
+was indeed one of the main kind of
+practical limitations of TRPO.
+So
+uh
+this algorithm was still extremely
+impactful because in a way it motivated
+kind of successive algorithms which try
+to simplify and remove these
+limitations, which is exactly what PPO
+actually is. So PPO in a way is a
+derivative of TRPO.
+Uh which is trying fundamentally to
+answer the question of can we replicate
+the exact same objective that we were
+trying to achieve with TRPO without
+having to resort to this second order
+optimization, which is basically
+entailing this more complex optimization
+problem that we have to solve in the
+constrained problem that we introduced
+in the previous slide.
+Is the setting clear on kind of this
+transition from TRPO to PPO?
+Okay.
+And so if you kind of
+look around for different
+implementations of PPO,
+most likely you will stumble upon one of
+these two versions. So the first one is
+well, we have this constrained problem.
+We are saying that this is introducing
+some challenges at least from an
+implementation perspective.
+Let's basically move the constraint to
+the objective function with a penalty
+through Lagrange multipliers,
+which then leads to an unconstrained
+problem. And let's solve this through
+stochastic gradient descent tools as we
+have always done.
+So in a way this is completely valid.
+Although I would say that uh
+most popular version is this second
+version here
+where uh we are basically trying to
+empirically replicate the behavior of
+the constraint
+through um
+kind of um an empirically derived
+equation in a way. So, we're basically
+introducing um
+uh this specific objective here,
+where we are trying to replicate the
+behavior of this uh constraint, which we
+introduced before.
+How are we doing so? We're doing so by
+first of all, defining the the ratio uh
+just for compactness as uh a small r of
+theta. So, this is the ratio between the
+two uh policy distributions that we were
+using before. Of course, if we evaluate
+r at the old uh
+um kind of version of the parameter
+theta, we will get r equals to one.
+And the objective is composed comprised
+as the minimization between two terms.
+The minimization here is used as such
+that we are basically having uh
+that this overall objective is a lower
+bound of the ground truth objective of
+the ratio times the advantage.
+So, we're basically picking the minimum
+between the ratio times the advantage
+and this uh clip term over here.
+So, what does the clip function do?
+We're basically taking the
+ratio, small r.
+Assume this is the axis where we're
+considering small r.
+And we're basically saying that we are
+constraining it to be between 1 -
+epsilon and 1 + epsilon.
+Right? So, if r falls within
+these two bounds, we're keeping the uh
+well, the value of r. Otherwise, we're
+clipping it to So, if r theta would be
+here, we would be using 1 - epsilon. If
+r theta would be greater than 1 +
+epsilon, we would be using 1 + epsilon.
+So, we're basically keeping r theta in
+between these values and then the
+extremes when we're going beyond that
+value.
+Uh of course, this gets then multiplied
+by the advantage. So, you're starting to
+see how this is, at least intuitively,
+an empirical way in which you can
+somehow approximate this idea
+uh whereby we want to stay closer to the
+original policy, right? Because we are
+constraining
+we're basically
+these values are constraining the ratio
+r theta to be only uh
+as kind of not incredibly different from
+the original policy. Does that make
+sense?
+Yeah.
+Yeah, so the point of the minimum here
+is that
+uh so the
+full picture here is that we are
+interested in the gradients that we get
+from this objective. And specifically,
+we want to saturate the gradients when
+whenever we are kind of
+beyond these clipped values, but only if
+these are kind of in a negative
+direction. Meaning, if we are moving
+very far away from the policy, but we
+are
+moving in a direction that is negative
+for performance, we want to clip it.
+On the other hand, if we if taking a
+bigger step would allow us to bring us
+closer to the uh
+um to the to the previous policy, we are
+still enabling gradients to to flow. So,
+this has this minimum uh I I kind of
+advise you to maybe even just plot this
+and trying to see kind of case-by-case
+scenarios, but the overall intuition I
+think is there are two. One, this is
+allow allows us to have a
+lower bound on the actual objective. And
+two, if you look at the behavior of the
+resulting gradients that you get from
+this objective, you're getting something
+that saturates whenever it it is
+actually good to saturate. And it
+doesn't when you want to recover,
+essentially. Yeah.
+But yeah, so long long story short, kind
+of PPO uh of is derived from the same
+intuitions that we are discussing before
+from TRPO.
+Uh and this is definitely the most
+popular versions you will you will find
+out there. And I would arguably say that
+now PPO is probably one of the most, if
+not the most, uh popular reinforcement
+learning algorithm uh
+out there.
+Okay.
+So, uh before uh moving to today's
+lecture, uh first of all, any any
+questions uh so far?
+Okay.
+&gt;&gt; [snorts]
+&gt;&gt; So, just uh I want to spend just a
+couple of minutes uh really kind of
+driving home the main messages which we
+discussed so far for model-free RL.
+And so, remember how we basically
+started all of our discussions a few
+weeks back about talking about uh
+different ways to estimate value
+functions, where we were originally
+motivated by the appealing properties of
+dynamic programming,
+uh where these were essentially allowing
+us to
+um
+kind of
+decompose the problem over time by
+enabling us to have an exact
+representation of the value uh for each
+state at the end of our problem by just
+looking at the one-step uh propagation.
+And we were able to do this because we
+are actually able to compute exactly
+those expectations through the use of
+the knowledge of the system dynamics.
+And so, we saw how these methods were in
+principle exact because this uh we were
+not losing any information through this
+uh one-step expectation. But, it
+required us to have a knowledge of the
+underlying MDP.
+And so, this motivated to introduce kind
+of two fundamental model-free learning
+paradigms, uh Monte Carlo learning,
+which basically uh
+used sampling from our environment, uh
+kind of in other words, interactions
+with our environment to approximate that
+expectation,
+uh and specifically defined the update
+to our value function as taking a step
+in the direction of the observed
+returns. So, we would sample in our
+environments, reach a terminal state,
+observe a return, and update our
+estimate of the value function towards
+that return.
+On one hand, this is great because it's
+unbiased. This is an actual unbiased
+estimator of the ground truth return.
+But, it is high variance because there
+is a lot of stochastic sampling
+happening over time. Uh and we need to
+reach a terminal state in order to
+actually sum backwards all of the
+rewards that we have obtained.
+On the other hand, temporal difference
+learning tried to combine ideas from
+both of these paradigms, the sampling of
+Monte Carlo because we're still
+interacting with the environment, and
+the bootstrapping of dynamic programming
+because we're updating our guess towards
+the one-step ahead uh get estimate of
+our uh future return.
+Which is great because this lowers the
+variance because we're sampling only
+once in instead of having to account for
+all the stochasticity of uh the possible
+futures,
+and it can learn online because we can
+do this update with just a single step.
+But, it does introduce bias because
+we're updating the guess towards a
+guess. And so, there are some some
+tradeoffs.
+Of course, we mentioned how this is true
+both for state value functions V, but
+also for Q functions, uh and this holds
+uh equally.
+Uh kind of the other main idea is that
+we we saw how uh all of these ideas uh
+basically uh held through for the
+tabular representations, whereby value
+functions are just a list or matrices,
+and each uh entry in those lists of
+matrices is our estimate for the value
+function.
+And it holds similarly for uh value
+function approx- functional
+approximation, whereby rather than
+having lists or matrices, we have a
+parametric function uh described by some
+parameters theta, which we can uh
+basically tune in order to a better
+approximate these values.
+How do we tune them?
+Exactly how we were defining before
+these
+backups for the tabular case. Now, these
+same targets, that is the return and the
+TD target, represent elements in a
+update for in parameter space.
+With all of these machinery, we then
+looked at value-based methods and policy
+optimization methods as kind of two
+broad families of model-free
+reinforcement learning approaches.
+In value-based methods, we used
+generalized policy iteration as the
+fundamental kind of scheme in order to
+obtain
+optimal policy.
+In generalized policy iteration, loosely
+speaking, alternates between two
+processes. A
+policy evaluation step, whereby given a
+policy, we estimate the value for the
+policy.
+And a policy improvement step, which on
+the other hand tries to be greedy with
+respect to the newly update updated
+value function.
+And we saw kind of on-policy and
+off-policy algorithms, namely SARSA and
+Q-learning as specific examples, and how
+these were instantiations of that same
+framework.
+Of course, this applies also when you
+have deep neural nets in the picture.
+And we looked looked at deep Q networks
+as a specific example.
+For policy optimization, which we just
+concluded today,
+we on the other hand said that
+in policy optimization, we care about
+learning an explicit parametric policy
+theta pi theta with some parameters
+theta, and we want to optimize these
+parameters to kind of directly optimize
+the reinforcement learning objective, as
+we said today.
+And this
+at a very high level entails, well,
+estimating the gradient if we want to
+solve them through gradient descent
+techniques. And so, all of our
+discussions of policy gradient fall into
+kind of step one here. And then we want
+to do approximate gradient descent using
+this gradient.
+We saw how policy gradient naturally
+describes this idea of trial and error
+learning by essentially being
+weighted version of the maximum
+likelihood gradient. If you recall here,
+we were describing this idea where the
+policy gradient tries to basically push
+up the probability assigned to actions
+which have high reward.
+And so this encodes this idea of trial
+and error learning.
+But we saw how policy gradient is
+fundamentally doomed by this problem of
+high variance of the gradient itself.
+And so we discussed a number of
+different strategies to reduce the
+variance. Namely, we looked at baselines
+and we introduced critics in
+actor-critic methods
+and and and so forth.
+Okay, so if you wish this is like a
+3-minute run through everything we've
+been doing over the last few lectures,
+but I think it's good to kind of
+make sure that we are driving the main
+ideas home. But any any questions on
+this?
+Okay, great.
+So
+um
+So remember that basically
+we were introducing this skeleton and
+all of the methods we discussed so far
+essentially
+are different instantiation of this key
+RL skeleton, right? So we always have
+this generate samples step where we
+interact with an environment.
+We typically could estimate a return or
+a value function of sort. So we could be
+having a value function approximator,
+for example. We'll see today how we
+could fit the model as well.
+Um and then we could use whatever we do
+in the second step to improve the policy
+either through
+greedy policy improvement as we're doing
+in Q-learning or through gradient
+descent as we're doing in policy
+optimization methods.
+And at the beginning of our kind of
+reinforcement learning lectures, we
+briefly mentioned a number of trade-offs
+between algorithms and ways to navigate
+these algorithms.
+But I hope that maybe before these
+trade-offs were, I guess, a little bit
+vague. But now if we actually look at
+those same slides again, I hope that
+most of these trade-offs start to make
+sense. So we're discussing trade-offs in
+terms of sample efficiency and
+stability. And so I think here kind of
+on-policy and off-policy algorithms are
+exactly hinting at these trade-offs over
+here. That is, how many how much is it
+expensive for us to interact with the
+environment?
+We looked at continuous or discrete
+action spaces,
+which, you know, could have implications
+in choosing value-based methods opposed
+to policy optimization methods. We
+looked at episodic or infinite horizon
+cases where Monte Carlo requires an
+episodic setting because we need a
+terminal state to back propagate those
+values.
+And loosely speaking, I think we started
+to
+explore kind of these this spectrum of
+sample efficiency, right? So we were
+looking at
+for example, ranging from the less
+efficient algorithms. All the way here
+we see kind of on-policy policy gradient
+algorithms. We have actor-critic
+algorithms, which try to leverage value
+function approximation to become more
+sample efficient.
+We looked at off-policy Q-learning as
+example where we could use offline data
+or data gathered from other policies,
+which makes it more sample efficient.
+And today we'll be introducing
+kind of some key ideas in the realm of
+model-based RL.
+But long story short is that, you know,
+we had we introduced these trade-offs,
+I guess, pretty vaguely at the first in
+the first lecture. But but hopefully you
+are appreciating how many of these
+trade-offs now are more concrete.
+Okay. And so let's move to model-based
+approaches.
+Specifically today we'll be
+uh starting from well, introducing uh
+basic recipe for model-based
+reinforcement learning. Uh and we'll
+discuss the key limitations and
+challenges that come from this basic
+recipe.
+And then we'll start to see basically
+different ways of uh addressing those
+challenges and limitations, namely
+through the lens of uncertainty
+quantification. And so we'll have a
+small parenthesis on uncertainty
+quantification in in general.
+And then we'll conclude with some
+examples as well as some more broader
+scope uh remarks for the entire class.
+The caveat here is that of course
+uh model-based RL is goes
+uh clearly beyond anything that we'll be
+discussing today.
+But for today, I hope that at the very
+least we'll be conveying kind of the
+main ideas and challenges that come
+through uh model-based reinforcement
+learning.
+Okay, so let's start from introducing
+this general recipe.
+So, at uh at the very kind of
+fundamental level, if we knew the
+dynamics, that is a function that
+basically predicts the next state given
+the state and an action that we take in
+that state,
+uh we could use tools from optimal
+control, right? So, basically pick a
+method from the first half of this class
+we could use, right? We have a model, we
+could plan through it, we could use a
+direct method, indirect method,
+uh basically uh our favorite choice.
+And so, kind of a very simple idea would
+be well, we want this object because it
+could allow us to use any of the tools
+we discussed before. Let's use
+interactions with the environment to
+collect data
+and examples of these transitions, and
+let's learn an approximate model of this
+ground truth dynamics.
+And so, we could apply a a strategy that
+looks uh like the one shown here on the
+slide, whereby we might have uh a base
+policy
+pi zero in this case. This could be
+random. It could be
+an exploration policy that is given to
+us from some pre-knowledge or anything
+that we choose.
+And we could collect and we would run
+this in the environment and use this to
+collect data set of transitions, which
+are basically comprised of these
+triplets over here.
+Right? So, we would be
+running our policy in the environment.
+In doing so, we would be seeing examples
+of these one-step transitions.
+Which we can then collect to basically
+be examples of mapping from
+uh
+state and control to next state.
+Once we have this data set, we can then
+fit a dynamical model to this data
+through our well-favorite regression or
+supervised learning
+technique. For example, minimizing some
+form of squared error or maximizing some
+log likelihood over our data.
+And then we could use this model to
+basically plan.
+So, the question here is would this
+work?
+Well, in some cases, yes. Right? So,
+especially if dynamics are relatively
+simple. For example, we could have some
+linear time invariant dynamics.
+This tends to work pretty well.
+And this also relates to some of the
+discussions we were doing on
+system identification. Whereby if we
+have fairly well-understood model, if
+the underlying dynamics are within the
+function class that we're trying to fit,
+and maybe we only have to tune limited
+number of parameters,
+then these tools actually work quite
+well.
+And we might hope to generalize good
+enough to the to the real system.
+Of course, this doesn't hold in
+probably the majority of cases,
+specifically when we're dealing with
+complex, potentially non-linear
+dynamics,
+and especially in the combination of
+complex dynamics and high-capacity
+approximate models. For example, neural
+networks.
+And this is because extrapolating from
+observed data to, for example, out of
+distribution examples from our
+environment is difficult and can be
+misleading. So, for basically the rest
+of this class, we'll be looking at
+ways to basically
+or approaches to try and
+have this exact same formalism work in
+the cases where
+we might be having complex dynamics to
+to learn.
+Okay. So, why is this an issue? So, let
+us look at like
+fictitious and a kind of pictorial
+example. So, say we are in this very
+simple world, the agent is the black dot
+here on the slide, and we have an
+obstacle which we wish to
+avoid. The goal here is to go as further
+north as possible.
+So, in this case, say that our
+exploration policy pi zero is something
+that explores a certain amount, certain
+subset of the state space, specifically
+describing the state distribution under
+policy pi zero, P sub pi zero of X,
+which is basically the subset of the
+state space induced by that policy.
+Of course, if we were to learn now a
+dynamical model on this
+transitions, which we collected through
+this experience,
+we might and then we use this for
+planning, we might be ending doing
+something extremely
+meaningful within the the realm or the
+states that we have observed, but the
+moment where we change and we go outside
+of the
+state distribution we have covered,
+this is obviously is the case.
+And so, if you remember also our
+discussions on
+um imitation learning, this is another
+example of kind of covariate shift and
+distribution shift.
+Whereby basically when we use the
+learned dynamical model
+as an inner component of our planning
+algorithm, we're then observing a
+different state distribution.
+And so, here generalization and
+extrapolation across these settings is
+actually what matters.
+Okay. So, what could be
+a first
+fairly heuristic and empirical way to
+improve the the basic recipe we were
+describing before?
+So, again, let's consider our three
+steps where we take a policy, run it in
+the environment, collect some data,
+use this data to fit a model, and then
+say that we want to use this to plan.
+Of course, what we could do first of all
+is to plan in a receding horizon
+fashion. So, we know that
+the plan might be slightly off or at
+least might be accurate closer to our
+initial time, but then we might want to
+reevaluate where we actually are in the
+environment and replan. And so, in this
+case, using a model predictive control
+approach might be beneficial. Right? So,
+this is a simple
+a simple improvement here.
+But also, what we could do is we could
+basically use the transitions that we
+are observing while deploying this
+policy to basically add them to the
+dataset and refit our model. So, in a
+way, we are gradually closing the gap
+between the state distribution induced
+by the original policy and the state
+distribution induced by this planning
+policy. If that makes sense.
+Okay. So, these are indeed two simple
+steps which
+can in practice make make a substantial
+improvement.
+However, kind of I would say the the
+main focus for today is on uncertainty
+quantification and we'll see we'll see
+why shortly.
+Specifically
+the reason why
+these techniques
+fail is that in theory what we would
+like to have is well, we have a very
+complex dynamical model or system we're
+interacting with and we would like to
+have a high capacity model that is able
+to come to represent these complex
+dynamics in the high data regime. So we
+want to have high capacity models.
+However, we also want this high capacity
+model to not overfit
+to the observed data if we only have a
+limited set of that data.
+The reason why we don't want this
+overfitting problem is because
+if we then use
+optimizer or a planning algorithm, for
+example, as we were doing in our
+previous recipe to optimize over a
+learned model, we the optimization will
+be prone to
+exploiting errors in the positive
+direction, if that makes sense.
+So
+visually
+say that we have
+only a limited number of data points
+represented by the red dots here on the
+slide.
+Here we have two equivalent functions
+that fit data. But the blue one here is
+potentially representing
+a higher capacity model that is
+overfitting to the data, right? So it's
+fitting perfectly our observed data,
+but then it is doing this behaving quite
+wildly outside of the observed data.
+Now, say that you are an optimizer that
+wants to maximize the performance from
+the blue model, you might be tempted to
+choose behavior that basically leads to
+exploiting the positive reward
+predictions under our model, right?
+And so I think this is a kind of a key
+problem here and a key tension when you
+want to use learned models on one hand
+that might not extrapolate or generalize
+well with an optimization that is in a
+way acting as a black box optimizer and
+could exploit errors in the positive
+direction.
+So for
+today, what we'll be looking at is a
+possible solution to this problem, which
+is basically considering
+uncertainty and loosely speaking how
+certain our model is about its
+prediction as a mechanism to
+basically push against these these
+possible flaws.
+Does that make sense? Any any questions
+on on this?
+Okay.
+Okay, so first of all,
+we're talking about uncertainty
+estimation and what do we what do we
+mean by uncertainty on the predictions
+of our model?
+And specifically, we mean
+what we mean by uncertainty is we mean
+an expression of a distribution
+over possible outcomes.
+So for example,
+instead of predicting a single point
+estimate of what is the most likely next
+best state from given a state in a
+control, we want our predict
+system models to predict a full
+distribution and associated likelihood
+of what is most likely to happen in the
+future, if that makes sense. So
+visually, what we want from our
+dynamical model is something that gives
+us kind of a range of possible scenarios
+that we could be optimizing for with the
+associated
+probability.
+We want this because this essentially
+allows us to reason in terms of
+expectations under our model.
+So, why is this
+why can this really inform planning? So,
+consider again this simple example where
+we are the black dot on the side.
+We want to reach a goal state
+represented by the green star and we
+have this kind of cliff-like environment
+where kind of the the lines here
+represents the edge of the cliff. So, if
+we go beyond this uh
+episode terminates essentially.
+Now, say that we have two candidate
+open-loop trajectories. So,
+we basically assume we have access to
+U1 to UT prime
+and
+U1 double prime
+to UT
+double prime.
+And say we want to use something along
+the lines of the model-based algorithms
+we're using before.
+We would basically be
+kind of simulating in our heads these
+two possible action trajectories,
+open-loop trajectories, where one would
+lead us kind of to
+very close to the goal and one would
+lead us a little bit more further away.
+In this case, the circles represent kind
+of our estimate of how certain we are
+about where we would end up. In this
+case, kind of both in both cases we are
+fairly certain about where we're ending
+up and so it's clear kind of that the
+trajectory associated with the yellow
+circle is is better because it then
+allows us to be closer to the goal.
+However, kind of
+despite having in a second case assumed
+that now we have broader uncertainty
+bands around our terminal point despite
+the terminal kind of the the best kind
+of the expected value being the same in
+both cases. Now we have a greater
+uncertainty over those. And so the
+expected reward under this higher
+variance prediction would be lower for
+the for the yellow circle, right?
+Because under this new uncertainty
+bound, we're actually considering the
+case that in actually the majority of
+the cases we're ending up ending up off
+the cliff. Does that make sense?
+So the reason why we care about
+uncertainty estimation is because it
+assuming we are able to do this, so
+we're able to learn a model that gives
+us an estimate of how certain we are
+about our prediction, it gives us a
+mechanism to express performance as
+expected reward under our model.
+Any questions here?
+Cool.
+Okay, so the next question is how can we
+model uncertainty? We say we want to do
+this.
+What are different ways of doing so?
+So the first idea is we could use the
+output entropy from our given model.
+So
+I mean kind of pictorially what we are
+trying to do is we are trying to learn a
+parametric function which maps from
+states and controls to probabilities
+over next state.
+In order to do this, we might be fitting
+either kind of a depending on whether
+the state space is discrete or
+continuous, we might be fitting either a
+categorical distribution over next
+states. So we're assigning a probability
+to each of our possible next states. Or
+we might be fitting a continuous
+distribution, say a Gaussian, which
+basically expresses
+you know, the the the mean value where
+we expect to be and our standard
+deviation and a variance of our
+uncertainty.
+In this case, of course, kind of the we
+could use the entropy that basically
+comes from the definition of the
+distribution itself. For example, we
+might be using the standard deviation of
+the fitted Gaussian.
+However,
+a model entropy is different from
+what is often referred in literature as
+epistemic uncertainty. So, you might
+have heard about this distinction
+before, which is basically the
+distinction between aleatoric
+uncertainty, that is the
+the noise that is intrinsically related
+with the process that we are observing.
+For example, here on the slide, we see
+this kind of parabolic
+process.
+We have some observations of this
+process
+and there is some inherent noise that
+might be observed from this process.
+The other type of uncertainty is
+epistemic uncertainty, whereby
+we are actually uncertain about the
+model itself.
+Right? So, here we were certain about,
+for example, the specific parameters of
+this parabola.
+It just there was some inherent noise
+that is impossible to model.
+On the other hand, again using this kind
+of
+fictitious example over here,
+we might have two possible alternative
+models, the green one and the blue one,
+which with associated different
+parameters,
+which fit equally the model the observed
+data, but are just two different models.
+Right? So, here we would have two
+different values of the parameters theta
+that describe these two different
+curves. And so, this is an uncertainty
+between
+on the model itself. So, which of these
+two realizations of my parameters is
+actually the one that
+is better representing my my data?
+So, using the entropy gets us somehow
+some way along this path, but it clearly
+does not
+account for
+what we actually care about, which is
+the potentially mutually
+coexistent and alternative explanations
+of the data according to different
+models.
+Okay, so how do we model for this
+how do we estimate for this model
+uncertainty? I would say probably the
+most
+common approach for doing so is
+leveraging
+Bayesian statistics and Bayesian
+approaches
+whereby
+typically what we are
+interested in doing with Bayesian
+approaches is that we want to
+basically express this model uncertainty
+as a distribution over parameter values
+theta given the observed data.
+Right? So, until now when we were
+discussing
+kind of fitting a model to our data, we
+are often just saying that
+we would be converging to a specific
+value of our parameters theta.
+On the other hand, if we are uncertain
+about the model itself, we might be
+interested in modeling maybe a full
+distribution of how certain we are about
+what the ground real value of the
+parameters theta is.
+And so, this is what we mean by
+the distribution over parameters given
+the the data set.
+That is we are given some observation
+and we want to ideally model the full
+distribution of plausible hypotheses.
+Why is this useful? It's because once we
+have this full distribution,
+uh we could actually predict through our
+learned dynamical model
+uh
+by basically averaging out all the
+possible future predictions that would
+happen if we were to basically average
+out over this full distribution.
+And so this is referred to as uh the
+predictive posterior distribution.
+Formally, this is uh expressed through
+this integral over here, where we're
+basically saying that we're computing
+the prediction of our next state
+averaged over all possible values of my
+uh parameters theta.
+I think uh
+you know, as as often the case, to
+visualize these integrals is often
+useful to see this in the discrete
+setting. So, say we have only two values
+of our parameters theta.
+This integral, this predictive posterior
+distribution, would essentially entail
+uh running my predictions for both of my
+values of theta, and then weighting the
+prediction based on the probability of
+each individual of theta.
+This is the continuous kind of expansion
+of that same idea.
+How does this look in practice?
+&gt;&gt; [snorts]
+&gt;&gt; Uh well,
+of course, uh we won't have time to
+cover this here, but you know, Bayesian
+statistics basically uh provides and the
+Bayes' theorem provides basically a
+mechanism to retrieve the posterior
+distribution over parameters from from
+data.
+Um
+but let's look at what the this means in
+practice.
+Uh for example, say we want to solve a
+regression problem where we have some
+uh well, we have uh
+an X. So, we want to predict the value
+of Y given X.
+We want to fit here just a line to this
+data. So, we have two parameters that we
+want to fit.
+Um so, the intercept and the slope.
+Say that we have only one observation
+from our ground truth process, which is
+the dashed line over here.
+Uh if we fit our model linear model to
+this data, of course, there could be
+many possible in principle infinite uh
+lines that pass through the point.
+Uh which in practice would mean we would
+have a very a broad uncertainty over
+possible values of our parameters
+represented by this plot over here. So,
+here we're plotting the two parameters,
+say the intercept and the slope.
+And so, we could see that while the
+ground truth parameter is represented
+here by the red
+cross,
+uh our posterior distribution is still
+pretty broad.
+What does this mean in practice is that
+if you if we were to sample n
+realizations of my posterior
+distribution and plot the line,
+you would get these different red
+curves.
+If we would then average out according
+to the predictive posterior
+distribution, we would get these
+confidence bounds that we have on the
+right.
+Is the are are the plots clear?
+Yeah.
+And so, what we're showing here is the
+basically progression as we collect more
+data, right? So, here we're looking at
+the case where we had only one data
+point. Here we have more data points and
+so, our posterior distribution of
+parameters is more narrow and closer to
+the ground truth. And you see how the
+overall uncertainty bounds that come
+from the posterior predictive are also
+uh more uh concentrated.
+Until here we are observing enough data
+to have a pretty reliable estimate of
+the ground truth model.
+Okay. And so,
+given that this is clear, let's briefly
+mention a couple of I would say the most
+popular approaches for modeling
+dynamical systems
+in a way that we are accounting for this
+uncertainty. And we'll be looking at
+two. The first one is Gaussian
+processes, and the second one is
+ensembles.
+So, a Gaussian process, loosely
+speaking, is basically represents a
+distribution over functions.
+Right? So, you could imagine that if we
+are sampling from a prior distribution
+over functions, that is before observing
+any data, we will be getting pretty
+different behavior.
+On the other hand,
+uh Gaussian processes basically
+formalize
+analytically a mechanism to go from a
+prior distribution over functions to a
+posterior distribution over function in
+light of observed data.
+Uh which would basically be still a
+distribution over function that is
+consistent with the with the data at
+hand.
+Um
+kind of when I first approach also
+Gaussian processes, I would say one of
+the most confusing aspects to me was
+this idea of distribution over functions
+and what actually meant. In practice,
+Gaussian processes
+uh model data as multivariate Gaussians.
+So, this is why they're referred as
+Gaussian processes.
+And
+basically encode this idea that an
+uh N-dimensional Gaussian, for example,
+a two-dimensional Gaussian,
+um
+can be mapped so a sample from a
+N-dimensional map
+Gaussian can be mapped to basically an
+approximation of a function.
+So, say that we are sampling from this
+two-dimensional Gaussian, say this point
+over here,
+which could be like five
+and four.
+Now, we could take this kind of
+two-dimensional basically vector that we
+just sampled. And if we plot it kind of
+still in two dimensions,
+what we could get is that we could get
+a first value of five,
+a second value of four.
+And by connecting this, we're basically
+getting
+uh
+uh discretization of a function now
+described only in this small interval.
+Now, of course, we can only plot things
+in two dimensions, so maybe this might
+not yet look like a function to you. But
+now imagine that we're sampling an
+n-dimensional vector from a multivariate
+Gaussian.
+Here we would get just a vector with
+more numbers.
+And if we still plot them in the same
+way, we would basically get
+the expression, you know, the
+approximation of a of a function, right?
+So, this is usually what
+you know, how these are implemented in
+practice and why people refer to the as
+distribution over functions.
+In practice, you can imagine that
+Gaussian processes essentially provide
+uh a mechanism to update from a prior
+distribution
+over functions to our posterior
+distributions once we have observed
+data.
+Again, we're kind of sticking to
+intuition, but uh I hope this is making
+sense. Yeah.
+Mhm.
+Yes. So, here I was uh trying to provide
+kind of an
+intuitive uh understanding of what
+people refer to as uh distribution over
+functions. So, uh Gaussian process is
+essentially representing uh
+multivariate Gaussian distribution. So,
+it's a
+for example, here I was representing it
+in two-dimensional.
+So,
+if we have this two-dimensional
+Gaussian, a sample from it this
+two-dimensional Gaussian could just be
+this point over here.
+Here I was imagining like 4 5 as
+coordinates.
+If we
+uh would be wanted to plot this point as
+a
+function, essentially.
+This would essentially be something like
+this where we are basically
+uh mapping this point and these
+coordinates of this point but just
+unfolding it into a function, if that
+makes sense.
+Now, the intuition is that
+what happens if I want to build, you
+know, like a full continuous function as
+we were doing before, you could imagine
+that it's basically a
+more finely discretized version of this
+with an n-dimensional vector, right? So,
+if if rather than having two dimen-
+two-dimensional Gaussians, I would have
+an n-dimensional Gaussian, say a
+hundred.
+Uh then we would be able to basically
+represent points on a very fine grid.
+And by basically plotting these points,
+you will get a function out.
+Yeah.
+&gt;&gt; Is it ready?
+The values of the function.
+Or is it like
+like it Does it have to be the sequence
+of numbers that the function would
+output?
+&gt;&gt; Uh yes, so maybe to rephrase what you're
+saying, here we are implicitly assuming
+an order of the of the dimensions. Yeah.
+Uh but from the perspective of learning
+this
+the order doesn't change anything
+because we're still fitting kind of the
+the Gaussian that we are learning to a
+high-dimensional object, right?
+So, for us, kind of data will be living
+in this high-dimensional space and we're
+just fitting a n-dimensional Gaussian to
+that data.
+This is just the way we would then plot
+it.
+Yeah.
+Okay, so why are Gaussian processes uh
+popular?
+First of all, a processes are extremely
+data efficient.
+Um [snorts]
+and they provide an
+an analytical expression for the exact
+posterior. That is, the exact posterior
+over functions described by your data.
+Meaning,
+given some data points and some
+assumptions on Gaussianity,
+we this distribution is actually the
+exact representation of the posterior
+distribution over functions that explain
+this data.
+This is
+pretty cool, because if we wanted to
+achieve something similar with neural
+networks, this would be very hard,
+especially with this amount of data.
+Um
+because this is a extremely low data
+regime, and so getting these extremely
+well-behaved
+confidence bounds
+is very challenging to have. On the
+other hand,
+Gaussian Gaussian processes achieve this
+by having a an exact representation of
+the posterior.
+On the other hand,
+I mentioned analytical expression of the
+posterior. This analytical expression,
+at least in the nominal case,
+entails having to do some matrix
+inversions. And so, depending which as a
+function of n, where n is the number of
+data sets of data points. And so,
+scaling Gaussian processes to
+high-dimensional data
+is actually complex. And so, there are
+extensions of Gaussian processes that
+try to do so, but at least in their
+kind of at face value, this is
+definitely a weakness.
+Okay, a second approach for estimating
+uncertainty
+is referred to as bootstrap ensembles.
+And the idea is that
+so, we have this general mechanism for
+learning dynamical models through
+supervised learning.
+That is we just fit a black box model to
+our data.
+Uh, and we want to have an
+encode an idea of uncertainty
+on
+in this estimation process.
+So, what we can do is that let's The
+idea of ensembles is let's train
+multiple models
+and see if they agree and where with the
+underlying idea that these different
+models will So, different models trained
+independently to fit the same data will
+likely agree when they are certain about
+their predictions. And they will likely
+disagree whenever there is uncertainty,
+right? So, say you have N versions and
+copies of the models that have been
+trained independently.
+If they will be probably agreeing close
+to the regime of observed data, and they
+will potentially disagree when we are
+going far away from the from our data.
+And so, ensembles basically
+um
+encapsulate this idea through an
+algorithm,
+which is basically saying
+nothing else that we're saying here. In
+ensembles, you would just train
+independently N copies of your model and
+and then average the prediction
+according to these N models.
+So, specifically what you would be doing
+is we say we have five different um
+neural network models which we train.
+We could then get five different
+predictions for our next state.
+And so, what we can then do is maybe our
+prediction would be the average
+prediction across these models.
+This could be one idea.
+And maybe another way to visualize this
+is
+uh say that we have So, here the x-axis
+represent the parameter space, theta.
+Uh,
+and the y-axis represents our basically
+this is the posterior distribution over
+parameters given data.
+So, say that the ground truth posterior
+distribution is represented by the
+shaded uh kind of
+uh multimodal distribution here.
+The
+and for now disregard uh VI which stands
+for variational inference and this is
+multi-SWAG algorithm. Uh
+the ensembles would essentially mean in
+this case
+uh fitting four
+different models, the blue ones,
+independently.
+Through uh optimization, these four
+models will converge to four different
+values of the parameters theta.
+And so, this these parameters theta
+might converge to different local minima
+depending on how the optimization goes.
+And so, these are essentially an
+empirical approximation of the ground
+truth uh posterior distribution. Because
+they they will naturally, because of the
+stochasticity of stochastic gradient
+descent and uh the optimization process,
+they will converge to different uh local
+minima.
+And so, these are a way of empirically
+exploring the the landscape and
+approximating the the ground truth uh
+posterior distribution.
+Yeah.
+&gt;&gt; This is splitting the
+the different modes. Yes.
+Like cuz the goal
+Here you have a multimodal distribution
+of theta,
+right?
+Your goal is to figure out what all of
+the modes are.
+By having
+this each one of these
+You said neural networks like ensembles.
+Each one of these represent
+a different mode that you hopefully can
+figure out in the structure.
+&gt;&gt; Yeah, indeed. So, the idea here is that
+this learning problem very likely has a
+highly multimodal landscape of
+solutions. Um
+the approaches we are discussing before,
+like Gaussian processes, try to derive
+analytical expressions
+for these exact distributions.
+Ensembles here, on the other hand, uh
+disregard any of these formal uh
+approach and just decide to instantiate
+n copies of these models,
+maybe initialize them differently.
+Uh
+the stochasticity of gradient descent
+still will lead them to converge to
+different
+uh different final solutions.
+And by doing so, they will The hope is
+that they will cover meaningful
+different modes uh of the ground truth
+posterior distribution.
+So, I think your original question is
+how do you differentiate between these
+copies?
+Uh
+I would say if you're talking about
+neural networks specifically, typically
+these models are initialized randomly.
+So, the initial values of the parameters
+are are random.
+And also, we're optimizing them to
+stochastic gradient descent. And so, the
+even the directions that they're
+following will be uh random to some
+extent. So, there is some natural
+stochasticity that comes.
+Yeah, no, indeed. So, uh this is
+something that I I did not discuss. So,
+the
+idea is that formally So, I think
+hopefully in practice it makes sense
+what we're doing, right? So, we're
+initializing four models, and then we
+have four different um
+converge parameters theta, and then we
+could average over them.
+What are we doing in practice is that we
+are approximating the ground truth
+posterior distribution
+by taking the average of what is
+referred to as as a direct distribution,
+which is essentially saying that
+say that I have one uh
+observation of my theta. The Dirac
+distribution is something that is
+basically a spiky distribution that
+gives all the probability mass exactly
+to that point.
+And so this is, if you wish, more
+formally,
+uh
+how this process of averaging out
+predictions from different models would
+translate to the predictive posterior
+that we were describing before.
+Through the lens of these Dirac
+distributions.
+So remember that in the predictive
+posterior, what we are saying is that we
+want to average out over all the
+different models that we're training.
+Or specifically, average out over the
+uh posterior distribution of our
+parameters.
+So do you do you remember the the
+discussion we were doing on uh
+predictive posterior and what that
+means? How do we compute those
+confidence bounds?
+Is that we were basically
+uh for each in the discrete case, for
+each value of our parameters, we were
+propagate basically predicting with that
+value of the parameters. And then
+waiting that probability uh that that
+discrete that prediction with the
+probability of how certain we were of
+that specific value of the parameters.
+In this case,
+uh we are doing so not in the continuous
+case, but through these uh kind of Dirac
+approximations.
+But does that make sense?
+Okay. But so, long story
+um
+what we've been doing so far is that
+we introduced this basic recipe for
+um model-based reinforcement learning,
+namely some version of uh
+run a policy in the environment, collect
+transitions,
+fit the model to those transitions, and
+then use that model for planning.
+We motivated how uncertainty
+or at least estimating uncertainty on
+those predictions is likely very
+important.
+And now let's let's look at some
+specific examples and how we could make
+this work in practice.
+So,
+how can we make
+use of this additional knowledge we just
+we just gained?
+Specifically, one mechanism to do so
+could be the following. So, let's assume
+that we have a candidate action sequence
+again some
+given to us by some planning algorithm.
+And now we have
+approximate model of the posterior
+distribution of the parameters theta,
+which we learned through, for example,
+one of the methods we discussed today.
+So, we could sample
+a specific value of our parameters theta
+from this posterior distribution.
+And we could now propagate the learned
+dynamics through
+this specific instantiation of the
+dynamical model.
+We could then use the these this
+propagated trajectory to compute our
+predicted reward.
+So, we're basically simulating in our
+head what is happening. We are given a
+candidate action sequence. We are
+sampling one of the models from our
+posterior distribution over models,
+and we're using this to propagate
+forward what is happening and scoring
+the quality of what is happening.
+And then we we can just repeat these
+three steps
+to basically compute the average reward
+according to our
+learned
+posterior distribution.
+Right? So,
+specifically, we would be So, what this
+algorithm is doing is directly
+instantiating this idea that we were
+describing pictorially over here.
+Right? So, in the plot there, we were
+saying that uncertainty gives us this
+mechanism through which we can compute
+the expected reward under our model.
+And so, in this way, we could
+basically approximate the expected
+reward under all of our predicted
+samples.
+Does that make sense? Maybe, again, more
+visually, what we're doing is that
+we are given a candidate action
+sequence.
+We sample maybe one version of one
+parameters from our posterior
+distribution,
+and we propagate the model forward.
+Here,
+we would be reaching a specific sum of
+rewards over time
+according to this specific model.
+We could then sample a a different
+version of the model, and we could have
+a different propagated trajectory with a
+different reward, right?
+If we repeat this multiple times, we
+would then have n of these propagated
+futures.
+And so, what we could do is that if we
+average them out, we would then be
+computing the an approximation of the
+expected reward under the uncertainty of
+our model.
+Okay. So, of course,
+um
+one thing that I really want to make
+sure that, you know, to convey is that
+this is obviously just a choice, right?
+So, we're not kind of the takeaway way
+here, I think, should not be this is the
+best way to go for when you're talking
+about model based reinforcement learning
+because ultimately it depends on the
+problem at hand. Right? So maybe there
+is even no need at all to look at
+uncertainty quantification because just
+having your
+linear time invariant model is well
+estimated enough and so there is no need
+to do any of this. But in the general
+case where
+system dynamic approximation is
+challenging and you want to use high
+capacity models for approximating our
+dynamics,
+uncertainty plays a big role. And so
+this could be one instantiation of this
+idea of let's use whatever favorite way
+to estimate posterior distribution over
+parameters of our model and then use
+this to meaningfully represent
+expectation under this uncertainty.
+And so just to to repeat myself, this is
+only a choice
+but it's one instantiation of this more
+general idea that is whenever we want to
+plan through a learned model,
+we might want to be we might be
+interested in evaluating the expected
+reward under the learned model.
+So
+a particularly impactful paper
+now a few years old but it uses exactly
+these ideas
+introduces algorithm called pets.
+Whereby the main idea is that they were
+using as a model basically an ensemble
+of neural networks to approximate the
+posterior over the model.
+They were then
+using
+a sample basically different models from
+this ensemble and use them to generate
+predictions of different futures exactly
+as we were saying in the previous slide.
+And then they would be
+uh,
+this in a model predictive control
+fashion. So, they they would basically
+have a cross-entropy method to generate
+these candidate plans
+uh, through uh, these uh, exact same
+algorithm which we just described. They
+would basically take these candidate
+plans and score them according to
+samples from these ensemble of neural
+networks
+and then pick the best action based on
+that
+and implement this in a receding horizon
+fashion. So, you predict a full plan,
+uh, you you actuate only the first step
+in the plan and you repeat this process.
+And so, this is just a quick note, but
+it's something that I think it's this is
+a nice paper if you if you want to read
+about these these models in practice.
+Okay, but does it make sense how this is
+like one instantiation of what what
+we're saying?
+Okay.
+So, in in this paper specifically, uh,
+and I'm using this as an example to
+highlight the classical benefits of
+model-based RL
+um, is that here they would be measuring
+performance of, well, their method in
+blue,
+uh, compared to, well, a bunch of
+different baselines. But, for example,
+they're comparing against, uh, PPO or
+soft actor critic, which is a also a
+version of the actor critic methods we
+discussed in class.
+Uh,
+across a number of different tasks. Uh,
+and I would say the most interesting
+result here is that these model-based
+methods, namely the blue curves,
+generally are much more sample
+efficient. So, if we compare the
+performance on the Y axis in general
+with respect to the number of time steps
+in through which they had to interact
+with the environment, you could see that
+maybe the performance at convergence is
+fairly similar.
+Uh, but the blue curves typically tend
+to converge to this
+you know, converge performance much
+faster.
+And this is because through
+learning the model itself, you we can
+basically circumvent a lot of the
+interactions with the with the
+environment.
+So generally, the benefits in
+model-based RL
+uh
+often relate with uh sample efficiency.
+Okay. So any any questions before
+wrapping up the the class?
+Yeah.
+&gt;&gt; What's your favorite method?
+&gt;&gt; So
+I like to be fairly uh
+you know, agnostic and pragmatic uh
+depending on the on the problem at hand.
+I would say that
+&gt;&gt; [snorts]
+[laughter]
+&gt;&gt; No, you're saying this is the diplomatic
+answer, yeah. No, I would say that the
+model-free algorithms are definitely
+more mature as a technology. And so I
+would say algorithms such as PPO and
+soft actor-critic are typically the way
+to go for a continuous control.
+Uh
+model-based RL still very active line of
+research. So
+if I have to pick one, I would go for
+soft actor-critic or PPO. Yeah. Well,
+those are two, but
+&gt;&gt; [laughter]
+&gt;&gt; those two. Yeah.
+Uh
+yeah, so I think this is a nice leeway
+into a kind of basically what I wanted
+to discuss here. Because throughout this
+class, we have been introducing, you
+know, n different ways of
+behaving when looking at optimal
+control, right? So ranging from
+open-loop methods, it could be indirect
+and direct, closed-loop, dynamic
+programming, reinforcement learning,
+imitation learning. And so the question
+that you could ask is, I mean, this is
+great, but you're just confusing me. Now
+I have to pick among hundreds of these
+algorithms. How do I navigate this? And
+the the point here is that
+these methods are not in competition
+with each other, but they're actually
+well, different methods will be tailored
+to different applications. And actually
+most of the time is these methods are
+combined with each other. And this is
+because the
+decision-making
+pipeline is typically organized as a
+through a hierarchical structure.
+Specifically, if we were to decompose
+this hierarchical structure,
+generally we would start with having a
+model of the world or a representation
+of what is interesting for us.
+For example, take the case of
+autonomous driving.
+We might have some maybe semantic maps
+of what we're observing in our
+environment.
+And given whatever representation of the
+world we are interested in, we would
+then have kind of the the autonomy stack
+is typically decomposed through
+different modules that interact with
+each other. So the first kind of
+decision that you have to make is
+typically some higher-level goal for our
+system, right? So we are perceiving the
+world and now we have to choose what we
+want to perform.
+Specifically, these high-level decisions
+might be kind of continuing the
+autonomous driving example, something
+along the lines of picking if I want to
+change a lane or not. So these are very
+high-level
+actions and decisions that we want to
+make. At this level of the hierarchy,
+this is typically where methods that
+belong to kind of closed-loop dynamic
+programming-like algorithms lie. And
+this is because for these higher-level
+decision-making
+aspects, you we typically want to encode
+stochasticity and want to make sure that
+we are dealing with the stochasticity
+when picking decisions.
+And the output of this
+uh is typically in a form of a goal, for
+example, lane change.
+Now we have this goal, but we have to
+make it actionable, right? So, we want
+to make this such that we have an actual
+uh you know, trajectory which we can
+enact in the in the world.
+And so, this is something that usually
+uh is dealt with open-loop techniques.
+So, we would have this higher-level
+goal, like a navigation goal, and then
+we want to translate this navigation
+goal into a finer-grain trajectory which
+we want our car to follow.
+This trajectory obviously encodes some
+notion of the dynamics of the vehicle.
+Despite this might be maybe some
+uh lower-fidelity models of the
+dynamics, but still we want to enclose
+encode some constraints in terms of
+safety, some constraints in terms of
+dynamics. And so, this is where uh
+open-loop techniques typically
+uh fall.
+Once we have a trajectory, we want to
+uh make sure this is
+uh
+you know, physically tractable and
+implemented in the on the hardware,
+right? So,
+this is where
+usually ideas from model predictive
+control, specifically in its tracking
+instantiations, uh common place.
+So, we would have a reference trajectory
+that is given from the open-loop uh
+algorithm.
+And now we want to make sure, first of
+all, that we're tracking this over time,
+but also potentially including a
+finer-grained uh
+dynamical models of our of the system,
+maybe some uh
+safety-oriented constraints which we
+were avoiding in the open-loop uh stage.
+Um and so forth. So, we start from
+representation of the world.
+We use uh higher-level decision-making
+to have a high-level goal for our
+system.
+We compute a trajectory that tries to
+achieve that goal. We then want to
+implement this trajectory in practice,
+so we want to make sure we are tracking
+it.
+And obviously, last but not least, we
+feed
+these to the actuators, right? So, at
+the end of the day, we have to
+make this work on the real-world
+hardware. And so, we want to make sure
+that this is actually tracked by what is
+happening in reality. And so, this is
+usually where things like PID controls
+come into place.
+Of course, throughout all of this, we
+might have some
+safety concerns, and we could be dealing
+with safety-critical applications.
+For example, in the case of driving, we
+might have some
+set of states which we do not want to
+visit because of some safety concepts
+which we care about. And so, the safety
+concepts
+which are which may be a computed
+through things such as Hamilton-Jacobi
+reachability,
+are typically mechanisms through which
+we can inform both
+or either or either of open-loop and the
+tracking
+module.
+So,
+in a way, I hope this is starting to
+make a little bit more concrete what I
+mean when I say that these techniques
+which we introduced in this class are
+definitely not exclusive, but actually
+typically combine in a autonomy stack.
+And the details of these algorithms will
+obviously depend on the application. But
+so, we hope that with the with this
+class, we give you first of all a broad
+understanding of all of these concepts,
+and also
+focused on the
+kind of higher-level understanding of
+how these modules could be combined, and
+the pros and cons of of these ideas.
+All of this is obviously
+in
+kind of we should, I think, concretize
+this in a moment in time where
+learning-based and end-to-end approaches
+are definitely becoming more and more
+popular.
+And so, I would say that historically,
+learning has started from the higher
+levels of this abstraction. So,
+perception is the first
+kind of situation where learning
+basically became the the factor
+standard.
+And I would say that right now,
+kind of end-to-end approaches are
+more or less starting to carve its way
+their way down along this hierarchy. I
+would say right now, they're basically
+somewhere over here. So, in between the
+open-loop and the kind of closed-loop
+trajectory tracking stage.
+I would say even the most bullish, you
+know, companies or approaches that
+claim, you know, end-to-end approaches,
+typically they don't mess with the lower
+level
+components.
+And this is because here is really where
+you want to make sure you have
+fine-grain control, you're encoding hard
+constraint guarantees,
+and making sure that everything works
+concretely in practice.
+Okay. So, if there are no further
+questions, I want to really thank you
+very much for sticking with us
+throughout this this quarter
+and wishing you best of luck for the for
+your exam.
+&gt;&gt; [applause]

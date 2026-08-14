@@ -1,0 +1,1562 @@
+So I hope you enjoyed the lectures from
+Daniel. Now I'm back for the next few
+lectures. I'll be your instructor. So
+let me first recap where we are and then
+I'm going to introduce the topic for
+today. And to do so let's go back to our
+usual road map for this class.
+So, so far what we have been
+investigating is the left hand side
+branch of this complicated road map.
+That is we have been looking at the
+methods that solve the optimal control
+problem in open loop form. That is what
+we are trying to compute is a sequence
+of controls parameterized by time that
+optimize a given cost function given in
+additive form. And we'll be looking at
+two broad classes of methods referred to
+as indirect methods and the direct
+methods. These two classes of methods
+are really complimentary. So in the case
+of indirect methods the idea is to first
+derive necessary conditions for
+optimality. Basically the generalization
+of the gradient equal to zero condition
+from nonlinear optimization to the
+setting of infinite dimensional
+optimization namely optimal control. You
+saw that uh that necessary optimality
+condition boils down to solving a
+twopoint boundary value problem that is
+or a differential equation with split
+boundary conditions.
+And historically that's the uh first
+methods that has been developed to solve
+this class of problems. And then you
+also saw the other approach referred to
+as direct methods where the idea is to
+take the given continuous time optimal
+control problem, discretetize it and
+once you have discretized the problem
+now you're back to the setting of a
+nonlinear optimization and then use a
+nonlinear solver of your choice in order
+to solve that nonlinear optimization
+problem.
+These days, particularly for robotics,
+direct methods uh are more popular
+thanks to advances in algorithms. For
+example, for nonlinear optimization,
+advances in hardware, now feasible to
+solve these nonlinear optimization
+problems on the edge. something that was
+not of course uh feasible both
+theoretically and practically say back
+in the 60s or 70s when indirect methods
+were uh originally conceived. Let's say
+indirect methods still have some
+usefulness in the field. Sometimes they
+can give you a close form solution which
+of course is the count. If you have the
+explicit uh representation of the
+optimal control sequence that's great
+because it takes zero time for
+implementation and other times even
+though we're not going to uh look at
+this topic uh more deeply there are some
+synergies between the indirect optimal
+control and the right optimal control.
+So the two methodologies can be
+hybridized.
+But rather than going more deeply on
+this topic today, we're going to switch
+to the right branch of this road map.
+Namely, we're going to look at the
+methods that fall under the class of
+closed loop optimal control
+methodologies. We're solving the same
+problem. The problem doesn't change.
+What we ch what changes is the uh
+mathematical objects we are optimizing
+over that is now our goal is to find an
+optimal closed loop control policy.
+We are no longer satisfied with finding
+an openloop control sequence.
+Now we want to find a control law that
+maps for all possible states that one
+can achieve at time t.
+It gives us for all possible states that
+one can achieve at time t. the optimal
+control U star.
+Again, as I said during the first
+lecture, the notion of open loop and
+closed loop is uh quite natural, but
+sometimes may lead to some confusions.
+Of course, the behavior of an closed
+loop optimal control policy is identical
+to the one of an openloop control
+sequence. In case the system follows the
+nominal trajectory that is the one
+induced by the open loop control
+sequence.
+So you might say why should we bother
+about computing a closed loop control
+policy. Well something that is not
+accounted for in our formulation at
+least in our basic formulation is the
+presence of disturbances or model
+mismatches. So even though
+mathematically the problem that we are
+solving does involve any disturbances or
+model mismatches in practice of course
+when you deploy these control laws or
+optimal control sequences you're
+controlling a system whose underlying
+dynamical model is different from the
+one that you have used for control
+design. An optimal control policy, close
+control policy is a more robust object
+because the moment that you go off the
+nominal trajectory, you know what to do.
+While in this case, you will blindly
+apply the control that was premputed for
+time stamp t no matter what.
+Is this part clear? Sometimes it might
+lead to some confusions.
+&gt;&gt; Yes.
+You start X
+&gt;&gt; X the same
+it maps the state wherever you are in
+the world. So you can think of UT as the
+right thing to do if you are exactly
+along the nominal state trajectory. But
+the moment that you move farther from
+it, you don't have any guarantee anymore
+that it might be the option thing to do
+now to develop. Now the question is
+okay. So it seems true that closed loop
+control policies are more robust and
+better in general than open loop control
+sequences. How do we solve for them? So
+what we're going to do next is to
+discuss an algorithm referred to as
+dynamic programming that is a very
+procedural way to solve for
+optimal closed loop control policies.
+Then you may say why don't you always
+use dynamic programming? Well because
+dynamic programming is computationally
+much more intensive.
+So the one hand you have something that
+is more powerful closed loop control
+policies but much more computationally
+intensive. On the other hand you have
+something that is computationally much
+more feasible but less powerful.
+That will lead us to MPC model control
+where we try to get the best of both
+worlds. We try to reason in terms of a
+clo closed loop control policies but in
+some sense with the same computational
+footprint of openloop control
+methodologies. That's what we will see
+in a couple of weeks. So does the plan
+make sense for the next two three weeks.
+All right.
+So then the task is uh how do we find an
+algorithm that allows us to solve for an
+optimal closed loop control policy?
+To do that we're going to derive the
+algorithm first in a discrete time
+setting. Next week we will extend the
+derivation to the continuous time
+setting.
+So for the discrete time setting what we
+have is essentially the same uh
+formulation we saw during lecture one
+but now we are discretizing time. So
+time is no longer a continuous variable
+is a discrete variable and each time
+instant is denoted by TK
+or stage
+K the two terminologies are equivalent
+time TK could be the discretization
+could be time 0 0.1.2.3 2 0.3 or
+equivalently we could say stage 0
+corresponds to time time 0 stage k= 1
+corresponds to time 0.1 stage k equal 2
+corresponds to time 0.2 two and so on
+and so forth. Now that we discretize
+time, we have to discretise our update
+equations. That is the mathematical
+formalism that allow us to map the
+current state and control into the next
+state in the original optimal control
+formulation that was given by a ordinary
+differential equation. Now what we have
+is a discrete time equation
+which can either be derived from the
+continuous time equation through
+discretization or maybe it just uh the
+most natural way to define the dynamics
+for your system. But in case you you
+derive it from the continuous time
+equations, one very simple way to go
+from a continuous time update equation
+to discrete one is through eer
+discretization. So say that your
+dynamics are given by x dot= f of x u t
+dot remember is derivative with respect
+to time. Then the derivative can be
+approximated as xt + delta t minus x of
+t over delta t.
+Which means that if you want to reason
+in discrete time then you have the
+discrete time update equation XT plus
+delta t equal to
+yeah is equal to x of t
+plus delta
+f of x u t. [snorts] And then you define
+all of this
+as your
+new dynamics
+equation. Now discretized.
+So FG that will be the F here.
+We have control constraints as usual. So
+the use now also the controls are
+discretized. You can take an action at
+stage K, a stage K plus one and so on.
+The controls at each stage K have to
+belong to some set capital U that is
+also a function of uh X. So your control
+set can change depending on uh where you
+are.
+Control constraints could be you don't
+want to accelerate uh uh you cannot
+accelerate beyond a certain acceleration
+level or you cannot impart thrust beyond
+a certain thrust level and so on.
+Then we had the cost function. So the
+cost function structure is the same as
+what we had for uh the optimal
+continuous time optimal control problem
+has an additive form. So there is a term
+that sums up the stage wise contribution
+to the cost. So this is the cost that
+you pay at time K if you're in state X K
+and you use control U K. Think about the
+fuel that you're spending or maybe how
+unhappy you are about being a state s
+and hnxn is the terminal cost how
+unhappy you are when at the end of your
+optimization horizon. So after capital n
+time steps you state x of n.
+So this is also the discretized version
+that we derive when you
+when we discuss about direct methods.
+So everything stays the same. The main
+difference is that now we are
+interesting in finding optimal closed
+loop policies. That is we want to find
+the the solution in the form of a
+function pi.
+Star means optimal in optimization in
+general that maps
+wherever whatever state you're in and
+whatever time you're in into the optimal
+thing to do with respect to this cost
+function
+before it would have been when we were
+talking about open loop controls would
+the object we were optimizing over was
+simply the sequence of U0 start U1 start
+and so on and so forth.
+not a function of the state. Now we want
+to find it as a function of the state.
+It might sound as
+simple terminology. This has a very deep
+implications
+as explained before
+it should make sense. What do you think?
+All right. So [snorts] now the question
+is
+how do we find an algorithm
+to find such an optimal closed loop
+policy.
+And the key to crack the problem is to
+recognize that this problem does have
+structure. And the structure in this
+problem can be used to derive a fairly
+efficient algorithm referred to as
+dynamic programming. And the structure
+that this problem has is referred to as
+the principle of optimality which is the
+consequence of using
+an additive cost as our cost function.
+If instead of a summation you use
+something else, the tangent of the this
+the sum of the stuff that doesn't work
+anymore. So here you see how our
+formulation is a good compromise between
+being relatively general but also having
+enough structure for us to derive usable
+uh actionable algorithms.
+So what is the principle optimality? The
+principle optimality is a fairly simple
+concept in my experience. The first time
+that you hear about it, you think it's
+obvious. If you think more about it, you
+get a bit confused, but then after a
+while, it becomes obvious again.
+So, let me state the principle
+optimality. Principal optimality
+essentially says that if you have a
+multi-step
+optimal uh control problem, so you're
+optimizing operations over multiple
+steps.
+details of an optimal policy are optimal
+for the truncated problem. I'll explain
+better what I mean. Let me first show um
+a simple statement of the principle
+optimality and a proof of it. So let's
+assume that we want to solve an optimal
+control problem that is abstractly
+represented
+as finding uh
+some path in some space.
+So suppose that you have an initial
+condition referred to as A and you have
+a final condition referred to as E and
+you want to go from A to E. And to do so
+you have to enact uh a number of uh
+decisions. You thrust in one direction
+and after a while you thrust in another
+direction. you keep going and then you
+get to your final condition E.
+So let's assume that uh the optimal path
+stemming from the optimal selection of
+controls first leads you to B
+and then through a number of additional
+decisions leads to E through this path.
+So this piece here
+is the realization
+of many
+additional
+controls
+control inputs.
+Now let's call the cost of transitioning
+from A to B along this path as a J A B
+and let's call the cost of transitioning
+from B to E along this specific pass
+path as J B E.
+So according to our formulation, what is
+the total cost for going from A to E
+along what I claim is an optimal path?
+&gt;&gt; A to E.
+&gt;&gt; That's right. Because we're assuming
+that we have an additive cost. So the
+optimal cost J uh from A to E is simply
+the sum of J
+A B plus J B and that stems from the
+fact that we formulated the optimal
+control problem with respect to a cost
+function that is add additive.
+So what the principle automaticity is
+saying is that if
+the red highlighted path A first we go
+to B and then we go to E along this red
+highlighted path. So if this path is
+optimal to go from A to E then the tail
+of it is optimal for the truncated
+problem. So if I were to reformulate the
+problem now starting from B.
+So now you should say well I mean that
+sounds obvious
+but let's prove it. So what I'm saying
+is that if A to B and then B to E along
+the red highlighted path is the indeed
+optimal path to go from A to E then the
+tail of this path meaning the uh path
+that starts at B and bring us to E is
+optimal for the problem when started at
+B.
+And let's prove this statement by um
+contradiction.
+So proving by contradiction means that
+uh uh we negate the claim and we'll see
+that we'll come up with a contradiction
+with our hypothesis which in turns
+proves that the claim has to be true.
+That is suppose by contradiction that
+what I'm saying is not true. That is for
+the problem whereby we start at B and we
+want to get to E
+in the most optimal way. There is indeed
+another strategy whereby we first go to
+some state let's call it C and then we
+follow a path that goes to E.
+If this total path is indeed the optimal
+one for the problem that starts at B, it
+means that uh um
+J
+B going to C first and going to E.
+Let's call this cost J B C E is less
+than JB.
+JB E is the cost of the red highlighted
+path. J B C E is the cost of going to E
+first going through the state C
+because of this different path.
+Well, if that was true, it means that I
+would have found a better path to go
+from A to E. Simply the one that goes
+from A to B first, then to C, and then
+to E. Because of this, the cost of this
+path would now be J
+A B plus a J BCE,
+which will be strict will be strictly
+less less than J A B plus A J B
+because of this.
+Which means that I would have found
+a better path to go from A to E.
+contradicting the claim contradicting
+the assumption that A be is the optimal
+path to go from A to E. So we have
+achieved a contradiction which proves
+our claim that if you have an optimal
+control sequence the tail of such a
+sequence is optimal for the tranity
+problem.
+Does it make sense? more or less spend a
+little time to think about it the even
+though this you know um this principle
+seems quite harmless actually has
+profound implications. Yeah.
+&gt;&gt; Is it just the tail of your sequence
+it's not true for any subset of of paths
+say you have a b
+&gt;&gt; it has to be for the tail.
+&gt;&gt; Just the tail.
+&gt;&gt; The tail. Yes. And yeah let me say for
+now it's just the tail. Yes.
+Um
+so let me reformulate now the principal
+optimality in in the same formalism that
+I discussed before to state the discrete
+time optimal control problem. So what
+the principal optimatic is saying is
+that if u zero star u1 star u star n
+minus one is an optimal controlled
+sequence
+which together with xar zero determines
+the corresponding state sequence xar0 x1
+star xar n and so on.
+Consider then the sub problem whereby we
+are at the state xar k at time k and we
+wish to minimize the truncated problem
+whereby we start at xar k and we only
+look at the cost after time k
+then the traned optimal sequence so the
+sequence whereby we now start at uk star
+is optimal for the sub problem which
+means is which like a more nemonic way
+to remember this condition is the tail
+of optimal the tail of optimal sequence.
+The tail optimal sequences are optimal
+for the tail sub problems.
+So you say who cares? We'll see in a
+second why we do care about this. Yes,
+&gt;&gt; this formulation a little bit like
+triangle inequality or inequality
+really similar ideas in different
+packaging where they actually
+&gt;&gt; I think it's even more basic idea that
+follows from uh the additive assumption
+that we make in the cast you see it here
+the only reason why we could make um
+this um claim is because we could assume
+addictivity in the
+by the way is in a weaker condition
+because the only thing that we're saying
+is that we need to have additivity no
+matter which we space your optimization
+could be over.
+So that's why this property is so
+general.
+So the next question is what do we care
+about this?
+So let me give a little bit of intuition
+about why we care about this. So suppose
+that again we are in a setting whereby
+we want to find an optimal path. So the
+final destination is F. And suppose that
+an oracle is giving you the solution to
+go optimally from a point E to F with
+cost Jar EF. It's giving you this
+optimal solution to go from D to F with
+cost Jar BF.
+and it's giving you the optimal solution
+to go from C to F with casters J star CF
+and oracle the instructor that's giving
+you this information and these optimal
+paths may be the result of the
+application of 324 control inputs. So
+there is a lot of computation that went
+into computing these paths
+[clears throat]
+and now it's a midterm and you have uh
+three minutes to answer this question.
+So I'm giving you now the problem of
+going from a B to F
+and from A B you can go to only three
+states. You can go to C directly with
+cost JBC. You can go to D directly with
+cost JBD or you can go to E directly
+with cost JBE.
+And then I ask you and of course I give
+you this cost and then I ask you to
+compute the optimal path to go from B to
+F.
+So if you knew nothing about the
+principle optimality, what you would
+need to do is to consider each one of
+these options and then resolve for all
+possible control combinations for the
+tail pass.
+you wouldn't have a way to actually use
+the information that I given to you. But
+now you know about the principle of
+optimality and the principle of
+optimality is telling you that if the
+arc BC is the initial segment of the
+optimal path from B to F then C to F is
+the terminal segment of this path. That
+is there is no reason for you to
+consider any farther combinations of
+possible control inputs for the tail of
+problems because you know that the tail
+of an optimal um problem
+the tail of um an optimal control
+sequence is optimal for the tail
+problem. So there is no additional
+optimality you can gain but further
+optimizing the truncated problem. So
+what that means is that instead of brute
+force solving the entire problem from
+the beginning,
+you can just do simple concatenation. So
+you just look at three options.
+concatenating the initial segment with
+the optimal solution to the tail problem
+one. Second possible initial segment
+with the optimal solution to the second
+tail problem and third segment with the
+optional solution to the third problem.
+So you only have to look at three
+choices as opposed to recmp compute
+everything from scratch.
+So that's a part where things get a bit
+more interesting and things may get
+slightly confusing. But I hope that this
+example clarifies it. So let's suppose
+for example, yeah,
+&gt;&gt; those three tail segments are all the
+same costs. Yeah.
+&gt;&gt; No, they don't need to be the same cost.
+Actually, in general, they have
+different cost. But what I'm saying is
+that each one of them is optimal for the
+particular sub problem where I start
+from E, I start from either from D and
+for or for C.
+give an example when this wouldn't be
+very obvious just because like looking
+at the image um
+I'm I struggle to understand like why if
+we didn't know the principle of
+optimality if we started with uh the
+cost function from B to C why we would
+choose them from D to F and not just
+from C to F.
+&gt;&gt; Uh uh could you repeat the last part?
+I'm just a little confused why we would
+decide if we were going from B to C is
+wouldn't the obvious thing be to go from
+C to F like why look at D to F for
+example if you're already doing B to C
+so first of all there might be multiple
+paths to go from C to F or from D to F
+or [snorts] from E to F and here I'm
+just just showing the optimal one
+if you go from B to C yes Sure, it's
+obvious a little bit considering P
+optimality that the right thing to do is
+to go straight through the optimal path.
+But what is not obvious since these each
+of these costs are different and each of
+these costs are different starting from
+B which one of the three options you
+should choose
+that's a nonobvious part yes if you are
+committed to go to C to C
+then yes it's obvious that you would
+need but again it's obvious because I
+just explained the principle of
+optimality otherwise that's why it's the
+principle optimality is a bit sketches a
+concept because it's obvious that
+sometimes people really fail to fully
+appreciate its death. So it's yes it's
+obvious but you know there is some
+cleverness into it. I'm going to give
+you also another example to hopefully
+make things even clearer. But anyway the
+main point of this slide is to show how
+with a principle optimality we can reuse
+computation that has already been done
+either by an oracle or as we will see by
+us through a recursive algorithm.
+so that you minimize the amount of
+computation that you do overall.
+So bottom line is that applying the
+principle optimality as allows you to
+compare the concatenations of immediate
+decisions and optimal decisions in order
+to compute a optimal control sequence
+for an optimal problem that has been
+extended by one step.
+Now then the next question is uh who is
+solving those state problems for you
+in general you don't have an article.
+So that's where the
+somewhat uh uh unint non-intuitive idea
+of dummy programming comes in. You solve
+the problem backward in time even though
+of course time moves forward in time. So
+you deploy your policy going forward in
+time. The problem is solved backward in
+time. You start from the end simply
+because at the end the optimal solution
+it's obvious.
+There is no solution. You are at the
+end. So the there is nothing you should
+do and the cost is also obvious. It's
+just a terminal cost.
+That means that you know the terminal,
+you know the optimal solution at the
+terminal stage. But now we have a
+procedure to go one step at a time
+backward by just concatenating immediate
+costs
+with the solution to the tail problems.
+The first time you do it, you just have
+uh the terminal cost and this the
+boundary condition is given to you and
+then you start applying it recursively
+this idea and for the rest of the
+lecture I'm going to give you a bit more
+intuition about uh this procedure which
+is uh extremely general but let me start
+with one example where we're going to do
+these backward recussions by by hand and
+this example is more mechanical that
+just to show the mechanics of it. But
+then later on we're also going to
+explore how much computational savings
+this buys us. So now we have a shortest
+path problem that is a bit more
+concrete. We want to start from A and we
+want to go to H.
+And uh the transitions that are possible
+are denoted by these arrows which means
+that you have if you are at B you can
+move right to state C with cast equal to
+9.
+Oh, for example, if you're at C, you can
+move only right
+actually know you can move right to F
+with cost three or you can move upward
+with cost five. So the question is
+what is the best path to go from A to H?
+If you knew nothing about dynamic
+programming, what you would do is to
+compute all possible combinations.
+So you go down, you go right, you go up,
+that's one possible sequence. You go
+right, that's another branch of your
+sequence. You consider all possible
+combinations that are physible and then
+you pick the one with minimum cost. Now
+actually we're going to use the op the
+principle of optimality to be a bit more
+principle in how we do search
+specifically we start from the back. So
+what is the cost
+for the
+shortest path problem
+whereby we start at uh h.
+So that's a tail problem where we start
+at h. So what is the cost?
+We have h and we want to go to h zero.
+Great. So we know actually the solution
+to this tail problem. So now let's go
+one step
+backward.
+For example here G.
+So what is the cost of G? So the cost of
+G
+is equal to the immediate cost
+two to go upward
+and then I have the tail problem. It
+starts at H.
+I don't have to resolve for that
+problem. I already have a solution. So
+this would be the 2 + GH. But I have
+already solved for H. H is equal to
+zero. So the optimal cost is two.
+So let's assume that now we are at f.
+So what is the optimal cost to go from f
+to h? Well, is the immediate cost
+which is uh three
+plus
+the cost of the K problem which is also
+referred to as cost to go which is J J
+of G which is equal to. So this is equal
+to five
+and then we go one step backward. So now
+we have a J
+of E. So E is a kind of interesting case
+because we have two options.
+So
+remember the more abstract figure that I
+had before. I have two options. I can uh
+either go right. I have an immediate
+cost equal to 8 and then I transition
+directly to H.
+So the cost of this path will be 8 + j
+of h.
+But then I can also go down
+in current cost two and transition into
+state f.
+But I don't have to recomputee what is
+the optional thing to do from f. I
+already have computed before. So this
+will be 2 + j of f.
+Is this correct? So A + GH 2 plus GF.
+[snorts] So GH already computed. So this
+is equal to zero. GF already computed.
+This is equal to five. So now I just
+pick the minimum between two. So this is
+equal the first path is eight. Second
+path is seven. So I pick the path that
+goes to F and the cost will be uh seven.
+Then I go one step backwards. So I have
+J of D.
+So this is equal to 3 + G.
+G already computed. So this is equal to
+10.
+Then I have C. So J of C is equal to the
+minimum
+between 3 + JF
+and
+fly five plus JD.
+No need to recmp compute JD.
+I can re recycle the fact that I already
+solved for the for the tail problems. J
+D is equal to 10.
+JF is equal to five.
+So 3 + 5 is 8 15. So the optimal cost is
+eight.
+Um
+yes. Then JB
+is equal to
+9 + JC.
+[clears throat]
+So this is called is equal to 17. And
+finally I hit my initial condition
+A. So I have two options. I can either
+go right 8 + JD
+or I can go down 5 + JB.
+GD already computed is equal to 10.
+JB already computed equal to 17.
+10 + 8 wins. So optimal cost equal to
+18.
+And now
+I can backtrack what the minimizer was
+at uh every stage of the optimization.
+So from A we selected
+this one as a minimizer. So from A we
+want to go to D.
+From D we have only one options. We go
+to E. And from E
+is what the minimizer we go to F from F
+to G and from G to H.
+&gt;&gt; Yeah.
+&gt;&gt; Like for instance, how do we know that
+from H
+and there is between step and
+&gt;&gt; yeah great question. So in order to run
+dynamic programming you have to put your
+problem in the mathematical formalism
+that I explained before. So here we will
+need to define states and time steps in
+terms of uh uh how many steps before we
+uh hit the uh final condition and there
+are ways to actually formulate the
+shortest paths in such a way. So the k
+the index will be the number of steps to
+get to uh you know your destination h.
+So in other words we want to
+that's actually the tricky part of
+dynamic programming. That's where
+dynamic programming gets tricky.
+Let me I'll get to you in a second.
+Dynamic programming gets tricky in the
+following way. Once your problem is
+defined in the canonical way. So you
+have discrete time uh equation for your
+dynamics and then you have an additive
+cost for your optimization problem.
+Then at least conceptually the algorithm
+is trivial.
+You solve a recursive algorithm where
+you start from a boundary condition
+whereby you set the optimal solution to
+the tail problem. It is the problem that
+starts at the final condition as the
+terminal cost and then you iterate one
+step backward until you reach the
+initial state x of zero.
+at at each iteration
+leveled by the time step K, you solve a
+minimization problem whereby you're
+trying to solve for a given state X of K
+the optimal control the best compromise
+between immediate cost and so-al cost to
+go. to the cost of the truncated
+problem.
+And as you can tell, I mean, this is
+very simple to implement conceptually,
+but there are a few caveats. First of
+all, there are a number of problems that
+uh at first at the first look they seem
+they seem to be completely
+uh different from the way that I'm
+stating the problem here. And that's
+where the cleverness of the designer
+goes. You map those problem into this
+formalism. And even though I haven't
+shown you but I think we have a homework
+otherwise I will put a a reference on
+canvas. There is a way to map the
+shortest path problems exactly in this
+formalism.
+So that's the first caveat. So there is
+some work and uh uh we'll see a couple
+of examples whereby you take a problem
+for example even DNA sequencing that the
+first value seems has nothing to do with
+dynamic programming you can put in this
+formalism and once you have it in have
+the problem formulating this formalism
+you can just run the algorithm
+so you say okay then it's more of a
+modeling exercise no it's also an
+algorithmic exercise because
+even though ding programming
+allows you to decrease substantially the
+amount of computations with respect to
+brute forcing the computation.
+Keep in mind that you have to carry out
+this optimization problem whereby you're
+trying to find the optimal control at
+time k that optimizes this class
+function. You have to do that for all
+time steps and for all possible states.
+And even time is even though time has
+been discretized technically the state
+has to be discretized. So in principle
+this could be a continuous quantity. So
+you cannot even run these recussion
+because you would have infinite many of
+these recussions or even if you
+discretize it you may have a very large
+number of possible state combinations.
+Let me clarify this a little bit. So say
+that um
+say that your state is one-dimensional
+belongs to the interval 01 and you are
+discretizing
+discretise
+with the 0.1 step
+[clears throat]
+and say that the time
+is also
+between 01 and you also discretize it
+with 0.1 step. So how many dynamic
+programming recussions meaning how many
+of those optimization problems you have
+to solve
+per step you have 10 for each possible
+value of the state but then you have a
+10 time steps so you have 100 okay so
+you have 10 * 10
+now let's assume time stays the same but
+let's assume that now we go into the
+setting whereby x is two dimensional
+So for example, position and velocity of
+a double integator.
+How many D programming recussions you
+have to carry out
+per each time step? How many possible
+combination of states do you have?
+That's right. So you have 100. So now
+you have 10 which is the number of steps
+time 100.
+So now let's assume that uh is three
+dimensional.
+So now x is uh 0.1
+cross 01 cross 01.
+So basically you are optimizing over
+three variables x y and z.
+So now you have 10 time steps as before
+but now you have 10 * 10 * 10.
+So basically your dynamic regressions
+scale
+with 10 to the power of D where D is the
+dimension of your state. So you have an
+exponential scaling.
+So even though dynamic programming and
+you can show this more formally
+uh dramatically decreased the amount of
+computations that you had to carry out
+still in general you have to carry out a
+lot of computations
+particular in high dimensional state
+spaces
+anyway so assuming that you can do that
+so two main challenges a modeling one
+whatever problem you are it's possible
+that you can map it into not all
+problems of course can be mapped into
+this formalism. But there are some
+problems that a face value may not look
+like that are amenable to this
+formulation, but they are. So there is a
+little bit of cleverness that goes into
+that. And then there is of course work
+that goes into making sure that you can
+run dynamic programming cultures at
+scale. So this is the call the topic of
+so-cal approximate dynamic recussion
+that will also lead into the second part
+of this class referred to as learning
+based control.
+Now assuming that you can solve this
+problem
+then you can construct an optimal policy
+by essentially bookkeeping for all
+possible states associating the optimal
+control that you have picked and so you
+are incrementally building the optimal
+control policy path.
+So there is a lot here. This is a very
+fundamental result in controls is the
+basis of u uh discrete time closed loop
+optimal control continuous time closed
+loop optimal control learning based
+control and policy learning. So
+everything exciting that you hear these
+days about uh policy learning vision
+language action models all that stuff is
+rooted in this equation.
+of course with many generalizations.
+Now [snorts] if you think about this
+equation
+we derive it somewhat formally
+by basically stating the problem stating
+the principle optimality and then just
+uh applying it in order to derive this
+recussion.
+But if you think about it it's quite
+natural. So what is it saying
+is that uh assuming that you at a given
+state
+the optimal thing to do right now is
+what minimizes the impact of the of that
+action on your immediate cost
+plus the implication what you do today
+in terms of what will happen tomorrow
+starting from tomorrow.
+If you think about this is very natural.
+Why are you here today
+and not on a beach?
+Because you are trading off your
+immediate gains with future gains. Of
+course, going to the beach to, you know,
+um, uh, have a nice swim in the ocean
+improves your cost right now, but has
+implications about your future
+education,
+right? So, your cost to go is affected.
+So, actually you are here because you
+are sacrificing your immediate wealth in
+order to optimize your future wealth.
+So, that's what dynamic programming is
+doing. is really compromising the
+immediate gains with the implication of
+what you do today starting from tomorrow
+and is do so in a mathematical the right
+way that is uh principle yeah
+[clears throat]
+&gt;&gt; confused about how we end up reaching
+our initial condition cuz like if you
+have a final condition that's really far
+away from your initial condition I don't
+understand how like especially in the
+beginning it doesn't seem like there's
+any way the optimal solution would
+in any way towards it.
+&gt;&gt; Yeah, that's why you solve backward. So
+you start backward and then ah I see
+what you're saying. So uh when you have
+x0
+you might actually you are solving
+actually the problem for all possible
+initial conditions and then you give me
+the uh initial condition you're
+interested in and for that one
+specifically we find an optimal control
+policy. But in a way you're right. So
+the dynamic programming problem to solve
+the solution to find the solution to the
+problem that you really care about the
+one with a specific initial condition
+x0= 1 comma 3 is actually solving all
+the tails of problems and all the full
+problems for all possible initial
+conditions.
+Or maybe you at the last iteration you
+can just be smart and only carry out
+this recussion for jx0. But in general
+for all the intermediate steps you have
+to solve the tail problems from all
+possible states you that are reachable
+because you don't know from the initial
+condition you're interested in which
+intermediate states you'll be visiting.
+So in in that way is a bit wasteful but
+the good news though is that at least uh
+you still save quite a bit in
+computation and then if problem data
+changes or initial condition changes you
+have solved the problem for all possible
+conditions.
+It seems that in the previous example we
+were sort of like processing nodes in a
+specific order.
+&gt;&gt; Yeah, that's basically the equation. So
+what I have not shown um and I'll
+provide the reference is it's a bit
+convoluted but not too convoluted. You
+can what they did was a bit adhawk but
+you can actually map a shortest path
+problem computation exactly in this
+format
+and I'll post that on
+&gt;&gt; so like in general do you also need to
+like some sort of ordering process
+&gt;&gt; state yeah because you need to put it in
+that formalism
+and the ordering there is the number of
+hops we are optimizing over. So we first
+optimize over paths that reach the um
+final destination in one hop. Then we
+optimize over pass that reach the final
+destination in two hops. We then
+optimize etc etc.
+So in the case the number of hops is the
+number of stages. Okay.
+So a few comments. So I already talked
+about the discretization aspect. So
+that's basically how we formulated the
+problem. We went from differential
+equations to difference equations. We
+talked about how dynamic programming
+recussion has to be carried out for each
+possible value of the state. If the
+state is continuous, then we have to
+quantize it. Dynamic programming
+actually is trying to find a global
+minimum for each dynamic programming
+recursion. So it's going to give you the
+globally optimal solution.
+If there are constraints that is
+typically constraints make the
+optimization problem much harder as you
+saw with direct methods and
+like range optimization but in this case
+constraints actually make the problem
+simpler because reduce the number of
+actions roughly speaking you have to
+optimize over. So you have less uh
+things to consider. It gives you a
+solution in closed loop form but it is
+affected by the car dimensionality. What
+the car dimensionality refers to is the
+exponential scaling of the number of
+computations needed with respect to the
+dimension of the state space.
+I have a question on the principal
+optimality where you said that it's only
+the tail um sub sub path that is like
+the shortest path. Um wouldn't isn't it
+true that if that's the global minimum
+that any like sub path with like
+regardless of whether it's the like the
+tail end path is also the shortest path
+here.
+&gt;&gt; Yes. I mean that's a principal
+optimality.
+&gt;&gt; Yeah. Yeah. Absolutely. Every tail path
+is going to be optimal. Yes. [snorts] Um
+so we started from the optimal problem
+formulation. We derived that the most
+essential structure that this problem
+has refers to as a principle optimality.
+We argue how leveraging this structure
+we can find an optional algorithm to
+solve these problems. This algorithm has
+a quirk. The quirk is that it involves
+optim uh doing computation backward in
+time.
+And there is a nice quote from a
+philosopher
+that is loosely
+I mean actually this philosopher lived
+before Bman that introduced the nimatic
+principle but it's kind of nice uh
+philosophical
+association let's put it this way that
+uh life
+has to
+the leave forward.
+That's obvious because time goes forward
+in time, but
+can only
+be
+understood
+backward.
+I don't know how much you resonate, but
+sometimes, you know, you you look at
+where you are and you see, shoot, I
+didn't realize that that decision that I
+made four years ago wouldn't let me
+here. So, that's how I understand things
+backwards.
+I don't know. It reminds me of this
+quote. It's up to you if you resonate or
+not.
+uh one thing
+for your exam
+very likely that I will ask you to
+compute one step of a dynamic program
+recussion to make sure that you
+understand what to do it's going to be
+relatively simple it will take five
+minutes what I'm saying is make sure
+that you internalize
+uh what one step of a progression
+algorithm entails
+&gt;&gt; what is it about this dynamic
+programming approach that makes it close
+to as opposed to what we were learning
+last week.
+&gt;&gt; Yes, that now we are solving uh uh
+problems for all possible tail problems
+from all possible states we could reach.
+That's a completely different mindset
+for what we were doing uh before. By
+doing so you are basically computing an
+optimal control for each possible state
+you are in which is really definition of
+a closed loop optimal control. So this
+different view uh different with respect
+to what we had before that allows us to
+compute uh closed loop control policies.
+So a significant shift in uh mindset.
+All right. So let's wrap up this lecture
+with by solving
+a relatively simple but extremely
+foundational optimal control problem
+which is referred to as a LQR linear
+quadratic regulator.
+So the LQR problem is a specific class
+of discrete time optimal control problem
+is fine as follows. Our dynamics are
+linear. So sk + 1 is equal to a x k + b
+u k x the state use the control a is a
+given matrix matrix of numbers b is also
+a given matrix does not depend on the
+state does not depend on control
+um this referred to as the state matrix.
+This is the input matrix. The cost is
+additive and is quadratic. So we have a
+terminal cost which is a quadratic form
+in terms of the terminal state x of n
+and then the stage wise cost is
+quadratic too is a quadratic in terms of
+the state and is a quadratic in terms of
+the control.
+U square basically models how unhappy
+you are about uh using control U. X
+square is basically telling us how
+unhappy you are you are about being a
+state X since you are squaring the state
+you can see how the here the object what
+objective essentially modeling is that
+you want to go to the origin where the
+state x is equal to zero so that you
+don't pay any cost and you want to do so
+with a control u that minimizes the sum
+of the u squares
+So you want to basically minimize
+energy.
+And of course there is a little bit of a
+conflict here. Maybe with a larger U you
+might get to the origin quicker but then
+you have a bigger control effort. But
+then if you make smaller steps you'll
+eventually get to the origin and you pay
+less control but you are very unhappy
+for a lot of steps because you are far
+from the origin for a lot of steps. So
+basically it's time to find this
+balance. This problem is referred to as
+a regulator because essentially is
+modeling the problem of getting to the
+origin with minimum cost.
+Now for this quadratic cost to make
+sense we are requiring that the h Q q
+and r of positive semidefinite so that
+these are actually uh non- negative
+terms as we will see later we are also
+strengthening the condition for r to be
+positive definite.
+So this is the control penalty. This is
+the state penalty and this is the
+terminal state penalty matrix.
+Does the problem make sense?
+I stated that doesn't seem to be a
+particularly
+um useful problem. I mean you want we
+want to get to the origin but in general
+who cares about getting to the origin.
+As we will see actually this problem
+formulation is uh extremely useful and
+popular. It can readily be used in the
+context of trajectory tracking problems
+as we will see on uh Wednesday and also
+as a useful algorithm to even solve the
+linear optimization problems through
+successive linearizations.
+So even in the most complicated say end
+to end models for autonomous driving
+chances are that your track we put
+vision language action models word
+models foundation models what have you
+chances are that your trajectory
+tracking algorithm is somewhat LQR
+derived so there's an important concept
+[clears throat] so we're looking at this
+problem for two reasons one because it's
+an important class of problems
+especially as we will discuss on the
+Wednesday but two is also one example
+for me to uh showcase dynamic
+programming. Why? We are exactly in the
+setting of dynamic programming. We have
+discrete time equation and uh uh we have
+a cost that is additive which means we
+can solve the problem with dynamic
+programming. How does it work? Well,
+there is no much cleverness that goes
+into the solution. You start with the
+boundary condition basically the cost at
+the end. So if you're in a state x of n
+the cost is simply 12 xn transpose h x
+of n
+and also let me denote as a definition
+this cost with one else xn transpose pn
+xn so basically I'm referring to h as pn
+we this will become clear later for now
+just remember
+of course we want to solve the problem
+from the perspective of x0 zero. But to
+do so, we had to run dynamic
+programming. So we start by going one
+step backward. So now we say for all
+possible states uh that are reachable at
+time n minus one. I have no clue which
+state the optimal state trajectory will
+go through. So I have to consider all
+possible ones that are reachable from
+x0. So for each one of them,
+let's call each one of them xnus one.
+So if this is one dimensional and
+between 0 and one discretizing with the
+step 0 one I would do it for state xn= 0
+xn is equal 0.1 0.2 0.3 all the way to
+10. Well, for each one of them, I try to
+find a control at time n minus one
+that minimizes the
+immediate cost which is uh the quadratic
+in x n minus one and the quadratic in u
+minus one and the optimal cost to go. So
+jar n x of n which in this case is
+simply xn h xn
+the cost of the problem for the state I
+transition into which will be the
+problem uh at the next stage.
+Okay. So,
+but x of n is simply given by
+a n -1 x n - one + b n -1 u n - one.
+So, I plug
+u this relationship in here.
+And as you can see
+now this optimization problem is just um
+an optimization problem with respect to
+the variable u n minus one. x n minus
+one is fixed because for each dynamic
+programming recussion you're doing it
+for the specific value of xn minus one.
+QR a b is all and h is all problem data
+given to you. The only quantity that is
+a variable here is u nus one. But this
+is a problem is very simple to solve.
+It's just a quadratic in u n minus one.
+We have some a quadratic term coming
+from here and here. So what is this
+quantity? So we have
+we have a n -1 x n -1 + b n -1 u n -1
+transpose h a x n x n -1 n -1 + b n -1 u
+n -1.
+So this is equal to
+well we have the quadratic in u n minus
+one. So we have a u n minus one
+um transpose
+b n -1 transpose h b -1 u n - one. So
+that's the quadratic in u n - one. Then
+we have the quadratic in x n - one. So
+this plus plus x n -1 transpose
+a n - one transpose h a n -1 xn - one
+and then we have the cross terms. So we
+have a plus u n -1 transpose b n -1
+transpose
+h a x n - one plus the other term plus x
+n -1 transpose
+a n -1 transpose
+um h
+b -1 u n minus one. So you have a
+quadratic in u linear in u and then
+non-dependency in u. So now to find the
+minimum you take the derivative with
+respect to u minus one.
+So
+we also have the the quadratic here in u
+and then we have no dependency u here.
+So when you take the derative with
+respect to u this goes away. This is a
+quadratic. So the derivative with
+respect to u is simply r u
+remember there is a 1/2 that's
+multiplying all of that
+and then I leave this as an exercise for
+you but then you take a derivative you
+keep take dative of all this stuff here
+so here you're left with term that is
+linear into u brpose h bu
+brranspose h bu and and uh you take the
+derivatives with respect to determin
+linear u this guy and this guy and then
+you sum them up remember that you have a
+1/2 in front of all the stuff and what
+you get is transport h a xn
+I leave it to you the detailed
+computation super easy and then that's a
+necessary condition for optimality you
+get to the second order derivative to
+find the sufficient one so taking
+another round of derivatives with
+respect to u the derivative of this term
+with respect to u is R that the derative
+of all this term with respect to U is
+branspose H B
+and this stuff is positive definite
+because we assume that R is positive
+definite.
+So
+what is the um
+so what is the uh optimal u well is the
+one that satisfy the necessity condition
+so you solve for the first equation in
+terms of u so you grouped everything in
+terms of u and then you take an inverse
+so not going to through all the steps
+because it's really simple algebra the
+inverse exists because r is positive
+definite so This entire object is
+positive definite which means the
+determinant isn't zero. You can take the
+the inverse.
+Okay. So we have found the optimal
+solution
+and look how that's the interesting part
+here that this optimal solution is going
+to be given by an ugly multiplication of
+matses but this is system data stuff
+that is given to you times the state. So
+actually the optimal control is a linear
+feedback on the state. It's just a sum
+matrix f times x.
+Great makes a lot of sense. And of
+course there are deeper relationship
+with the linear controls. So fn minus
+one is defined as the multiplication of
+all these matrices.
+Okay. [snorts]
+But then what is the cost for the tail
+problems? So we plug back in the optimal
+control input as we computed into the
+cost. So now we plug
+u = fx
+back into here. So this will be xrpose n
+-1 f -1 transpose r fn -1 x - one. So
+you plug all that in
+and again I'm not going to through go
+through the steps if you don't trust me
+you can go through them but basically
+what I get is a quadratic form in terms
+of the state xnus one.
+Just do it as an exercise. You pick u=
+fx as the optimal solution. go back into
+the cost function with that uh form of u
+and what you get that the cost is a
+quadratic in x.
+So then you start seeing some pattern.
+We started with a quadratic cost xnus
+one h x n minus one. Oh actually I said
+no let's for terminology let's call that
+hpn. So we started with the con was
+quadratic xn minus one transpose pn xn
+minus one. I found that for going one
+step backward the optimal control is
+linear feedback on the state and the
+optimal cost for the tail problems is a
+quadratic in the state.
+So what happens if you go one step
+backward? You started with a quadratic
+optimal cost to go and you ended up with
+an optim a quadratic optimum cost for
+the tail. So if you go one step
+backward,
+what do you think is going to happen to
+the cost? It's going to be quadratic
+cubic. We don't know
+mathematically the problem has exactly
+the same structure. So you're going to
+be faced with exactly the same problem
+you are formulating just that now
+instead of having n minus one the
+subscript you have n minus2
+which essentially means we found
+uh a very nice pattern where we can
+solve this problem by recussions but
+instead of solving an optimal problem an
+optimization problem at each step you
+just solve a recursive equation on the
+matrices fk and pk. So you start from a
+boundary condition setting PN equal H.
+Then you set the gain for the optimal
+control F of K equal to all the stuff.
+This is stuff that depends on problem
+data of stuff that has already been
+computed at the previous step.
+given the gain. Then you compute the
+cost from the perspective of time K
+by updating PK according to this
+relatively ugly but simple to implement
+equation whereby you're just multiplying
+the problem data and stuff that has been
+already computed and then you go one
+step backward. Does it make sense? So
+it's just one lucky case whereby the
+dynamic programming recussion boils down
+to recussion on some matrices.
+These equations actually are very
+important in uh control and are referred
+to as Ricati equation. Ricati was a
+mathemat Italian mathematician.
+So as you know
+I'm originally from Italy. So I do care
+that you spell ricati correctly. So
+ricati
+is two C's here
+and one C. For whatever reason, I don't
+know why in the United States sometimes,
+often times this is referred to as
+either ricati
+or ricati.
+By the way, ricati in Italian means
+blackmailing. So not this one, not this
+one, this one. Okay, to see one here.
+Great.
+So bottom line here. So we discussed the
+foundations of uh closed loop optimal
+control. We discussed how by using
+fundamental structure in our problem
+formulation referred to as the principle
+optimality we can derive an actionable
+algorithm referred to as dynamic
+programming. The programming is purely
+procedural means that once you're given
+the problem formulination you just write
+down in Python these days maybe use code
+to v your recussion that's the easy part
+the hard part is on the modeling side
+making sure that your problem is
+efficiently formulated in the same
+formalism of the optimal control
+formulation I'll share uh a pager that
+shows you how to do that for the
+shortest part problem since there were a
+couple of questions today and of
+Doing dynamic programming at scale
+requires a number of approximations that
+we will discuss later on in this class.
+That's the hard part of dynamic
+programming. [snorts] We look at a
+special case of dynamic programming
+which is dynamic programming applied to
+LQR. LQR is a problem of its own
+interest as we will see particular
+Wednesday has a number of very useful
+applications in uh robotics and controls
+tracking nonlinear optimal control and
+we'll see and the beauty of LQR is that
+uh the diamond programming recussions
+simplify into recussions about just two
+quantities. the gain matrix for the
+optimal controller which is provably in
+the linear feedback form and another
+matrix P that tells you the cost for
+each tail of problem and of course LQR
+was also a way for me to give an example
+about uh carrying out the program
+make sense so what we're going to do
+next is then some Wednesday is to see
+how a QR can be applied to a number of
+additional problems that uh are very
+very useful for doing robotics. All
+right, see you on Wednesday.

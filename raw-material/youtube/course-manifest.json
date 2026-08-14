@@ -1,0 +1,31 @@
+{
+  "slug": "stanford-aa203-optimal-learning-control-spring-2026",
+  "title": "Stanford AA203 Optimal and Learning-Based Control | Spring 2026",
+  "channel": "Stanford Online",
+  "playlist_id": "PLa9dmHsLK9dg",
+  "playlist_url": "https://www.youtube.com/playlist?list=PLa9dmHsLK9dg",
+  "seed_url": "https://www.youtube.com/watch?v=R4_fHzTo0IM&list=PLa9dmHsLK9dg",
+  "description": "Graduate course on solution techniques for optimal control and dynamic optimization problems, including dynamic programming, calculus of variations, model predictive control, robot motion planning, imitation learning, reinforcement learning, and model-based RL.",
+  "videos": [
+    {"lecture": 1, "id": "Au2stLALZew", "title": "Course Overview"},
+    {"lecture": 2, "id": "FbkNYklySak", "title": "Optimization Theory"},
+    {"lecture": 3, "id": "duZJ2_ajLso", "title": "Calculus of Variations"},
+    {"lecture": 4, "id": "7rejaoMWviw", "title": "Indirect Methods"},
+    {"lecture": 5, "id": "R4_fHzTo0IM", "title": "Computational Methods"},
+    {"lecture": 6, "id": "zX8raxUa2DE", "title": "Direct Methods"},
+    {"lecture": 7, "id": "hy-e9g4nugE", "title": "Dynamic Programming"},
+    {"lecture": 8, "id": "1YdgSwEtf_s", "title": "LQR-Style Algorithms"},
+    {"lecture": 9, "id": "C9mLpI8Td9g", "title": "Stochastic Dynamic Programming"},
+    {"lecture": 10, "id": "Fl5EjGhQjgs", "title": "Reachability Analysis"},
+    {"lecture": 11, "id": "3_gxaB_Pp3k", "title": "Introduction to MPC"},
+    {"lecture": 12, "id": "8Elrw30y0tg", "title": "Feasibility of MPC"},
+    {"lecture": 13, "id": "RtJSHiqOdgQ", "title": "Intro to Learning"},
+    {"lecture": 14, "id": "7YdOx-ih0II", "title": "Intro to IL and RL"},
+    {"lecture": 15, "id": "udHX5Auj7ik", "title": "Imitation Learning"},
+    {"lecture": 16, "id": "cqPbt3OfRK4", "title": "Fundamentals of RL"},
+    {"lecture": 17, "id": "zanXSI7zSws", "title": "RL Value-Based Methods"},
+    {"lecture": 18, "id": "a1g9U_5zO54", "title": "RL Policy Optimization"},
+    {"lecture": 19, "id": "ZXMThMHFD_w", "title": "Model-Based RL"}
+  ]
+}
+

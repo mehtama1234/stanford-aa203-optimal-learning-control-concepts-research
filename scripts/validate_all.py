@@ -188,6 +188,7 @@ def main() -> int:
         "drills.html": ["Setup hint", "Wrong turn to avoid", "What a strong answer must include", "Transfer variant"],
         "solutions.html": ["Strong answer", "Solution walkthrough", "Transfer variant", "Grading criteria"],
         "misconceptions.html": ["Stronger version", "Failure consequence", "Replacement rule", "Transfer prompt"],
+        "course-spine.html": ["Handoff:", "If skipped:", "Name the moving situation", "Learn only where written structure runs out"],
         "families.html": ["The move:", "A method family is a response", "drone", "rover", "warehouse robot"],
         "primitives.html": ["reusable pieces", "The action is the command", "Constraint says what cannot be crossed"],
         "formula-reader.html": ["A formula is a machine", "The operation:", "where it fails", "rocket", "rover"],
@@ -229,7 +230,7 @@ def main() -> int:
             if phrase in text_without_quotes:
                 errors.append(f"vague filler phrase in {path.relative_to(ROOT)}: {phrase}")
     minimum_page_words = {
-        "course-spine.html": 650,
+        "course-spine.html": 1200,
         "index.html": 900,
         "lectures.html": 1500,
         "families.html": 750,

@@ -22,36 +22,67 @@
 <a class="" href="evidence.html">Evidence</a>
 <a class="" href="review-guide.html">Review</a></nav>
   </header>
-  <main><h1>Course Spine</h1><p class="lede">The course is one question repeated at larger scale: what should this system do now, knowing that the action changes the future it will have to live in?</p><section class="fp">
+  <main>
+<h1>Course Spine</h1>
+<p class="lede">The course is one question repeated at larger scale: what should this system do now, knowing that the action changes the future it will have to live in?</p>
+<div class="essay">
+  <p>Use one car merge to read the whole course. The car is in the right lane, a truck is ahead, a faster car is behind in the left lane, and the controller has two seconds to decide whether to accelerate, brake, or stay put. The state is not just lane position; it includes speed, heading, nearby cars, and enough prediction to know what the next command will change. The action is not "merge"; it is steering, throttle, and brake. Dynamics turn those commands into the next state. Cost prices progress, comfort, and delay. Constraints forbid collision, road departure, and acceleration beyond limits.</p>
+  <p>Once that setup exists, the rest of the course is not a list of techniques. It is a sequence of repairs to harder versions of the same pressure. If the whole future path matters, trajectory optimization appears. If the next state changes every later choice, dynamic programming and value appear. If the car is close to a planned lane center, local feedback can help. If traffic moves, MPC replans. If nearby driver behavior, reward, or contact strategy cannot be written cleanly, learning enters. The spine below names each repair and the mistake it prevents.</p>
+</div>
+<section class="fp">
   <div class="kick">01 · course move</div>
   <h2>Name the moving situation</h2>
   <div class="essay"><p>A control problem begins when a choice today changes what choices are available tomorrow. Before formulas, name the moving thing, the information you know now, the command you can issue, the rule that turns that command into motion, the future you prefer, and the lines you cannot cross.</p></div>
   <div class="explain-box"><p>A delivery drone is not controlled by saying &#x27;arrive quickly.&#x27; Its state includes position, velocity, attitude, battery, payload, and wind estimate. Its action is thrust or a lower-level motion command. Its cost trades time, energy, landing error, and smoothness. Its constraints include no-fly zones, thrust limits, battery reserve, and safe touchdown.</p></div>
+  <div class="essay">
+    <p><strong>Handoff:</strong> Once those pieces are named, the course can ask for more than one command. It can ask for a whole legal history of states and actions.</p>
+    <p><strong>If skipped:</strong> If this move is skipped, every later method is floating. The solver may optimize a wish, the learner may copy labels without knowing state, and the safety check may protect the wrong boundary.</p>
+  </div>
 </section><section class="fp">
   <div class="kick">02 · course move</div>
   <h2>Make the whole path the decision</h2>
   <div class="essay"><p>Static optimization chooses a point. Control chooses a path. Calculus of variations, costates, Hamiltonians, shooting, transcription, and collocation are different ways of saying that a legal answer is not one number; it is a history of states and actions that must fit the dynamics at every step.</p></div>
   <div class="explain-box"><p>For a robot arm moving around a fixture, a shortest geometric curve can still require impossible torque. Direct methods put states and commands on a grid, enforce dynamics between neighboring grid points, and let the solver choose a path that the arm can physically trace.</p></div>
+  <div class="essay">
+    <p><strong>Handoff:</strong> Once a path can be written as variables and constraints, the course asks how to judge paths whose early choices change later options.</p>
+    <p><strong>If skipped:</strong> If this move is skipped, the learner may think control is a sequence of disconnected optimizations instead of a time-coupled path through physical states.</p>
+  </div>
 </section><section class="fp">
   <div class="kick">03 · course move</div>
   <h2>Price the future from each state</h2>
   <div class="essay"><p>Dynamic programming appears when the future after the next state is another copy of the same problem. The value function is the price tag on being in a state with all future choices still open. Bellman recursion is the bookkeeping rule: compare actions by the cost now plus the future value of the state they create.</p></div>
   <div class="explain-box"><p>A rover may choose a longer route around rough ground because the short route damages its wheels. The immediate distance is smaller, but the next state has worse future value because every later move is harder.</p></div>
+  <div class="essay">
+    <p><strong>Handoff:</strong> Once future burden can be stored at a state, the course can exploit local structure: near a planned motion, that value can have a simpler shape.</p>
+    <p><strong>If skipped:</strong> If this move is skipped, delayed consequences disappear. A controller will prefer the short route, early option exercise, or cheap first action even when it creates a worse future.</p>
+  </div>
 </section><section class="fp">
   <div class="kick">04 · course move</div>
   <h2>Use local structure when the world is near the plan</h2>
   <div class="essay"><p>LQR works when the real motion is close enough to a nominal motion that the dynamics look linear and the cost looks like a bowl. It is not magic feedback. It is a local promise: small errors near the planned state can be pushed back with a fast linear correction.</p></div>
   <div class="explain-box"><p>A hovering drone can use LQR for a small drift. After clipping a branch and tumbling, the same local model is no longer the right picture; the state has left the region where the approximation tells the truth.</p></div>
+  <div class="essay">
+    <p><strong>Handoff:</strong> Once the boundary of local feedback is visible, the course can explain why a controller replans when the measured state moves away from the old prediction.</p>
+    <p><strong>If skipped:</strong> If this move is skipped, LQR sounds like a universal controller rather than a local argument with a clear operating region.</p>
+  </div>
 </section><section class="fp">
   <div class="kick">05 · course move</div>
   <h2>Replan without losing tomorrow</h2>
   <div class="essay"><p>MPC turns planning into feedback by repeatedly solving a short future problem and applying only the first command. Reachability and recursive feasibility ask the question MPC alone can miss: after this first command, will the next problem still have a legal escape?</p></div>
   <div class="explain-box"><p>A car can choose a narrow traffic gap that is collision-free for two seconds and still be making a bad control choice if the state after one second has no safe braking or steering option left.</p></div>
+  <div class="essay">
+    <p><strong>Handoff:</strong> Once replanning and safety are clear, learning can enter without pretending that data removes the need for state, action, dynamics, cost, and constraints.</p>
+    <p><strong>If skipped:</strong> If this move is skipped, a learner may trust every feasible short-horizon solve and miss the handoff failure where tomorrow has no legal move.</p>
+  </div>
 </section><section class="fp">
   <div class="kick">06 · course move</div>
   <h2>Learn only where written structure runs out</h2>
   <div class="essay"><p>Learning-based control is not a replacement for control thinking. It enters when the model is incomplete, the cost is hard to write, expert behavior is easier to show than specify, or trial feedback is the only teacher. The same questions remain: what is the state, what action is chosen, what future is being priced, and what failure does the learner create?</p></div>
   <div class="explain-box"><p>Behavior cloning can teach a robot a drawer-pulling motion from demonstrations, but the learned policy may drift into a handle angle the expert never showed. RL can improve from reward, but if the reward pays only for speed, the robot may learn to damage the object quickly.</p></div>
+  <div class="essay">
+    <p><strong>Handoff:</strong> This move returns to the beginning: even when the policy is learned, it still acts on state, issues actions, changes the next state, and creates the future it must handle.</p>
+    <p><strong>If skipped:</strong> If this move is skipped, learning looks like a separate topic instead of another way to fill missing model, reward, value, or policy structure inside a control loop.</p>
+  </div>
 </section></main>
 </body>
 </html>

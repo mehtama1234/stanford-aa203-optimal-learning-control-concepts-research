@@ -1039,36 +1039,48 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
             "Name the moving situation",
             "A control problem begins when a choice today changes what choices are available tomorrow. Before formulas, name the moving thing, the information you know now, the command you can issue, the rule that turns that command into motion, the future you prefer, and the lines you cannot cross.",
             "A delivery drone is not controlled by saying 'arrive quickly.' Its state includes position, velocity, attitude, battery, payload, and wind estimate. Its action is thrust or a lower-level motion command. Its cost trades time, energy, landing error, and smoothness. Its constraints include no-fly zones, thrust limits, battery reserve, and safe touchdown.",
+            "Once those pieces are named, the course can ask for more than one command. It can ask for a whole legal history of states and actions.",
+            "If this move is skipped, every later method is floating. The solver may optimize a wish, the learner may copy labels without knowing state, and the safety check may protect the wrong boundary.",
         ),
         (
             "02",
             "Make the whole path the decision",
             "Static optimization chooses a point. Control chooses a path. Calculus of variations, costates, Hamiltonians, shooting, transcription, and collocation are different ways of saying that a legal answer is not one number; it is a history of states and actions that must fit the dynamics at every step.",
             "For a robot arm moving around a fixture, a shortest geometric curve can still require impossible torque. Direct methods put states and commands on a grid, enforce dynamics between neighboring grid points, and let the solver choose a path that the arm can physically trace.",
+            "Once a path can be written as variables and constraints, the course asks how to judge paths whose early choices change later options.",
+            "If this move is skipped, the learner may think control is a sequence of disconnected optimizations instead of a time-coupled path through physical states.",
         ),
         (
             "03",
             "Price the future from each state",
             "Dynamic programming appears when the future after the next state is another copy of the same problem. The value function is the price tag on being in a state with all future choices still open. Bellman recursion is the bookkeeping rule: compare actions by the cost now plus the future value of the state they create.",
             "A rover may choose a longer route around rough ground because the short route damages its wheels. The immediate distance is smaller, but the next state has worse future value because every later move is harder.",
+            "Once future burden can be stored at a state, the course can exploit local structure: near a planned motion, that value can have a simpler shape.",
+            "If this move is skipped, delayed consequences disappear. A controller will prefer the short route, early option exercise, or cheap first action even when it creates a worse future.",
         ),
         (
             "04",
             "Use local structure when the world is near the plan",
             "LQR works when the real motion is close enough to a nominal motion that the dynamics look linear and the cost looks like a bowl. It is not magic feedback. It is a local promise: small errors near the planned state can be pushed back with a fast linear correction.",
             "A hovering drone can use LQR for a small drift. After clipping a branch and tumbling, the same local model is no longer the right picture; the state has left the region where the approximation tells the truth.",
+            "Once the boundary of local feedback is visible, the course can explain why a controller replans when the measured state moves away from the old prediction.",
+            "If this move is skipped, LQR sounds like a universal controller rather than a local argument with a clear operating region.",
         ),
         (
             "05",
             "Replan without losing tomorrow",
             "MPC turns planning into feedback by repeatedly solving a short future problem and applying only the first command. Reachability and recursive feasibility ask the question MPC alone can miss: after this first command, will the next problem still have a legal escape?",
             "A car can choose a narrow traffic gap that is collision-free for two seconds and still be making a bad control choice if the state after one second has no safe braking or steering option left.",
+            "Once replanning and safety are clear, learning can enter without pretending that data removes the need for state, action, dynamics, cost, and constraints.",
+            "If this move is skipped, a learner may trust every feasible short-horizon solve and miss the handoff failure where tomorrow has no legal move.",
         ),
         (
             "06",
             "Learn only where written structure runs out",
             "Learning-based control is not a replacement for control thinking. It enters when the model is incomplete, the cost is hard to write, expert behavior is easier to show than specify, or trial feedback is the only teacher. The same questions remain: what is the state, what action is chosen, what future is being priced, and what failure does the learner create?",
             "Behavior cloning can teach a robot a drawer-pulling motion from demonstrations, but the learned policy may drift into a handle angle the expert never showed. RL can improve from reward, but if the reward pays only for speed, the robot may learn to damage the object quickly.",
+            "This move returns to the beginning: even when the policy is learned, it still acts on state, issues actions, changes the next state, and creates the future it must handle.",
+            "If this move is skipped, learning looks like a separate topic instead of another way to fill missing model, reward, value, or policy structure inside a control loop.",
         ),
     ]
     spine_html = "".join(
@@ -1077,10 +1089,22 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <h2>{esc(title)}</h2>
   <div class="essay"><p>{esc(problem)}</p></div>
   <div class="explain-box"><p>{esc(example)}</p></div>
+  <div class="essay">
+    <p><strong>Handoff:</strong> {esc(handoff)}</p>
+    <p><strong>If skipped:</strong> {esc(if_skipped)}</p>
+  </div>
 </section>"""
-        for num, title, problem, example in spine_items
+        for num, title, problem, example, handoff, if_skipped in spine_items
     )
-    write(SITE / "course-spine.html", page("Course Spine", f"<h1>Course Spine</h1><p class=\"lede\">The course is one question repeated at larger scale: what should this system do now, knowing that the action changes the future it will have to live in?</p>{spine_html}", "spine"))
+    spine_intro = """
+<h1>Course Spine</h1>
+<p class="lede">The course is one question repeated at larger scale: what should this system do now, knowing that the action changes the future it will have to live in?</p>
+<div class="essay">
+  <p>Use one car merge to read the whole course. The car is in the right lane, a truck is ahead, a faster car is behind in the left lane, and the controller has two seconds to decide whether to accelerate, brake, or stay put. The state is not just lane position; it includes speed, heading, nearby cars, and enough prediction to know what the next command will change. The action is not "merge"; it is steering, throttle, and brake. Dynamics turn those commands into the next state. Cost prices progress, comfort, and delay. Constraints forbid collision, road departure, and acceleration beyond limits.</p>
+  <p>Once that setup exists, the rest of the course is not a list of techniques. It is a sequence of repairs to harder versions of the same pressure. If the whole future path matters, trajectory optimization appears. If the next state changes every later choice, dynamic programming and value appear. If the car is close to a planned lane center, local feedback can help. If traffic moves, MPC replans. If nearby driver behavior, reward, or contact strategy cannot be written cleanly, learning enters. The spine below names each repair and the mistake it prevents.</p>
+</div>
+"""
+    write(SITE / "course-spine.html", page("Course Spine", f"{spine_intro}{spine_html}", "spine"))
 
     family_cards = []
     for family in families:

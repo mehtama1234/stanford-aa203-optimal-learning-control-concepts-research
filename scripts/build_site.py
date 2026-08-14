@@ -498,6 +498,42 @@ QUALITY_TESTS: list[dict[str, str]] = [
 ]
 
 
+PROVENANCE_CHECKS: list[tuple[str, str]] = [
+    (
+        "Source Capture",
+        "Start with the playlist record, then inspect the raw VTT and cleaned transcript for the lecture. The raw file keeps timestamped caption evidence; the clean file makes the words searchable. If either layer is missing, a concept page should not pretend to have local transcript support.",
+    ),
+    (
+        "Evidence Record",
+        "Open the matching row in analysis/evidence/evidence-ledger.json. A trustworthy record names the video id, timestamp, local transcript path, transcript window, what the transcript supports, and what the page adds beyond the transcript.",
+    ),
+    (
+        "Teaching Synthesis",
+        "Open the concept or teaching artifact that uses the record. The page may explain more than the transcript says, but it must keep the boundary visible. The transcript can support that Lecture 11 discusses reachable sets; the page can then synthesize the learner rule about safe states and bad targets.",
+    ),
+    (
+        "Generated Page",
+        "Open the rendered HTML after rebuilding. The page should contain the same evidence anchor and the same first-principles structure: ordinary pressure, object, operation, concrete run, math one level deeper, and boundary.",
+    ),
+    (
+        "Validation Gate",
+        "Run the validator after rendering. The validator checks links, evidence anchors, transcript coverage, required teaching markers, word floors, broad anti-filler phrases, and concept-page richness markers.",
+    ),
+    (
+        "Manual Review Override",
+        "Some evidence rows need human wording after the automatic transcript match. Those overrides live in analysis/evidence/manual-review-overrides.json. They should make the transcript support sharper, not inflate it into a claim the lecture did not make.",
+    ),
+    (
+        "Durable Edit Rule",
+        "If a reviewer wants a richer explanation, the edit belongs in scripts/build_site.py, scripts/build_first_principles_atlas.py, scripts/build_teaching_artifacts.py, or the analysis source files that feed them. Editing only the rendered HTML creates a stale page that the next build will overwrite.",
+    ),
+    (
+        "Cold Rebuild Rule",
+        "A clean rebuild is the proof that the course is reproducible. Delete nothing by hand; run the generator chain and validator. If the same 57 pages, 38 concepts, 38 evidence records, and teaching artifacts reappear, the source layer and rendered layer still agree.",
+    ),
+]
+
+
 LECTURE_DEEPENING: dict[int, dict[str, str]] = {
     1: {
         "problem": "The course first has to make control visible in ordinary systems: a car, drone, thermostat, or robot changes because commands push state through time.",
@@ -1294,6 +1330,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 """
     write(SITE / "completion-audit.html", page("Completion Audit", f"{completion_intro}{audit_table}", "review"))
 
+    provenance_cards = "".join(card(title, f"<p>{esc(body)}</p>") for title, body in PROVENANCE_CHECKS)
     write(
         SITE / "provenance.html",
         page(
@@ -1306,8 +1343,20 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <p>Playlist metadata is stored in <code>raw-material/youtube/playlist.json</code>. Caption files are stored under <code>raw-material/youtube/transcripts/raw-vtt/</code>, cleaned text under <code>raw-material/youtube/transcripts/clean/</code>, and availability in <code>raw-material/youtube/transcript-index.json</code>.</p>
   <p>Analysis artifacts live in <code>analysis/concepts/</code>, <code>analysis/evidence/</code>, <code>analysis/throughlines/</code>, and <code>analysis/teaching/</code>. The site under <code>site/</code> is generated output, not the only source of truth.</p>
   <p>The build path is: download or refresh transcripts, build the first-principles atlas and evidence ledger, build teaching artifacts, run the quality audit, render the static site, then validate links, evidence references, and richness gates.</p>
-  <p>This separation matters because the writing can improve without losing the source trail. A richer explanation should still point back to the same transcript window and declare what is synthesis.</p>
-  <p>That is the difference between a course companion and an unsupported essay or summary.</p>
+  <p>This separation matters because the writing can improve without losing the source trail. A richer explanation should still point back to the same transcript window and declare what is synthesis. That is the difference between a course companion and an unsupported essay or summary.</p>
+</div>
+<h2>Source-To-Page Trail</h2>
+<section class="stack">{provenance_cards}</section>
+<h2>Concrete Claim Check</h2>
+<div class="essay">
+  <p>Use reachability as the model check. The source layer stores the Lecture 11 caption window that names reachable sets, target sets, controls, disturbances, and safety objectives. The evidence record says that the transcript supports reachability as set-valued reasoning. The concept page then teaches the ordinary rule: from this car state, with this steering and braking limit, which future states can still avoid the wall or bad target?</p>
+  <p>The teaching sentence is allowed to be clearer than the transcript, but it is not allowed to pretend the transcript proved every part of the synthesis. A reviewer should be able to move from rendered page to evidence id to local transcript window to raw VTT timestamp without guessing.</p>
+  <p>Do the same check for one learning page. For behavioral cloning, the transcript supports supervised learning from demonstrated state-action behavior. The page adds the closed-loop warning: the learned policy can create states the expert did not label. That extra warning is allowed because the provenance trail names it as synthesis rather than transcript quotation.</p>
+</div>
+<h2>Do Not Trust The Page If</h2>
+<div class="essay">
+  <p>Do not trust a page if the source path is missing, the evidence record only repeats a keyword, the synthesis boundary is blank, the rendered page has no evidence anchor, the concept page skips the concrete run, or the validator was not run after generation.</p>
+  <p>Do not trust a manual edit in <code>site/</code> by itself. The durable source is the generator and analysis artifacts. A real improvement changes the source layer, rebuilds the page, and passes validation.</p>
   <p>Run <code>python3 scripts/build_first_principles_atlas.py</code>, then <code>python3 scripts/build_teaching_artifacts.py</code>, then <code>python3 scripts/audit_course_quality.py</code>, then <code>python3 scripts/build_site.py</code>, then <code>python3 scripts/validate_all.py</code>.</p>
 </div>
 """,

@@ -199,7 +199,7 @@ def main() -> int:
         "concepts.html": ["not read these as vocabulary flashcards", "How To Read A Concept", "Family Pressure Map", "Atlas Doors", "distribution shift", "recursive feasibility"],
         "evidence.html": ["guardrail between lecture source and teaching synthesis", "keyword match is not evidence", "lecture argument"],
         "completion-audit.html": ["local proof", "mechanical check does not replace editorial judgment", "source layer is present"],
-        "provenance.html": ["source layer separate from synthesis", "build path", "generated output"],
+        "provenance.html": ["source layer separate from synthesis", "Source-To-Page Trail", "Concrete Claim Check", "Do Not Trust The Page If", "raw VTT timestamp", "generated output"],
     }
     for filename, needles in rendered_checks.items():
         path = SITE / filename
@@ -241,7 +241,7 @@ def main() -> int:
         "concepts.html": 1600,
         "evidence.html": 6600,
         "completion-audit.html": 220,
-        "provenance.html": 240,
+        "provenance.html": 800,
         "worked-examples.html": 1250,
         "drills.html": 800,
         "solutions.html": 1450,

@@ -324,11 +324,11 @@ def main() -> int:
             if len(words) < 740:
                 errors.append(f"feasibility concept page below core richness floor: {len(words)} < 740")
         if concept.get("id") == "value-function":
-            for marker in ["1 + 18", "4 + 7", "V = 18", "V = 7", "cost(x,u) + V(f(x,u))"]:
+            for marker in ["state S", "state R", "V(R)=18", "state H", "V(H)=7", "1 + 18 = 19", "4 + 7 = 11", "same V(R)=18", "f(S,rocky)=R", "f(S,smooth)=H", "Q(S,rocky)=1+V(R)=1+18=19", "Q(S,smooth)=4+V(H)=4+7=11", "V(S)=11", "V(R)=6", "1 + 6 = 7", "V(x)=min_u [cost(x,u) + V(f(x,u))]", "reward version", "battery heat, wheel damage, traffic, or a locked gate"]:
                 if marker not in text:
                     errors.append(f"value-function concept page missing future-price marker: {marker}")
-            if len(words) < 740:
-                errors.append(f"value-function concept page below core richness floor: {len(words)} < 740")
+            if len(words) < 900:
+                errors.append(f"value-function concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "bellman-recursion":
             for marker in ["state x = J", "V(C)=9", "V(L)=3", "2 + V(C) = 2 + 9 = 11", "5 + V(L) = 5 + 3 = 8", "V(J)=8", "pi(J)=B", "Bellman recursion is the one-step accounting identity", "V(x) = min_u [c(x,u) + V(f(x,u))]", "pi(x) = argmin_u [c(x,u) + V(f(x,u))]", "Q(J,A)=2+V(C)=11", "Q(J,B)=5+V(L)=8", "V(J)=min(11,8)=8", "sum_{x_next} P(x_next|x,u)V(x_next)", "stale map"]:
                 if marker not in text:

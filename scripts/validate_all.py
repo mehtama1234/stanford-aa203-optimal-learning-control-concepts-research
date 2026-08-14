@@ -408,11 +408,11 @@ def main() -> int:
             if len(words) < 1160:
                 errors.append(f"stability under replanning concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "imitation-learning":
-            for marker in ["200 drawer pulls", "handle center x = 0.00 meters", "pull speed 0.04 m/s", "misses the handle by 3 centimeters", "handle may rotate 12 degrees", "sum_i ||pi_theta(x_i) - u_i^expert||^2", "x_{t+1}=f(x_t, pi_theta(x_t))", "x_j^learner"]:
+            for marker in ["200 drawer pulls", "handle center x = 0.00 meters", "pull speed 0.04 m/s", "160 rows are centered pulls", "30 rows show a careful left-hook style", "gripper angle -14 degrees", "10 rows show a right-hook style", "gripper angle +16 degrees", "averaging them gives about -4 degrees", "misses the handle by 3 centimeters", "handle may rotate 12 degrees", "only 2 rows with handle angle 12 degrees", "gripper angle 1 degree", "scraping the handle for 0.4 seconds", "gripper angle -18 degrees", "50 drawer attempts", "17 off-center states", "add those 17 labeled states", "L(theta)=sum_i ||pi_theta(x_i) - u_i^expert||^2", "30*(a - (-14))^2 + 10*(a - 16)^2", "80a + 520", "a = -6.5 degrees", "pi_theta(u|x)", "left_hook or right_hook", "x_{t+1}=f(x_t, pi_theta(x_t))", "2/200 = 0.01", "17/50 = 0.34", "x_j^learner", "D_1 = D_0 union {(x_j^learner,u_j^expert)}", "17 recovery labels"]:
                 if marker not in text:
                     errors.append(f"imitation learning concept page missing demonstration-loop marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"imitation learning concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 1160:
+                errors.append(f"imitation learning concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "behavioral-cloning":
             for marker in ["1,000 centered-lane frames", "steering angle -12 degrees", "steering angle +12 degrees", "average label is 0 degrees", "1 degree right bias over 20 frames", "0.25 meters toward the lane edge", "expert would steer -8 degrees left", "200 such frames", "37 off-center frames", "add those 37 pairs to the dataset", "good test error on expert states can hide bad closed-loop recovery", "L(theta)=sum_i ||pi_theta(x_i)-u_i^expert||^2", "50*(a - (-12))^2 + 50*(a - 12)^2", "squared-error optimum is a = 0 degrees", "d_expert(x)", "d_pi_theta(x)", "x_{t+1}=f(x_t,pi_theta(x_t))", "37 off-center frames out of 200", "D_1 = D_0 union {(x_j^learner,u_j^expert)}", "no built-in exploration or reward signal"]:
                 if marker not in text:

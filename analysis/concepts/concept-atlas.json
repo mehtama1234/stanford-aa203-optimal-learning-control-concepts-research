@@ -469,10 +469,10 @@
   {
     "id": "value-function",
     "name": "Value Function",
-    "lecture": 7,
+    "lecture": 10,
     "keywords": [
-      "value function",
-      "optimal value function"
+      "optimal value function",
+      "value function"
     ],
     "family": "dynamic programming",
     "plain_language_definition": "A table or function that tells how much future cost remains from each state if decisions are made well.",

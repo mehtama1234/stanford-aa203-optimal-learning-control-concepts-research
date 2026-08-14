@@ -84,7 +84,11 @@ def main() -> int:
                 "lecture_title",
                 "video_id",
                 "url",
+                "timestamp_url",
+                "timestamp_start",
+                "timestamp_end",
                 "local_transcript",
+                "raw_vtt",
                 "local_transcript_window",
                 "supports_concepts",
                 "what_transcript_supports",
@@ -96,6 +100,9 @@ def main() -> int:
             transcript = ROOT / row.get("local_transcript", "")
             if row.get("local_transcript") and not transcript.exists():
                 errors.append(f"evidence {row.get('id')} points to missing transcript: {row.get('local_transcript')}")
+            raw_vtt = ROOT / row.get("raw_vtt", "")
+            if row.get("raw_vtt") and not raw_vtt.exists():
+                errors.append(f"evidence {row.get('id')} points to missing VTT: {row.get('raw_vtt')}")
         for concept in concepts:
             for evidence_id in concept.get("course_evidence_ids", []):
                 if evidence_id not in evidence_ids:

@@ -26,7 +26,7 @@ The durable end-to-end target is written in `GOAL.md`.
 - `raw-material/youtube/transcript-index.json`: machine-readable transcript availability and word counts
 - `analysis/research-seed.md`: first course spine and concept seed
 - `analysis/concepts/concept-atlas.json`: first-pass required concept atlas
-- `analysis/evidence/evidence-ledger.json`: transcript-window evidence records
+- `analysis/evidence/evidence-ledger.json`: timestamped transcript-window evidence records
 - `analysis/throughlines/`: method families and mathematical primitives
 - `analysis/teaching/`: derivations, worked examples, drills, and weak-claim repairs
 - `analysis/audits/`: local quality and completion audit artifacts

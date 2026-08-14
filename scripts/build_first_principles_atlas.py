@@ -22,17 +22,108 @@ def words(text: str) -> list[str]:
     return re.findall(r"\b\w+\b", text)
 
 
+def compact_repeated_tokens(text: str) -> str:
+    tokens = text.split()
+    changed = True
+    while changed:
+        changed = False
+        out: list[str] = []
+        i = 0
+        while i < len(tokens):
+            removed = False
+            for size in range(min(10, (len(tokens) - i) // 2), 0, -1):
+                if tokens[i : i + size] == tokens[i + size : i + 2 * size]:
+                    out.extend(tokens[i : i + size])
+                    i += 2 * size
+                    changed = True
+                    removed = True
+                    break
+            if not removed:
+                out.append(tokens[i])
+                i += 1
+        tokens = out
+    return " ".join(tokens)
+
+
 def sentence_window(text: str, pattern: str, radius: int = 42) -> str:
     tokens = words(text)
     joined = " ".join(tokens)
     match = re.search(pattern, joined, re.I)
     if not match:
-        return " ".join(tokens[: min(len(tokens), radius * 2)])
+        return compact_repeated_tokens(" ".join(tokens[: min(len(tokens), radius * 2)]))
     prefix = joined[: match.start()]
     start_word = len(words(prefix))
     lo = max(0, start_word - radius)
     hi = min(len(tokens), start_word + radius)
-    return " ".join(tokens[lo:hi])
+    return compact_repeated_tokens(" ".join(tokens[lo:hi]))
+
+
+def clean_caption_line(line: str) -> str:
+    line = re.sub(r"<[^>]+>", "", line)
+    line = line.replace("&amp;", "&").replace("&nbsp;", " ")
+    return re.sub(r"\s+", " ", line).strip()
+
+
+def seconds_from_timestamp(value: str) -> int:
+    match = re.match(r"(?:(\d+):)?(\d+):(\d+)\.(\d+)", value)
+    if not match:
+        return 0
+    hours = int(match.group(1) or 0)
+    minutes = int(match.group(2))
+    seconds = int(match.group(3))
+    return hours * 3600 + minutes * 60 + seconds
+
+
+def parse_vtt_cues(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    cues: list[dict[str, str]] = []
+    lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
+        if "-->" not in line:
+            i += 1
+            continue
+        start, rest = line.split("-->", 1)
+        end = rest.strip().split()[0]
+        i += 1
+        text_lines: list[str] = []
+        while i < len(lines) and lines[i].strip():
+            cleaned = clean_caption_line(lines[i])
+            if cleaned:
+                text_lines.append(cleaned)
+            i += 1
+        text = " ".join(text_lines).strip()
+        if text:
+            cues.append({"start": start.strip(), "end": end.strip(), "text": text})
+        i += 1
+    deduped: list[dict[str, str]] = []
+    for cue in cues:
+        if not deduped or deduped[-1]["text"] != cue["text"]:
+            deduped.append(cue)
+    return deduped
+
+
+def cue_window(row: dict[str, Any], pattern: str, radius: int = 2) -> dict[str, Any] | None:
+    raw_path = row.get("raw_vtt")
+    if not raw_path:
+        return None
+    cues = parse_vtt_cues(ROOT / raw_path)
+    if not cues:
+        return None
+    for index, cue in enumerate(cues):
+        if re.search(pattern, cue["text"], re.I):
+            lo = max(0, index - radius)
+            hi = min(len(cues), index + radius + 1)
+            selected = cues[lo:hi]
+            return {
+                "timestamp_start": selected[0]["start"],
+                "timestamp_end": selected[-1]["end"],
+                "timestamp_seconds": seconds_from_timestamp(selected[0]["start"]),
+                "local_transcript_window": compact_repeated_tokens(" ".join(item["text"] for item in selected)),
+            }
+    return None
 
 
 def load_transcripts(index: dict[str, Any]) -> dict[int, dict[str, Any]]:
@@ -43,6 +134,22 @@ def load_transcripts(index: dict[str, Any]) -> dict[int, dict[str, Any]]:
         path = ROOT / row["clean_text"]
         out[row["lecture"]] = {**row, "text": path.read_text(encoding="utf-8")}
     return out
+
+
+def find_evidence_transcript(
+    preferred: dict[str, Any] | None,
+    transcripts: dict[int, dict[str, Any]],
+    pattern: str,
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    if preferred:
+        cue = cue_window(preferred, pattern)
+        if cue:
+            return preferred, cue
+    for candidate in transcripts.values():
+        cue = cue_window(candidate, pattern)
+        if cue:
+            return candidate, cue
+    return preferred, None
 
 
 CONCEPTS: list[dict[str, Any]] = [
@@ -372,8 +479,8 @@ CONCEPTS: list[dict[str, Any]] = [
     {
         "id": "value-function",
         "name": "Value Function",
-        "lecture": 7,
-        "keywords": ["value function", "optimal value function"],
+        "lecture": 10,
+        "keywords": ["optimal value function", "value function"],
         "family": "dynamic programming",
         "plain_language_definition": "A table or function that tells how much future cost remains from each state if decisions are made well.",
         "ordinary_problem": "To choose now, the controller needs a compact price for the future after each possible next state.",
@@ -826,10 +933,18 @@ def main() -> int:
                     break
         if transcript:
             pattern = "|".join(re.escape(k) for k in concept["keywords"])
-            window = sentence_window(transcript["text"], pattern)
+            transcript, cue = find_evidence_transcript(transcript, transcripts, pattern)
+            clean_window = sentence_window(transcript["text"], pattern)
+            window = clean_window if re.search(pattern, clean_window, re.I) else (cue["local_transcript_window"] if cue else clean_window)
             lecture = transcript["lecture"]
             video = manifest_by_lecture[lecture]
             evidence_id = f"ev-{concept['id']}-01"
+            timestamp_seconds = cue["timestamp_seconds"] if cue else None
+            timestamp_url = (
+                f"https://www.youtube.com/watch?v={video['id']}&t={timestamp_seconds}s"
+                if timestamp_seconds is not None
+                else f"https://www.youtube.com/watch?v={video['id']}"
+            )
             evidence.append(
                 {
                     "id": evidence_id,
@@ -837,7 +952,12 @@ def main() -> int:
                     "lecture_title": video["title"],
                     "video_id": video["id"],
                     "url": f"https://www.youtube.com/watch?v={video['id']}",
+                    "timestamp_url": timestamp_url,
+                    "timestamp_start": cue["timestamp_start"] if cue else None,
+                    "timestamp_end": cue["timestamp_end"] if cue else None,
+                    "timestamp_seconds": timestamp_seconds,
                     "local_transcript": transcript["clean_text"],
+                    "raw_vtt": transcript.get("raw_vtt"),
                     "local_transcript_window": window,
                     "supports_concepts": [concept["id"]],
                     "what_transcript_supports": f"The lecture explicitly discusses {concept['name']} or its surrounding method vocabulary in the local window, grounding the concept in the AA203 course arc.",
@@ -870,4 +990,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

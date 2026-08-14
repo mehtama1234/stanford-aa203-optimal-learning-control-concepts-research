@@ -15,6 +15,7 @@ This audit records local evidence for progress toward `GOAL.md`. It does not dec
 - Concepts without evidence: 0
 - Evidence records still needing manual review: 38
 - Evidence records with short windows: 0
+- Evidence records missing timestamps: 0
 
 ## Teaching Artifacts
 

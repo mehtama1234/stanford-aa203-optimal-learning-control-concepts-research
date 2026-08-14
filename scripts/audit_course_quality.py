@@ -50,6 +50,7 @@ def main() -> int:
     evidence_by_concept: dict[str, list[str]] = defaultdict(list)
     short_windows: list[str] = []
     missing_transcripts: list[str] = []
+    missing_timestamps: list[str] = []
     for row in evidence:
         for concept_id in row.get("supports_concepts", []):
             evidence_by_concept[concept_id].append(row["id"])
@@ -58,6 +59,8 @@ def main() -> int:
         transcript = ROOT / row.get("local_transcript", "")
         if not transcript.exists():
             missing_transcripts.append(row["id"])
+        if not row.get("timestamp_start") or not row.get("timestamp_end") or not row.get("timestamp_url"):
+            missing_timestamps.append(row["id"])
 
     concepts_without_evidence = [concept["id"] for concept in concepts if not evidence_by_concept.get(concept["id"])]
     shallow_concepts = [
@@ -88,6 +91,7 @@ def main() -> int:
             "confidence_status_counts": dict(status_counts),
             "short_windows": short_windows,
             "missing_transcripts": missing_transcripts,
+            "missing_timestamps": missing_timestamps,
             "manual_review_remaining": status_counts.get("needs_review", 0),
         },
         "teaching": teaching_counts,
@@ -123,6 +127,7 @@ def main() -> int:
         f"- Concepts without evidence: {len(concepts_without_evidence)}",
         f"- Evidence records still needing manual review: {status_counts.get('needs_review', 0)}",
         f"- Evidence records with short windows: {len(short_windows)}",
+        f"- Evidence records missing timestamps: {len(missing_timestamps)}",
         "",
         "## Teaching Artifacts",
         "",
@@ -150,4 +155,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

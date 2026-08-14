@@ -84,9 +84,12 @@ def evidence_by_id(evidence: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
 
 def evidence_card(row: dict[str, Any], depth: int = 0) -> str:
     prefix = "../" * depth
+    timestamp = ""
+    if row.get("timestamp_start"):
+        timestamp = f' · <a href="{esc(row.get("timestamp_url", row["url"]))}">{esc(row["timestamp_start"])}-{esc(row.get("timestamp_end", ""))}</a>'
     return f"""<article class="evidence-card" id="{esc(row['id'])}">
   <h3>{esc(row['id'])}: Lecture {esc(row['lecture'])} · {esc(row['lecture_title'])}</h3>
-  <p class="muted"><a href="{esc(row['url'])}">{esc(row['video_id'])}</a> · <code>{esc(row['local_transcript'])}</code> · {esc(row['confidence_status'])}</p>
+  <p class="muted"><a href="{esc(row['url'])}">{esc(row['video_id'])}</a>{timestamp} · <code>{esc(row['local_transcript'])}</code> · {esc(row['confidence_status'])}</p>
   <blockquote>{esc(row['local_transcript_window'])}</blockquote>
   <p><strong>Transcript supports:</strong> {esc(row['what_transcript_supports'])}</p>
   <p><strong>Synthesis boundary:</strong> {esc(row['synthesis_beyond_transcript'])}</p>

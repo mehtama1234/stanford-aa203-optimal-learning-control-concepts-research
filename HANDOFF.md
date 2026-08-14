@@ -12,7 +12,7 @@ Completed locally:
 - Downloaded and cleaned transcripts for all 19 lectures.
 - Captured 207,618 transcript words.
 - Built a first-pass concept atlas with 38 required concepts.
-- Built a first-pass evidence ledger with 38 local transcript-window records marked `needs_review`.
+- Built a first-pass evidence ledger with 38 timestamped local transcript-window records marked `needs_review`.
 - Built method-family and primitive throughline artifacts.
 - Built structured teaching artifacts for derivations, worked examples, drills, solutions, and weak-claim repairs.
 - Built quality audit artifacts under `analysis/audits/`.

@@ -293,6 +293,12 @@ def main() -> int:
                     errors.append(f"dynamics concept page missing state-update marker: {marker}")
             if len(words) < 720:
                 errors.append(f"dynamics concept page below core richness floor: {len(words)} < 720")
+        if concept.get("id") == "objective-cost-function":
+            for marker in ["Path A", "Path B", "J = sum_k stage_cost(x_k,u_k) + terminal_cost(x_N)", "5.0*wall_risk", "free to choose damage"]:
+                if marker not in text:
+                    errors.append(f"objective concept page missing tradeoff marker: {marker}")
+            if len(words) < 740:
+                errors.append(f"objective concept page below core richness floor: {len(words)} < 740")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

@@ -390,11 +390,11 @@ def main() -> int:
             if len(words) < 800:
                 errors.append(f"reachability concept page below core richness floor: {len(words)} < 800")
         if concept.get("id") == "model-predictive-control":
-            for marker in ["3.0 meters from a loading mark", "10:00:00", "-0.8 m/s^2", "position 3.40 meters and velocity 0.50 m/s", "shifted horizon", "pi_MPC(x_measured(k)) = u_0^*", "x_0 = x_measured(k+1)", "no feasible continuation"]:
+            for marker in ["3.0 meters from a loading mark", "10:00:00", "-0.8 m/s^2", "v_next = v + dt*u", "p_next = p + dt*v_next", "velocity 0.60 m/s and position 3.30 meters", "3.53 meters and 3.70 meters", "old -0.6 and -0.2", "position 3.40 meters and velocity 0.50 m/s", "not the predicted 3.30 meters and 0.60 m/s", "shifted horizon", "10:00:00.5 to 10:00:02.0", "u_0...u_{N-1}", "x_0 = x_measured(k)", "pi_MPC(x_measured(k)) = u_0^*", "x_0 = x_measured(k+1)", "old tail [-0.6, -0.2]", "predicted state (3.30, 0.60)", "measured state (3.40, 0.50)", "solve takes 0.8 seconds", "control period is 0.5 seconds", "no feasible continuation", "Recursive feasibility and stability are extra promises"]:
                 if marker not in text:
                     errors.append(f"MPC concept page missing receding-horizon marker: {marker}")
-            if len(words) < 820:
-                errors.append(f"MPC concept page below core richness floor: {len(words)} < 820")
+            if len(words) < 900:
+                errors.append(f"MPC concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "recursive-feasibility":
             for marker in ["2.0 meters left before the stop line", "speed is below 0.2 m/s", "1.4 m/s with only 1.1 meters left", "handed 10:00.5 an impossible problem", "[u_0^*, u_1^*, u_2^*]", "[u_1^*, u_2^*, v_backup]", "X_F is controlled invariant"]:
                 if marker not in text:

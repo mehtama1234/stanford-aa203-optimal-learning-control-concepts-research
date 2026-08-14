@@ -31,24 +31,24 @@
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Instead of directly learning the action rule, the agent can learn a future-return scoreboard.</p>
-    <p>The tempting shortcut is simple: Estimate immediate reward only. But that shortcut breaks because the best action may have low immediate reward but lead to high future return.</p>
+    <p>A common wrong first move is: Estimate immediate reward only. It fails when the best action may have low immediate reward but lead to high future return.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The controller keeps track of a state-value or action-value function. This answers a practical question: look for rl methods where action choice is derived from learned values.</p>
-    <p>The operation is concrete: Update value estimates from experience and act greedily or near-greedily with respect to them.</p>
+    <p>The working object is a state-value or action-value function. Use it when you need to look for RL methods where action choice is derived from learned values.</p>
+    <p>What the object does: Update value estimates from experience and act greedily or near-greedily with respect to them.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a state-value or action-value function. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Before naming the method, point to a state-value or action-value function in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
     <p>Now apply one command or one update. Update value estimates from experience and act greedily or near-greedily with respect to them. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
-    <p>The world check is the example: A maze agent learns that moving away from the goal now can be valuable if it avoids a dead end. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+    <p>The world check is the example: A maze agent learns that moving away from the goal now can be valuable if it avoids a dead end. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
 <section class="fp">
@@ -62,7 +62,7 @@
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>The value representation must generalize correctly across the visited state-action space.</p>
-    <p>If that boundary is crossed, the visible failure is this: function approximation error makes the agent overvalue bad actions.</p>
+    <p>When that condition fails, look for this visible break: function approximation error makes the agent overvalue bad actions.</p>
     <p><strong>Recognize it in a new problem:</strong> Look for RL methods where action choice is derived from learned values.</p>
   </div>
 </section>

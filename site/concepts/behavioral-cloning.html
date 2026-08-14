@@ -31,24 +31,24 @@
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>The learner has examples of what action the expert took in each state and wants to mimic that mapping.</p>
-    <p>The tempting shortcut is simple: Assume high supervised accuracy means good closed-loop control. But that shortcut breaks because a small prediction error changes the next state, and errors accumulate because future inputs are policy-generated.</p>
+    <p>A common wrong first move is: Assume high supervised accuracy means good closed-loop control. It fails when a small prediction error changes the next state, and errors accumulate because future inputs are policy-generated.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The controller keeps track of a supervised policy model trained on expert state-action pairs. This answers a practical question: look for imitation framed as ordinary supervised prediction of expert actions.</p>
-    <p>The operation is concrete: Minimize prediction error between policy actions and expert actions.</p>
+    <p>The working object is a supervised policy model trained on expert state-action pairs. Use it when you need to look for imitation framed as ordinary supervised prediction of expert actions.</p>
+    <p>What the object does: Minimize prediction error between policy actions and expert actions.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a supervised policy model trained on expert state-action pairs. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Before naming the method, point to a supervised policy model trained on expert state-action pairs in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
     <p>Now apply one command or one update. Minimize prediction error between policy actions and expert actions. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
-    <p>The world check is the example: A lane-following policy trained on expert driving images may fail after drifting slightly toward the lane edge. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+    <p>The world check is the example: A lane-following policy trained on expert driving images may fail after drifting slightly toward the lane edge. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
 <section class="fp">
@@ -62,7 +62,7 @@
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>The training data must represent the states induced by the learned policy.</p>
-    <p>If that boundary is crossed, the visible failure is this: compounding errors move the policy outside the expert dataset.</p>
+    <p>When that condition fails, look for this visible break: compounding errors move the policy outside the expert dataset.</p>
     <p><strong>Recognize it in a new problem:</strong> Look for imitation framed as ordinary supervised prediction of expert actions.</p>
   </div>
 </section>

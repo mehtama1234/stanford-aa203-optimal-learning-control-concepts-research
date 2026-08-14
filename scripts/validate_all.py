@@ -257,6 +257,17 @@ def main() -> int:
     for concept in concepts:
         path = SITE / "concepts" / f"{concept['id']}.html"
         text = path.read_text(encoding="utf-8") if path.exists() else ""
+        for phrase in [
+            "The controller keeps track of",
+            "This answers a practical question",
+            "The operation is concrete",
+            "The tempting shortcut is simple",
+            "But that shortcut breaks because",
+            "If that boundary is crossed",
+            "A reader should be able to replace",
+        ]:
+            if phrase in text:
+                errors.append(f"concept page still has formulaic scaffold phrase: {path.relative_to(ROOT)} -> {phrase}")
         plain = re.sub(r"<[^>]+>", " ", text)
         words = re.findall(r"\b\w+\b", plain)
         if len(words) < 520:

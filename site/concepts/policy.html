@@ -31,24 +31,24 @@
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>The controller needs a repeatable decision rule, not a separate hand-picked action for every moment.</p>
-    <p>The tempting shortcut is simple: Store a fixed action sequence. But that shortcut breaks because disturbances and uncertainty mean the state may differ from the planned path.</p>
+    <p>A common wrong first move is: Store a fixed action sequence. It fails when disturbances and uncertainty mean the state may differ from the planned path.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The controller keeps track of a deterministic or stochastic policy. This answers a practical question: look for the object that chooses actions during execution.</p>
-    <p>The operation is concrete: Given a state or observation, output an action or action distribution.</p>
+    <p>The working object is a deterministic or stochastic policy. Use it when you need to look for the object that chooses actions during execution.</p>
+    <p>What the object does: Given a state or observation, output an action or action distribution.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a deterministic or stochastic policy. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Before naming the method, point to a deterministic or stochastic policy in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
     <p>Now apply one command or one update. Given a state or observation, output an action or action distribution. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
-    <p>The world check is the example: A drone policy maps position and velocity errors to thrust commands. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+    <p>The world check is the example: A drone policy maps position and velocity errors to thrust commands. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
 <section class="fp">
@@ -62,7 +62,7 @@
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>A policy can only react to information available in its input.</p>
-    <p>If that boundary is crossed, the visible failure is this: the policy cannot recover from unseen states or missing observations.</p>
+    <p>When that condition fails, look for this visible break: the policy cannot recover from unseen states or missing observations.</p>
     <p><strong>Recognize it in a new problem:</strong> Look for the object that chooses actions during execution.</p>
   </div>
 </section>

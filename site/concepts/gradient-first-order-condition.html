@@ -31,24 +31,24 @@
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>An optimizer needs a direction that says which small change makes the score better or worse.</p>
-    <p>The tempting shortcut is simple: Try random changes until the cost goes down. But that shortcut breaks because random search wastes structure and becomes expensive in high-dimensional control trajectories.</p>
+    <p>A common wrong first move is: Try random changes until the cost goes down. It fails when random search wastes structure and becomes expensive in high-dimensional control trajectories.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The controller keeps track of a gradient, derivative, or stationarity condition. This answers a practical question: use it when tiny changes to a decision have meaningful, computable effects.</p>
-    <p>The operation is concrete: Differentiate the objective and look for directions of improvement or stationarity.</p>
+    <p>The working object is a gradient, derivative, or stationarity condition. Use it when tiny changes to a decision have meaningful, computable effects.</p>
+    <p>What the object does: Differentiate the objective and look for directions of improvement or stationarity.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a gradient, derivative, or stationarity condition. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Before naming the method, point to a gradient, derivative, or stationarity condition in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
     <p>Now apply one command or one update. Differentiate the objective and look for directions of improvement or stationarity. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
-    <p>The world check is the example: If increasing steering torque slightly reduces path error but increases actuator cost sharply, the gradient exposes the tradeoff. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+    <p>The world check is the example: If increasing steering torque slightly reduces path error but increases actuator cost sharply, the gradient exposes the tradeoff. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
 <section class="fp">
@@ -62,7 +62,7 @@
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>Gradient reasoning is local and depends on smoothness and the chosen coordinates.</p>
-    <p>If that boundary is crossed, the visible failure is this: the method stops at a local stationary point that still violates the real safety or mission goal.</p>
+    <p>When that condition fails, look for this visible break: the method stops at a local stationary point that still violates the real safety or mission goal.</p>
     <p><strong>Recognize it in a new problem:</strong> Use it when tiny changes to a decision have meaningful, computable effects.</p>
   </div>
 </section>

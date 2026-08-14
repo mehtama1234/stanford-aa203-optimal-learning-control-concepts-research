@@ -73,6 +73,25 @@ def section_list(items: list[str]) -> str:
     return "<ul>" + "".join(f"<li>{item}</li>" for item in items) + "</ul>"
 
 
+def sentence_body(value: str) -> str:
+    return value.strip().rstrip(".")
+
+
+def recognition_sentence(value: str) -> str:
+    text = sentence_body(value)
+    lowered = text[:1].lower() + text[1:]
+    for prefix in ["Use it when ", "Use this term when "]:
+        if text.lower().startswith(prefix.lower()):
+            return "Use it when " + text[len(prefix):]
+    if text.lower().startswith("choose this lens when "):
+        return "Use this lens when " + text[len("choose this lens when "):]
+    if text.lower().startswith("ask "):
+        return "Use it when you need to " + lowered
+    if text.lower().startswith("look for "):
+        return "Use it when you need to " + lowered
+    return "Use it when you need to " + lowered
+
+
 def concept_link(concept: dict[str, Any], depth: int = 0) -> str:
     prefix = "../" * depth
     return f'<a href="{prefix}concepts/{esc(concept["id"])}.html">{esc(concept["name"])}</a>'
@@ -1156,6 +1175,8 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
         ev_cards = "".join(evidence_card(ev_by_id[eid], depth=1) for eid in concept.get("course_evidence_ids", []) if eid in ev_by_id)
         related = [c for c in concepts if c["family"] == concept["family"] and c["id"] != concept["id"]][:6]
         run = concept_run(concept)
+        mathematical_object = sentence_body(concept["mathematical_object"]).lower()
+        recognition = recognition_sentence(concept["recognition_test"])
         body = f"""
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>{esc(concept['name'])}</h1>
@@ -1165,24 +1186,24 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>{esc(concept['ordinary_problem'])}</p>
-    <p>The tempting shortcut is simple: {esc(concept['naive_approach'])} But that shortcut breaks because {esc(concept['why_naive_fails']).lower()}</p>
+    <p>A common wrong first move is: {esc(concept['naive_approach'])} It fails when {esc(concept['why_naive_fails']).lower()}</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The controller keeps track of {esc(concept['mathematical_object']).lower()} This answers a practical question: {esc(concept['recognition_test']).lower()}</p>
-    <p>The operation is concrete: {esc(concept['operation'])}</p>
+    <p>The working object is {esc(mathematical_object)}. {esc(recognition)}.</p>
+    <p>What the object does: {esc(concept['operation'])}</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is {esc(concept['mathematical_object']).lower()} Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Before naming the method, point to {esc(mathematical_object)} in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
     <p>Now apply one command or one update. {esc(concept['operation'])} After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
-    <p>The world check is the example: {esc(concept['worked_example'])} A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+    <p>The world check is the example: {esc(concept['worked_example'])} Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
 <section class="fp">
@@ -1196,7 +1217,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>{esc(concept['assumption_boundary'])}</p>
-    <p>If that boundary is crossed, the visible failure is this: {esc(concept['failure_mode']).lower()}</p>
+    <p>When that condition fails, look for this visible break: {esc(concept['failure_mode']).lower()}</p>
     <p><strong>Recognize it in a new problem:</strong> {esc(concept['recognition_test'])}</p>
   </div>
 </section>

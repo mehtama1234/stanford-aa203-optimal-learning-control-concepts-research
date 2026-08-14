@@ -31,24 +31,24 @@
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>A policy&#x27;s own mistakes change the inputs it sees next.</p>
-    <p>The tempting shortcut is simple: Evaluate the policy only on held-out expert states. But that shortcut breaks because closed-loop execution creates new states that were rare or absent in the demonstrations.</p>
+    <p>A common wrong first move is: Evaluate the policy only on held-out expert states. It fails when closed-loop execution creates new states that were rare or absent in the demonstrations.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The controller keeps track of a state distribution induced by a policy. This answers a practical question: ask whether the learner will see the same state distribution as the expert data.</p>
-    <p>The operation is concrete: Compare or correct the mismatch between expert data and learner rollouts.</p>
+    <p>The working object is a state distribution induced by a policy. Use it when you need to ask whether the learner will see the same state distribution as the expert data.</p>
+    <p>What the object does: Compare or correct the mismatch between expert data and learner rollouts.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a state distribution induced by a policy. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Before naming the method, point to a state distribution induced by a policy in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
     <p>Now apply one command or one update. Compare or correct the mismatch between expert data and learner rollouts. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
-    <p>The world check is the example: A robot trained only on centered object grasps may fail when its first motion nudges the object aside. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+    <p>The world check is the example: A robot trained only on centered object grasps may fail when its first motion nudges the object aside. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
 <section class="fp">
@@ -62,7 +62,7 @@
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>The issue matters most when actions affect future observations.</p>
-    <p>If that boundary is crossed, the visible failure is this: errors compound until the policy reaches states where it has no competent behavior.</p>
+    <p>When that condition fails, look for this visible break: errors compound until the policy reaches states where it has no competent behavior.</p>
     <p><strong>Recognize it in a new problem:</strong> Ask whether the learner will see the same state distribution as the expert data.</p>
   </div>
 </section>

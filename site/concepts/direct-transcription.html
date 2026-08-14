@@ -31,24 +31,24 @@
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>A computer cannot optimize over infinitely many points of a curve, so the curve must be represented by a finite set of decision variables.</p>
-    <p>The tempting shortcut is simple: Optimize only the start and end points. But that shortcut breaks because the path between them may violate dynamics, obstacles, or actuator limits.</p>
+    <p>A common wrong first move is: Optimize only the start and end points. It fails when the path between them may violate dynamics, obstacles, or actuator limits.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The controller keeps track of a discretized trajectory with state and action variables at grid points. This answers a practical question: use this when the path is the object and a nonlinear optimizer will solve the finite version.</p>
-    <p>The operation is concrete: Add constraints that force neighboring grid points to approximate the dynamics.</p>
+    <p>The working object is a discretized trajectory with state and action variables at grid points. Use it when you need to use this when the path is the object and a nonlinear optimizer will solve the finite version.</p>
+    <p>What the object does: Add constraints that force neighboring grid points to approximate the dynamics.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Point to the physical record or mathematical object before naming the method. In this concept, that object is a discretized trajectory with state and action variables at grid points. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
+    <p>Before naming the method, point to a discretized trajectory with state and action variables at grid points in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
     <p>Now apply one command or one update. Add constraints that force neighboring grid points to approximate the dynamics. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
-    <p>The world check is the example: A robot arm path is represented by joint positions and torques at many time steps, with constraints tying each step to the next. A reader should be able to replace that setup with another car, drone, rover, robot arm, or reward signal and keep the same control question alive.</p>
+    <p>The world check is the example: A robot arm path is represented by joint positions and torques at many time steps, with constraints tying each step to the next. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
 <section class="fp">
@@ -62,7 +62,7 @@
   <h2>Where the idea stops working</h2>
   <div class="essay">
     <p>The discretization must be fine and accurate enough for the motion being planned.</p>
-    <p>If that boundary is crossed, the visible failure is this: a coarse grid hides collisions, unstable transitions, or excessive actuator demands.</p>
+    <p>When that condition fails, look for this visible break: a coarse grid hides collisions, unstable transitions, or excessive actuator demands.</p>
     <p><strong>Recognize it in a new problem:</strong> Use this when the path is the object and a nonlinear optimizer will solve the finite version.</p>
   </div>
 </section>

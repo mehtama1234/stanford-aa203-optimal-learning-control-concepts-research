@@ -199,7 +199,7 @@ def main() -> int:
         "transcripts.html": ["source floor", "How To Use A Transcript", "One Transcript Audit Run", "Transcript Red Flags", "What To Record After Review", "Raw VTT captions stay separate", "auditing source coverage"],
         "concepts.html": ["not read these as vocabulary flashcards", "How To Read A Concept", "Family Pressure Map", "Atlas Doors", "distribution shift", "recursive feasibility"],
         "evidence.html": ["guardrail between lecture source and teaching synthesis", "keyword match is not evidence", "lecture argument", "How To Inspect One Evidence Record", "Two Good Evidence Shapes", "Reject the record", "Synthesis boundary"],
-        "completion-audit.html": ["local proof", "Requirement Evidence", "What This Does Not Prove", "Human Review Still Required", "ordinary pressure first", "source layer is present"],
+        "completion-audit.html": ["local proof", "Requirement Evidence", "What This Does Not Prove", "Two Proofs Required", "mechanical proof", "editorial proof", "Human Review Still Required", "ordinary pressure first", "source layer is present"],
         "provenance.html": ["source layer separate from synthesis", "Source-To-Page Trail", "Concrete Claim Check", "One Claim From Source To Teaching", "What A Rebuild Protects", "Do Not Trust The Page If", "raw VTT timestamp", "generated output", "recursive feasibility"],
     }
     for filename, needles in rendered_checks.items():
@@ -241,7 +241,7 @@ def main() -> int:
         "transcripts.html": 1050,
         "concepts.html": 1600,
         "evidence.html": 7000,
-        "completion-audit.html": 850,
+        "completion-audit.html": 1200,
         "provenance.html": 1150,
         "worked-examples.html": 1450,
         "derivations.html": 2000,

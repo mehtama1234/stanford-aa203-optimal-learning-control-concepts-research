@@ -1766,19 +1766,30 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <p>Use this table before declaring completion. Each row names the current evidence and the boundary of that evidence. The boundary matters because this course goal is not just to generate files; it is to produce pages that teach control from first principles in plain language.</p>
 </div>
 """
+    completion_final_review = """
+<h2>Two Proofs Required</h2>
+<div class="essay">
+  <p>Completion needs two different proofs. The mechanical proof is local and repeatable: transcripts exist, artifacts rebuild, links resolve, evidence anchors render, and validation passes. The editorial proof is slower: sampled pages must read like first-principles explanations, not polished summaries.</p>
+  <p>Do the mechanical proof first. Run the build chain and confirm the numbers on this page: 19 transcripts, 38 concepts, 38 evidence records, 57 HTML pages, zero missing transcript references, and zero remaining manual evidence reviews. If those numbers drift, the site is not ready for editorial judgment because the source layer itself is unstable.</p>
+  <p>Then do the editorial proof in the browser. Open a page and ask what physical pressure starts the explanation. A state page should make missing velocity visible. A Bellman page should show why the next state carries future burden. An MPC page should distinguish a legal short plan from a legal next solve. A learning page should show how data, reward, or a learned model changes the next state the controller must handle.</p>
+  <p>The reject rule is strict: if a page can be summarized as "this lecture covers this topic," it fails. If it defines a term without a machine, command, future cost, constraint, or failure, it fails. If it links evidence but the evidence only supports a nearby keyword, it fails. If it sounds rich but cannot be traced back to a transcript window and synthesis boundary, it fails.</p>
+  <p>For each sampled page, write one sentence in your own words without using the page title. If that sentence cannot name the machine, the command, the future consequence, and the bad outcome, the page has not yet taught the idea. The test is simple because the course promise is simple: a learner should be able to carry the idea to a new car, drone, rover, robot arm, or learned policy.</p>
+</div>
+"""
     sample_cards = "".join(card(title, f"<p>{esc(body)}</p>") for title, body in COMPLETION_SAMPLE_CHECKS)
     completion_close = """
 <h2>Human Review Still Required</h2>
 <div class="essay">
   <p>Before calling the course finished, open the course spine, concept atlas, formula reader, review guide, quality rubric, two setup concept pages, two dynamic-programming pages, two MPC or reachability pages, and two learning pages. Each page should survive the same test: ordinary pressure first, concrete operation next, math one level deeper, then the boundary where the idea stops working.</p>
   <p>If a sampled page only summarizes a lecture, defines a term, or praises a method without showing the state/action/future-cost machinery, the course is not done even if this audit table is green.</p>
+  <p>The final reviewer should write down at least one pass example and one risk example. A pass example names the ordinary problem, the object, the operation, the concrete run, the math layer, the boundary, and the evidence record. A risk example names the exact page and the sentence or section that still feels thin. That note becomes the next editing target.</p>
 </div>
 """
     sample_section = f"""
 <h2>Sampled Page Checks</h2>
 <section class="stack">{sample_cards}</section>
 """
-    write(SITE / "completion-audit.html", page("Completion Audit", f"{completion_intro}{audit_table}{completion_review}{completion_requirement_rows}{sample_section}{completion_close}", "review"))
+    write(SITE / "completion-audit.html", page("Completion Audit", f"{completion_intro}{audit_table}{completion_review}{completion_requirement_rows}{completion_final_review}{sample_section}{completion_close}", "review"))
 
     provenance_cards = "".join(card(title, f"<p>{esc(body)}</p>") for title, body in PROVENANCE_CHECKS)
     write(

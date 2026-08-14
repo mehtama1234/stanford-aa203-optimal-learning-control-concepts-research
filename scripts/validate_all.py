@@ -413,6 +413,12 @@ def main() -> int:
                     errors.append(f"behavioral cloning concept page missing supervised-action marker: {marker}")
             if len(words) < 900:
                 errors.append(f"behavioral cloning concept page below core richness floor: {len(words)} < 900")
+        if concept.get("id") == "distribution-shift-imitation":
+            for marker in ["within 10 centimeters of lane center", "understeers by only 2 centimeters", "second 4", "18 centimeters right", "3 of the 10,000 expert frames", "d_expert(x)", "d_pi(x)", "d_pi(18 cm right) much larger than d_expert(18 cm right)", "collect rollout states from d_pi"]:
+                if marker not in text:
+                    errors.append(f"distribution shift concept page missing learner-state marker: {marker}")
+            if len(words) < 900:
+                errors.append(f"distribution shift concept page below core richness floor: {len(words)} < 900")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

@@ -122,6 +122,26 @@ def main() -> int:
             rows = json.loads(path.read_text(encoding="utf-8"))
             if len(rows) < 5:
                 errors.append(f"{path.relative_to(ROOT)} should contain at least 5 records")
+            if path.name == "derivations.json":
+                for row in rows:
+                    for field in ["intuition", "common_wrong_turn", "transfer_check"]:
+                        if not row.get(field):
+                            errors.append(f"{path.relative_to(ROOT)} row {row.get('id')} missing field: {field}")
+            if path.name == "worked-examples.json":
+                for row in rows:
+                    for field in ["decision_pressure", "method_boundary", "transfer_question"]:
+                        if not row.get(field):
+                            errors.append(f"{path.relative_to(ROOT)} row {row.get('id')} missing field: {field}")
+            if path.name == "drills.json":
+                for row in rows:
+                    for field in ["grading_criteria", "solution_walkthrough"]:
+                        if not row.get(field):
+                            errors.append(f"{path.relative_to(ROOT)} row {row.get('id')} missing field: {field}")
+            if path.name == "weak-claim-repairs.json":
+                for row in rows:
+                    for field in ["failure_consequence", "transfer_prompt"]:
+                        if not row.get(field):
+                            errors.append(f"{path.relative_to(ROOT)} row {row.get('weak')} missing field: {field}")
     if not quality_audit_path.exists():
         errors.append("missing analysis/audits/course-quality-audit.json; run quality audit")
     else:
@@ -163,11 +183,11 @@ def main() -> int:
         if f'id="{row["id"]}"' not in evidence_html:
             errors.append(f"evidence anchor missing from evidence.html: {row['id']}")
     rendered_checks = {
-        "derivations.html": ["Failure test", "Formula shape"],
-        "worked-examples.html": ["Method Route", "Failure Signal"],
-        "drills.html": ["Wrong turn to avoid"],
-        "solutions.html": ["Strong answer"],
-        "misconceptions.html": ["Stronger version"],
+        "derivations.html": ["Failure test", "Formula shape", "First-principles intuition", "Transfer check"],
+        "worked-examples.html": ["Method Route", "Failure Signal", "Decision Pressure", "Method Boundary"],
+        "drills.html": ["Wrong turn to avoid", "What a strong answer must include"],
+        "solutions.html": ["Strong answer", "Solution walkthrough", "Grading criteria"],
+        "misconceptions.html": ["Stronger version", "Failure consequence", "Transfer prompt"],
     }
     for filename, needles in rendered_checks.items():
         path = SITE / filename

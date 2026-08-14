@@ -11,8 +11,8 @@ Completed locally:
 - Downloaded flat playlist metadata with `yt-dlp`.
 - Downloaded and cleaned transcripts for all 19 lectures.
 - Captured 207,618 transcript words.
-- Built a first-pass concept atlas with 38 required concepts.
-- Built a first-pass evidence ledger with 38 timestamped local transcript-window records.
+- Built a concept atlas with 38 required concepts.
+- Built an evidence ledger with 38 timestamped local transcript-window records.
 - Manually deepened all 38 evidence records with timestamp-level anchors.
 - Built method-family and primitive throughline artifacts.
 - Built structured teaching artifacts for derivations, worked examples, drills, solutions, and weak-claim repairs.
@@ -38,6 +38,6 @@ python3 scripts/validate_all.py
 The next phase should follow the stronger course repos:
 
 - Use `GOAL.md` as the acceptance target.
-- Expand derivation walkthroughs and worked examples from compact first-pass entries into full teaching-grade pages.
+- Continue editorial expansion where desired, using the current derivations, worked examples, drills, solutions, and weak-claim repairs as the teaching-grade baseline.
 - Add richer drill solutions and weak-claim repair cases.
 - Add a stricter editorial audit for concept word depth, forbidden filler, evidence coverage, and page completeness.

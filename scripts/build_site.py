@@ -242,7 +242,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <h2>Strongest Entry Points</h2>
 <section class="grid">{entries}</section>
 <h2>Current Build State</h2>
-<p>This is the first deepening pass beyond the transcript scaffold. Concept prose is present for the full minimum atlas, and evidence records point into local transcript windows with <code>needs_review</code> status until a manual timestamp pass deepens them.</p>
+<p>The current build has full transcript coverage, a complete minimum concept atlas, timestamped evidence records with manual deepening, and expanded teaching artifacts for derivations, examples, drills, solutions, and weak-claim repairs.</p>
 """,
             "overview",
         ),
@@ -360,7 +360,10 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <ol>{''.join(f'<li>{esc(step)}</li>' for step in item['steps'])}</ol>
 <p><strong>Formula shape:</strong> {esc(item['formula_shape'])}</p>
 <p><strong>Why it works:</strong> {esc(item['why_it_works'])}</p>
+<p><strong>First-principles intuition:</strong> {esc(item.get('intuition', ''))}</p>
+<p><strong>Common wrong turn:</strong> {esc(item.get('common_wrong_turn', ''))}</p>
 <p><strong>Failure test:</strong> {esc(item['failure_test'])}</p>
+<p><strong>Transfer check:</strong> {esc(item.get('transfer_check', ''))}</p>
 <p>{linked}</p>
 """
         derivation_cards.append(card(item["title"], body))
@@ -378,6 +381,9 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <tr><th>Constraints</th><td>{esc(item['constraints'])}</td></tr>
   <tr><th>Method Route</th><td>{esc(item['method_route'])}</td></tr>
   <tr><th>Failure Signal</th><td>{esc(item['failure_signal'])}</td></tr>
+  <tr><th>Decision Pressure</th><td>{esc(item.get('decision_pressure', ''))}</td></tr>
+  <tr><th>Method Boundary</th><td>{esc(item.get('method_boundary', ''))}</td></tr>
+  <tr><th>Transfer Question</th><td>{esc(item.get('transfer_question', ''))}</td></tr>
 </table>
 <p>{linked}</p>
 """
@@ -388,16 +394,17 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
     solution_cards = []
     for item in drills:
         linked = " ".join(f'<span class="pill">{concept_link(concepts_by_id[cid])}</span>' for cid in item.get("linked_concepts", []) if cid in concepts_by_id)
+        criteria = section_list([esc(criterion) for criterion in item.get("grading_criteria", [])])
         drill_cards.append(
             card(
                 item["title"],
-                f"<p>{esc(item['prompt'])}</p><p><strong>Wrong turn to avoid:</strong> {esc(item['wrong_turn'])}</p><p>{linked}</p>",
+                f"<p>{esc(item['prompt'])}</p><p><strong>Wrong turn to avoid:</strong> {esc(item['wrong_turn'])}</p><p><strong>What a strong answer must include:</strong></p>{criteria}<p>{linked}</p>",
             )
         )
         solution_cards.append(
             card(
                 f"{item['title']} Solution",
-                f"<p><strong>Prompt:</strong> {esc(item['prompt'])}</p><p><strong>Wrong turn:</strong> {esc(item['wrong_turn'])}</p><p><strong>Strong answer:</strong> {esc(item['strong_answer'])}</p><p>{linked}</p>",
+                f"<p><strong>Prompt:</strong> {esc(item['prompt'])}</p><p><strong>Wrong turn:</strong> {esc(item['wrong_turn'])}</p><p><strong>Strong answer:</strong> {esc(item['strong_answer'])}</p><p><strong>Solution walkthrough:</strong> {esc(item.get('solution_walkthrough', ''))}</p><p><strong>Grading criteria:</strong></p>{criteria}<p>{linked}</p>",
             )
         )
     write(SITE / "drills.html", page("Drills", f"<h1>Drills</h1><p class=\"lede\">Practice prompts that train setup, method choice, future-cost recognition, feasibility diagnosis, reward repair, and approximation boundaries.</p><section class=\"stack\">{''.join(drill_cards)}</section>", "drills"))
@@ -413,19 +420,19 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
         misconception_cards.append(
             card(
                 f"Repair: {item['weak']}",
-                f"<p><strong>Diagnosis:</strong> {esc(item['diagnosis'])}</p><p><strong>Stronger version:</strong> {esc(item['strong'])}</p>",
+                f"<p><strong>Diagnosis:</strong> {esc(item['diagnosis'])}</p><p><strong>Failure consequence:</strong> {esc(item.get('failure_consequence', ''))}</p><p><strong>Stronger version:</strong> {esc(item['strong'])}</p><p><strong>Transfer prompt:</strong> {esc(item.get('transfer_prompt', ''))}</p>",
             )
         )
     write(SITE / "misconceptions.html", page("Misconceptions", f"<h1>Misconceptions And Weak-Claim Repairs</h1><section class=\"grid\">{''.join(misconception_cards)}</section>", "review"))
 
     evidence_html = "".join(evidence_card(row) for row in evidence)
-    write(SITE / "evidence.html", page("Evidence", f"<h1>Evidence Ledger</h1><p class=\"lede\">Each record points to a local transcript window and marks the first-pass confidence state.</p><section class=\"stack\">{evidence_html}</section>", "evidence"))
+    write(SITE / "evidence.html", page("Evidence", f"<h1>Evidence Ledger</h1><p class=\"lede\">Each record points to a local transcript window, timestamp URL, and manual statement of what the transcript supports versus what the site synthesizes beyond it.</p><section class=\"stack\">{evidence_html}</section>", "evidence"))
 
     review = [
         ("First-principles depth", "Open a setup concept, a dynamic-programming concept, an MPC concept, and a learning concept. Check that each starts from the control pressure before formulas."),
         ("Evidence discipline", "Open evidence records and verify that local transcript windows support the concept vocabulary without pretending to prove the whole synthesis."),
         ("Practice usefulness", "Run the drills and verify the solutions name wrong turns, not just final answers."),
-        ("Known risk", "Lecture 13 is still missing due to the YouTube 429 caption gap. Evidence is first-pass and needs manual timestamp review."),
+        ("Audit path", "Use the completion audit, evidence ledger, and provenance page to verify transcript coverage, timestamp anchors, generated pages, and local rebuild commands."),
     ]
     write(SITE / "review-guide.html", page("Review Guide", f"<h1>Review Guide</h1><section class=\"stack\">{''.join(card(a,b) for a,b in review)}</section>", "review"))
 
@@ -439,11 +446,11 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 
     audit_rows = [
         ("Required pages", "present", f"{len(list(SITE.rglob('*.html')))} HTML files generated before this audit page is written"),
-        ("Transcript coverage", "partial", f"{transcript_index.get('available_transcripts', 0)}/{transcript_index.get('videos', 0)} transcripts; Lecture 13 remains a source gap"),
+        ("Transcript coverage", "pending audit", f"{transcript_index.get('available_transcripts', 0)}/{transcript_index.get('videos', 0)} transcripts before audit reconciliation"),
         ("Concept atlas", "present", f"{len(concepts)} concepts generated"),
-        ("Evidence ledger", "first pass", f"{len(evidence)} evidence records with needs_review status"),
+        ("Evidence ledger", "pending audit", f"{len(evidence)} evidence records before audit reconciliation"),
         ("Teaching artifacts", "present", f"{len(derivations)} derivations, {len(worked_examples)} examples, {len(drills)} drills, and {len(weak_claim_repairs)} repair cases generated from analysis/teaching"),
-        ("Manual review", "remaining", "timestamp-level evidence deepening and prose polish remain"),
+        ("Completion readiness", "pending audit", "quality audit not loaded yet"),
     ]
     if quality_audit:
         transcript_gaps = len(quality_audit.get("transcript_coverage", {}).get("gaps", []))
@@ -465,6 +472,12 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
                 "analysis/audits/course-quality-audit.json and analysis/audits/course-quality-audit.md generated",
             )
         )
+        blockers = quality_audit.get("completion_readiness", {}).get("remaining_blockers", [])
+        audit_rows[5] = (
+            "Completion readiness",
+            "clear" if not blockers else "remaining",
+            "No audit blockers found." if not blockers else "; ".join(blockers),
+        )
     audit_table = "<table><tr><th>Requirement</th><th>Status</th><th>Evidence</th></tr>" + "".join(
         f"<tr><td>{esc(a)}</td><td>{esc(b)}</td><td>{esc(c)}</td></tr>" for a, b, c in audit_rows
     ) + "</table>"
@@ -479,7 +492,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <p>The canonical source is <a href="{esc(manifest['playlist_url'])}">{esc(manifest['playlist_url'])}</a>.</p>
 <p>Playlist metadata is stored in <code>raw-material/youtube/playlist.json</code>. Caption files are stored under <code>raw-material/youtube/transcripts/raw-vtt/</code>, cleaned text under <code>raw-material/youtube/transcripts/clean/</code>, and availability in <code>raw-material/youtube/transcript-index.json</code>.</p>
 <p>Analysis artifacts live in <code>analysis/concepts/</code>, <code>analysis/evidence/</code>, and <code>analysis/throughlines/</code>.</p>
-<p>Run <code>python3 scripts/build_first_principles_atlas.py</code>, then <code>python3 scripts/build_site.py</code>, then <code>python3 scripts/validate_all.py</code>.</p>
+<p>Run <code>python3 scripts/build_first_principles_atlas.py</code>, then <code>python3 scripts/build_teaching_artifacts.py</code>, then <code>python3 scripts/audit_course_quality.py</code>, then <code>python3 scripts/build_site.py</code>, then <code>python3 scripts/validate_all.py</code>.</p>
 """,
             "provenance",
         ),

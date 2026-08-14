@@ -23,6 +23,7 @@ This audit records local evidence for progress toward `GOAL.md`. It does not dec
 - Worked examples: 6
 - Drills: 6
 - Weak-claim repairs: 5
+- Teaching artifacts below depth threshold: 0
 
 ## Remaining Work
 

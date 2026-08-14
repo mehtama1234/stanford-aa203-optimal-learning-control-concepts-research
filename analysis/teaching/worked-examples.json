@@ -14,7 +14,10 @@
       "direct-transcription",
       "model-predictive-control",
       "constraints"
-    ]
+    ],
+    "decision_pressure": "The controller is balancing altitude loss, velocity reduction, and fuel burn under gravity. Waiting saves fuel now but can make the future braking problem impossible.",
+    "method_boundary": "Direct transcription is appropriate when the landing model and constraints are trusted. MPC becomes necessary when wind, mass estimation, or engine lag make the open-loop plan age quickly.",
+    "transfer_question": "What terminal condition would prevent a fuel-saving trajectory from technically landing while still destroying the vehicle?"
   },
   {
     "id": "robot-arm",
@@ -31,7 +34,10 @@
       "collocation",
       "imitation-learning",
       "action-control-input"
-    ]
+    ],
+    "decision_pressure": "The short geometric path may pass through joint states that require impossible torque or create collision risk after dynamics are considered.",
+    "method_boundary": "Collocation is strong when contact is limited and geometry is known; demonstration learning becomes attractive when human strategy encodes contact-rich choices that are hard to write as a clean cost.",
+    "transfer_question": "Which part of the setup changes if the commanded action is joint torque rather than desired end-effector velocity?"
   },
   {
     "id": "autonomous-car",
@@ -48,7 +54,10 @@
       "reachability",
       "recursive-feasibility",
       "stability-under-replanning"
-    ]
+    ],
+    "decision_pressure": "A lane change is not judged only by the current gap. It is judged by whether the state after the first steering and acceleration command still admits a safe future.",
+    "method_boundary": "MPC handles routine replanning under constraints; reachability or invariant-set reasoning is needed when safety must be protected against worst-case nearby motion.",
+    "transfer_question": "What state variables must include other vehicles so the controller does not mistake a temporarily open gap for a safe one?"
   },
   {
     "id": "warehouse-robot-learning",
@@ -65,7 +74,10 @@
       "distribution-shift-imitation",
       "reinforcement-learning",
       "model-based-rl"
-    ]
+    ],
+    "decision_pressure": "The robot needs useful behavior before exhaustive real-world trial and error, but the learned behavior must survive shelf poses and object contacts outside the demonstrations.",
+    "method_boundary": "Behavior cloning is a starting policy, not a safety guarantee. Model-based refinement is useful when simulated or learned dynamics can reduce expensive hardware trials.",
+    "transfer_question": "How would you detect that failures come from distribution shift rather than from a bad low-level controller?"
   },
   {
     "id": "option-pricing",
@@ -82,7 +94,10 @@
       "bellman-recursion",
       "value-function",
       "policy"
-    ]
+    ],
+    "decision_pressure": "Holding or exercising changes the future decision set under uncertain price motion, so a myopic payoff comparison can discard valuable optionality.",
+    "method_boundary": "Stochastic dynamic programming fits when the state captures the variables that determine future payoff distributions; if market impact or hidden information dominates, the state model is incomplete.",
+    "transfer_question": "What future value is lost when an option is exercised early?"
   },
   {
     "id": "macro-policy",
@@ -99,6 +114,9 @@
       "dynamics",
       "objective-cost-function",
       "optimal-control-problem"
-    ]
+    ],
+    "decision_pressure": "A policy action can improve a visible metric now while moving inflation, debt, or expectations into a worse future state.",
+    "method_boundary": "The optimal-control frame clarifies tradeoffs, but the result is only as credible as the dynamics, objective weights, and uncertainty model.",
+    "transfer_question": "Which delayed state variable makes a one-period policy improvement potentially misleading?"
   }
 ]

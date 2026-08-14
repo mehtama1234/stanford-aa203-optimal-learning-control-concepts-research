@@ -19,7 +19,10 @@
       "value-function",
       "bellman-recursion",
       "stochastic-dynamic-programming"
-    ]
+    ],
+    "intuition": "The hard part is not the minimization symbol; it is the decision to make the state carry all information needed for the remaining future. Once that is true, every candidate action can be priced by the same ledger: what it costs now plus the best cost from the state it creates.",
+    "common_wrong_turn": "Trying to choose the whole future action sequence before defining a value function makes the problem explode combinatorially and hides the repeated subproblem.",
+    "transfer_check": "If a warehouse robot's next move changes which shelves it can reach later, ask what state summary would let the future after that move be treated as another copy of the same problem."
   },
   {
     "id": "costate",
@@ -41,7 +44,10 @@
       "costate-adjoint-variable",
       "hamiltonian-optimal-control",
       "indirect-methods"
-    ]
+    ],
+    "intuition": "A costate is the answer to a practical sensitivity question: if the system is slightly off in this state coordinate now, how much future objective damage does that create after dynamics carry the error forward?",
+    "common_wrong_turn": "Reading the costate as an extra physical state loses the point. It is not another sensor measurement; it is a backward-propagated price on violating the planned state history.",
+    "transfer_check": "When a robotic arm is almost at the same endpoint but with a different velocity, use the costate idea to ask how that velocity error changes future braking effort and constraint risk."
   },
   {
     "id": "direct-transcription",
@@ -63,7 +69,10 @@
       "collocation",
       "shooting-methods",
       "trajectory-optimization"
-    ]
+    ],
+    "intuition": "Direct transcription trades an infinite-dimensional path choice for a finite nonlinear program whose variables are samples of the path. The price of that convenience is that the grid becomes part of the modeling assumption.",
+    "common_wrong_turn": "Treating a feasible grid solution as automatically feasible between grid points can hide actuator spikes, missed collisions, or fast unstable motion.",
+    "transfer_check": "For a drone flying through a doorway, ask what events could happen between collocation points and whether the mesh is fine enough to see them."
   },
   {
     "id": "lqr-local-reasoning",
@@ -85,7 +94,10 @@
       "local-quadratic-approximation",
       "value-function",
       "dynamics"
-    ]
+    ],
+    "intuition": "LQR works because linear dynamics and quadratic cost are closed under Bellman-style backward reasoning: a quadratic future value remains quadratic, so the best correction is a linear feedback law.",
+    "common_wrong_turn": "Calling LQR a general robot controller ignores that its guarantee is local to the model and cost approximation used to derive the feedback.",
+    "transfer_check": "If a car is near lane center with small heading error, local quadratic reasoning is plausible; if it is skidding sideways after impact, the local model boundary has been crossed."
   },
   {
     "id": "mpc-replanning",
@@ -107,7 +119,10 @@
       "recursive-feasibility",
       "stability-under-replanning",
       "constraints"
-    ]
+    ],
+    "intuition": "MPC uses optimization as a feedback mechanism. The plan is valuable, but the controller intentionally throws away most of it because the next measurement contains better information than the old prediction.",
+    "common_wrong_turn": "Assuming every feasible short-horizon plan is safe ignores the state that will be handed to the next optimization problem.",
+    "transfer_check": "In traffic, ask whether the first acceleration command leaves a future braking or steering maneuver available after nearby cars move."
   },
   {
     "id": "policy-gradient",
@@ -130,6 +145,9 @@
       "reward",
       "exploration",
       "reinforcement-learning"
-    ]
+    ],
+    "intuition": "Policy gradients avoid building a full transition model by using sampled returns as evidence about how to change the decision rule. That evidence is noisy because each rollout mixes policy choice, environment randomness, and delayed reward.",
+    "common_wrong_turn": "Increasing the probability of every action in a successful rollout can reinforce accidents of noise unless credit assignment, baselines, and update size are handled carefully.",
+    "transfer_check": "For a robot learning a grasp policy, ask whether a high return came from the chosen grasp parameters or from an unusually easy object pose."
   }
 ]

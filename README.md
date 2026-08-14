@@ -27,18 +27,18 @@ Current evidence review state: all 38 evidence records are manually deepened wit
 - `raw-material/youtube/transcripts/clean/`: cleaned transcript text
 - `raw-material/youtube/transcript-index.json`: machine-readable transcript availability and word counts
 - `analysis/research-seed.md`: first course spine and concept seed
-- `analysis/concepts/concept-atlas.json`: first-pass required concept atlas
+- `analysis/concepts/concept-atlas.json`: required concept atlas
 - `analysis/evidence/evidence-ledger.json`: timestamped transcript-window evidence records
 - `analysis/throughlines/`: method families and mathematical primitives
 - `analysis/teaching/`: derivations, worked examples, drills, and weak-claim repairs
 - `analysis/audits/`: local quality and completion audit artifacts
 - `GOAL.md`: meaty end-to-end build target for the full course site
-- `site/`: generated static HTML starter site
+- `site/`: generated static HTML course site
 - `scripts/download_youtube_course_transcripts.py`: refresh playlist metadata and captions
-- `scripts/build_first_principles_atlas.py`: build the first-pass concept and evidence artifacts
+- `scripts/build_first_principles_atlas.py`: build the concept and evidence artifacts
 - `scripts/build_teaching_artifacts.py`: build the deeper teaching/practice artifacts
 - `scripts/audit_course_quality.py`: audit transcript, concept, evidence, and teaching coverage
-- `scripts/build_site.py`: build the starter HTML site from local artifacts
+- `scripts/build_site.py`: build the HTML site from local artifacts
 - `scripts/validate_all.py`: validate source files and generated pages
 
 ## Workflow

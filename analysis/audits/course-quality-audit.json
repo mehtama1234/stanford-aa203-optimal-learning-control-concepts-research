@@ -26,6 +26,15 @@
     "drills": 6,
     "weak_claim_repairs": 5
   },
+  "teaching_depth": {
+    "shallow_artifacts": {
+      "derivations": [],
+      "worked_examples": [],
+      "drills": [],
+      "weak_claim_repairs": []
+    },
+    "shallow_artifact_count": 0
+  },
   "completion_readiness": {
     "locally_reproducible": true,
     "teaching_grade_complete": true,

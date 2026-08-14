@@ -35,6 +35,16 @@ def concept_depth_text(concept: dict[str, Any]) -> str:
     return " ".join(str(concept.get(field, "")) for field in fields)
 
 
+def teaching_depth_text(row: dict[str, Any]) -> str:
+    parts: list[str] = []
+    for value in row.values():
+        if isinstance(value, str):
+            parts.append(value)
+        elif isinstance(value, list):
+            parts.extend(str(item) for item in value)
+    return " ".join(parts)
+
+
 def main() -> int:
     AUDITS.mkdir(parents=True, exist_ok=True)
     transcript_index = json.loads((RAW / "transcript-index.json").read_text(encoding="utf-8"))
@@ -74,6 +84,29 @@ def main() -> int:
         "drills": len(drills),
         "weak_claim_repairs": len(repairs),
     }
+    shallow_teaching = {
+        "derivations": [
+            {"id": row["id"], "words": word_count(teaching_depth_text(row))}
+            for row in derivations
+            if word_count(teaching_depth_text(row)) < 115
+        ],
+        "worked_examples": [
+            {"id": row["id"], "words": word_count(teaching_depth_text(row))}
+            for row in examples
+            if word_count(teaching_depth_text(row)) < 95
+        ],
+        "drills": [
+            {"id": row["id"], "words": word_count(teaching_depth_text(row))}
+            for row in drills
+            if word_count(teaching_depth_text(row)) < 115
+        ],
+        "weak_claim_repairs": [
+            {"weak": row["weak"], "words": word_count(teaching_depth_text(row))}
+            for row in repairs
+            if word_count(teaching_depth_text(row)) < 65
+        ],
+    }
+    shallow_teaching_total = sum(len(rows) for rows in shallow_teaching.values())
     audit = {
         "transcript_coverage": {
             "available": transcript_index["available_transcripts"],
@@ -95,12 +128,17 @@ def main() -> int:
             "manual_review_remaining": status_counts.get("needs_review", 0),
         },
         "teaching": teaching_counts,
+        "teaching_depth": {
+            "shallow_artifacts": shallow_teaching,
+            "shallow_artifact_count": shallow_teaching_total,
+        },
         "completion_readiness": {
             "locally_reproducible": not transcript_gaps and not concepts_without_evidence and not missing_transcripts,
-            "teaching_grade_complete": status_counts.get("needs_review", 0) == 0 and not shallow_concepts,
+            "teaching_grade_complete": status_counts.get("needs_review", 0) == 0 and not shallow_concepts and shallow_teaching_total == 0,
             "remaining_blockers": [
                 "manual timestamp-level evidence review" if status_counts.get("needs_review", 0) else "",
                 "concept prose expansion below teaching-grade threshold" if shallow_concepts else "",
+                "teaching artifact expansion below teaching-grade threshold" if shallow_teaching_total else "",
             ],
         },
     }
@@ -135,6 +173,7 @@ def main() -> int:
         f"- Worked examples: {len(examples)}",
         f"- Drills: {len(drills)}",
         f"- Weak-claim repairs: {len(repairs)}",
+        f"- Teaching artifacts below depth threshold: {shallow_teaching_total}",
         "",
         "## Remaining Work",
         "",

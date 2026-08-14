@@ -12,7 +12,7 @@ Preserve the full AA203 source layer before deep synthesis.
 - Capture captions, cleaned transcripts, and word counts for all 19 lectures.
 - Keep raw VTT files separate from cleaned text.
 - Maintain `raw-material/youtube/transcript-index.json` as the audit source for transcript availability.
-- Resolve the current Lecture 13 caption gap when YouTube rate limiting clears.
+- Maintain complete caption coverage for all 19 lectures, including Lecture 13.
 - Never write a concept claim as transcript-backed unless it has a lecture, timestamp or local transcript window, and a clear statement of what the transcript actually supports.
 
 ## Course Thesis
@@ -198,4 +198,3 @@ The final handoff should include:
 ## Completion Definition
 
 This goal is complete when a reviewer can open `site/index.html`, follow a coherent route through the course, inspect transcript evidence, study concepts from first principles, practice with drills, check solutions, and verify through audit pages that the package is locally reproducible.
-

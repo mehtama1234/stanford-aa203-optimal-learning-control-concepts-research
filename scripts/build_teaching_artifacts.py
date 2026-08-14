@@ -273,7 +273,165 @@ REPAIRS: list[dict[str, str]] = [
 ]
 
 
+DERIVATION_DEEPENING: dict[str, dict[str, Any]] = {
+    "bellman-recursion": {
+        "intuition": "The hard part is not the minimization symbol; it is the decision to make the state carry all information needed for the remaining future. Once that is true, every candidate action can be priced by the same ledger: what it costs now plus the best cost from the state it creates.",
+        "common_wrong_turn": "Trying to choose the whole future action sequence before defining a value function makes the problem explode combinatorially and hides the repeated subproblem.",
+        "transfer_check": "If a warehouse robot's next move changes which shelves it can reach later, ask what state summary would let the future after that move be treated as another copy of the same problem.",
+    },
+    "costate": {
+        "intuition": "A costate is the answer to a practical sensitivity question: if the system is slightly off in this state coordinate now, how much future objective damage does that create after dynamics carry the error forward?",
+        "common_wrong_turn": "Reading the costate as an extra physical state loses the point. It is not another sensor measurement; it is a backward-propagated price on violating the planned state history.",
+        "transfer_check": "When a robotic arm is almost at the same endpoint but with a different velocity, use the costate idea to ask how that velocity error changes future braking effort and constraint risk.",
+    },
+    "direct-transcription": {
+        "intuition": "Direct transcription trades an infinite-dimensional path choice for a finite nonlinear program whose variables are samples of the path. The price of that convenience is that the grid becomes part of the modeling assumption.",
+        "common_wrong_turn": "Treating a feasible grid solution as automatically feasible between grid points can hide actuator spikes, missed collisions, or fast unstable motion.",
+        "transfer_check": "For a drone flying through a doorway, ask what events could happen between collocation points and whether the mesh is fine enough to see them.",
+    },
+    "lqr-local-reasoning": {
+        "intuition": "LQR works because linear dynamics and quadratic cost are closed under Bellman-style backward reasoning: a quadratic future value remains quadratic, so the best correction is a linear feedback law.",
+        "common_wrong_turn": "Calling LQR a general robot controller ignores that its guarantee is local to the model and cost approximation used to derive the feedback.",
+        "transfer_check": "If a car is near lane center with small heading error, local quadratic reasoning is plausible; if it is skidding sideways after impact, the local model boundary has been crossed.",
+    },
+    "mpc-replanning": {
+        "intuition": "MPC uses optimization as a feedback mechanism. The plan is valuable, but the controller intentionally throws away most of it because the next measurement contains better information than the old prediction.",
+        "common_wrong_turn": "Assuming every feasible short-horizon plan is safe ignores the state that will be handed to the next optimization problem.",
+        "transfer_check": "In traffic, ask whether the first acceleration command leaves a future braking or steering maneuver available after nearby cars move.",
+    },
+    "policy-gradient": {
+        "intuition": "Policy gradients avoid building a full transition model by using sampled returns as evidence about how to change the decision rule. That evidence is noisy because each rollout mixes policy choice, environment randomness, and delayed reward.",
+        "common_wrong_turn": "Increasing the probability of every action in a successful rollout can reinforce accidents of noise unless credit assignment, baselines, and update size are handled carefully.",
+        "transfer_check": "For a robot learning a grasp policy, ask whether a high return came from the chosen grasp parameters or from an unusually easy object pose.",
+    },
+}
+
+
+EXAMPLE_DEEPENING: dict[str, dict[str, str]] = {
+    "rocket-landing": {
+        "decision_pressure": "The controller is balancing altitude loss, velocity reduction, and fuel burn under gravity. Waiting saves fuel now but can make the future braking problem impossible.",
+        "method_boundary": "Direct transcription is appropriate when the landing model and constraints are trusted. MPC becomes necessary when wind, mass estimation, or engine lag make the open-loop plan age quickly.",
+        "transfer_question": "What terminal condition would prevent a fuel-saving trajectory from technically landing while still destroying the vehicle?",
+    },
+    "robot-arm": {
+        "decision_pressure": "The short geometric path may pass through joint states that require impossible torque or create collision risk after dynamics are considered.",
+        "method_boundary": "Collocation is strong when contact is limited and geometry is known; demonstration learning becomes attractive when human strategy encodes contact-rich choices that are hard to write as a clean cost.",
+        "transfer_question": "Which part of the setup changes if the commanded action is joint torque rather than desired end-effector velocity?",
+    },
+    "autonomous-car": {
+        "decision_pressure": "A lane change is not judged only by the current gap. It is judged by whether the state after the first steering and acceleration command still admits a safe future.",
+        "method_boundary": "MPC handles routine replanning under constraints; reachability or invariant-set reasoning is needed when safety must be protected against worst-case nearby motion.",
+        "transfer_question": "What state variables must include other vehicles so the controller does not mistake a temporarily open gap for a safe one?",
+    },
+    "warehouse-robot-learning": {
+        "decision_pressure": "The robot needs useful behavior before exhaustive real-world trial and error, but the learned behavior must survive shelf poses and object contacts outside the demonstrations.",
+        "method_boundary": "Behavior cloning is a starting policy, not a safety guarantee. Model-based refinement is useful when simulated or learned dynamics can reduce expensive hardware trials.",
+        "transfer_question": "How would you detect that failures come from distribution shift rather than from a bad low-level controller?",
+    },
+    "option-pricing": {
+        "decision_pressure": "Holding or exercising changes the future decision set under uncertain price motion, so a myopic payoff comparison can discard valuable optionality.",
+        "method_boundary": "Stochastic dynamic programming fits when the state captures the variables that determine future payoff distributions; if market impact or hidden information dominates, the state model is incomplete.",
+        "transfer_question": "What future value is lost when an option is exercised early?",
+    },
+    "macro-policy": {
+        "decision_pressure": "A policy action can improve a visible metric now while moving inflation, debt, or expectations into a worse future state.",
+        "method_boundary": "The optimal-control frame clarifies tradeoffs, but the result is only as credible as the dynamics, objective weights, and uncertainty model.",
+        "transfer_question": "Which delayed state variable makes a one-period policy improvement potentially misleading?",
+    },
+}
+
+
+DRILL_DEEPENING: dict[str, dict[str, Any]] = {
+    "drone-delivery-setup": {
+        "grading_criteria": [
+            "Separates physical state from command/action.",
+            "Names wind as a disturbance in the dynamics rather than a generic difficulty.",
+            "Includes hard safety constraints, not only soft costs.",
+            "Chooses a horizon long enough to include approach, descent, and landing.",
+        ],
+        "solution_walkthrough": "Start by asking what must be known at one instant to predict the next few seconds: position, velocity, attitude, battery, payload condition, and wind estimate. Then name what can be commanded: rotor thrusts, attitude targets, or velocity setpoints depending on the control layer. The objective trades arrival time against energy, smoothness, tracking, and landing accuracy, while constraints protect no-fly zones, actuator limits, battery reserve, payload safety, and touchdown speed.",
+    },
+    "warehouse-method-choice": {
+        "grading_criteria": [
+            "Uses the known model instead of discarding it.",
+            "Uses demonstrations for initialization or task priors.",
+            "Keeps constraints and safe exploration visible.",
+            "Explains where RL or model-based RL adds value beyond cloning.",
+        ],
+        "solution_walkthrough": "The known arm model should handle motion constraints through trajectory optimization or MPC. Demonstrations should initialize manipulation behavior through imitation or behavioral cloning. Reinforcement learning is a later improvement tool where rewards can be measured and exploration can be made safe; model-based RL is especially useful if each physical trial is expensive.",
+    },
+    "bellman-recognition": {
+        "grading_criteria": [
+            "Compares actions by immediate cost plus future value.",
+            "Identifies wheel damage as a state change affecting later options.",
+            "Avoids reducing the problem to shortest path distance only.",
+        ],
+        "solution_walkthrough": "The rough crossing is not just a shorter segment; it may create a degraded rover state with lower future mobility. The Bellman structure appears because every current action creates a next state, and the quality of that next state is summarized by future value. The right comparison is immediate travel cost plus the value of the resulting mobility state.",
+    },
+    "mpc-feasibility": {
+        "grading_criteria": [
+            "Distinguishes current feasibility from recursive feasibility.",
+            "Names the weak horizon or missing terminal condition.",
+            "Proposes a concrete repair such as terminal set, backup policy, or reachability check.",
+        ],
+        "solution_walkthrough": "The optimizer is doing what the formulation permits: choosing a two-second collision-free maneuver. The failure is that the first action moves the car into a state from which the next constrained problem has no feasible continuation. A repair adds structure that prices or forbids those states: longer horizon, terminal invariant set, backup braking policy, or reachability safety envelope.",
+    },
+    "reward-hacking": {
+        "grading_criteria": [
+            "Names the missing objective terms or constraints.",
+            "Explains why more training can worsen the exploit.",
+            "Separates reward repair from dynamics repair.",
+        ],
+        "solution_walkthrough": "The reward values speed and target arrival but does not price object damage, contact force, smoothness, or forbidden impacts. The agent has found a high-return behavior under the written objective. The repair is to add missing costs or hard constraints, then test for remaining exploits rather than assuming the scalar reward captures the human task.",
+    },
+    "lqr-boundary": {
+        "grading_criteria": [
+            "States the local linear/quadratic assumption.",
+            "Explains why impact and tumbling violate the operating region.",
+            "Avoids claiming that LQR is universally inappropriate.",
+        ],
+        "solution_walkthrough": "The hover controller was designed around small deviations where dynamics can be linearized and the cost looks quadratic. After a branch strike, the drone may be rotating rapidly, saturating actuators, and experiencing contact or aerodynamic regimes absent from the local model. The issue is boundary violation, not that LQR has no place in control.",
+    },
+}
+
+
+REPAIR_DEEPENING: dict[str, dict[str, str]] = {
+    "MPC is useful because it optimizes the system.": {
+        "failure_consequence": "A learner who keeps this weak version will miss why MPC can fail even when every individual optimization solve returns a feasible answer.",
+        "transfer_prompt": "Ask what state is measured after the first action and whether the next optimization problem remains feasible.",
+    },
+    "The value function captures the objective.": {
+        "failure_consequence": "The phrase can make value sound like a restatement of the cost rather than a reusable estimate of future consequence from a state.",
+        "transfer_prompt": "Ask what future burden changes when the same action leads to two different next states.",
+    },
+    "Imitation learning copies expert behavior.": {
+        "failure_consequence": "This hides why high supervised accuracy can still produce poor closed-loop behavior after the learner visits off-demonstration states.",
+        "transfer_prompt": "Ask which states the learned policy will create that the expert data never labeled.",
+    },
+    "LQR works for robotics because it is efficient.": {
+        "failure_consequence": "Efficiency without the local model boundary can lead a practitioner to use LQR in contact, saturation, or large-deviation regimes where its assumptions are false.",
+        "transfer_prompt": "Ask what operating point was linearized and how far the current state has moved from it.",
+    },
+    "Reward tells the agent what to do.": {
+        "failure_consequence": "This wording hides the gap between intended task behavior and optimized scalar feedback, which is where reward hacking appears.",
+        "transfer_prompt": "Ask what behavior earns high reward while violating the real task.",
+    },
+}
+
+
+def apply_deepening() -> None:
+    for row in DERIVATIONS:
+        row.update(DERIVATION_DEEPENING[row["id"]])
+    for row in WORKED_EXAMPLES:
+        row.update(EXAMPLE_DEEPENING[row["id"]])
+    for row in DRILLS:
+        row.update(DRILL_DEEPENING[row["id"]])
+    for row in REPAIRS:
+        row.update(REPAIR_DEEPENING[row["weak"]])
+
+
 def main() -> int:
+    apply_deepening()
     TEACHING.mkdir(parents=True, exist_ok=True)
     (TEACHING / "derivations.json").write_text(json.dumps(DERIVATIONS, indent=2) + "\n", encoding="utf-8")
     (TEACHING / "worked-examples.json").write_text(json.dumps(WORKED_EXAMPLES, indent=2) + "\n", encoding="utf-8")
@@ -288,4 +446,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

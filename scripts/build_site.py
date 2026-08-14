@@ -372,6 +372,46 @@ FORMULA_EXPLAINERS: list[dict[str, str]] = [
 ]
 
 
+CONCEPT_OVERVIEW_FAMILIES: list[dict[str, str]] = [
+    {
+        "family": "Problem setup",
+        "pressure": "The learner must first stop saying what they want and start naming what the machine can actually know and command.",
+        "ordinary_run": "For a drone landing on a pad, state is height, velocity, attitude, battery, payload, and wind estimate; action is thrust or a lower-level motion command; dynamics say how thrust changes motion; cost prices time, energy, landing error, and smoothness; constraints forbid no-fly zones, empty battery, and hard touchdown.",
+        "failure_test": "If two physically different situations get the same state, or if the action asks for an outcome instead of a command, the setup is lying before any solver runs.",
+    },
+    {
+        "family": "Trajectory optimization",
+        "pressure": "A path is a history, not a line drawn between start and finish. Every piece of that history must be reachable from the previous piece.",
+        "ordinary_run": "For a robot arm near a shelf, a short geometric path can pass through a joint state that needs torque above the motor limit. Direct transcription and collocation make the hidden middle of the path visible to the solver.",
+        "failure_test": "If the grid is too coarse, a solution can satisfy every written dot while hiding a collision, torque spike, or fast unstable motion between dots.",
+    },
+    {
+        "family": "Dynamic programming",
+        "pressure": "The next action matters because it creates the state from which all later actions must be chosen.",
+        "ordinary_run": "For a rover choosing between a rocky shortcut and a longer smooth route, Bellman reasoning compares distance now plus the future cost of damaged wheels, not distance alone.",
+        "failure_test": "If the state does not include wheel health, battery, or another delayed burden, the value function stores the wrong price for the future.",
+    },
+    {
+        "family": "Local structure",
+        "pressure": "Sometimes the full nonlinear problem is too much, but the system is close enough to a planned motion for a local picture to tell the truth.",
+        "ordinary_run": "For a hovering drone pushed a few centimeters sideways, linearized dynamics and a quadratic bowl around the target can produce a fast feedback correction.",
+        "failure_test": "After impact, contact, actuator saturation, or tumbling, the local picture no longer describes the machine the controller is actually moving.",
+    },
+    {
+        "family": "Safety and replanning",
+        "pressure": "A plan can be legal for the next few seconds and still hand the controller a state with no legal future.",
+        "ordinary_run": "For a car entering a narrow traffic gap, MPC may find a collision-free two-second path, but recursive feasibility asks whether braking or steering remains possible after the first command.",
+        "failure_test": "If today's first action makes tomorrow's optimization infeasible, the controller was not planning safely even though the current solve looked clean.",
+    },
+    {
+        "family": "Learning-based control",
+        "pressure": "Data enters when the model, reward, contact strategy, or expert behavior cannot be fully written by hand.",
+        "ordinary_run": "For a warehouse robot, demonstrations can teach a drawer-pulling motion, reward can improve repeated attempts, and a learned model can rehearse shelf contacts before hardware trials.",
+        "failure_test": "If the learned policy visits states outside the demonstrations, or if the reward omits damage and force, more training can make the wrong behavior more reliable.",
+    },
+]
+
+
 LECTURE_DEEPENING: dict[int, dict[str, str]] = {
     1: {
         "problem": "The course first has to make control visible in ordinary systems: a car, drone, thermostat, or robot changes because commands push state through time.",
@@ -721,6 +761,15 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
         card(c["name"], f"<p>{esc(c['plain_language_definition'])}</p><p><span class=\"tag\">{esc(c['family'])}</span></p><p>{concept_link(c)}</p>")
         for c in concepts
     )
+    concept_family_cards = "".join(
+        card(
+            item["family"],
+            f"""<p><strong>Pressure:</strong> {esc(item['pressure'])}</p>
+<div class="explain-box"><p>{esc(item['ordinary_run'])}</p></div>
+<p><strong>Failure test:</strong> {esc(item['failure_test'])}</p>""",
+        )
+        for item in CONCEPT_OVERVIEW_FAMILIES
+    )
     concept_intro = """
 <h1>Concept Atlas</h1>
 <p class="lede">The concept atlas is the learner's map from ordinary control pressure to mathematical objects.</p>
@@ -729,6 +778,15 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <p>The cards below are only doors. The real work is inside each concept page: one concrete run, a math block one level deeper, transcript evidence, and a boundary test.</p>
   <p>A good review path samples one concept from each family before trusting the atlas as complete, balanced, and usable.</p>
 </div>
+<h2>How To Read A Concept</h2>
+<div class="essay">
+  <p>Read every concept through the same four-step test. First, name the ordinary pressure: a drone falling, a car merging, a robot arm near a shelf, a rover crossing gravel, or a policy learning from reward. Second, name the burden the concept carries. State carries what must be remembered. Dynamics carry how commands become motion. Value carries future cost. Constraints carry the lines the plan may not cross. Third, name the operation: update, propagate, minimize, price, constrain, replan, sample, or fit. Fourth, name the failure that appears when the assumptions are false.</p>
+  <p>For example, a car changing lanes is not only a geometry problem. State must include nearby cars and velocity. Action is steering and acceleration, not the wish to be in the next lane. Dynamics say how quickly the car can move. Cost prices progress and comfort. Constraints protect lane boundaries and collision margins. MPC replans from new measurements, but recursive feasibility asks whether the first command leaves a safe future. Reachability asks which states are already too close to danger under worst-case nearby motion.</p>
+  <p>The same reading works for learning. A warehouse robot may clone demonstrations because writing the contact strategy is hard, but cloning only trains on the states in the demonstrations. If the gripper nudges an object eight centimeters sideways, distribution shift has turned the policy into a controller for a state it may never have practiced. Reward can repair part of the behavior, but only if the written reward prices damage, force, smoothness, and safety.</p>
+</div>
+<h2>Family Pressure Map</h2>
+<section class="stack">""" + concept_family_cards + """</section>
+<h2>Atlas Doors</h2>
 """
     write(SITE / "concepts.html", page("Concepts", f"{concept_intro}<section class=\"grid\">{concept_cards}</section>", "concepts"))
 

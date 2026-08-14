@@ -271,11 +271,16 @@ def main() -> int:
                 errors.append(f"concept page still has formulaic scaffold phrase: {path.relative_to(ROOT)} -> {phrase}")
         plain = re.sub(r"<[^>]+>", " ", text)
         words = re.findall(r"\b\w+\b", plain)
-        if len(words) < 520:
+        concept_floor = 740 if concept.get("family") == "learning-based control" else 520
+        if len(words) < concept_floor:
             errors.append(f"concept page below richness word floor: {path.relative_to(ROOT)} has {len(words)} words")
         for marker in ["read it with your hands", "What to inspect first", "The world check", "one concrete run", "the actual math, one level deeper", "Where the idea stops working"]:
             if marker not in text:
                 errors.append(f"concept page missing richness marker: {path.relative_to(ROOT)} -> {marker}")
+        if concept.get("family") == "learning-based control":
+            for marker in ["data inside the loop", "What the learner changes next", "What states did the data actually cover", "warehouse drawer"]:
+                if marker not in text:
+                    errors.append(f"learning concept page missing control-loop marker: {path.relative_to(ROOT)} -> {marker}")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

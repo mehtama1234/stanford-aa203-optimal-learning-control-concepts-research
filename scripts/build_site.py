@@ -1177,6 +1177,19 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
         run = concept_run(concept)
         mathematical_object = sentence_body(concept["mathematical_object"]).lower()
         recognition = recognition_sentence(concept["recognition_test"])
+        learning_control_check = ""
+        if concept.get("family") == "learning-based control":
+            learning_control_check = """
+<section class="fp">
+  <div class="kick">06 · data inside the loop</div>
+  <h2>What the learner changes next</h2>
+  <div class="essay">
+    <p>Keep the learned piece inside the control loop. The data, reward, value estimate, policy, or learned model does not act in a separate world. It reads a state or observation, helps choose an action, and that action creates the next state the learner must handle.</p>
+    <p>Ask three checks before trusting the result. What states did the data actually cover? What behavior does the reward or loss literally pay for? What happens after the learner's own first mistake changes the next input? These checks turn learning back into control instead of letting it become a vague promise that more data will fix the task.</p>
+    <p>Use the warehouse drawer case as the common run. A demonstration may show the gripper centered on the handle. A cloned policy can miss by a few centimeters, rotate the handle, and then see a state absent from the demonstrations. A reward may push for quick opening while hiding excessive force. A learned model may rehearse contacts that are slightly wrong. The controller still has to ask what state it visits, what action it issues, and what failure the learned signal can hide.</p>
+  </div>
+</section>
+"""
         body = f"""
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>{esc(concept['name'])}</h1>
@@ -1220,7 +1233,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
     <p>When that condition fails, look for this visible break: {esc(concept['failure_mode']).lower()}</p>
     <p><strong>Recognize it in a new problem:</strong> {esc(concept['recognition_test'])}</p>
   </div>
-</section>
+</section>{learning_control_check}
 <h2>Transcript Evidence</h2>
 <section class="stack">{ev_cards or '<p class="muted">No evidence record yet.</p>'}</section>
 <h2>Nearby Concepts</h2>

@@ -353,6 +353,12 @@ def main() -> int:
                     errors.append(f"direct transcription concept page missing defect marker: {marker}")
             if len(words) < 760:
                 errors.append(f"direct transcription concept page below core richness floor: {len(words)} < 760")
+        if concept.get("id") == "shooting-methods":
+            for marker in ["x = 0 meters", "u_0 = 4 m/s^2", "x_2 = 7 meters", "only u_0 and u_1 are decision variables", "residual r = [x_2 - 10, v_2 - 0]", "gap_1 = x_join - step(x_0,u_0)"]:
+                if marker not in text:
+                    errors.append(f"shooting methods concept page missing forward-shot marker: {marker}")
+            if len(words) < 760:
+                errors.append(f"shooting methods concept page below core richness floor: {len(words)} < 760")
         if concept.get("id") == "collocation":
             for marker in ["t = 0.2 seconds", "x = 0.10 meters", "x = 0.08 to 0.12 meters", "defect_mid = path_derivative_mid - f(x_mid,u_mid)", "Driving defect_mid to 0"]:
                 if marker not in text:

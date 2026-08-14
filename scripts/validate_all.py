@@ -372,11 +372,11 @@ def main() -> int:
             if len(words) < 980:
                 errors.append(f"collocation concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "lqr":
-            for marker in ["20 centimeters left", "e_next = e + u", "u = -0.190 meters", "e = 0.05", "u = -(20/21)*0.05 = -0.0476 meters", "e = -0.20", "u = +0.190 meters", "measure the deviation, multiply by a gain", "x_{k+1}=A_k x_k + B_k u_k", "J(u)=u^2 + 20*(0.20 + u)^2", "2u + 40*(e + u)=0", "u = -(20/21)*e", "K = 20/21", "|u| &lt;= 0.10 meters", "plain LQR asks for u = -0.190", "actuator can only deliver u = -0.10", "e_next = 0.10", "not the predicted 0.010", "actuator saturates"]:
+            for marker in ["20 centimeters left", "e_next = e + u", "u = -0.190 meters", "e = 0.05", "u = -(20/21)*0.05 = -0.0476 meters", "e = -0.20", "u = +0.190 meters", "measure the deviation, multiply by a gain", "4*u^2", "u = -0.1667 meters", "e_next = 0.0333 meters", "0.25*u^2", "u = -0.1975 meters", "e_next = 0.0025 meters", "spends actuator effort now or tolerates more remaining error", "x_{k+1}=A_k x_k + B_k u_k", "J(u)=u^2 + 20*(0.20 + u)^2", "2u + 40*(e + u)=0", "u = -(20/21)*e", "K = 20/21", "R = 4", "4u^2 + 20*(e+u)^2", "8u + 40*(e+u)=0", "u = -(5/6)*e", "K = 5/6", "R = 0.25", "0.5u + 40*(e+u)=0", "u = -(40/40.5)*e", "|u| &lt;= 0.10 meters", "plain LQR asks for u = -0.190", "actuator can only deliver u = -0.10", "e_next = 0.10", "not the predicted 0.010", "actuator saturates"]:
                 if marker not in text:
                     errors.append(f"LQR concept page missing feedback-gain marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"LQR concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 1120:
+                errors.append(f"LQR concept page below core richness floor: {len(words)} < 1120")
         if concept.get("id") == "local-quadratic-approximation":
             for marker in ["6 centimeters too far left", "delta u = -0.02 meters", "delta u = 0.02 meters", "jump 12 centimeters right", "2.8 centimeter suggested step", "slightly outside the tested band", "clip the first move to delta u = 0.02 meters", "q(delta u) = c + g*delta u + 0.5*H*delta u^2", "delta u* = -g/H = 0.028 meters", "q(0.028)=4.0 - 70*0.028 + 0.5*2500*0.028^2 = 3.02", "-0.02 &lt;= delta u &lt;= 0.02", "trust region with radius 0.02", "delta u_clipped = 0.02", "q(0.02)=4.0 - 1.4 + 0.5 = 3.1", "remeasure and refit", "linearize the dynamics", "quadratize the cost or Q function", "trust region"]:
                 if marker not in text:

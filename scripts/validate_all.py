@@ -426,11 +426,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"distribution shift concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "reinforcement-learning":
-            for marker in ["reward -1", "reward +10", "gamma = 0.9", "G_0 = 0 + 0.9*(-1) + 0.9^2*10 = 7.2", "40 newtons", "(x_t,u_t,r_t,x_{t+1})", "E[sum_t gamma^t r_t]", "y = r_t + gamma max_{u&#x27;} Q(x_{t+1},u&#x27;)", "omitting tearing force"]:
+            for marker in ["12 newtons", "tilts the wrist by 15 degrees", "18 newtons", "reward -1", "reward +10", "gamma = 0.9", "G_0 = 0 + 0.9*(-1) + 0.9^2*10 = 7.2", "30 newtons", "G_0(tear) = 2 + 0.9*(-12) = -8.8", "credit assignment", "40 newtons", "force &gt; 25 newtons", "(x_t,u_t,r_t,x_{t+1})", "tau = [(x_0,light_grip,0,x_1),(x_1,tilt,-1,x_2),(x_2,lift,+10,x_3)]", "G_t = r_t + gamma*r_{t+1} + gamma^2*r_{t+2} + ...", "G_1 = -1 + 0.9*10 = 8", "E[sum_t gamma^t r_t]", "7.2, 6.1, 8.0, -8.8, and 7.5", "(7.2 + 6.1 + 8.0 - 8.8 + 7.5)/5 = 4.0", "empirical mean", "y = r_t + gamma max_{u&#x27;} Q(x_{t+1},u&#x27;)", "Q(x,light_grip)=3.0", "max_{u&#x27;} Q(x_next,u&#x27;)=8", "y = 0 + 0.9*8 = 7.2", "alpha = 0.5", "Q_new = 3.0 + 0.5*(7.2 - 3.0) = 5.1", "omitting tearing force"]:
                 if marker not in text:
                     errors.append(f"reinforcement learning concept page missing rollout-return marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"reinforcement learning concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 1160:
+                errors.append(f"reinforcement learning concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "reward":
             for marker in ["10 - 6 = 4", "35 newtons", "10 - 1 = 9", "-0.5 per newton above 8", "-20 if the cup is damaged", "delayed reward", "rewards 0, 0, +10", "get +4 now", "receive -6 next", "gentle return is 10", "yank return is -2", "gamma = 0.5", "0 + 0.5*0 + 0.5^2*10 = 2.5", "4 + 0.5*(-6) = 1", "how much patience the learner can afford", "r(x,u,x_next)", "G_0 = sum_t gamma^t r_t", "10 - 1 - 0.5*(35 - 8) - 20 = -24.5", "rewards [0,0,10]", "G_0(gentle; gamma=1)=10", "G_0(gentle; gamma=0.5)=0+0.5*0+0.25*10=2.5", "rewards [4,-6]", "G_0(yank; gamma=1)=-2", "G_0(yank; gamma=0.5)=4+0.5*(-6)=1", "later rewards count less", "optimized the written measuring stick", "patience"]:
                 if marker not in text:

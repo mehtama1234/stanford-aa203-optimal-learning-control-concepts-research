@@ -300,11 +300,11 @@ def main() -> int:
             if len(words) < 980:
                 errors.append(f"dynamics concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "objective-cost-function":
-            for marker in ["Path A reaches the spot in 8 seconds", "Path B takes 12 seconds", "8 is smaller than 12", "steering effort 10", "wall penalty 30", "steering effort 3", "Path A: 8 + 0.5*10 + 30 = 43", "Path B: 12 + 0.5*3 + 0 = 13.5", "written measurement of what counts as better", "J = sum_k stage_cost(x_k,u_k) + terminal_cost(x_N)", "5.0*wall_risk", "stage_0 + stage_1 + stage_2", "0.5*steering_effort", "written score drops from 43 to 8 + 0.5*10 = 13", "problem statement said scraping was free", "free to choose damage", "proxy honesty", "matching a reference signal"]:
+            for marker in ["Path A reaches the spot in 8 seconds", "Path B takes 12 seconds", "8 is smaller than 12", "steering effort 10", "wall risk 30", "steering effort 3", "Path A: 8 + 0.5*10 + 1.0*30 = 43", "Path B: 12 + 0.5*3 + 1.0*0 = 13.5", "wall weight 0", "Path A scores 13 and beats 13.5", "written measurement of what counts as better", "J = sum_k stage_cost(x_k,u_k) + terminal_cost(x_N)", "w_wall*wall_risk", "stage_0 + stage_1 + stage_2", "0.5*steering_effort", "A has base score 8 + 0.5*10 = 13", "B has 12 + 0.5*3 = 13.5", "30*w_wall", "13 + 30*w_wall &lt; 13.5", "w_wall &lt; 0.5/30 = 0.0167", "Any wall weight above 0.0167 flips the written choice to B", "written score drops from 43 to 8 + 0.5*10 = 13", "problem statement said scraping was free", "free to choose damage", "proxy honesty", "matching a reference signal"]:
                 if marker not in text:
                     errors.append(f"objective concept page missing tradeoff marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"objective concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 980:
+                errors.append(f"objective concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "horizon":
             for marker in ["60 meters from the pad", "18 percent battery", "full-speed flight uses 2 percent battery", "slow flight uses 1 percent battery", "A three-second horizon sees only the next 24 meters", "crosswind band from 25 meters to 40 meters", "at least 14 percent battery", "distance_3 = 3*8 = 24 meters", "battery_3 = 18 - 3*2 = 12 percent", "distance_3 = 3*4 = 12 meters", "battery_3 = 18 - 3*1 = 15 percent", "battery_at_wind &gt;= 14 percent", "dt = 0.5 seconds", "N = 60", "Too short is blind; too long can be expensive or misleading", "first consequence time"]:
                 if marker not in text:

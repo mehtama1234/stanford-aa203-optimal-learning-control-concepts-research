@@ -474,11 +474,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"costate concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "hamiltonian-optimal-control":
-            for marker in ["running cost is 0.5*u^2", "x_dot = u", "p = -20", "H = 0.5*u^2 + p*u", "u = 0: H = 0", "u = 10: H = 50 - 200 = -150", "u = 20: H = 200 - 400 = -200", "u = 30: H = 450 - 600 = -150", "H(x,u,p)=L(x,u)+p*f(x,u)", "H(u)=0.5*u^2 - 20*u", "dH/du = u - 20 = 0", "augment the cost with the constraint", "u &lt;= 12", "omits motor heat"]:
+            for marker in ["running cost is 0.5*u^2", "x_dot = u", "p = -20", "H = 0.5*u^2 + p*u", "u = 0: H = 0", "u = 10: H = 50 - 200 = -150", "u = 20: H = 200 - 400 = -200", "u = 30: H = 450 - 600 = -150", "motor cap u &lt;= 12", "H(12)=0.5*12^2 - 20*12 = 72 - 240 = -168", "illegal H(20)=-200", "legal H(10)=-150", "constrained local choice sits at u = 12", "H(x,u,p)=L(x,u)+p*f(x,u)", "H(u)=0.5*u^2 - 20*u", "dH/du = u - 20 = 0", "dH/du at u=12 = 12 - 20 = -8", "increasing u is forbidden", "active boundary u^* = 12", "augment the cost with the constraint", "omits motor heat", "derivative-zero answer can be illegal"]:
                 if marker not in text:
                     errors.append(f"Hamiltonian concept page missing local-accounting marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"Hamiltonian concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 980:
+                errors.append(f"Hamiltonian concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "indirect-methods":
             for marker in ["x(0)=0 meters", "x(2)=1 meter", "x_dot = u", "running cost is 0.5*u^2", "H = 0.5*u^2 + p*u", "dH/du = u + p = 0", "u = -p", "p_dot = 0", "initial costate", "p(0) = -0.3", "x(2)=0.6", "0.4 meters short", "p(0) = -0.7", "x(2)=1.4", "correct shot between -0.3 and -0.7", "p(0) = -0.5", "x(2)=1.0 exactly", "x(t)=0.5*t", "terminal miss", "partial H/partial p", "partial H/partial u = 0", "r(p0)=x(2;p0)-1", "r=-0.4", "r=+0.4", "sign change", "x(2;p0)=-2*p0", "r(p0)=-2*p0-1", "shooting method", "path limit such as x(t) &lt;= 0.8", "wrong sign"]:
                 if marker not in text:

@@ -28,12 +28,26 @@
   <p>The symbols in AA203 are easy to misread as decoration. They are not. Each formula is a small machine: put in a state, an action, a cost, a model, or a rollout; get out a next state, a price on the future, a constraint check, or a policy update.</p>
   <p>The reading order is always the same. First ask what real situation forced the formula to exist. Then identify the object it stores. Then name the operation it performs. Only after that should the symbols matter.</p>
 </div>
+<h2>One Reading Run</h2>
+<div class="essay">
+  <p>Use a landing rocket. Dynamics read height, velocity, fuel, and thrust, then return the next height, velocity, and fuel. The objective reads the whole candidate landing history and returns a score built from fuel use, touchdown speed, and final height error. Bellman recursion reads one thrust choice, the next state it creates, and the stored future value of that next state. The Hamiltonian reads immediate fuel cost and the costate price of changing velocity. MPC reads the measured rocket state, solves a short landing problem, applies the first thrust command, then measures again. A policy-gradient formula would read rollout returns from attempted landings and adjust a policy only if the credit signal is credible.</p>
+  <p>This is how to reject a shallow formula reading. If the formula does not say what enters, what leaves, what future is priced, and where the reading fails, the symbols have not been explained yet.</p>
+</div>
+<h2>Three Checks For Any Formula</h2>
+<div class="essay">
+  <p>First, ask what would go wrong in the world if the formula did not exist. Dynamics exist because commands are not teleportation. Value exists because the next state carries later burden. MPC exists because yesterday's plan goes stale after measurement.</p>
+  <p>Second, ask what object the formula carries. A transition rule carries motion, a cost carries preference, a value function carries future burden, a costate carries sensitivity, and a policy update carries evidence from rollouts.</p>
+  <p>Third, ask what false reading would hurt a real system. A cost can omit damage. A value can price the wrong state. A local condition can miss the global path. A short MPC horizon can leave no future move. A policy update can reward noise.</p>
+</div>
 <section class="stack"><article class="card "><h3>Dynamics</h3>
 <p class="tag">x_next = f(x, u)</p>
 <div class="essay">
   <p>A command is not a teleport. If the car turns the steering wheel, the next state depends on current speed, tire grip, and heading.</p>
   <p><strong>The object:</strong> The object is a transition rule from present state and action to next state.</p>
   <p><strong>The operation:</strong> Feed in the state and action, then propagate the consequence one step forward.</p>
+  <p><strong>Input:</strong> present state and command</p>
+  <p><strong>Output:</strong> next state or state derivative</p>
+  <p><strong>Wrong read:</strong> Reading f as a label instead of the physical rule that turns commands into motion.</p>
 </div>
 <div class="explain-box"><p>If a drone has upward velocity 1 m/s and the controller cuts thrust, the next height may still rise for a moment while velocity falls. Dynamics explain that delay.</p></div>
 <details class="math"><summary>where it fails</summary><div><p>If the model ignores wind, ice, contact, or actuator lag, the controller prices a future that the real system will not follow.</p></div></details>
@@ -43,6 +57,9 @@
   <p>A future is not good just because it reaches the goal. It may use too much fuel, hit a wall, arrive late, or end with unsafe speed.</p>
   <p><strong>The object:</strong> The object is a cost functional: a rule for scoring a whole history.</p>
   <p><strong>The operation:</strong> Add the cost paid along the path and the cost left at the end.</p>
+  <p><strong>Input:</strong> a candidate state-action history</p>
+  <p><strong>Output:</strong> one score for comparing that history with another</p>
+  <p><strong>Wrong read:</strong> Treating the cost as intention instead of the written scoreboard the optimizer will obey.</p>
 </div>
 <div class="explain-box"><p>A rocket landing score can add fuel burn every second, then add a large final penalty for height error and touchdown speed.</p></div>
 <details class="math"><summary>where it fails</summary><div><p>If the written cost omits damage or risk, the optimizer can choose a future that is cheap on paper and bad in the world.</p></div></details>
@@ -52,6 +69,9 @@
   <p>The controller needs to judge a current action by the future state it creates, without listing every complete future.</p>
   <p><strong>The object:</strong> The object is a value function: future cost stored at each state.</p>
   <p><strong>The operation:</strong> For each action, add immediate cost to the value of the next state, then choose the best sum.</p>
+  <p><strong>Input:</strong> current state, candidate action, one-step cost, and next-state value</p>
+  <p><strong>Output:</strong> the best future cost attached to the current state</p>
+  <p><strong>Wrong read:</strong> Reading the recursion as algebra only, without asking what next state each action creates.</p>
 </div>
 <div class="explain-box"><p>A rover may pay one extra minute to avoid sharp rocks because the next state after the rocky shortcut has damaged wheels and worse future value.</p></div>
 <details class="math"><summary>where it fails</summary><div><p>If the state is missing hidden information, the value table attaches the wrong future price to that state.</p></div></details>
@@ -61,6 +81,9 @@
   <p>A small action change affects cost now and also pushes the whole future state history.</p>
   <p><strong>The object:</strong> The object is a local package that combines immediate cost with a backward price on state motion.</p>
   <p><strong>The operation:</strong> Price a control change by adding what it costs now to what its state change costs later.</p>
+  <p><strong>Input:</strong> state, control, current cost, dynamics, and costate price</p>
+  <p><strong>Output:</strong> a local stationarity test for a candidate optimal control</p>
+  <p><strong>Wrong read:</strong> Treating the Hamiltonian as energy here instead of a cost-and-dynamics bookkeeping device.</p>
 </div>
 <div class="explain-box"><p>For a rocket, more thrust burns fuel now but changes future velocity. The costate says how valuable that velocity change is later near touchdown.</p></div>
 <details class="math"><summary>where it fails</summary><div><p>Hamiltonian conditions are necessary conditions; they can identify a candidate path without proving it is the best global path.</p></div></details>
@@ -70,6 +93,9 @@
   <p>A long plan becomes stale after the first gust of wind, moving car, or bad state estimate.</p>
   <p><strong>The object:</strong> The object is a finite-horizon problem rebuilt from the current measured state.</p>
   <p><strong>The operation:</strong> Solve, use only the first command, shift the horizon, and solve again.</p>
+  <p><strong>Input:</strong> measured state, model, horizon, cost, and constraints</p>
+  <p><strong>Output:</strong> the first command of a newly solved short plan</p>
+  <p><strong>Wrong read:</strong> Thinking MPC trusts the whole plan instead of deliberately throwing most of it away after measuring again.</p>
 </div>
 <div class="explain-box"><p>A car plans five seconds ahead but executes only 0.1 seconds of steering and throttle before traffic is measured again.</p></div>
 <details class="math"><summary>where it fails</summary><div><p>A short horizon without terminal protection can make a legal first move that leaves no legal move next time.</p></div></details>
@@ -79,6 +105,9 @@
   <p>Sometimes the learner has no clean model or action labels, only rollouts and delayed reward.</p>
   <p><strong>The object:</strong> The object is a parameterized policy that chooses actions from observations or states.</p>
   <p><strong>The operation:</strong> Use rollout returns to nudge the policy toward actions that led to higher long-run reward.</p>
+  <p><strong>Input:</strong> rollouts, rewards, and current policy parameters</p>
+  <p><strong>Output:</strong> a parameter update direction for the policy</p>
+  <p><strong>Wrong read:</strong> Treating a successful rollout as proof every action in it deserves credit.</p>
 </div>
 <div class="explain-box"><p>A grasping robot tries many wrist angles; successful lifts increase the probability of similar actions in similar poses.</p></div>
 <details class="math"><summary>where it fails</summary><div><p>Sparse reward, unsafe exploration, or random lucky rollouts can push the policy in the wrong direction.</p></div></details>

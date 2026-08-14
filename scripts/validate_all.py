@@ -468,11 +468,11 @@ def main() -> int:
             if len(words) < 980:
                 errors.append(f"calculus of variations concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "costate-adjoint-variable":
-            for marker in ["height 10 meters after two seconds", "x_next = x + u", "100*(x_2 - 10)^2", "100*(0.1^2) = 1", "x_1 = 9.4 meters", "200*(x_1 + u_1 - 10)", "u_1 is 0.5", "final height is 9.9", "derivative is -20", "p(t)", "x_dot = f(x,u)", "lambda_2 = d terminal_cost/dx_2", "lambda_2 = -20", "lambda_1 = lambda_2*1 = -20", "x_2 = 0.5*x_1 + u_1", "lambda_1 = -10", "omitted heat, collision, or actuator wear"]:
+            for marker in ["height 10 meters after two seconds", "x_next = x + u", "100*(x_2 - 10)^2", "100*(0.1^2) = 1", "x_1 = 9.4 meters", "200*(x_1 + u_1 - 10)", "u_1 is 0.5", "final height is 9.9", "derivative is -20", "running penalty 5*(x_1 - 9.5)^2", "10*(9.4 - 9.5) = -1", "total price at time 1 becomes -21", "time-1 running cost and the final cost", "p(t)", "x_dot = f(x,u)", "lambda_2 = d terminal_cost/dx_2", "lambda_2 = -20", "previous future price is lambda_2*1 = -20", "lambda_1 = -20", "l_1(x_1)=5*(x_1 - 9.5)^2", "dl_1/dx_1 = 10*(9.4 - 9.5) = -1", "lambda_1 = -20 + (-1) = -21", "x_2 = 0.5*x_1 + u_1", "lambda_2*0.5 = -10", "omitted heat, collision, or actuator wear"]:
                 if marker not in text:
                     errors.append(f"costate concept page missing backward-price marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"costate concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 980:
+                errors.append(f"costate concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "hamiltonian-optimal-control":
             for marker in ["running cost is 0.5*u^2", "x_dot = u", "p = -20", "H = 0.5*u^2 + p*u", "u = 0: H = 0", "u = 10: H = 50 - 200 = -150", "u = 20: H = 200 - 400 = -200", "u = 30: H = 450 - 600 = -150", "motor cap u &lt;= 12", "H(12)=0.5*12^2 - 20*12 = 72 - 240 = -168", "illegal H(20)=-200", "legal H(10)=-150", "constrained local choice sits at u = 12", "H(x,u,p)=L(x,u)+p*f(x,u)", "H(u)=0.5*u^2 - 20*u", "dH/du = u - 20 = 0", "dH/du at u=12 = 12 - 20 = -8", "increasing u is forbidden", "active boundary u^* = 12", "augment the cost with the constraint", "omits motor heat", "derivative-zero answer can be illegal"]:
                 if marker not in text:

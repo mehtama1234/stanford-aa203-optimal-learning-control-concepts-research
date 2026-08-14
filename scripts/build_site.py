@@ -202,8 +202,8 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "math": "The decision is a sequence or curve of states and controls. The solver minimizes path cost while satisfying dynamics, boundary conditions, and constraints along the trajectory.",
     },
     "dynamic-programming": {
-        "run": "A grid rover can solve a maze backward from the goal. Each cell stores the best remaining cost from there. Once those numbers are known, choosing a move is local: step cost plus value of the cell reached.",
-        "math": "Dynamic programming solves coupled subproblems indexed by state. The update writes each state's value from neighboring future values until the recursion is solved.",
+        "run": "A grid rover is two cells from the charging pad. The goal cell has value 0. The cell just before the goal has value 1 because one legal move reaches the pad. Now update a muddy cell beside it. Moving right costs 1 and reaches the value-1 cell, so that branch costs 2. Moving down costs 3 and reaches a rough cell with value 6, so that branch costs 9. Dynamic programming writes V(muddy) = 2 and stores the right move. The rover did not plan every full path at once; it reused values already written for smaller future problems. That reuse is the whole computational bargain.",
+        "math": "Dynamic programming solves coupled subproblems indexed by state. A deterministic update has the same shape as V(s) = min_a [c(s,a) + V(next(s,a))]. The backward pass starts from terminal values, then writes neighboring state values, then uses those values to write earlier states. The order matters because each update needs future values that have already been assigned or are being iterated toward consistency.",
     },
     "lqr": {
         "run": "A drone hovering in still air does not need a full nonlinear planner for a two-centimeter drift. Near hover, the motion is almost linear and the penalty for being off-center is almost a bowl. LQR turns that local picture into a feedback rule: if the state error points this way, push back that way.",

@@ -335,6 +335,12 @@ def main() -> int:
                     errors.append(f"stochastic DP concept page missing expectation marker: {marker}")
             if len(words) < 740:
                 errors.append(f"stochastic DP concept page below core richness floor: {len(words)} < 740")
+        if concept.get("id") == "dynamic-programming":
+            for marker in ["goal cell has value 0", "branch costs 2", "branch costs 9", "V(muddy) = 2", "V(s) = min_a [c(s,a) + V(next(s,a))]"]:
+                if marker not in text:
+                    errors.append(f"dynamic programming concept page missing backward-update marker: {marker}")
+            if len(words) < 740:
+                errors.append(f"dynamic programming concept page below core richness floor: {len(words)} < 740")
     for path in SITE.rglob("*.html"):
         text = path.read_text(encoding="utf-8")
         if "<main>" not in text or "</main>" not in text:

@@ -54,8 +54,8 @@
 <section class="fp">
   <div class="kick">04 · one concrete run</div>
   <h2>Work it through before naming the formula</h2>
-  <div class="explain-box"><p>A grid rover can solve a maze backward from the goal. Each cell stores the best remaining cost from there. Once those numbers are known, choosing a move is local: step cost plus value of the cell reached.</p></div>
-  <details class="math"><summary>the actual math, one level deeper</summary><div><p>Dynamic programming solves coupled subproblems indexed by state. The update writes each state&#x27;s value from neighboring future values until the recursion is solved.</p></div></details>
+  <div class="explain-box"><p>A grid rover is two cells from the charging pad. The goal cell has value 0. The cell just before the goal has value 1 because one legal move reaches the pad. Now update a muddy cell beside it. Moving right costs 1 and reaches the value-1 cell, so that branch costs 2. Moving down costs 3 and reaches a rough cell with value 6, so that branch costs 9. Dynamic programming writes V(muddy) = 2 and stores the right move. The rover did not plan every full path at once; it reused values already written for smaller future problems. That reuse is the whole computational bargain.</p></div>
+  <details class="math"><summary>the actual math, one level deeper</summary><div><p>Dynamic programming solves coupled subproblems indexed by state. A deterministic update has the same shape as V(s) = min_a [c(s,a) + V(next(s,a))]. The backward pass starts from terminal values, then writes neighboring state values, then uses those values to write earlier states. The order matters because each update needs future values that have already been assigned or are being iterated toward consistency.</p></div></details>
 </section>
 <section class="fp">
   <div class="kick">05 · boundary</div>

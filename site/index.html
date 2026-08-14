@@ -27,6 +27,10 @@
   <p class="tag">Transcript-backed first-principles course companion</p>
   <h1>Stanford AA203 Optimal and Learning-Based Control | Spring 2026</h1>
   <p class="lede">Optimal control is the discipline of choosing actions whose consequences unfold through time. Learning-based control extends that discipline when the model, cost, environment, or feedback signal cannot be fully written down in advance.</p>
+  <div class="explain-box">
+    <p>Start with a car entering traffic. The driver wants the next lane, but the controller cannot command "be in that lane." It can command steering, braking, and acceleration. Those commands move the state through tire forces, speed, heading, and the motion of nearby cars. A one-second action can create a future where braking is still possible, or a future where no legal move remains.</p>
+    <p>That small scene is the whole course in miniature: name the state, name the action, write how the world moves, score the future, forbid unsafe states, choose a path, price delayed consequences, replan from new measurements, and learn missing structure only when data is the honest source.</p>
+  </div>
 
 <section class="stats">
   <div class="stat"><strong>19</strong><span>playlist lectures</span></div>
@@ -44,6 +48,24 @@
   <p>Start with a simple physical question: what can the system do now, and what future will that action create? Every page comes back to that question. State says what the controller must know. Action says what can actually be commanded. Dynamics say how the command changes the world. Cost says which future is preferred. Constraints say what future is illegal.</p>
   <p>The course then changes tools only when the pressure changes. Direct methods appear when the whole path must be chosen. Dynamic programming appears when future consequence can be stored by state. LQR appears when the world is close enough to a local model. MPC appears when a plan must be rebuilt from fresh measurements. Learning appears when the model, reward, or expert behavior cannot be fully written by hand.</p>
   <p>The evidence links keep the transcript layer honest. The teaching prose goes beyond the transcript, but each evidence record says what the lecture actually supports and where the site is synthesizing.</p>
+</div>
+<h2>The Route Through The Material</h2>
+<section class="stack">
+  <article class="card"><h3>1. Make The Problem Physical</h3><p>A controller starts with a moving thing: drone, car, rocket, robot arm, rover, policy, or learned model. The first job is to stop speaking in wishes and name the present-tense record, the command, the transition rule, the score, and the forbidden states.</p></article>
+  <article class="card"><h3>2. Choose A Whole Future</h3><p>Trajectory optimization appears when one command is not enough. A landing rocket or robot arm needs a history of states and actions. The path has to obey dynamics at every step, not only look good at the endpoints.</p></article>
+  <article class="card"><h3>3. Store Future Burden</h3><p>Dynamic programming appears when the same question repeats after every action. A rover that damages a wheel has changed the future problem. Value stores that future burden at the state so today's action can be judged honestly.</p></article>
+  <article class="card"><h3>4. Replan Without Losing Safety</h3><p>MPC plans a short future, applies one action, and measures again. The hard test is the handoff: after that first action, does the next state still have a legal future? Reachability and recursive feasibility make that question explicit.</p></article>
+  <article class="card"><h3>5. Learn Where Writing Runs Out</h3><p>Learning-based control enters when demonstrations, rewards, rollouts, or learned models carry structure the designer cannot write cleanly. The control questions remain: what states does the learner visit, what signal is being followed, and what failure can the signal hide?</p></article>
+</section>
+<h2>What This Site Is Not</h2>
+<div class="essay">
+  <p>It is not a transcript dump. The transcripts are the source floor, not the finished teaching. It is not a glossary. A definition is only acceptable when it is tied to a machine, an operation, and a failure. It is not a set of solver recommendations. Every method is introduced because some ordinary pressure made the previous framing break.</p>
+  <p>The intended reading standard is simple: after a page, you should be able to retell the idea with a new car, drone, robot, rover, or learning setup without hiding behind the course vocabulary.</p>
+</div>
+<h2>First Read Path</h2>
+<div class="essay">
+  <p>Read <a href="course-spine.html">Course Spine</a> first if you want the whole argument in order. Then open <a href="concepts/state.html">State</a>, <a href="concepts/dynamics.html">Dynamics</a>, and <a href="concepts/objective-cost-function.html">Objective / Cost Function</a> to see how a story becomes a control problem. Next read <a href="concepts/bellman-recursion.html">Bellman Recursion</a> and <a href="concepts/model-predictive-control.html">Model Predictive Control</a> to see how future cost and repeated measurement change the decision. Finish with <a href="concepts/behavioral-cloning.html">Behavioral Cloning</a> and <a href="concepts/reward.html">Reward</a> to see why data does not remove the need for control reasoning.</p>
+  <p>After that path, use the drills as a transfer test. If you can move the drone-delivery setup indoors, move the MPC traffic failure to a narrow drone window, and spot the reward loophole in a new robot task, the site is doing more than naming concepts.</p>
 </div>
 <h2>Current Build State</h2>
 <p>The current build has full transcript coverage, a complete minimum concept atlas, timestamped evidence records with manual deepening, and expanded teaching artifacts for derivations, examples, drills, solutions, and weak-claim repairs.</p>

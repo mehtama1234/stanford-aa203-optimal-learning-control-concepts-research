@@ -192,7 +192,7 @@ def main() -> int:
         "primitives.html": ["reusable pieces", "The action is the command", "Constraint says what cannot be crossed"],
         "formula-reader.html": ["A formula is a machine", "The operation:", "where it fails", "rocket", "rover"],
         "lectures.html": ["The problem:", "The move:", "Read the playlist as one route", "warehouse robot"],
-        "index.html": ["How To Read This Site", "The course then changes tools", "evidence record"],
+        "index.html": ["How To Read This Site", "The Route Through The Material", "What This Site Is Not", "First Read Path", "Replan Without Losing Safety", "Learn Where Writing Runs Out", "evidence record"],
         "review-guide.html": ["Reviewer Route", "Reject condition", "Setup Page Test", "Future-Price Page Test", "Replanning Safety Test", "Reference comparison", "richness gates"],
         "quality.html": ["Editorial Tests", "Weak version", "Stronger version", "Pass test", "Start With A Machine", "Keep Learning Inside Control", "This rubric is an editorial test"],
         "transcripts.html": ["source floor", "Raw VTT captions stay separate", "auditing source coverage"],
@@ -230,7 +230,7 @@ def main() -> int:
                 errors.append(f"vague filler phrase in {path.relative_to(ROOT)}: {phrase}")
     minimum_page_words = {
         "course-spine.html": 650,
-        "index.html": 360,
+        "index.html": 900,
         "lectures.html": 1500,
         "families.html": 750,
         "primitives.html": 450,

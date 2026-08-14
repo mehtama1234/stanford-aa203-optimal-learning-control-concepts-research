@@ -314,6 +314,55 @@ PRIMITIVE_DEEPENING: dict[str, str] = {
 }
 
 
+PRIMITIVE_TESTS: dict[str, dict[str, str]] = {
+    "state": {
+        "question": "What must be remembered right now so the next command can be predicted?",
+        "run": "Two cars share the same lane position. One is centered and steady; the other is sliding with a fast rear car closing. A position-only state would tell both cars to do the same thing, which is physically wrong.",
+        "failure": "Missing state turns different futures into the same record, so the controller acts blind.",
+    },
+    "action": {
+        "question": "What command can the machine actually receive?",
+        "run": "A drone can want to rise two meters, but the command is rotor thrust or a lower-level velocity target. The height change arrives only after thrust changes acceleration and velocity.",
+        "failure": "A fake action asks the plan to choose an outcome the actuator cannot directly produce.",
+    },
+    "dynamics": {
+        "question": "How does the command change the next state?",
+        "run": "The same steering command on dry pavement and ice creates different next states. The dynamics are where tire grip, delay, mass, and actuator limits enter the story.",
+        "failure": "Wrong dynamics make a future look legal on paper and fail on the real system.",
+    },
+    "cost": {
+        "question": "Which future is the controller being asked to prefer?",
+        "run": "A parking controller that prices only time may scrape a wall. Adding distance, steering effort, wall clearance, and final alignment changes what counts as a good future.",
+        "failure": "A thin cost makes the controller obey the written scoreboard while violating the human task.",
+    },
+    "constraint": {
+        "question": "What line may not be crossed even if crossing it lowers cost?",
+        "run": "A robot arm may save energy by passing through a shelf. Collision is not a tradeoff to be balanced away; it removes that path from the legal set.",
+        "failure": "A missing constraint lets the optimizer find a cheap answer that the world will not allow.",
+    },
+    "value": {
+        "question": "What future burden is attached to standing in this state?",
+        "run": "A rover one step from sharp rocks should not ask only about the next meter. It should ask what future travel costs after wheel damage.",
+        "failure": "Without value, delayed damage, battery drain, and lost options are invisible to the current action.",
+    },
+    "policy": {
+        "question": "What rule chooses the next action from the current information?",
+        "run": "A thermostat policy turns temperature into heat on or off. A robot policy turns camera and joint information into a gripper command, then has to handle the next state its own command creates.",
+        "failure": "A policy trained only on clean states may fail after its own small mistake creates an unfamiliar state.",
+    },
+    "uncertainty": {
+        "question": "Which part of the next state is not promised?",
+        "run": "A rover crossing gravel may move forward, slip left, or slip right. The action must be priced over possible next states, not a single hoped-for outcome.",
+        "failure": "Ignoring uncertainty makes a controller trust a future that wind, gravel, sensors, drivers, or model error can break.",
+    },
+    "feasibility": {
+        "question": "Does any legal future remain from this state?",
+        "run": "A car too close to a wall at high speed may have no steering or braking command that avoids collision. Before choosing the best plan, the controller must know whether the legal set is empty.",
+        "failure": "If feasibility is skipped, the solver can return emergency behavior or no plan after the system is already boxed in.",
+    },
+}
+
+
 FORMULA_EXPLAINERS: list[dict[str, str]] = [
     {
         "name": "Dynamics",
@@ -1145,7 +1194,14 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
             for cid in p["used_by"]
             if cid in concepts_by_id
         )
-        body = f"<p>{esc(PRIMITIVE_DEEPENING.get(p['id'], p['plain_language']))}</p><p>{links}</p>"
+        test = PRIMITIVE_TESTS.get(p["id"], {})
+        body = f"""
+<p>{esc(PRIMITIVE_DEEPENING.get(p['id'], p['plain_language']))}</p>
+<p><strong>Question it answers:</strong> {esc(test.get('question', ''))}</p>
+<div class="explain-box"><p>{esc(test.get('run', ''))}</p></div>
+<p><strong>Failure if wrong:</strong> {esc(test.get('failure', ''))}</p>
+<p>{links}</p>
+"""
         primitive_cards.append(card(p["name"], body))
     write(
         SITE / "primitives.html",
@@ -1157,6 +1213,13 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <p>A primitive is not a small word to memorize. It is a role in the control story. State says what must be carried forward. Action says what can actually be commanded. Dynamics say how the command changes the world. Cost says which future is preferred. Constraint says what cannot be crossed. Value prices the future from here. Policy chooses the next action. Uncertainty admits that the next state may not be the one the planner hoped for.</p>
   <p>Once these pieces are named, the course becomes less mysterious. New methods mostly rearrange the same pieces: direct transcription lays them on a time grid, dynamic programming stores future cost in value, MPC rebuilds them every tick, and learning estimates one of them from data.</p>
   <p>If a plan fails, one primitive is usually lying, missing, or too loosely written. Debug the primitive before blaming the solver.</p>
+  <p>Read each primitive as a small test. If you cannot answer the question it asks, run the concrete case, and name the failure when it is wrong, the word has not become usable yet.</p>
+</div>
+<h2>One Debug Sequence</h2>
+<div class="essay">
+  <p>Take the car merge from the course spine. The state must include lane position, speed, heading, nearby cars, and enough prediction to know whether the next command leaves room. The action is steering, throttle, and brake. Dynamics say how those commands move the car through tire grip and speed. Cost prices progress, comfort, and delay. Constraints forbid collision and road departure. Value prices the future after the first command. A policy chooses the command from the current state. Uncertainty admits that the rear car may accelerate or the tire grip may be lower than expected. Feasibility asks whether any legal future remains after the first move.</p>
+  <p>Now change the object to a drone entering a narrow window. The same primitive sequence still works. State needs position, velocity, attitude, battery, wind, and localization uncertainty. Action is thrust or attitude target. Dynamics carry thrust through acceleration. Cost prices time, energy, and landing accuracy. Constraints enforce clearance and thrust limits. Value prices whether entering the window leaves enough room to stop. Policy chooses the next command. Uncertainty widens the future. Feasibility asks whether the drone can still avoid the frame after the first command.</p>
+  <p>That transfer is the point of this page. A primitive is learned only when it survives a change of machine without losing its job in the control feedback loop.</p>
 </div>
 <section class="grid">{''.join(primitive_cards)}</section>""",
             "primitives",

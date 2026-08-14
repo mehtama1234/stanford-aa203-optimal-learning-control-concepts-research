@@ -366,11 +366,11 @@ def main() -> int:
             if len(words) < 980:
                 errors.append(f"shooting methods concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "collocation":
-            for marker in ["x = 0.02 meters", "x = 0.18 meters", "t = 0.2 seconds", "x = 0.10 meters", "x = 0.08 to 0.12 meters", "path_derivative_mid = 0.9 m/s", "f(x_mid,u_mid)=0.4 m/s", "local direction does not match the dynamics", "selected interior points to be physically honest", "defect_mid = path_derivative_mid - f(x_mid,u_mid)", "defect_mid = 0.9 - 0.4 = 0.5 m/s", "Driving defect_mid to 0", "clearance_mid &gt;= 0", "x_mid = 0.10 meters", "clearance_mid is negative", "t = 0.1, 0.2, and 0.3 seconds", "sampling and representation", "unmodeled flex, backlash, or contact event"]:
+            for marker in ["x = 0.02 meters", "x = 0.18 meters", "t = 0.2 seconds", "x = 0.10 meters", "x = 0.08 to 0.12 meters", "path_derivative_mid = 0.9 m/s", "f(x_mid,u_mid)=0.4 m/s", "curve is trying to pass through", "x_mid = 0.14 meters", "outside the fixture", "f(x_mid,u_mid)=0.6 m/s", "curve slope is 0.6 m/s", "passes both checks", "selected interior points to be physically honest", "defect_mid = path_derivative_mid - f(x_mid,u_mid)", "defect_mid = 0.9 - 0.4 = 0.5 m/s", "driving defect_mid to 0", "clearance_mid &gt;= 0", "x_mid = 0.10 meters", "clearance_mid is negative", "clearance_mid = 0.14 - 0.12 = 0.02 meters", "defect_mid = 0.6 - 0.6 = 0", "t = 0.1, 0.2, and 0.3 seconds", "sampling and representation", "unmodeled flex, backlash, or contact event"]:
                 if marker not in text:
                     errors.append(f"collocation concept page missing midpoint marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"collocation concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 980:
+                errors.append(f"collocation concept page below core richness floor: {len(words)} < 980")
         if concept.get("id") == "lqr":
             for marker in ["20 centimeters left", "e_next = e + u", "u = -0.190 meters", "e = 0.05", "u = -(20/21)*0.05 = -0.0476 meters", "e = -0.20", "u = +0.190 meters", "measure the deviation, multiply by a gain", "x_{k+1}=A_k x_k + B_k u_k", "J(u)=u^2 + 20*(0.20 + u)^2", "2u + 40*(e + u)=0", "u = -(20/21)*e", "K = 20/21", "|u| &lt;= 0.10 meters", "plain LQR asks for u = -0.190", "actuator can only deliver u = -0.10", "e_next = 0.10", "not the predicted 0.010", "actuator saturates"]:
                 if marker not in text:

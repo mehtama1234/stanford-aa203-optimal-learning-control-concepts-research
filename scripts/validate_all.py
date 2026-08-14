@@ -414,11 +414,11 @@ def main() -> int:
             if len(words) < 900:
                 errors.append(f"imitation learning concept page below core richness floor: {len(words)} < 900")
         if concept.get("id") == "behavioral-cloning":
-            for marker in ["1,000 centered-lane frames", "steering angle -12 degrees", "steering angle +12 degrees", "average label is 0 degrees", "L(theta)=sum_i ||pi_theta(x_i)-u_i^expert||^2", "50*(a - (-12))^2 + 50*(a - 12)^2", "squared-error optimum is a = 0 degrees", "no built-in exploration or reward signal"]:
+            for marker in ["1,000 centered-lane frames", "steering angle -12 degrees", "steering angle +12 degrees", "average label is 0 degrees", "1 degree right bias over 20 frames", "0.25 meters toward the lane edge", "expert would steer -8 degrees left", "200 such frames", "37 off-center frames", "add those 37 pairs to the dataset", "good test error on expert states can hide bad closed-loop recovery", "L(theta)=sum_i ||pi_theta(x_i)-u_i^expert||^2", "50*(a - (-12))^2 + 50*(a - 12)^2", "squared-error optimum is a = 0 degrees", "d_expert(x)", "d_pi_theta(x)", "x_{t+1}=f(x_t,pi_theta(x_t))", "37 off-center frames out of 200", "D_1 = D_0 union {(x_j^learner,u_j^expert)}", "no built-in exploration or reward signal"]:
                 if marker not in text:
                     errors.append(f"behavioral cloning concept page missing supervised-action marker: {marker}")
-            if len(words) < 900:
-                errors.append(f"behavioral cloning concept page below core richness floor: {len(words)} < 900")
+            if len(words) < 1160:
+                errors.append(f"behavioral cloning concept page below core richness floor: {len(words)} < 1160")
         if concept.get("id") == "distribution-shift-imitation":
             for marker in ["within 10 centimeters of lane center", "understeers by only 2 centimeters", "second 4", "18 centimeters right", "3 of the 10,000 expert frames", "d_expert(x)", "d_pi(x)", "d_pi(18 cm right) much larger than d_expert(18 cm right)", "collect rollout states from d_pi"]:
                 if marker not in text:

@@ -1,0 +1,196 @@
+{
+  "id": "feasibility",
+  "name": "Feasibility",
+  "kick": "Feasibility · first principles · whether a legal plan exists at all, not just what it costs",
+  "title": "Feasibility — before asking what plan is cheapest, ask whether any legal plan exists",
+  "lede": "Why checking 'does a solution exist?' comes before optimizing. A real run where three identical carts fail, succeed, fail at increasing speed shows which plans obey the law and which do not. The boundary between empty and non-empty. Its one honest weakness: checking emptiness is as hard as solving. And the surprise: every safe MPC starts here, and every solver reports infeasibility as information, not failure.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "closeness",
+      "The misread: closeness is not legality"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — people optimize for cost, then check if the plan is legal",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A cart is rolling toward a wall. Your job is to slow it down or steer it away. You run an optimizer: find the cheapest plan — the one that uses the least fuel, effort, or risk. The optimizer reports a winner and you execute it. Only afterward do you check whether the plan obeyed the constraint: did the cart stay away from the wall? And if the answer is no — if the cheapest plan crashed — the system is broken."
+        },
+        {
+          "t": "para",
+          "html": "But here is the deeper problem: sometimes <em>no plan</em> obeys the constraint. The cart is too close, too fast, or the brakes are too weak. Every allowed sequence of actions hits the wall. The feasible set — the set of all legal action sequences — is empty. In that state, asking 'what is the cheapest plan?' is the wrong question. The right question comes first: <strong>does any legal plan exist at all?</strong>"
+        },
+        {
+          "t": "para",
+          "html": "If the answer is no, then no optimizer can save you; you have crashed. If yes, then cost matters. But you cannot find the cheap plan without knowing the answer to the yes-or-no question first."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — check emptiness before optimizing",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The reframe is simple: split the question into two steps. First, ask: 'Is there at least one action sequence that satisfies all the dynamics and constraints?' That is the feasibility test. If the answer is yes, then run the optimizer to find the cheapest one. If the answer is no, then stop and report the boundary — the system is impossible from this starting state."
+        },
+        {
+          "t": "para",
+          "html": "This is different from finding an expensive plan. A plan that violates a constraint is not a high-cost plan; it is not a plan at all. It is outside the legal set. The distinction is sharp: a plan with cost 10,000 can be feasible if it obeys the rules, but a plan with cost 1 cannot be chosen if it crashes."
+        },
+        {
+          "t": "para",
+          "html": "This reordering — check feasibility first, then optimize — is the foundation of safe control. Every model-predictive controller that runs in the real world has this check built in."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — three carts: one feasible, two already impossible",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured by the run, not asserted. We placed the same cart at three different spots, each moving at a different speed, and asked one plain question: braking as hard as it can (its force is capped, which caps how fast it can shed speed), does it stop before the wall? The shortest distance it needs to stop grows with the square of its speed, so a little more speed needs a lot more room."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "cart",
+            "speed",
+            "distance to the wall",
+            "shortest distance it needs to stop",
+            "safe plan exists?"
+          ],
+          "rows": [
+            [
+              "A",
+              "1.0 m/s",
+              "3.0 m",
+              "0.50 m",
+              "YES — 0.50 fits in 3.0"
+            ],
+            [
+              "B",
+              "2.0 m/s",
+              "1.0 m",
+              "2.00 m",
+              "NO — needs 2.00, has 1.0"
+            ],
+            [
+              "C",
+              "2.5 m/s",
+              "0.5 m",
+              "3.12 m",
+              "NO — needs 3.12, has 0.5"
+            ]
+          ],
+          "caption": "Same cart, three situations. Only cart A has room to stop; for B and C no braking plan — however clever — fits in the space left."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>Cart A has at least one legal plan; carts B and C have none.</strong> Cart A needs only 0.50 m and has 3.0 m, so full braking works — the set of legal plans is not empty. Cart B needs 2.00 m but has just 1.0 m; cart C needs 3.12 m but has 0.5 m. For B and C, full braking is the best there is and it still hits the wall, so coasting or half-braking are worse — there is simply no plan that obeys the rules. That is what infeasible means: not expensive, but impossible."
+        }
+      ]
+    },
+    {
+      "id": "closeness",
+      "h2": "4 · The misread — nearby in space is not the same as legal",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A common mistake is to confuse 'close to the constraint' with 'feasible.' Cart B needs 2.00 m to stop but has only 1.0 m — it is just 1 meter short. It seems 'almost' fine. But a plan that hits the wall by a hair is no more legal than one that misses by a mile: both are outside the set of allowed plans. There is no partial credit for nearly stopping. Either at least one plan obeys every rule, or none does."
+        },
+        {
+          "t": "para",
+          "html": "This distinction matters because it changes what you should do. If cart B were simply expensive — say, a plan existed but cost a lot — you might accept that cost and move forward. But if the feasible set is empty, no amount of cost tolerance helps. Accepting a crash plan is giving up, not optimizing. The system must acknowledge that no legal action is available and trigger a recovery (emergency braking into a shallow ditch, calling for help, or pausing to wait for the obstacle to clear)."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — checking feasibility can be as hard as solving",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Feasibility checking looks easy: test whether all constraints are satisfied. But in practice, it is expensive. For cart A, we knew the answer because braking straight is the obvious action. But in a real robot with many joints, many potential obstacles, and a long time horizon, checking whether at least one legal trajectory exists is nearly as hard as finding the optimal one. You might have to solve a separate optimization problem — 'find any trajectory that satisfies the constraints' — and that problem can be slow."
+        },
+        {
+          "t": "para",
+          "html": "Moreover, feasibility changes as time passes and the state evolves. A plan that is feasible now can become infeasible one step later if the state drifts into a corner. A model-predictive controller must re-check feasibility at every time step. If it fails to account for this time-varying boundary, the system can drift into a state where no further legal action remains — a trap."
+        },
+        {
+          "t": "para",
+          "html": "This is why real controllers use two strategies: first, they try to keep the system away from the boundary by adding a safety margin to constraints (require braking distance plus 20%, not just braking distance). Second, they run feasibility checks efficiently by working with simplified constraint sets rather than the full set, sacrificing some precision for speed."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — every safe system starts with this question",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Feasibility looks like a gotcha — a detail in the problem setup. It is not. The question 'does a legal plan exist?' is the first check in every solver, every model-predictive controller, and every learning-based method that cares about constraints."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Model-predictive control (MPC)</strong> solves a constrained optimization problem at every step. The first step in the solver is to check whether the problem has a solution. If the feasible set is empty, the solver reports 'infeasible' and the controller invokes an emergency action. <strong>Constrained trajectory optimization</strong> builds a tree of candidate paths and prunes branches that violate constraints before evaluating their cost. The pruning happens before the cost calculation, not after. <strong>Learning algorithms</strong> that operate in constrained spaces define the reward structure to heavily penalize any constraint violation, making the learned policy avoid the empty set by design."
+        },
+        {
+          "t": "para",
+          "html": "The insight is that infeasibility is not a failure to be hidden — it is information to be acted on. When an MPC solver returns 'infeasible,' it is not saying the controller broke. It is saying the current state is trapped and the system must either slow down (to avoid entering the trap), re-plan with relaxed constraints, or execute a pre-planned emergency maneuver. The system design must account for what happens when the feasible set becomes empty."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>In trajectory optimization, MPC, and learning-based control, the first question is always feasibility.</strong> An infeasible answer is not failure; it is the boundary that separates legal from illegal, and the best controllers use it to stay safe. This is why 'recursive feasibility' — ensuring that if a plan is feasible now, the next time step still has a feasible plan — is a cornerstone of safe receding-horizon control. You protect the future by checking the present."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "recursive-feasibility.html",
+      "recursive feasibility"
+    ],
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ],
+    [
+      "constraints.html",
+      "constraints"
+    ],
+    [
+      "dynamic-programming.html",
+      "dynamic programming"
+    ]
+  ],
+  "recipe": {
+    "summary": "A cart (state = position, velocity) with a capped force, so a capped braking rate. Three situations: cart A at 1.0 m/s with 3.0 m to the wall, B at 2.0 m/s with 1.0 m, C at 2.5 m/s with 0.5 m. For each, brake fully and check whether it stops before the wall. Run with numpy.",
+    "eq": "# braking cart, force limited so deceleration is capped\n# shortest stopping distance grows with the square of speed\n# EXP1: A(1.0 m/s, 3.0 m) -> needs 0.50 m -> feasible\n#       B(2.0 m/s, 1.0 m) -> needs 2.00 m -> infeasible\n#       C(2.5 m/s, 0.5 m) -> needs 3.12 m -> infeasible",
+    "note": "Full script: scripts/experiments/mpc_run.py (EXP1). Numbers are the run's output verbatim."
+  }
+}

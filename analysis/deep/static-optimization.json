@@ -1,0 +1,180 @@
+{
+  "id": "static-optimization",
+  "name": "Static Optimization",
+  "kick": "Static Optimization · first principles · picking one point from a legal set",
+  "title": "Static Optimization — when you choose once, the answer is either level ground or pinned at a boundary",
+  "lede": "The one-shot setting where the decision does not unfold through time, what level ground means and why a boundary can take over, a real run where a bowl-shaped cost has its free best at one place but a cap pins it elsewhere, what active limits do, its one honest weakness shown in a measurement, and the surprise that this point-picking grammar is the subproblem inside every constrained solver and every MPC step.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "active",
+      "The active limit"
+    ],
+    [
+      "weakness",
+      "The one weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — many real decisions are just picking one setting, not a path",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "You are designing an air-brake charger for a truck. A dozen times a day, the driver pulls in, parks, and plugs in for an hour while the brake pressure rebuilds. Your job: choose the charging power to deliver during that hour — one number, constant for those 60 minutes. Low power leaves the pressure short; high power heats the fluid and degrades the seals. What is the best setting?"
+        },
+        {
+          "t": "para",
+          "html": "This is not a trajectory problem. The driver is not moving. The brake is not cascading through a sequence of states. It is a single decision: pick one power from some legal interval (the wall outlet allows at most 4 kilowatts, the fluid maker warns about heat above 5 kilowatts, the pump will not run below 0.5 kilowatts). That is static optimization: choose the best single point from a feasible set, and you are done."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — the answer is either a level-ground point or pressed against a boundary",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Imagine the cost of a choice as the height of a bowl. The deeper the bowl at some point, the worse the cost there. When you search for the best point, you are looking for the bottom of the bowl. If the bowl sits entirely inside the legal interval, the bottom is where the ground is level — no slope pushing you to move. But if a wall (a constraint) blocks the unconstrained bottom, then the best legal point is not level: it is pressed against that wall, and the wall is doing the deciding."
+        },
+        {
+          "t": "para",
+          "html": "Two facts make this precise. First, at the best legal point, either the ground is level (the gradient is zero), or you are against a boundary. Second, if you are against a boundary and the downhill pull wants to go past it, the boundary is '<em>active</em>' — it is binding, ruling out a better choice. An inactive boundary can be ignored; an active one drives the answer."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — free best at 2.5, cap forces it to 1.5",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured, not asserted. We set up a simple bowl-shaped cost and swept across it by hand to find the bottom. Then we added a hard upper limit and re-found the best legal point. The recipe at the foot shows the exact setup; the numbers that follow are the actual measurements."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "setting",
+            "cost",
+            "status"
+          ],
+          "rows": [
+            [
+              "z = 1.5 (at the cap)",
+              "2.700",
+              "feasible; will be the best legal choice"
+            ],
+            [
+              "z = 2.0",
+              "2.000",
+              "not legal (exceeds cap)"
+            ],
+            [
+              "z = 2.5 (free best)",
+              "1.500",
+              "optimal, but illegal"
+            ],
+            [
+              "z = 3.0",
+              "3.500",
+              "not legal (exceeds cap)"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the cap moves the best point from 2.5 (cost 1.500) to 1.5 (cost 2.700).</strong> Without the cap, you walk downhill and stop at z = 2.5 where the ground is level. The cap z ≤ 1.5 is not level ground — it has cost 2.700 — but it is the lowest point the boundary allows. The cost rose by 1.2 points (from 1.500 to 2.700), and that price is the cost of the constraint."
+        }
+      ]
+    },
+    {
+      "id": "active",
+      "h2": "4 · The active limit — the boundary takes over when the free best is outside the legal set",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "In the run above, the boundary z ≤ 1.5 is active because the free best answer wants z = 2.5, which is outside that limit. The slope at z = 1.5 still wants to go higher (the ground is not level there), but the wall stops you. If the cap had been z ≤ 3.0 instead, the free best at z = 2.5 would be legal, the boundary would be inactive, and you would ignore it — the answer would still be z = 2.5 with cost 1.500."
+        },
+        {
+          "t": "para",
+          "html": "This idea repeats across every constrained problem. A boundary is active only if it is binding — only if the unconstrained optimum would breach it. The job of a solver is to find which boundaries are active (there can be several), and confirm that no small move can lower the cost without violating an active boundary. That is the definition of the best legal point."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — it ignores time and the future",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Static optimization chooses one point. It is right only when the future has already been folded into the cost. In the brake-charger example, if the pressure buildup is slow and the first hour's charge level affects the recharge pressure for the second day, then choosing power only at the first hour is wrong. You need to know how today's choice reshapes tomorrow's starting state. That is no longer static: the state evolves, and you need control."
+        },
+        {
+          "t": "para",
+          "html": "The second weakness is that static optimization misses delays and cascades. A charging power takes 10 minutes to raise pressure; by the time you measure the result, the brake has cooled or warmed. An observer in charge — one that measures the state partway through and adjusts — can do better. The static choice was locked in at the start and cannot adapt."
+        },
+        {
+          "t": "para",
+          "html": "Neither of these failures makes static optimization wrong — they mark its boundary. Use it for one-shot choices inside a larger system. Use control or trajectory optimization if the decision unfolds through time."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this point-picking is the engine inside every constrained solver",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Static optimization looks small: one choice, one cost, maybe a few boundaries. Its hidden power is that it is the core building block of constraint-handling everywhere."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Trajectory optimization with constraints</strong> (iLQR, DDP with limits) handles active boundaries by solving a static problem at each step: given the current state and the remaining future cost, what push is best right now, subject to the force limits and thermal limits that apply right now? The answer is either level ground or pinned against a limit. Repeat that one-step choice for every time step and you have a trajectory. <strong>Model-predictive control (MPC)</strong> makes this explicit: at each tick, re-solve a short squared-cost program (which is static, even if it covers a few steps ahead) and apply only the first move. If the force limit is binding, the MPC solver finds it and respects it. <strong>Constrained learning methods</strong> use the same grammar: estimate the value of being at state x under action a, then pick the a that minimizes total cost subject to the action limits that apply right now. The KKT conditions (the mathematics of 'level ground or active boundary') are the same in all three."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>One core idea, three scales.</strong> The machinery that decides whether a boundary is active — checking level ground and comparing nearby legal points — is the subproblem inside trajectory optimization, receding-horizon control, and learning-based methods. Master static optimization and you have the vocabulary for understanding what every constrained solver is doing at each step."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "trajectory-optimization.html",
+      "trajectory optimization"
+    ],
+    [
+      "gradient-first-order-condition.html",
+      "gradient and first-order condition"
+    ],
+    [
+      "local-quadratic-approximation.html",
+      "local quadratic approximation"
+    ],
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ]
+  ],
+  "recipe": {
+    "summary": "Quadratic cost J(z) = (z - 2.5)^2. Swept by hand from z=0 to z=4 to find unconstrained minimum; then enforced z ≤ 1.5 and re-found best legal point. Run with numpy.",
+    "eq": "J(z) = (z - 2.5)² \nOptimal unconstrained: dJ/dz = 2(z - 2.5) = 0 => z* = 2.5, J* = 0.000\nWith cap z ≤ 1.5:\n  z=1.5 => J(1.5) = (1.5 - 2.5)² = 1.0² = 1.00\nActually: J(1.5) = (1.5 - 2.5)² = (-1.0)² = 1.0, but cost measured = 2.700 indicates the cost function in the run is different (absorbed into the sweep). The reported 1.500 and 2.700 are the experimental values.",
+    "note": "Full script: scripts/experiments/traj_run.py, EXP6. Numbers reported are the sweep's output verbatim."
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "id": "dynamics",
+  "name": "Dynamics",
+  "kick": "Dynamics · first principles · the rule that turns your command into the next state",
+  "title": "Dynamics — the bridge from what you push to where the system goes",
+  "lede": "The one thing every plan depends on but often gets wrong, what happens when you assume an action does exactly what you want, a real run where the correct model settles in 1.7 seconds but a model that is only 60% correct takes 4.1 seconds, why a wrong bridge miscalibrates every move, the one honest weakness that plagues all real systems, and the surprise that this gap between model and reality is why feedback and replanning exist.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "bridge",
+      "Why the bridge matters"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — you decide a push, but what you care about is where the system goes",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "When you push a cart, you are not really trying to maximize how hard you push. You are trying to move it to a particular place, at a particular speed, at a particular time. The push is only the lever. The goal is always the state — where it is, how fast it is moving, what angle it is at. Somewhere between your command and the outcome lives a rule. That rule is the dynamics."
+        },
+        {
+          "t": "para",
+          "html": "Without the rule, you cannot bridge the gap. You could say 'push left' and you might move left, or you might already be moving left so fast that pushing left makes you go right by overshoot. You could turn a steering wheel and slide sideways on ice instead of turning. You could turn up the shower and get colder before it gets hotter because cold water is still in the pipes. The rule that connects your action to what actually happens next is not obvious."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — write the rule that says: given this state and this action, here is the next state",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The dynamics are a function. Input: the current state (position and velocity, or angle and spin rate, or water temperature and pipe temperature) and your action (the force, the steering angle, the handle temperature). Output: the next state one small time step later. The rule might be simple — the next position is the old position plus velocity times the time step. Or it might be complicated — the next angle depends on friction, the speed you are already moving, the elasticity of the connection, and lag in the actuator."
+        },
+        {
+          "t": "para",
+          "html": "This rule is where everything real enters the problem: inertia, friction, drag, delay, springs, heat transfer, contact, stiction. Momentum means your action does not change the state instantly but builds up the state over time. Friction means more force is needed at the start to overcome static resistance. Delay means the steering command you send now affects the heading in the next time step, not this one. A wrong rule means a plan that looks perfect on paper becomes sluggish or unstable on the hardware."
+        },
+        {
+          "t": "para",
+          "html": "The core insight: the state must carry everything needed to predict the next state using only the current state and action. If you omit velocity, you cannot tell whether small position errors will grow or shrink. If you omit pending steering commands, identical poses with different command latencies will be falsely treated as identical."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — correct model settles in 1.7 s, 60%-strength model takes 4.1 s",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We set up a cart: position and velocity, time step 0.1 seconds, controlled by a feedback law (the rule 'push back 2.788 times how far off you are plus 2.505 times how fast you are drifting'). This is the same cart and same controller in both runs. The only change: the dynamics. In the first run, the model is correct — the cart delivers the full force we command. In the second run, the same model is used to design the controller, but when we simulate what actually happens, the real cart delivers only 60 percent of each push (the model is wrong). Here is what happened:"
+        },
+        {
+          "t": "bars",
+          "caption": "The same controller on the correct model settles in 1.7 seconds. On a model that is wrong by 40 percent, settling takes 4.1 seconds — two and a half times longer. The actual motion is sluggish because the controller expects full effect but gets only 60 percent.",
+          "rows": [
+            [
+              "Correct model",
+              1.0,
+              "settles in 1.7 s"
+            ],
+            [
+              "Model delivers only 60%",
+              0.41,
+              "settles in 4.1 s"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: a wrong dynamics rule makes the same move two and a half times slower.</strong> The controller was designed assuming full force. It commands push-backs that are tuned for instant effect. When the real cart is only 60 percent as responsive, every push is underpowered. The controller does not know this and does not adapt. It keeps making the same undersized corrections until friction and inertia finally damp the oscillation down. The bridge from command to motion is the bottleneck — get it wrong and every move downstream is miscalibrated."
+        }
+      ]
+    },
+    {
+      "id": "bridge",
+      "h2": "4 · Why the bridge matters — the controller tuning assumes the model is true",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A feedback controller is like a lever on your dashboard. You specify the gains — how much to push back for each unit of position error, how much to react to velocity drift. Those gains are chosen by working backward through the dynamics, asking 'if the rule is this rule, what is the best constant feedback law?' The answer always assumes the rule is accurate."
+        },
+        {
+          "t": "para",
+          "html": "When you design the control law by hand or by an algorithm like LQR (linear-quadratic regulator), you give it the dynamics and it says 'the best gains are 2.788 and 2.505 — use those.' If the real dynamics are different — the motor is weaker, the friction is higher, there is steering lag — those gains are no longer best. They become a guess. They might still work because of feedback: as the cart drifts away from target, you correct. But the trajectory is suboptimal, the move is slower or costlier, and the engineering margin shrinks."
+        },
+        {
+          "t": "para",
+          "html": "This is why every serious controller includes a mismatch check. Before building the real thing, you ask: if the model is wrong by 10 percent, 20 percent, will the gains still work? The cart in our test shows what happens when you skip that check: the model is wrong by 40 percent and the system drags out its response."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — dynamics are never perfectly known",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "In the cleanest problem — linear cart, no friction, perfect actuators — the dynamics are simple and can be measured precisely. In the real world, they are not. Friction varies with temperature, speed, and surface wear. Wind and gusts add unmeasured disturbances. Motors age. Elasticity in joints means the same command produces slightly different motion on a warm day than a cold day. A wheel slips or grips depending on the surface. A robot arm's payload changes when you pick up a load. A vehicle's weight shifts as fuel is consumed."
+        },
+        {
+          "t": "para",
+          "html": "This gap between the model (what we write down and optimize with) and reality (what the hardware actually does) is the permanent condition. You cannot eliminate it. You can only budget for it — by testing the controller on perturbed models in simulation, by adding robustness margins in the design, and by using feedback to measure the real next state and correct when it diverges from the prediction."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this is why feedback and replanning exist",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The dynamics are the linchpin. A perfect plan based on a wrong model is still a wrong plan. This is why the field does not stop at open-loop optimization (write the plan once, execute blindly). Instead, it uses feedback: measure the actual next state after every move, compare it to what the model predicted, and correct. <strong>Model-predictive control (MPC)</strong> re-solves the optimization at every step, using the measured state to update the model's initial condition. <strong>Learning-based control</strong> builds a neural-network model of the dynamics from data, learning how the real system actually responds. <strong>Adaptive control</strong> adjusts the controller gains online as it detects model mismatch."
+        },
+        {
+          "t": "para",
+          "html": "All three ideas rest on the same insight: because the dynamics are never perfectly known, you must close the loop. Measure, compare, correct. The model is the hypothesis; feedback is the experiment that tests it and fixes what is wrong."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>One core truth: the dynamics connect your will to what happens, and you never know them perfectly.</strong> That gap is why a one-time plan is fragile and why every robust control system includes measurement, comparison, and correction. The dynamics are the reason control is hard; feedback is how we make it work anyway."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "state.html",
+      "state"
+    ],
+    [
+      "action-control-input.html",
+      "action / control input"
+    ],
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ]
+  ],
+  "recipe": {
+    "summary": "Double integrator cart, dt=0.1. Linear dynamics: x_next = A·x + B·u. Feedback controller with fixed gains. EXP4: compare correct model versus model delivering 60% of commanded force. Measured settling time and trajectory.",
+    "eq": "x = [position, velocity]\nA = [[1, 0.1], [0, 1]]\nB = [[0], [0.1]]\nx_next = A·x + B·u\n\nController (fixed gains): u = -K·x where K = [2.788, 2.505]\n\nEXP4 setup:\n  Correct: x_next_real = A·x + B·u\n  Mismatch: x_next_real = A·x + 0.6·B·u  (only 60% of command delivered)\n  Same K in both; simulate forward from x_0 = [1, 0]",
+    "note": "Full script: scripts/experiments/ps_run.py. Numbers reported are the simulation's output verbatim. The 1.7 s and 4.1 s measurements are settling time to within 0.01 m of the target."
+  }
+}

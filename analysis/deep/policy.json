@@ -1,0 +1,190 @@
+{
+  "id": "policy",
+  "name": "Policy",
+  "kick": "Policy · first principles · the rule that maps now into next, and why it must close the loop",
+  "title": "Policy — the rule that decides your next move based on where you are, right now",
+  "lede": "What a policy is (not a fixed script but a live rule), why closed-loop feedback matters (your action changes the next situation you must handle), a real run where you watch a policy sharpen from 50/50 odds to 0.88 toward the goal, the hard difference between a policy and a plan, its one real weakness (it can only see what its inputs show), and the surprise that LQR and neural-net learning are both policies in the same sense.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "closed-loop",
+      "The closed loop"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — a fixed script breaks when the world differs from what you scripted",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Imagine a robot hallway navigating to charge. A simple approach is to write down a sequence of commands: turn left, go forward 3 meters, turn right, go forward 1 meter, stop at the charger. This script works if the hallway is exactly as mapped and the robot starts exactly where you assume. But real robots experience small pushes from doors opening, wheels slip, and measurements drift. After the second turn, the robot is 0.15 meters left of where the script assumed. The script still says 'go forward 1 meter' — it does not know the actual position right now. The robot drifts further left and might miss the charger or bump a wall."
+        },
+        {
+          "t": "para",
+          "html": "A better approach is to measure the world constantly and adjust. <strong>The real problem is not 'what is the best sequence?' but 'given what I sense right now, what should I do next?'</strong> That question repeats every tenth of a second, every single step. You need a rule — not a list of actions, but a decision-making machine that runs over and over, always answering 'what now?' based on the current measurement. That rule is called a <strong>policy</strong>."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — a policy is a rule that reads the state and outputs an action",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A policy is any rule or system that takes in 'what you currently know' and outputs 'what you do next.' It can be hard (always do this one specific action in this situation) or soft (do action A with odds 0.7 and action B with odds 0.3)."
+        },
+        {
+          "t": "para",
+          "html": "Examples: The hallway robot measures distance to the right wall = 0.45 meters and forward speed = 0.8 meters per second. A hard policy says: if distance < 0.50 meters, steer 18 degrees left and slow to 0.4 m/s. A soft policy says the same thing with odds 0.8 (it chooses slow-left), and picks hard-left with odds 0.2 (random or exploratory). A greenhouse controller measures temperature = 82 degrees Fahrenheit and humidity = 70 percent. Its policy is: if temperature > 80, open the roof vent to 60 percent. A chess engine at a position measures nothing (the position is given); its policy is: after searching millions of futures, choose the move that leads to the best outcome."
+        },
+        {
+          "t": "para",
+          "html": "In all cases, the policy is NOT the plan. <strong>A plan is a fixed sequence of actions. A policy is a rule, replayed every step, that answers 'given my measurement right now, what is my move right now?'</strong> The plan says do X then Y then Z. The policy says 'if you see state A, do X; if you see state B, do Y; if you see state C, do Z.' Over the course of a journey, the states you encounter may not match the original plan, and the policy adjusts because it reads the actual state, not the scripted assumption."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — the policy sharpens from 50/50 odds to 0.88 toward the goal",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A small maze corridor. The agent starts with no knowledge of which way leads to reward. Its policy is a set of move-odds per location: at the start, 50 percent chance to go left (toward the goal) and 50 percent chance to go right (wrong way). Each episode, the agent tries moves, sees which ones lead to reward, and nudges the probabilities upward for the winning moves. After training, how sharp is the policy? Does it still hedge its bets, or does it commit? Every number below is measured from the actual trained policy."
+        },
+        {
+          "t": "bars",
+          "caption": "A policy starts uncertain and learns to commit. At the start position, initially 50/50 random odds on left-or-right. After training on reward alone, the probability of stepping toward the goal at the start spot rises to 0.88. The rule no longer hedges — it commits to the better move.",
+          "rows": [
+            [
+              "initial policy",
+              0.5,
+              "P(goal direction) = 0.50"
+            ],
+            [
+              "after training",
+              0.88,
+              "P(goal direction) = 0.88"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: a policy sharpens as it learns what works.</strong> The 50/50 odds become 0.88 toward the goal and 0.12 toward the wrong way. This single policy lives in one spot and answers 'left or right?' by committing to the better move with 88 percent probability. But this is the learned policy, the steady-state rule. What makes it a policy (not a script) is that it makes this choice every single step based on the location measurement. If the agent wanders into a different part of the maze, the policy uses the rule for that location. If exploration or a disturbance sends it left when it wanted right, the next step re-reads the state and applies the policy rule for that new location."
+        }
+      ]
+    },
+    {
+      "id": "closed-loop",
+      "h2": "4 · The closed loop — the policy's own move changes what it must handle next",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Here is what makes a policy fundamentally different from a plan. <strong>A policy must be judged not by its first action, but by the entire chain of states and actions it creates.</strong> The first action leads to a new state. That new state is fed into the same policy rule, which generates a second action, which leads to a third state, and so on. A policy that looks good in the first instant can fail in the second if it creates the wrong next situation."
+        },
+        {
+          "t": "para",
+          "html": "Example: A simple controller for a hallway robot. Policy rule: 'if distance to the right wall is less than 0.50 meters, steer 18 degrees left and reduce speed to 0.4 m/s; otherwise, steer 10 degrees left and go 0.5 m/s.' Suppose the hallway is straight. The robot measures distance = 0.45 meters and speed = 0.8 m/s (it is drifting left). The policy outputs steer 18 degrees left and speed 0.4 m/s. That one action changes the state. A tenth of a second later, the next measurement is distance = 0.62 meters and speed = 0.35 m/s (the steer and slowdown worked). Now the same policy reads 0.62 meters, which is > 0.50, so it outputs steer 10 degrees and speed 0.5 m/s — a different action. The actions are not decided once; they are decided every step, based on the consequences of the previous step."
+        },
+        {
+          "t": "para",
+          "html": "Compare that to a fixed script: 'first steer 18 degrees and slow to 0.4 m/s; then steer 18 degrees and slow to 0.4 m/s again.' After the first command, the robot is at distance = 0.62 meters, but the script does not know that. It runs the second command anyway (steer 18 degrees and slow to 0.4 m/s), drifting the robot even further away from center. The actions match in step one, but diverge in step two because the measurements diverged. A policy that reads the current state will re-adjust; a script that ignores it will not."
+        },
+        {
+          "t": "para",
+          "html": "This is the core of control: the past actions determine the current state, the current state is the only input to the policy, and the policy's output becomes the next state's input. <strong>The rule is judged by the entire sequence it creates, not just the isolated action.</strong> A policy that ignores battery level, humidity, or another key state variable will make a reasonable choice in one frame and a terrible choice in the next, even if the measurement of distance-to-wall is the same, because the missing information changed. Quality of a policy is therefore quality of prediction: if the state measurement is incomplete or wrong, the best policy cannot recover."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — a policy can only react to what it can see",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A policy can only make decisions based on its input. If the input — the state measurement — is incomplete or misleading, the policy is blind to the missing information. This is not the algorithm's fault; it is fundamental."
+        },
+        {
+          "t": "para",
+          "html": "Example: A greenhouse vent policy reads temperature and wind speed. Rule: 'if temperature > 80 degrees, open vent to 60 percent; if wind > 15 mph, close vent to 20 percent.' One afternoon, temperature hits 82 degrees and wind is calm at 4 mph. The policy opens the vent to 60 percent. Over the next minutes, humidity rises from 70 to 95 percent because the vent is open and wet plants are venting. The temperature drops to 78 degrees. The policy still sees only temperature and wind. Temperature is now < 80, so it does nothing. Wind is still calm. The policy never closes the vent because it never measures humidity. In the next update, if the input included humidity, the policy could say 'if humidity > 90 percent, close the vent and turn on the side fan.' But without that input, the policy is powerless even if the right action would save the crop."
+        },
+        {
+          "t": "para",
+          "html": "The same problem appears everywhere. A hallway robot with only a forward-facing sensor cannot sense a wall to its side. A trained neural-net policy on a game cannot recover from states never seen in training. A drone with a faulty altimeter cannot trust the height measurement its policy depends on. <strong>A policy is only as smart as the information it is given.</strong> No algorithm can invent inputs from silence. This is why control engineering spends so much effort on sensing, filtering, and measuring the right quantities — the policy has already lost if the input is wrong."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — policy is the shared word across control and learning",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Control and reinforcement learning sound completely different — one is mathematics, the other is learning by trial. But they both answer the same fundamental question: given a measurement right now, what action comes next? They both call that answer a <strong>policy</strong>."
+        },
+        {
+          "t": "para",
+          "html": "In linear-quadratic control (LQR), the policy is a straight-line rule: multiply position error by a fixed number and velocity error by another fixed number, add them, and push back by that sum. The form is deterministic — one number in, one action out. That rule can be computed exactly because the world is linear and the cost is squared."
+        },
+        {
+          "t": "para",
+          "html": "In model-predictive control (MPC), the policy is the solution to a short-horizon optimization inside a receding window. At each step, you re-solve a tiny constrained optimization problem (keeping force and state within limits), take its first action, and then re-solve for the next state. The policy is not a formula; it is the action from a solver. It is soft in the sense that it changes with each state measurement, even though it is deterministic (given a state, there is only one best action)."
+        },
+        {
+          "t": "para",
+          "html": "In reinforcement learning, the policy is learned from reward. It can be hard (one action per state) or soft (a distribution of moves, like the 0.88 from the run above). The training method is trial and error, not mathematics. But the learned object is still a rule that maps 'current state' to 'action or action probabilities.'"
+        },
+        {
+          "t": "para",
+          "html": "All three are policies. The LQR policy is: u = 2.788 × error_position + 2.505 × error_velocity. The MPC policy is: u = argmin [cost over next 5 steps] — the answer to the optimization. The learned policy is: if you are at this location, go toward goal with odds 0.88. They look different (math formula, solver output, learned odds), but they all do the same job: read the current situation and output the next action. <strong>The surprise is that control and learning are not separate universes — they are different ways of building the same object: a rule that survives repeated use in a closed loop.</strong>"
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "policy-optimization.html",
+      "policy optimization"
+    ],
+    [
+      "reinforcement-learning.html",
+      "reinforcement learning"
+    ],
+    [
+      "value-function.html",
+      "value function"
+    ],
+    [
+      "local-quadratic-approximation.html",
+      "linear-quadratic control"
+    ],
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ]
+  ],
+  "recipe": {
+    "summary": "Tiny maze corridor (9 cells), agent starts with 50/50 odds on left-or-right at each location. Learns by reward alone (goal at the end, cost per step). Policy-improvement training nudges odds of rewarding moves upward. EXP5 from RL testbed. Run with numpy.",
+    "eq": "initial: π(left|start) = 0.50, π(right|start) = 0.50\nafter training:\nπ(left|start) = 0.88 (toward goal), π(right|start) = 0.12 (wrong way)\nThe policy updates each step: π ← π + α * (reward_signal - baseline) * action\nwhere α is a learning rate and reward_signal comes from one trial.",
+    "note": "Full script: scripts/experiments/rl_run.py (EXP5 section). Numbers reported are the learned policy's probabilities verbatim from the trained network."
+  }
+}

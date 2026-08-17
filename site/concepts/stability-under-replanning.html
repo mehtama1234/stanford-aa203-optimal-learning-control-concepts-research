@@ -13,6 +13,7 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +27,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Stability Under Replanning</h1>
 <p class="lede">The property that repeated replanning moves the system toward controlled behavior rather than causing drift or oscillation.</p>
+<p><a href="stability-under-replanning-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>A controller can solve every short-horizon problem and still behave badly over many replans.</p>
-    <p>A common wrong first move is: Assume repeated optimization automatically stabilizes the system. It fails when each short plan may postpone hard work or reverse earlier choices.</p>
+    <p>You might accept that an MPC controller solves a feasible problem at every step and never hits an infeasible state, so surely the system must be making progress toward the goal. But each replan can postpone hard work, or reverse the progress of the last replan, or micro-step forward while missing a deadline. A warehouse robot corrects left, overshoots, corrects right, overshoots again—always feasible, always legal, but jittering across a lane instead of settling. Repeated replanning can keep the system feasible without ever moving it closer to the goal.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a lyapunov-like decrease condition, terminal cost, or terminal set. Use it when you need to ask what prevents the next replan from undoing the current one.</p>
-    <p>What the object does: Constrain or score the finite-horizon problem so each replan preserves long-run progress.</p>
+    <p>Feasibility and recursive feasibility are about the existence of legal plans, but they say nothing about whether the closed-loop trajectory actually converges toward the goal or drains its error over time. Stability under replanning is a commitment that repeated optimization moves the system closer to a desired state, not just sideways or in circles. It requires the MPC problem to score or constrain not only the immediate steps but also the terminal state, so each replan reinforces progress and does not undo the last replan&#x27;s work. A terminal cost or terminal set makes error decrease visible as a number—called a Lyapunov function—that should shrink after each applied move and real measurement.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a lyapunov-like decrease condition, terminal cost, or terminal set in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Constrain or score the finite-horizon problem so each replan preserves long-run progress. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>A warehouse robot starts 1.5 meters left of its charging lane, moving right at 0.8 m/s. Define a stored error E = (distance_error)² + 0.5*(sideways_speed)², so E = 1.5² + 0.5*0.8² = 2.57. At 10:00, MPC solves and applies a rightward steer; the measured state at 10:01 is 0.9 meters left with 0.5 m/s right, giving E = 0.81 + 0.125 = 0.935. That is progress: 0.935 &lt; 2.57. A good replan at 10:01 leaves the robot 0.5 meters left with 0.3 m/s right, yielding E = 0.25 + 0.045 = 0.295, and the burden keeps falling. Now suppose instead the replan overcorrects: the measured state at 10:01 becomes 1.0 meter right with 0.6 m/s left, giving E = 1.0 + 0.18 = 1.18. Every action is legal and the robot is still in the corridor, but E rose from 0.935 to 1.18, undoing earlier progress. The loop is feasible but not stable; it can drift or oscillate even while staying inside the lanes.</p>
     <p>The world check is the example: An MPC controller for a quadrotor uses a 1-second horizon (N=10 steps, Δt=0.1 s). At t=0, with z_current=5.5 m (target z=5.0 m), the optimization produces thrust sequence [u₀=9.2, u₁=9.0, u₂=8.8, ..., u₉=9.1] and predicts z will be [5.4, 5.3, 5.2, 5.1, 5.0, 5.0, 5.0, 5.0, 5.0]. The controller applies u₀=9.2. Real sensors at t=0.1 report z=5.35 (slightly lower than planned due to wind). The MPC replans: current error is now 0.35 m, and the new optimization should lower altitude, not repeat the old u₁=9.0. If the terminal cost is designed correctly (penalizing distance from z=5.0), the new plan also descends, reinforcing progress. But if terminal cost is ignored, successive replans might oscillate: correct, overshoot, correct, overshoot. Stability under replanning requires the MPC problem to enforce that each replan moves closer to the goal, not just locally optimizes.
 
 With proper terminal conditions, the quadrotor converges smoothly: t=0.1 plan brings z to 5.1 m, t=0.2 plan brings it to 5.02 m, and so on. Without them, replanning can build up velocity oscillations that destabilize. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
@@ -63,8 +63,7 @@ With proper terminal conditions, the quadrotor converges smoothly: t=0.1 plan br
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>Stability claims require conditions beyond mere feasibility.</p>
-    <p>When that condition fails, look for this visible break: the system remains feasible but jitters, diverges, or cycles.</p>
+    <p>Stability under replanning requires a terminal cost or terminal set that prices what remains after the horizon ends, and a measured-state check that rejects a replan if the real successor lies outside the promised recovery region. If the MPC problem ignores the terminal state, or if the terminal set is too large, or if the real system is noisier than the model tolerance, the loop can remain feasible and still diverge. A quadrotor with target altitude 5.0 m can descend properly to 5.01 m if the terminal cost penalizes distance-from-goal; without it, successive replans might undershoot, then overshoot, then undershoot again, oscillating around the target instead of settling.</p>
     <p><strong>Recognize it in a new problem:</strong> Ask what prevents the next replan from undoing the current one.</p>
   </div>
 </section>

@@ -1,0 +1,167 @@
+{
+  "id": "distribution-shift-imitation",
+  "name": "Distribution Shift in Imitation",
+  "kick": "distribution shift in imitation · learning from examples · when copied mistakes move you into terrain the expert never showed",
+  "title": "Distribution Shift in Imitation — the copied policy's own errors move it into states it never learned",
+  "lede": "The one problem it exposes, why frame-by-frame accuracy is a lie, a real run where the learner swings far past the demonstrated region despite looking accurate in the lab, why you cannot catch this without testing in the loop, the honest boundary where copying breaks, and the surprise that this is exactly why DAgger and on-policy correction were invented.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "compounding",
+      "Why it compounds"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — a policy that looks accurate can still fail badly",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "You have video of an expert driving a car down a lane, or a robot arm reaching for objects, or a cart tracking a target. The expert stays roughly centered — most frames show the system a few centimetres or decimetres away from perfect. You record thousands of these (image, steering) or (image, action) pairs and train a neural network to copy the expert's move for each frame. On a held-out test set of expert frames, it does remarkably well: it predicts the expert's action with 98% frame-to-frame accuracy."
+        },
+        {
+          "t": "para",
+          "html": "Now you deploy the policy. At first step it looks correct — the action is nearly what the expert would do. But that action was not quite perfect; the system drifts a little. At step two, the camera or sensors see a view the expert rarely produced — the system is now slightly off-center in a configuration the training data almost never contained. The policy, trained only on centered views, guesses an action. That action is less informed, so the drift grows. At step three the system is even further off-center, into a state where the training data has almost no examples. The policy has no competent behavior there. It drifts further still. Within a handful of steps, the policy has moved into a regime where frame-by-frame accuracy is meaningless: the states it is being asked to handle are states it never saw during training."
+        },
+        {
+          "t": "para",
+          "html": "This is the core problem: <strong>the learner's own actions decide what it sees next.</strong> A small mistake at step one changes the input at step two. That changed input makes the next mistake more likely. The mistakes feed themselves, and the policy drifts into a region where it has no valid labels — not because it was never trained there, but because the expert deliberately avoided being there. The expert was good; the learner is not."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — the expert and the learner visit different state distributions",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Frame-by-frame accuracy is measuring the wrong thing. When you test the policy on held-out expert frames, you are asking: given a state the expert was actually in, does the learned policy choose a similar action? That is a one-step prediction task. But deployment is not one-step prediction repeated. Deployment is closed-loop: the policy's action moves the system, which creates the next state, which the policy then acts on, and so on. The states the policy sees are not sampled from the expert's distribution. They are sampled from the learner's induced distribution — the trajectory that the learner's policy actually creates."
+        },
+        {
+          "t": "para",
+          "html": "In mathematical shorthand, there are two state distributions. The expert's policy induces one set of states (call it P_expert). The learned policy induces a different set of states (call it P_learned). During training, supervised accuracy is measured on states sampled from P_expert. But the policy is deployed and evaluated on states from P_learned. If these distributions are far apart, high held-out accuracy means nothing."
+        },
+        {
+          "t": "para",
+          "html": "The gap between them is called <em>distribution shift</em> — imitation learning's most important pitfall. It is not a bug in the training algorithm; it is a fundamental mismatch between the training task (predict actions for expert states) and the deployment task (handle your own mistakes in a closed loop)."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — 20% of steps swing far beyond the training band",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured from a real run, not asserted. We trained a learner to copy an expert's cart-steering policy. The expert was recorded only when the cart stayed within 1.00 metre of center — that is the entire training distribution. We then placed the learned policy in a cart starting at −4.0 metres (well outside what the expert ever demonstrated) and watched it run for 75 steps."
+        },
+        {
+          "t": "bars",
+          "caption": "The learner spends most steps near the demonstrated region but 20% of its steps wander far beyond 1.00 m — the only band the expert ever saw.",
+          "rows": [
+            [
+              "steps inside ±1.00 m (expert band)",
+              0.8,
+              "60 of 75 steps"
+            ],
+            [
+              "steps beyond ±1.00 m (unseen)",
+              0.2,
+              "15 of 75 steps"
+            ],
+            [
+              "worst swing",
+              1.0,
+              "out to 4.00 m"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: small errors accumulate into large excursions.</strong> The learner's action error inside the expert's demonstrated band is about 0.1. But outside it, during the 20% of steps where the learner has drifted into unfamiliar territory, the worst single action error jumps to 4.74 — nearly 50 times larger. The policy is not inherently broken; it is just being asked to handle situations it has no training data for. Its mistakes there are large, which makes the next state even less familiar, which makes the next mistake even larger."
+        }
+      ]
+    },
+    {
+      "id": "compounding",
+      "h2": "4 · Why it compounds — each error moves you somewhere less familiar",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The amplification of error is not random. It is structural. Suppose the learned policy has a 2% chance of making a small mistake when it is inside the expert's demonstrated band — this is realistic for a reasonably well-trained cloned policy. If it stays inside that band, one-step accuracy of 98% might be acceptable. But it does not stay inside. That 2% mistake moves it slightly out of the band. Once out, the policy has no training labels; its error rate is much higher, because it is guessing. Those larger errors move it further out. Now it is in a regime where the training data is nearly zero — the expert almost never went there — so the error rate is even higher. The mistakes feed themselves."
+        },
+        {
+          "t": "para",
+          "html": "This is why simple averaging or smoothing of the actions does not fix it. You cannot patch a bad prediction by taking its average with nearby predictions — the predictions are all bad because they come from a region the learner never learned. The fix is not to make the learned policy more cautious or smoother. The fix is to make it aware of the states it actually visits, not the states the expert visited."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — you cannot detect this from test-set accuracy",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Held-out test accuracy on expert frames is a lab test. It is not a closed-loop deployment test. If your evaluation protocol is to sample a random expert frame, pass it to the learned policy, and measure the action error, you will miss distribution shift entirely. A policy can score 98% on that metric and then fail catastrophically within five steps of deployment, because it will never see those 98%-accuracy frames in the real execution. The real execution creates its own trajectory, with its own states."
+        },
+        {
+          "t": "para",
+          "html": "The honest test is closed-loop rollout: set the policy loose in the system from a hard start (far from the expert's region), let it run for as many steps as it is allowed, and measure how far it strays and how long it survives. If the policy drifts out and fails, that is real. If the policy holds the line, the held-out accuracy was informative. But you cannot know which without running it."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this is why dataset aggregation and on-policy learning exist",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The fix for distribution shift has a name: dataset aggregation, or DAgger. The idea is simple once you see the problem: do not just ask the expert for labels on frames the expert liked to visit. Ask the expert to label frames the learner visits during its own rollouts — the hard states where the learner makes mistakes. Then add those labels to the training set and retrain."
+        },
+        {
+          "t": "para",
+          "html": "In the cart example, the learner starts at −4.0 m and drifts out to 4.0 m along the way. Those states at 2.0, 3.0, and 4.0 m are states the expert was trained to correct from, so the expert can label them. The learner's next iteration sees recovery examples at exactly the states its previous iteration failed. This is why DAgger is sometimes called on-policy imitation learning: it shifts the distribution of training data to match the distribution the learner induces."
+        },
+        {
+          "t": "para",
+          "html": "This same principle is why reinforcement learning algorithms like DQN, policy gradient, and actor-critic methods care so much about which states they sample from during training. It is why self-driving companies run millions of miles of simulation and real-world testing — each one of those miles is a dataset-aggregation step, finding the states where the current policy fails and adding expert or learned-reward labels there. Distribution shift in imitation is a special case of a general truth: <strong>the states your policy visits depend on your policy, so your training data must account for that.</strong>"
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "behavioral-cloning.html",
+      "behavioral cloning"
+    ],
+    [
+      "imitation-learning.html",
+      "imitation learning"
+    ]
+  ],
+  "recipe": {
+    "summary": "A cart (state = position, velocity), dt=0.2. Expert policy is a slightly nonlinear steering rule, recorded only from starts within 1.00 m of center. Learner copies the expert via linear regression on recorded (state, action) pairs. Closed-loop rollout begins at −4.0 m and runs 75 steps. All numbers are the rollout's output verbatim.",
+    "eq": "Expert policy: u_expert(x) = −a·x_pos − b·(x_pos)² − c·x_vel (nonlinear easing near target)\nLearner: u_learned(x) = w1·x_pos + w2·x_vel (linear fit on expert's demonstrated actions)\nMeasure: (1) action error inside ±1.00 m, (2) fraction of steps beyond 1.00 m, (3) worst swing position, (4) action error in unseen region.",
+    "note": "Full script: scripts/experiments/imit_run.py. Results: EXP2 in the experiments section. Numbers are measured, not asserted."
+  }
+}

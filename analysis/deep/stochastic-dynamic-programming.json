@@ -1,0 +1,215 @@
+{
+  "id": "stochastic-dynamic-programming",
+  "name": "Stochastic Dynamic Programming",
+  "kick": "Stochastic DP · first principles · when the next state is uncertain, average the future over all possible landings",
+  "title": "Stochastic DP — when a slip can kill you, the plan adds safety by taking a longer route",
+  "lede": "The one problem it solves: acting when a move lands you in several places. The single change from deterministic DP: average the cost of the future over all possible landings instead of assuming one. A real run shows 20% slip redirects 20 of 71 cells to avoid a pit. The measured cost: one cell's cost-to-go (the total cost from that cell onward) drops by 27%. The core weakness: wrong probabilities make the whole plan confidently wrong. The insight: this averaging is how robust control, uncertainty quantification, and reinforcement learning all work.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "caution",
+      "The price of caution"
+    ],
+    [
+      "weakness",
+      "The one weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — a plan that works on average can fail when one unlucky slip lands you in the pit",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Imagine a rover on a 9-by-9 grid. There is a goal in one corner worth reaching, a pit worth −50 (catastrophic: repair costs everything) at cell (4,4), walls blocking some paths, and every step costs −1. The rover can move north, south, east, or west. A simple dynamic-programming plan computes the cost from every cell to the goal and greedily moves toward it, cell by cell."
+        },
+        {
+          "t": "para",
+          "html": "On a good day — no wind, stable ground — this plan works fine. But suppose the ground is wet. Each time the rover tries to move in its chosen direction, it lands where it intended 80% of the time. But 20% of the time, something pushes it sideways instead. One move out of five slips. Now here is the problem: if the dry-weather plan hugs the pit's edge (to take the shortest path), a sideways slip puts the rover into the pit. The plan was perfect for the dry world but fails when reality includes a 20% chance of slip. How should a plan change when the same move can land you in several different places, and one of them is catastrophic?"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — instead of one next state, average the value over all possible landings",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Deterministic dynamic programming assumes each action lands you in one fixed next state. Here is the backward rule (the Bellman recursion — the formula that says: your cost-to-go equals the cost of this step, plus the cost-to-go from wherever you land). You pick the action that minimizes this for each state and solve backward. Done."
+        },
+        {
+          "t": "para",
+          "html": "Stochastic DP changes one idea. Instead of assuming one next state, it averages over all the places you might land. Here is the new step: compute your cost-to-go as the cost of this step, plus the average cost-to-go of wherever you land next, weighted by how likely each landing is. The probabilities come from the environment: slip rates, wind models, sensor noise, anything that makes the next state uncertain."
+        },
+        {
+          "t": "para",
+          "html": "You still pick the action that minimizes this for each state, using the same backward iteration as deterministic DP. The only change is replacing the one next state with a weighted average of all possible next states. That single number already accounts for every rare outcome. If a slip lands you in the pit (cost −50), the pit's cost gets multiplied by 0.2 (the slip probability) and added to the average. You do not need to think about what happens after the slip — the algorithm just weighs it by how often it occurs and includes it in the decision."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — 20% slip redirects 20 of 71 cells to avoid the pit",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number is measured on a 9×9 gridworld, using value iteration (computing the cost-to-go backward from the goal, one step at a time, until it converges). Setup: goal at (0,8), pit at (4,4) with cost −50, eight walls, each step costs −1, discount factor 0.99 (how much future costs count compared to immediate costs — a future cost of −1 counts as −0.99 worth of immediate cost when one step away, and −0.9801 two steps away). First we computed the optimal plan for the deterministic case (no slips). Then we added 20% slip (a perpendicular push) and recomputed. The numbers below are the run's actual output."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "test",
+            "count",
+            "finding"
+          ],
+          "rows": [
+            [
+              "free cells (non-wall, non-pit)",
+              "71",
+              "total cells available"
+            ],
+            [
+              "deterministic optimal actions",
+              "71 cells",
+              "best move from each cell, computed for the dry case"
+            ],
+            [
+              "stochastic optimal actions",
+              "71 cells",
+              "best move from each cell, computed with 20% slip"
+            ],
+            [
+              "cells where action changed",
+              "20",
+              "4 of these are within one cell of pit (4,4)"
+            ],
+            [
+              "example: cell (4,3)",
+              "1 cell south of pit",
+              "action flips from S (hug pit) to W (steer clear)"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>20% slip redirects 20 of 71 cells.</strong> One-fifth of the grid chose a different move. The deterministic plan hugs the pit's edge (cell (4,3) moves south, getting as close as possible). But with 20% slip, moving south from (4,3) has 80% chance to land at (5,3) and 20% chance to land at (3,3) — one cell away from the pit. When the algorithm averages these outcomes, moving south carries a significant risk of landing in the pit, so moving west (away from danger) becomes the better choice even though it takes more steps. The slip is rare enough that you will not always hit the pit, but frequent enough (1 in 5) that averaging it into the cost-to-go of every cell changes the entire plan."
+        }
+      ]
+    },
+    {
+      "id": "caution",
+      "h2": "4 · The price of safety — one cell's value drops 27% to steer clear of the pit",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "In the dry case, cell (4,3) — one step south of the pit — has cost-to-go −9.56. You are close to danger and far from the goal. The optimal move is south: squeeze as close to the pit as possible, because there is no slip to worry about."
+        },
+        {
+          "t": "para",
+          "html": "With 20% slip, cell (4,3) re-evaluates. Moving south now has 20% chance to land in the pit. Moving west takes more steps to go around the pit, but avoids that catastrophic outcome. When the algorithm averages the outcomes, the detour turns out to be worth it. The new cost-to-go is −12.58."
+        },
+        {
+          "t": "bars",
+          "caption": "The cost of switching from the risky dry plan to the cautious wet plan. One cell near the pit pays a steeper cost to stay safe.",
+          "rows": [
+            [
+              "cost-to-go at (4,3), no slip",
+              "0.94",
+              "−9.56"
+            ],
+            [
+              "cost-to-go at (4,3), 20% slip",
+              "1.0",
+              "−12.58"
+            ],
+            [
+              "absolute drop (worsening)",
+              "—",
+              "−3.02 (27% worse)"
+            ],
+            [
+              "measured slip probability",
+              "—",
+              "0.20"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>Safety costs a measurable amount, but only where it matters.</strong> Cell (4,3) becomes worse (more negative) by 3.02 — that is 27% of the original cost-to-go. That is the price of avoiding the pit. Cells far from danger barely change their cost-to-go. But cells next to the pit all shift their plan like (4,3) does, because one slip can send you into the pit. The grid automatically trades off the cost of extra steps against the cost of the crash penalty. That trade-off is built into the averaging; you do not need to write separate safety rules by hand."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — wrong probabilities make the plan confidently, quietly fail",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Stochastic DP is only as honest as the probabilities it is given. Suppose a weather table says slip is 15%, based on ten years of dry-season data. The rover computes its plan, feeling confident, and goes. But when it rains, slip becomes 25%. The old table never saw rain. The rover follows a cautious plan tuned for 15% slip, but reality throws 25% slip at it. The plan looks reasonable, but it was optimized for a world that does not exist."
+        },
+        {
+          "t": "para",
+          "html": "Worse: suppose the table underestimated. It says slip is 5% when the true rate is 20%. The rover follows a plan that assumes slips are rare and harmless. It hugs the pit's edge, taking what looks like efficient paths. The Bellman equation weighted the pit's −50 penalty by 0.05 (the reported slip), so it barely reduced the action's value. But the true slip is 0.20. In reality, the pit gets hit 20% of the time, not 5%. The plan looks calculated but is built on false confidence."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The biggest errors hide in the tail.</strong> Small probability errors (14% vs 15%) matter less than errors in rare catastrophes (5% vs 20%). A 3-point difference looks tiny, but it determines whether the pit gets treated as a negligible edge case or as a central part of the plan. Wrong probabilities produce a plan that fails quietly — it looks calculated but is confidently suboptimal. To fix it, either test the actual probabilities on the real ground until you trust them, or assume the worst case within a plausible range and solve for that instead."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — every method that handles uncertainty uses this same averaging backup",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Stochastic DP looks specialized — a gridworld with slip. But almost every method that handles uncertainty is stochastic DP in a different form."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Robust MPC (model-predictive control — re-plan every few steps, take one step, then re-plan) and minimax control</strong> ask: instead of averaging over probabilities, what if an adversary picks the worst possible outcome from a plausible range? The backward recursion stays the same. You still weight each possible next state, just using the worst case instead of an average. <strong>Risk-sensitive control</strong> uses something stricter than average (like a percentile or exponential penalty) so rare catastrophes count more. The backward recursion stays recursive. <strong>Reinforcement learning (RL — learning a plan by trying moves and measuring the results)</strong> starts by assuming probabilities are unknown. To estimate the average future cost, the algorithm collects many sample trajectories, computes the average, and iterates. An RL agent that does not collect enough samples gets a bad average, and the learned plan becomes brittle — the exact confidence-in-wrong-probabilities problem from section 5."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>Same backward recursion, different sources of numbers.</strong> The core step — add immediate cost to the average future cost — powers all three. Deterministic DP hides the average inside (single next state = average of weight 1). Stochastic DP makes the average explicit. Robust methods replace average with worst-case. RL learns the average from data. All three answer: how do I act when the future is not one number but a range of possibilities? They all answer by building the cost-to-go backward, letting it accumulate uncertainty one step at a time."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "dynamic-programming.html",
+      "dynamic programming"
+    ],
+    [
+      "bellman-recursion.html",
+      "Bellman recursion"
+    ],
+    [
+      "value-function.html",
+      "value function"
+    ]
+  ],
+  "recipe": {
+    "summary": "9×9 gridworld with goal at (0,8), pit at (4,4), cost −50 for pit, step cost −1, γ=0.99. Value iteration (synchronous Bellman backups). Run deterministic case, then add 20% slip (perpendicular drift). Measure how many cells change their optimal action and the value change at cell (4,3).",
+    "eq": "Deterministic Bellman: V(x) = min_u [ −1 + γ * V(next state) ]\nStochastic Bellman: V(x) = min_u [ −1 + γ * sum_{next} P(next|x,u) * V(next) ]\nWith 20% slip: P(intended)=0.8, P(perpendicular)=0.2\n# EXP3 reported: 20 of 71 free cells change action; cell (4,3): S→W, V: −9.56→−12.58",
+    "note": "Full script: scripts/experiments/dp_run.py. Numbers reported are the run's output verbatim, sourced from EXP3 in /analysis/deep/_results/dp.md."
+  }
+}

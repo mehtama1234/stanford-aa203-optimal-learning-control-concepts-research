@@ -13,6 +13,7 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +27,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Costate / Adjoint Variable</h1>
 <p class="lede">A shadow quantity that measures how much future cost changes if the state is nudged now.</p>
+<p><a href="costate-adjoint-variable-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>An early state error matters because it changes every later possibility, but that downstream effect needs to be priced locally.</p>
-    <p>A common wrong first move is: Only penalize the state error at the moment it appears. It fails when the same small error can be harmless or disastrous depending on how it propagates into later cost.</p>
+    <p>A first temptation is to care only about state errors at the moment they appear: penalize the cart being one meter low right now. But one meter low right now means the cart will be one meter low next second and the second after that, unless future actions fix it—and fixing takes effort. The same small error early in the trajectory can ripple into huge downstream cost, while the same error late in the trajectory leaves little time to propagate.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a costate or adjoint variable evolving backward in time. Use it when you need to look for the variable that tells how valuable or dangerous a state change is because of the future.</p>
-    <p>What the object does: Propagate future sensitivity backward so present actions can be judged by downstream consequences.</p>
+    <p>A state error at time 1 cascades forward and affects every later cost: it changes the height available at time 2, which changes what the system can do at time 3, and so on. One backward price per state variable is needed because coupled state variables have different roles in the future. Extra height might reduce a final-position penalty but increase a final-velocity penalty by different amounts, so height and velocity cannot share one price. The costate or adjoint variable is this propagated future sensitivity, evolved backward in time so that present control actions can be judged not just by their immediate cost but by the full downstream consequences they unlock.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a costate or adjoint variable evolving backward in time in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Propagate future sensitivity backward so present actions can be judged by downstream consequences. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>Consider an elevator with two time steps. The final penalty is 100*(x_2 - 10)^2 for missing a target height of 10 meters. The derivative at x_2 = 9.9 is 200*(9.9 - 10) = -20. This is the backward price of height at the last instant: one extra meter reduces the final penalty by about 20. Now step backward. The dynamics are x_2 = x_1 + u_1, so x_1 changes x_2 one-to-one. The backward price at time 1 is therefore -20 as well. Now add two state variables: height h and velocity v with dynamics h_2 = h_1 + v_1 and v_2 = v_1 + a_1 where a is acceleration. At the final time with h_2 = 9.75 and v_2 = 0.5, the penalty derivatives are lambda_h = 100*(9.75 - 10) = -25 for height and lambda_v = 10*0.5 = 5 for velocity. Stepping backward, the jacobian of the step is [1,1; 0,1] for [h,v], so lambda_1 = transpose([1,0; 1,1]) * [-25,5] = [-25, -20]. Height has price -25 because it goes directly to the final height; velocity has price -20 because it also feeds into the next height.</p>
     <p>The world check is the example: Being one meter off course near the start of a spacecraft maneuver may require large later correction, so the costate prices that future burden. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +61,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The interpretation depends on the model and differentiability of the trajectory problem.</p>
-    <p>When that condition fails, look for this visible break: the controller underprices early deviations whose cost appears later.</p>
+    <p>The costate prices only the state within the model you wrote down. If the elevator motor also heats up and overheating is costly, but the heating cost is not in your written equations, the costate will not price it. The backward sensitivity tells you how valuable height is inside your stated objective and dynamics, not its full physical worth.</p>
     <p><strong>Recognize it in a new problem:</strong> Look for the variable that tells how valuable or dangerous a state change is because of the future.</p>
   </div>
 </section>

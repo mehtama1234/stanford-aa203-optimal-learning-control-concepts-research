@@ -1,0 +1,196 @@
+{
+  "id": "horizon",
+  "name": "Horizon",
+  "kick": "Horizon · first principles · how far ahead you plan decides whether the future arrives as a surprise",
+  "title": "Horizon — the next instant is blind, but planning too far ahead is expensive",
+  "lede": "The fundamental trade-off you cannot escape, why a short horizon makes you greedy and a long one wastes effort, a real run where overshooting jumps from one meter to four centimetres as you extend the horizon, the one price you pay for looking longer, its real weakness shown as a concrete failure, and the surprise that this choice lives or dies in every modern control method.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "insight",
+      "Why too short is dangerous"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — you cannot plan to the end of time",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Imagine a cart rolling toward a wall. Its current speed is fine — no collision yet — so an optimizer that looks only one tenth of a second ahead says <em>keep going</em>. It applies that command. A tenth of a second later, the cart is faster and closer. That optimizer runs again, sees the same local picture, and says <em>keep going</em> again. By the time it finally sees the wall as a problem, it is too late to brake — the consequences have already been made."
+        },
+        {
+          "t": "para",
+          "html": "The real issue is deeper than laziness. The controller has a <em>horizon</em> — a window into the future it is allowed to reason about. Outside that window, the cost function returns zero. The optimizer cannot price what it cannot see. If the wall lies beyond the horizon, the wall does not exist in the mathematics. You cannot plan for a consequence that the problem statement hides."
+        },
+        {
+          "t": "para",
+          "html": "But the other extreme is just as wrong. If you ask the optimizer to plan a hundred years ahead, it must make a forecast a hundred years ahead. That forecast is a story, not a fact. The dynamics model grows unreliable, costs far in the future are deeply uncertain, and computation spirals up. The problem becomes fragile — small errors in the far-future model dominate decisions today."
+        },
+        {
+          "t": "para",
+          "html": "The question is neither trivial nor new: <strong>how far into the future should the controller reason?</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — the horizon is a choice that balances foresight against cost",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every controller runs against a finite horizon — the number of future steps it is asked to optimize over. Call this number N, and each step lasts a time interval dt (say, 0.1 seconds). Then the controller sees N times dt seconds into the future. A 1-step horizon with dt = 0.1 s is 0.1 seconds of foresight. A 40-step horizon is 4 seconds."
+        },
+        {
+          "t": "para",
+          "html": "The horizon is not a magical property of the cart or the physics. It is a knob the engineer turns. Choose a larger N and the controller can see consequences further out — delayed costs, wind effects, the need to slow down before a turn — before choosing the first move. Choose a smaller N and the computation is faster, the model only needs to be accurate a short way out, and early decisions are resolved sooner. The trade-off is built in."
+        },
+        {
+          "t": "para",
+          "html": "The practical rule is simple: <strong>the horizon must be long enough to see the first consequence that would change today's best action.</strong> If the wall is 50 meters away and the cart travels at 2 meters per second, the wall becomes relevant at t = 25 seconds. A 5-second horizon is too short — it ends before the wall matters — so the cart does not start braking early enough. A 30-second horizon is long enough to see the wall and plan the deceleration that keeps today's first command sensible. A 120-second horizon adds guesses about what happens after the cart stops and the controller makes another decision; if that far-future story does not change the first brake command, adding it only adds uncertainty."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — one meter of overshoot becomes four centimetres",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We set up a simple cart: position and velocity as the state, a force as the input, and a step size of 0.1 seconds. The goal is to stop it at position zero. We then solved two versions of the same optimal-control problem — one using a horizon of 1 step (0.1 seconds of foresight) and one using a full horizon (40 steps, 4 seconds of foresight). The algorithm, the cost weights, the starting condition, and every other ingredient were identical. The only difference was N."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "horizon",
+            "number of steps",
+            "seconds of foresight",
+            "overshoot",
+            "settling time"
+          ],
+          "rows": [
+            [
+              "1-step horizon",
+              "1",
+              "0.1 s",
+              "−1.00 m",
+              "12.1 s"
+            ],
+            [
+              "full horizon",
+              "40",
+              "4.0 s",
+              "−0.04 m",
+              "1.7 s"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: a short horizon cannot foresee the stop it needs to plan.</strong> With only one-tenth of a second of lookahead, the 1-step controller sees no reason to start braking. It pushes forward. By the time the next optimization runs and it has moved closer, it is going faster and has even less margin to stop. The algorithm rings and rings, overshooting all the way to −1.00 meter. With 4 seconds of lookahead, the full-horizon controller can see all the way to a stopped cart and plans the smooth deceleration that avoids the ring. The overshoot shrinks to just −0.04 meter — a <strong>25-fold improvement</strong> in accuracy, and settling finishes in one-tenth the time. The horizon is how far into the future the plan reasons. Too short, and the future arrives as a surprise you can no longer react to."
+        }
+      ]
+    },
+    {
+      "id": "insight",
+      "h2": "4 · Why too short is a danger — the optimizer mistakes the boundary of its view for the end of time",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The reason the 1-step optimizer overshoots so badly is not that it is dumb. It is doing exactly what you told it to: minimize cost over the next 0.1 seconds. Inside that tenth of a second, pushing forward decreases the distance error, so pushing forward is optimal. The algorithm has no reason to know that pushing forward will make the future slower to fix — because the future is outside its window."
+        },
+        {
+          "t": "para",
+          "html": "This is a deep problem, not a small one. The optimizer works on the finite horizon you give it. Costs beyond the horizon do not exist in the mathematics. If the delayed cost — the overshoot penalty, the wind force at the landing zone, the battery drain climbing the hill — lies just beyond the horizon, the optimizer prices it as zero. The first command looks rational to the mathematics even though reality will punish it seconds later."
+        },
+        {
+          "t": "para",
+          "html": "The cart example is transparent: the 1-step controller sees zero cost in overshooting because overshooting happens after the horizon ends. The moment the next step begins, a new optimization runs on a shifted window and sees the problem. But by then, the cart has already built up speed. This is called <em>myopic</em> planning — the controller is locally greedy because it cannot see far enough to price the consequences of its greed."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — a longer horizon costs more computation and demands a trustworthy model",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "If a longer horizon is always better, why not plan a thousand steps ahead? The answer is that every additional step costs computation — both in time to solve the optimization and memory to store the trajectory. A 40-step horizon is 4 seconds. A 400-step horizon is 40 seconds of planned future. A 4000-step horizon is 400 seconds. At some point, the problem becomes so large that the optimizer cannot run fast enough, or the computer runs out of space."
+        },
+        {
+          "t": "para",
+          "html": "The deeper cost is model fragility. The optimizer is only as good as the model of the cart's response — the dynamics. Suppose your model says the cart travels 2 meters per second, but in reality it travels 2.04 meters per second because of friction or a slight slope. Over 0.1 seconds, that is a 4-centimetre error. Over 4 seconds, the model error accumulates. Over 40 seconds, the model's forecast could be metres off. The optimizer will make decisions based on where it thinks the cart will be, not where it actually goes."
+        },
+        {
+          "t": "para",
+          "html": "This creates a real trap: the longer you plan, the more you depend on the model being accurate. But real models have bias and uncertainty. Wind, tire slip, battery fade, manufacturing variation — none of these show up in a simple dynamics equation. Plan too far ahead and you are optimizing for a story about the future, not the future itself. The controller becomes brittle to any detail the model misses."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — model-predictive control lives and dies by this choice",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "This tiny idea — how many steps to plan — is not a curiosity. It is the central design decision in every modern feedback controller."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Model-predictive control (MPC)</strong> is the dominant control law in practice: power plants, chemical refineries, autonomous vehicles, drones. Here is how it works. At every time step, the controller solves a finite-horizon optimization problem — say, 8 or 10 or 20 steps ahead — to find the best sequence of actions. It executes only the first action. Then, one step later, it resolves the same problem on a shifted window — the horizon slides forward by one step. This receding horizon design is specifically chosen to hide the boundary: by re-solving and re-planning constantly, it avoids the cliff that the 1-step cart example showed. But the horizon length remains the critical dial. A 2-step horizon on a braking cart will crash because the cart cannot see far enough to plan the deceleration. An 8-step horizon stops safely. The choice of horizon determines whether the system is safe or dangerous."
+        },
+        {
+          "t": "para",
+          "html": "There is one more trick: a <em>terminal cost</em>. Instead of assuming cost drops to zero at the horizon boundary, the controller adds a fake cost at the end: 'if you are still 1 meter off-target at step N, add a large penalty.' This fakes a longer effective horizon without having to compute it. It is a trick to buy foresight cheaply. Whether that trick is safe depends on the problem — on whether the penalty is actually a good proxy for the true long-term cost."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The horizon is where MPC's power and fragility meet.</strong> Extend it and you see delayed consequences and plan around them, like the full-horizon cart stopping smoothly. Shrink it and the controller becomes greedy and brittle, like the 1-step cart that overshoots by a metre. The length of the horizon decides whether the system avoids the trap or walks into it. Every deployed MPC controller — every power plant, every drone, every autonomous vehicle — runs on an engineered choice of how many steps to look ahead. That choice is not derived from physics. It is a trade-off between foresight and cost, anchored only on the rule: look far enough to see the first decision that matters."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ],
+    [
+      "optimal-control-problem.html",
+      "optimal-control problem"
+    ],
+    [
+      "value-function.html",
+      "value function"
+    ],
+    [
+      "trajectory-optimization.html",
+      "trajectory optimization"
+    ]
+  ],
+  "recipe": {
+    "summary": "Double integrator, dt=0.1, starting position 1.0 m off from the target. Horizon N swept in {1, 40}, full optimal control solved each time via backward Riccati recursion, forward simulation measures overshoot and settling time. Run with numpy.",
+    "eq": "A = [[1, 0.1],[0, 1]];  B = [[0],[0.1]];  Q = [[1,0],[0,0]];  R = 0.1\n# The controller minimizes the sum of future costs from step k=0 to k=N:\nJ = sum over k in 0..N of (x_k^T Q x_k + u_k^T R u_k)\n# With N=1, the optimizer sees only 0.1 seconds; with N=40 it sees 4 seconds.\n# The optimal feedback law is: u = -K x, where K is found by backward Riccati iteration.\n# The horizon N decides when the backward recursion 'feels' the terminal time and starts changing K.\n# Short N (e.g., N=1): the rule K is dominated by the last-step approximation; the controller does not plan far enough.\n# Long N (e.g., N=40): the rule K converges to a steady state that knows the full settlement time; overshoot is minimized.",
+    "note": "Full script: scripts/experiments/ps_run.py. Experiment EXP7. Numbers reported are the simulator's measured output verbatim: overshoot is the most-negative position reached after issuing the first command; settling time is when the position stays within ±0.01 m."
+  }
+}

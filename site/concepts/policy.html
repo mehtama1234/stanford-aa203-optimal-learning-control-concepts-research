@@ -13,6 +13,7 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +27,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Policy</h1>
 <p class="lede">A rule that maps what the agent knows about the current situation to an action.</p>
+<p><a href="policy-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>The controller needs a repeatable decision rule, not a separate hand-picked action for every moment.</p>
-    <p>A common wrong first move is: Store a fixed action sequence. It fails when disturbances and uncertainty mean the state may differ from the planned path.</p>
+    <p>A beginner might write out a list of actions for the robot to follow in order: first turn left, then slow down, then speed up, then stop. That is a script. But a script is brittle: if wind or a disturbance pushes the robot off the planned path, the script still follows the same moves, and the robot drifts further off course. A quadrotor descending through turbulence needs a rule that reads its altitude and adjusts thrust on every measurement cycle, not a fixed-time countdown. The script says &quot;do this, then do that&quot;; the policy says &quot;given your current state, do this,&quot; so it can react to whatever the world throws at it.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a deterministic or stochastic policy. Use it when you need to look for the object that chooses actions during execution.</p>
-    <p>What the object does: Given a state or observation, output an action or action distribution.</p>
+    <p>A controller needs a decision rule that runs repeatedly during execution, adjusting to the actual situation it finds itself in at each step. If you hard-code a sequence of actions, you are betting that nothing will disturb the planned path. But noise, friction, wind, and uncertainty mean the state will deviate. You need a rule that maps the current measured state—altitude, distance to wall, temperature, battery level, whatever matters for choosing the next action—to the next command. That closed-loop rule, applied at every time step as the state evolves, is a policy.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a deterministic or stochastic policy in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Given a state or observation, output an action or action distribution. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>A hallway robot measures distance_to_wall = 0.45 meters, forward_speed = 0.8 m/s, and battery = 38 percent. A policy is a rule: if distance_to_wall &lt; 0.50 meters, set steering = −18 degrees and speed = 0.4 m/s. The robot executes this command. Friction slows it to forward_speed = 0.35 m/s and the wall is now 0.62 meters away. The next state is different, so the policy recomputes: distance_to_wall &gt; 0.60 meters now triggers a different rule branch—steering = +10 degrees, speed = 0.5 m/s—aiming back toward the hallway center. A fixed script would still output steering = −18 degrees, and the robot would drift away from the safe middle. With the policy, the same rule runs at every time step, reading the new state each time, so it corrects. The policy is not one action; it is the repeating logic that keeps the robot on track by reading the current situation before deciding.</p>
     <p>The world check is the example: A quadrotor hovering at altitude z=5 m has state (z, ż) measured in real time. A simple policy maps the vertical error to thrust: if z &lt; 4.5 m, apply thrust u=10 N; if z &gt; 5.5 m, apply u=8 N; otherwise u=9 N. At each timestep, the sensors report (z, ż), the policy runs this rule, and the motors receive the selected thrust. The policy repeats this logic after each state measurement, closed-loop, so disturbances that push the quadrotor below 4.5 m trigger immediate correction.
 
 More formally, π(z, ż) = f(z_error) outputs one of {8, 9, 10} depending on the current state. During execution, this policy runs indefinitely: observe state → apply u = π(state) → dynamics step → repeat. The policy is fixed (not replanned), so safety and performance depend on whether those three thrust values keep the quadrotor stable and near z=5 across the expected disturbances. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
@@ -63,8 +63,7 @@ More formally, π(z, ż) = f(z_error) outputs one of {8, 9, 10} depending on the
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>A policy can only react to information available in its input.</p>
-    <p>When that condition fails, look for this visible break: the policy cannot recover from unseen states or missing observations.</p>
+    <p>A policy can only react to the information it receives as input to its rule. A hallway policy that ignores battery level cannot charge when the battery is low; a greenhouse vent controller that omits humidity cannot prevent condensation even if it opens the roof vent for temperature. If a critical state variable is missing, the policy may choose an action that looks safe in the visible state but fails when the hidden variable shifts. The visible break is a robot that corrects perfectly in most situations but suddenly fails because a state it never learned—a slick floor, high humidity, tight corner, or battery dip—was outside its training distribution, and the policy has no recovery rule for it.</p>
     <p><strong>Recognize it in a new problem:</strong> Look for the object that chooses actions during execution.</p>
   </div>
 </section>

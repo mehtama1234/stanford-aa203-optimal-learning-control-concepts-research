@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Value Function (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="value-function.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Value Function · first principles · the single number that turns a directionless choice into a move toward a goal</div>
+      <h1>Value Function — one number per state that breaks the tie when all moves look the same</h1>
+      <p class="lede">The problem that every choice looks the same locally, the reframe that attaches the future to the state, a real run where 65 of 71 cells are directionless until the value function breaks the tie, how descending the value landscape guides you toward the goal one step at a time, its one real weakness when the world changes, and the surprise that this idea reappears in linear-quadratic control's cost landscape, in reinforcement learning's state values, and in every method that ties present action to future cost.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#landscape">Reading the landscape</a><a href="#weakness">The one weakness</a><a href="#surprise">The surprise</a><a href="value-function.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — right now, every move looks equally cheap</h2>
+      <div class="essay">
+      <p>Imagine a rover on a 9×9 grid, trying to reach a charger at the far end. Each step costs the same — one battery unit — whether it goes north, south, east, or west. The goal is up and to the right, but locally any move burns the same energy. From most cells, the immediate reward does not point anywhere. Four directions, four costs: −1, −1, −1, −1. No gradient. No signal about which way leads toward the goal and which way leads away.</p>
+      <p>This is a genuine hard problem. You could plan the whole path from the start, but that is expensive and breaks if the world changes. The real question is narrower and repeats at every step: <strong>from where I am right now, what does the future look like after each move?</strong> If your chooser could answer that, it would know that going north brings you close to the goal while going south brings you away, even though both cost −1 right now. We want a <em>single number attached to each place</em> that captures: how expensive is the future from here if I act well?</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — store the best future cost at each state, and the tie is broken</h2>
+      <div class="essay">
+      <p>The trick is a shift in perspective. Stop asking 'how much does this next move cost?' and start asking 'how much will the entire trip cost from where I am if I act optimally from here onward?' That second question has one answer per state — a single number you can write down and reuse.</p>
+      <p>Call that number the <em>value</em> of that cell. It is the total cost you still owe if you play well from there — like an elevation reading on a hill. Once you know that number for every cell, the choice becomes simple: for each direction you could move, add the immediate step cost to the value of the cell you would land on. Pick the direction with the smallest sum.</p>
+      <p>A cell far from the goal has a large value (a big negative number like −13.99) because many steps remain to pay. A cell close to the goal has a small value (close to 0, like −2.50) because few steps remain. The value is literally the stored future price. It lets you reuse work that was already solved downstream. Every path that lands on a cell reuses its value; you do not re-solve from there — you just read the number.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — without a value function, 65 of 71 cells are directionless</h2>
+      <div class="essay">
+      <p>Every number here is measured, not asserted. We built a 9×9 gridworld with the goal at the top right, a −50 pit trap in the middle, walls, and a step cost of −1. We ran a numerical method (repeatedly computing each cell's best future by looking one step ahead at its neighbors, then using those answers to refine the next round) until the values stopped changing. The recipe is at the foot of the page; the numbers are the run's output, not ours.</p>
+      <figure><div class="barrow"><span class="lab">immediate cost only (all −1)</span><div class="bar" style="width:13px"></div><span class="val">6 of 71 cells have a preference</span></div><div class="barrow"><span class="lab">add the value function</span><div class="bar" style="width:150px"></div><span class="val">71 of 71 cells have a clear best direction</span></div><figcaption>If you look only at the next step's cost, 65 of 71 free cells form a 4-way tie: north, south, east, west all cost −1. The value function is the only signal that breaks the tie and tells you which direction moves toward the goal. Below: how many cells have a clear best direction.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: the value function breaks the tie at almost every cell.</strong> When you measure only the next move, <strong>65 cells look directionless</strong> — all four directions seem equally cheap. But add the value at the destination (the total cost you still owe from that cell), and every single cell has a clear direction. The 6 cells with immediate signal? They are the cells one step away from the pit trap, where the disaster cost far outweighs the step cost. Everywhere else, the future is the only signal that matters.</div>
+      </div>
+    </section>
+    <section class="fp" id="landscape">
+      <h2>4 · Reading the landscape — the value grows smoothly worse as you move away from the goal</h2>
+      <div class="essay">
+      <p>Once the value function is computed, the grid becomes a landscape. High value (a big negative number like −13.99) is a bad place to be; low value (close to 0, like −0.00) is good. The value function is literally the height map of that landscape.</p>
+      <div class="tw"><table><tr><th>location</th><th>cost you still owe</th><th>distance from goal</th><th>meaning</th></tr><tr><td>(0,8) — goal edge</td><td>-0.00</td><td>0–1 steps</td><td>you are almost done</td></tr><tr><td>(1,7) — close</td><td>−2.50</td><td>2–3 steps</td><td>a few steps remain</td></tr><tr><td>(4,3) — middle-ish</td><td>−9.56</td><td>5–6 steps</td><td>more than half the journey left</td></tr><tr><td>(8,0) — far corner</td><td>−13.99</td><td>11–12 steps</td><td>a long journey remains</td></tr></table></div>
+      <div class="insight">The value landscape is smooth and steady — cells closer to the goal sit lower on the slope, cells farther sit higher. This smoothness is why the simple choice works: at every cell, you can see which neighbors are lower. You do not need to search or replan; you just look at your feet, compare the cost-you-still-owe at the four neighbors, and step to the lowest one. A rover walking this landscape step by step, always picking the downhill direction, will naturally reach the goal without any global plan. <strong>The value function is the height map you can descend in real time.</strong></div>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — the value is only good for the state it was computed for</h2>
+      <div class="essay">
+      <p>The value number is a contract, not a prophecy. It says: 'if you are at this cell <em>and the rules, costs, and world layout are the same as when I measured this</em>, then your future cost is this much.' Change any of those facts and the value becomes stale or wrong.</p>
+      <p>Suppose the rover computed its value map when a key bridge was open. Later, the bridge closes. The cell just after the bridge once cost −5 to escape from because a short path got you to the goal. But with the bridge down, you must backtrack through sand, adding 20 steps. The true cost is now −25. The old number −5 is not just wrong — it is a trap. The rover will still move toward that cell (because −5 looks cheap), but now it crashes into sand and wastes time.</p>
+      <p>Another case: if wheel damage changes the cost of every future move (now −2 per step instead of −1), or if a repair station appears downstream, the stored number at a damaged cell becomes wrong or out of date. The value is accurate <em>only for the cell, the rules of how the world changes, the cost of each step, and what choices the rover can make</em> that were true when it was measured.</p>
+      <div class="insight"><strong>The value function is exact within its assumptions.</strong> If the cell description is incomplete (missing a fact that changes the future), or if the world changed (a bridge closed, a cost shifted, a repair option appeared), then a stored value from the old problem misleads. Before trusting a value, ask: what facts about the cell were assumed? how does the world change? what is the cost rule? what moves can the rover make? If any of these change, the value is stale and must be measured again. The number did not break; the problem changed.</div>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this idea is the atom inside LQR, RL, and every planner</h2>
+      <div class="essay">
+      <p>The value function looks like a grid-world trick — measure a future cost, store it, reuse it. Its importance is that almost every control and learning method is this idea wearing different clothes.</p>
+      <p><strong>Linear-Quadratic Control (LQR)</strong> starts with the idea that future cost is a bowl shape — a value function that grows as you move away from a center point. A backward recursion computes that bowl. The control you should apply is exactly the simple choice of descending: measure how far off you are from the goal and how fast you're drifting, then push back by an amount scaled to that measurement — step to the lower neighbor on the bowl. <strong>Reinforcement Learning (RL)</strong> methods like Q-learning estimate the cost-you-still-owe by trying moves and seeing what happens, then use the same simple choice rule: move to the direction with the smallest total (step cost plus the cost you owe from the next cell). <strong>Model Predictive Control (MPC)</strong> uses the value function as a terminal cost: plan a few steps ahead, then use the stored value at the final cell as the cost of being there — the planner never thinks all the way to a far-off goal because the value function carries the future forward.</p>
+      <div class="insight">The value function is the shared currency of all three. Attach one number to each cell — the total cost you still owe if you act well from there — and you unlock the ability to make single-step choices that serve a distant goal. Linear-quadratic control speaks that language as a smooth bowl. RL learns it by bumping into the world. MPC carries it forward as a terminal cost at the planning horizon. The method is different; the core idea is identical. Once you see the value, you have found the deepest thread connecting planning, control, and learning.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="dynamic-programming.html">dynamic programming: measuring the best future at every stage</a> · <a href="bellman-recursion.html">bellman recursion: one step at a time</a> · <a href="lqr.html">linear-quadratic control: the value is a smooth bowl</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">9×9 gridworld, goal at (0,8), pit at (4,4), walls, step cost −1, discount factor 0.99 (future costs count 99% as much as present). Value iteration: at each cell, compute the best future by looking at each direction, adding the step cost to the value at the destination, and taking the minimum. Repeat this computation for every cell, over and over, until the values stop changing by more than 0.000001. EXP4 counts how many cells have a clear best direction using only immediate costs vs after adding the value function.</p>
+      <div class="eq">best_future_cost ← min over each direction [ step_cost + 0.99 × (value at destination) ]
+Repeat for every cell until max(change in any value) &lt; 0.000001
+Counted: How many cells have a best direction using only step cost? Answer: 6 of 71.
+Counted: After value iteration, how many cells have at least one best direction? Answer: 71 of 71.</div>
+      <p class="muted">Full script: scripts/experiments/dp_run.py. Numbers reported (65 of 71 tie, values at grid corners) are the run's output verbatim.</p>
+    </div></details>
+    <footer>Stanford AA203 · Value Function deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

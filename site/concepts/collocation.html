@@ -13,6 +13,7 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +27,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Collocation</h1>
 <p class="lede">A direct method that enforces dynamics at selected points along a discretized trajectory.</p>
+<p><a href="collocation-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>The optimizer needs a finite way to ensure the path obeys continuous dynamics.</p>
-    <p>A common wrong first move is: Check the dynamics only at the endpoints. It fails when a path can look valid at endpoints while bending through impossible motion between them.</p>
+    <p>You check whether the arm reaches the right place at the beginning and end of the interval, declare success, and move on. The arm starts with its gripper left of the fixture at x=0.02 meters and ends right of it at x=0.18 meters, so the path must clear the fixture. But the polynomial curve that connects them can bow inward partway through. At t=0.2 seconds (the midpoint of a 0.4-second move), the curve puts the gripper at x=0.10 meters while the fixture sits at x=0.08 to 0.12 meters. The path clips the fixture halfway through, and endpoint checking never found it.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is collocation points and defect constraints. Use it when a continuous trajectory is represented by pieces and dynamics are enforced at sample points.</p>
-    <p>What the object does: Force the derivative implied by the path representation to match the dynamics at chosen points.</p>
+    <p>The path is not just a set of samples; it is a curve in between, and the curve must obey the physics at more than just the endpoints. The optimizer represents the path as polynomials or grids and needs to force those polynomials to deliver speed and acceleration that match what the motors actually produce. At interior points along the curve, the slope that the drawn path implies must equal the speed that the dynamics demand. By checking this agreement at selected points inside each interval, the optimizer catches paths that look smooth in a drawing but are impossible for the arm to produce. The practice of enforcing these physics checks at interior sample points is collocation.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to collocation points and defect constraints in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Force the derivative implied by the path representation to match the dynamics at chosen points. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>Use the arm example: swing a gripper from x=0.02 to x=0.18 meters over 0.4 seconds, avoiding a fixture at x=0.08 to 0.12 meters. Without interior checks, the optimizer can fit a cubic polynomial through the endpoints. At the midpoint t=0.2, suppose the polynomial curve has slope path_derivative_mid=0.9 m/s. The arm dynamics with torque u_mid=3 newton-meters predict f(x_mid, u_mid)=0.4 m/s. Defect_mid = 0.9 - 0.4 = 0.5 m/s. This is a collision between the curve&#x27;s implied speed and the physics. Now add a clearance check at the midpoint. The polynomial puts the gripper at x_mid=0.10 meters, and clearance_mid = x_mid - 0.12 = -0.02 meters. Both checks fail. A repaired plan moves x_mid to 0.14 meters (outside the fixture on the far side), giving clearance_mid = 0.02 meters. It also changes the polynomial coefficients so the implied slope is now 0.6 m/s, matching the prediction from the chosen torque. Defect_mid = 0.6 - 0.6 = 0. Now both checks pass. Add a second collocation point at t=0.3 seconds. The curve there has x_3=0.16, clearance_3 = 0.04 meters, and the derivative matches the dynamics so defect_3=0. Both midpoint and later point agree the motion is possible and safe. If you now refine by asking what happens at t=0.25 seconds (between the two checked points), the cubic between x_mid and x_3 may bow inward to x_25=0.115 meters. Clearance_25 = -0.005 meters, so the coarse mesh missed a collision that the finer mesh finds. This is why adding collocation points is not decoration: it poses new questions that the drawn curve must answer.</p>
     <p>The world check is the example: A drone trajectory over T=2 seconds uses a cubic polynomial on each 0.5-second interval: x(t) = a₀ + a₁t + a₂t² + a₃t³. The optimizer chooses positions x=[0, 1, 2.2, 2.8, 3] at times t=[0, 0.5, 1.0, 1.5, 2.0] and derivatives ẋ=[2, 2.5, 2.8, 2, 0] to define the polynomials. At the interior collocation points t=0.25, 0.75, 1.25, 1.75, the optimizer enforces: ẋ_polynomial(t) = ẋ_derivative_at_t (velocity continuity). If this constraint is not enforced, the optimizer could fit a cubic that fits the position waypoints but has an unphysical kink, violating x(t)=a₀+a₁t+a₂t²+a₃t³ at the collocation points.
 
 With collocation constraints satisfied at 4 interior points plus 5 position constraints, the trajectory is tightly constrained and guaranteed to be smooth. Without them, only positions are fixed and the polynomial between waypoints is unchecked—often unrealistic. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
@@ -63,8 +63,7 @@ With collocation constraints satisfied at 4 interior points plus 5 position cons
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The polynomial or grid representation must resolve the motion between points.</p>
-    <p>When that condition fails, look for this visible break: too few collocation points let the optimizer exploit gaps between checks.</p>
+    <p>Collocation checks the points and intervals the designer wrote down, not every unmodeled event or hidden behavior between checks. The polynomial segment between t=0.2 and t=0.4 is assumed to follow the dynamics smoothly if its start and end pass the checks, but real contact, friction changes, or backlash that happens in between are invisible if there is no sample point there. If the mesh is too coarse or skips a narrow fixture, the motion is feasible on the curve the optimizer drew and infeasible on the real arm. Refinement uncovers these gaps: each new collocation point is another physical claim the polynomial must satisfy.</p>
     <p><strong>Recognize it in a new problem:</strong> Use it when a continuous trajectory is represented by pieces and dynamics are enforced at sample points.</p>
   </div>
 </section>

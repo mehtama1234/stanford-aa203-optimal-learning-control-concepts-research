@@ -1,0 +1,216 @@
+{
+  "id": "indirect-methods",
+  "name": "Indirect Methods",
+  "kick": "Indirect Methods · first principles · solve the equations an optimal path must obey, not the path itself",
+  "title": "Indirect Methods — solve the conditions of optimality, not the path",
+  "lede": "The ordinary problem it solves, the one assumption that makes it workable, a real run where you predict the optimal push must be a straight line and watch the direct optimizer produce exactly that, the key difference from brute-force searching, its one honest weakness shown numerically, and the surprise that this equation-solving strategy hides inside trajectory optimization and the next layer up.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "conditions",
+      "The conditions shrink the search"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — searching every possible path is enormous",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Suppose you need a cart to move from point A to point B in a fixed time, using the least total push effort. One honest approach is brute force: divide the time into 20 tiny steps, allow any push at each step, and then search through the trillions of possible push sequences to find the cheapest one. This works but is astronomically inefficient — most sequences are obviously bad, yet you check them all."
+        },
+        {
+          "t": "para",
+          "html": "There must be a smarter way. Any sequence of pushes that is actually optimal cannot be <em>arbitrary</em>. It must obey some mathematical rules. Perhaps we could write down what those rules are, then solve only for sequences that satisfy them, instead of searching the whole space of nonsense."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — any optimal path is not arbitrary; math pins down exact conditions it must obey",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Here is the insight. Imagine you had the optimal push sequence and you looked at it through three different lenses."
+        },
+        {
+          "t": "para",
+          "html": "First lens — <em>the calculus-of-variations view:</em> you are optimizing over a whole function (the push over time), not just picking one point. The optimal function is the place where any small wiggle makes things worse. That is a stationarity condition, and it pins the shape exactly."
+        },
+        {
+          "t": "para",
+          "html": "Second lens — <em>the Hamiltonian view:</em> bundle the running cost (how hard you are pushing) and a price on the dynamics (what the math owes in state error) into one quantity called the Hamiltonian. The rule for the best push is: choose the push that makes the Hamiltonian as small as possible at every instant. That turns out to be a simple formula in terms of one hidden variable, a 'price' or costate."
+        },
+        {
+          "t": "para",
+          "html": "Third lens — <em>the costate (backward sensitivity) view:</em> that hidden price is the costate — a number that represents how much it hurts if the state gets messed up. It runs backward through time from the target (where the penalty is known) to the beginning. Since cost is squared, the costate often obeys a simple backward equation, and you can write it down."
+        },
+        {
+          "t": "para",
+          "html": "The strategy is: instead of searching paths, write down the equations an optimal path must satisfy (state equation, costate equation, stationarity condition), then solve those equations. The key payoff is that solving a few equations is incomparably faster than searching trillions of paths."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — the predicted straight line matches the direct optimizer perfectly",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured. We moved a cart from rest at position 0 to rest at position 1 in 20 time steps (2 seconds total, using a 0.1-second tick). The cost is the sum of squared pushes. We solved this problem two ways: one by the indirect method (set up the equations of optimality, solve them), and one by the direct method (throw it at a solver that searches the whole space). Both must find the same answer if the math is right."
+        },
+        {
+          "t": "para",
+          "html": "The indirect method predicts that the optimal push sequence must be a straight line in time — starting at some value and ending at its mirror image. The direct method found the actual best push sequence by searching. Here is the comparison:"
+        },
+        {
+          "t": "table",
+          "headers": [
+            "Method",
+            "First push",
+            "Last push",
+            "Shape",
+            "R² fit"
+          ],
+          "rows": [
+            [
+              "Indirect prediction",
+              "+1.429",
+              "−1.429",
+              "straight line in time",
+              "—"
+            ],
+            [
+              "Direct optimizer output",
+              "+1.429",
+              "−1.429",
+              "actual best sequence",
+              "1.00000"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the indirect method's equation predicts the shape, and the direct optimizer proves the prediction is dead on.</strong> The R² value of 1.00000 means perfect alignment — the direct optimizer's push sequence fits a straight line with zero residual. The first-step push is 1.429, the last is −1.429 (a mirror), and every step in between falls exactly on the line connecting them. The two routes — solving the conditions of optimality and searching the whole space — reach the identical answer. This is why the indirect method is often more than just faster; it gives you insight into why the path has to look the way it does."
+        }
+      ]
+    },
+    {
+      "id": "conditions",
+      "h2": "4 · The conditions shrink the search from infinite paths to a small solve",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Here is why the indirect method is powerful. An unconstrained search over all possible 20-step push sequences is searching a 20-dimensional space. That is hard but finite. But if the time interval were finer — say 200 steps instead of 20 — the search space jumps to 200 dimensions. At 2000 steps it is hopeless."
+        },
+        {
+          "t": "para",
+          "html": "The indirect method does not search higher-dimensional spaces as the grid gets finer. Instead, it solves continuous equations. It says: 'The optimal push u(t) is determined by a costate p(t), which obeys a backward equation. The push at every instant satisfies a stationarity condition. The state and costate at the boundary satisfy boundary conditions.' Solve these, and you get the push function. Refining the grid does not make the equations harder — you just evaluate them at more time points."
+        },
+        {
+          "t": "para",
+          "html": "For our cart example, the backward equation for the costate is so simple (p is constant in time) that you can write the answer in closed form. For more complex problems, you shoot: guess the missing boundary value (say, the initial costate), integrate forward, measure how far you land from the target, adjust the guess. This is like aiming a cannon: you fire, watch where the shot lands, correct, and fire again. Usually a few shots hit the target."
+        },
+        {
+          "t": "para",
+          "html": "The phrase 'shooting method' describes this: choose launch parameters, shoot forward, measure the miss, and correct. For a linear problem with squared cost (like our cart), one or two shots are exact. For a curved problem, it takes a few more, but far fewer than the trillions of brute-force combinations."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — the equations can be delicate to solve, especially with limits",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The indirect method's Achilles heel is not speed — it is fragility. The equations are beautiful when the world is smooth and unconstrained. The moment you add an inequality constraint (like 'the cart cannot go past a wall' or 'the motor cannot push harder than 1.0 units'), the smooth necessary conditions break. The optimal path may include an arc where the wall is active, and the smooth equations no longer describe that arc."
+        },
+        {
+          "t": "para",
+          "html": "When a limit becomes active partway through, the indirect method requires you to detect that, split the path into pieces, and re-derive the equations for each piece. The boundary between pieces must satisfy a junction condition. This is doable but requires care: the wrong assumption about which limits are active wastes time hunting the wrong solution. A direct method simply adds a constraint to the solver and lets it handle the discontinuity."
+        },
+        {
+          "t": "para",
+          "html": "A second weakness is numerical: if you guess the initial costate far from the truth, the shooting method may diverge or miss the actual solution. If the problem is nonlinear and has multiple local optima, the indirect method finds only the one closest to your guess. The method requires you to set up the equations by hand, which is error-prone if the dynamics or cost are complicated. A direct method lets the numerical solver do the bookkeeping."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this equation-solving strategy hides inside trajectory optimization and beyond",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The indirect method looks specialist — it is for the tidy case where you can write the equations. Yet it reappears, often unacknowledged, in methods that handle messier problems."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Trajectory optimization (iLQR, DDP):</strong> these methods handle curved, nonlinear dynamics. They work by taking your actual (nonlinear) dynamics, straightening them locally around a guessed trajectory, approximating costs as squared, solving an LQR problem (which uses the backward costate recursion from indirect methods), stepping forward with the result, and repeating. The inner loop is the same backward iteration you are doing with the equations. When you refine the guess, you are implicitly improving your satisfaction of the optimality equations."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Constrained receding-horizon control (MPC):</strong> when you have a hard force limit, MPC re-solves a small constrained optimization at every time step. For short horizons and smooth costs, it often uses the indirect method or a solver that implements the KKT conditions (which are the equations of optimality with Lagrange multipliers for the active limits). MPC is the indirect method run repeatedly on a sliding window."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Learning and reinforcement learning:</strong> methods that learn a control rule from data use the indirect method's costate idea as a baseline. The costate p(t) is exactly the value function — the derivative of the cost-to-go — and algorithms like policy gradient compute the same quantity. The difference is that indirect methods require you to write down the equations, while learning methods discover the value through trials."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>One core idea, three different packages:</strong> solving the equations of optimality (indirect methods) is the seed idea. Trajectory optimization wraps it to handle curves, MPC wraps it to handle limits and re-planning, and learning wraps it to handle unknown dynamics. The fact that you can compress an infinite space of paths down to a handful of equations — and then solve those equations — is the pivot point for everything that follows."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "calculus-of-variations.html",
+      "calculus of variations"
+    ],
+    [
+      "hamiltonian-optimal-control.html",
+      "Hamiltonian and optimal control"
+    ],
+    [
+      "costate-adjoint-variable.html",
+      "costate (adjoint variable)"
+    ],
+    [
+      "trajectory-optimization.html",
+      "trajectory optimization"
+    ],
+    [
+      "shooting-methods.html",
+      "shooting methods"
+    ],
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ]
+  ],
+  "recipe": {
+    "summary": "Cart (double integrator), dt=0.1, 20 steps, least-squared-effort. Direct method: numerical optimizer over all 20 pushes. Indirect method: derive the Hamiltonian and costate equation, solve via shooting (guessing initial costate, integrating forward, measuring endpoint miss, correcting). Compare results.",
+    "eq": "Direct: minimize J = 0.5 * sum(u[i]^2) subject to x[i+1] = x[i] + v[i]*dt, v[i+1] = v[i] + u[i]*dt, x[0]=0, v[0]=0, x[20]=1, v[20]=0.\n\nIndirect: form H = 0.5*u^2 + p_x*v + p_v*u. Stationarity: dH/du = u + p_v = 0, so u = -p_v. Costate: p_v_dot = -dH/dv = -p_x, p_x_dot = -dH/dx = 0. Integrate forward from guessed p_v(0), measure x(20) and v(20), correct guess to satisfy boundary. For this linear problem, the costate is constant and solution is closed-form.",
+    "note": "Full script: scripts/experiments/traj_run.py. EXP2 numbers reported verbatim: first push 1.429, last push −1.429, R² = 1.00000 (perfect fit to straight line). The two methods agree exactly."
+  }
+}

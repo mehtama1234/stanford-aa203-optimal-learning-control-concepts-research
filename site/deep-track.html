@@ -1,0 +1,183 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Deep Track · Stanford AA203 Control Lab</title>
+<link rel="stylesheet" href="assets/styles.css">
+<style>.card{display:grid;gap:6px;text-decoration:none;color:var(--ink)}.card strong{color:var(--accent-deep,var(--accent))}</style>
+</head><body>
+<header class="topbar"><a class="brand" href="index.html">Stanford AA203 Control Lab</a>
+<nav><a href="index.html">Overview</a><a href="concepts.html">Concepts</a><a class="active" href="deep-track.html">Deep track</a><a href="course-spine.html">Spine</a></nav></header>
+<main>
+<div class="hero"><div class="kick">the deep track · every idea run on a real system</div>
+<h1>The Deep Track</h1>
+<p class="lede">38 first-principles deep dives. Each one starts from a real failure, builds the idea in plain words, and shows it working on a real run we actually executed — a gridworld, a braking cart, a least-effort move — with measured numbers, an honest weakness, and where the idea reappears in bigger methods.</p>
+<div class="stats"><div class="stat"><strong>38</strong>deep dives</div><div class="stat"><strong>6</strong>real experiments (numpy)</div><div class="stat"><strong>7</strong>families</div></div>
+</div>
+<h2>Setting up a control problem</h2>
+<section class="grid"><a class="card" href="concepts/optimal-control-problem-deep.html">
+          <strong>Optimal Control Problem</strong>
+          <span class="muted" style="font-size:13px">greedy overshoots 25 times longer than planned</span>
+          <span style="font-size:12px"><a href="concepts/optimal-control-problem.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/state-deep.html">
+          <strong>State</strong>
+          <span class="muted" style="font-size:13px">full state settles in 1.7 s, velocity-blind in 12.1 s</span>
+          <span style="font-size:12px"><a href="concepts/state.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/action-control-input-deep.html">
+          <strong>Action / Control Input</strong>
+          <span class="muted" style="font-size:13px">tightening the force limit stretches the settlement time</span>
+          <span style="font-size:12px"><a href="concepts/action-control-input.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/dynamics-deep.html">
+          <strong>Dynamics</strong>
+          <span class="muted" style="font-size:13px">correct model settles in 1.7 s, 60%-strength model takes 4.1 s</span>
+          <span style="font-size:12px"><a href="concepts/dynamics.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/objective-cost-function-deep.html">
+          <strong>Objective / Cost Function</strong>
+          <span class="muted" style="font-size:13px">one cart, three prices of pushing, three completely different moves</span>
+          <span style="font-size:12px"><a href="concepts/objective-cost-function.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/constraints-deep.html">
+          <strong>Constraints</strong>
+          <span class="muted" style="font-size:13px">a speed limit bends the optimal plan</span>
+          <span style="font-size:12px"><a href="concepts/constraints.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/horizon-deep.html">
+          <strong>Horizon</strong>
+          <span class="muted" style="font-size:13px">one meter of overshoot becomes four centimetres</span>
+          <span style="font-size:12px"><a href="concepts/horizon.html">atlas card →</a></span>
+        </a></section>
+<h2>Optimizing over a whole path (indirect)</h2>
+<section class="grid"><a class="card" href="concepts/calculus-of-variations-deep.html">
+          <strong>Calculus of Variations</strong>
+          <span class="muted" style="font-size:13px">the no-improving-wiggle condition forces a straight-line push</span>
+          <span style="font-size:12px"><a href="concepts/calculus-of-variations.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/hamiltonian-optimal-control-deep.html">
+          <strong>Hamiltonian for Optimal Control</strong>
+          <span class="muted" style="font-size:13px">the optimal push is a perfect straight line</span>
+          <span style="font-size:12px"><a href="concepts/hamiltonian-optimal-control.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/costate-adjoint-variable-deep.html">
+          <strong>Costate / Adjoint Variable</strong>
+          <span class="muted" style="font-size:13px">the costate is linear in time, and the push it guides is a straight line</span>
+          <span style="font-size:12px"><a href="concepts/costate-adjoint-variable.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/gradient-first-order-condition-deep.html">
+          <strong>Gradient and First-Order Condition</strong>
+          <span class="muted" style="font-size:13px">steepness shrank from 6.00 to 0.000 in 60 steps</span>
+          <span style="font-size:12px"><a href="concepts/gradient-first-order-condition.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/indirect-methods-deep.html">
+          <strong>Indirect Methods</strong>
+          <span class="muted" style="font-size:13px">the predicted straight line matches the direct optimizer perfectly</span>
+          <span style="font-size:12px"><a href="concepts/indirect-methods.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/shooting-methods-deep.html">
+          <strong>Shooting Methods</strong>
+          <span class="muted" style="font-size:13px">one correction reduces the miss from 1.000 to zero</span>
+          <span style="font-size:12px"><a href="concepts/shooting-methods.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/static-optimization-deep.html">
+          <strong>Static Optimization</strong>
+          <span class="muted" style="font-size:13px">free best at 2.5, cap forces it to 1.5</span>
+          <span style="font-size:12px"><a href="concepts/static-optimization.html">atlas card →</a></span>
+        </a></section>
+<h2>Optimizing over a whole path (direct)</h2>
+<section class="grid"><a class="card" href="concepts/trajectory-optimization-deep.html">
+          <strong>Trajectory Optimization</strong>
+          <span class="muted" style="font-size:13px">the optimized plan uses 25% less effort than a hand plan</span>
+          <span style="font-size:12px"><a href="concepts/trajectory-optimization.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/direct-transcription-deep.html">
+          <strong>Direct Transcription</strong>
+          <span class="muted" style="font-size:13px">a fake path has huge defect; the solved path has none</span>
+          <span style="font-size:12px"><a href="concepts/direct-transcription.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/collocation-deep.html">
+          <strong>Collocation</strong>
+          <span class="muted" style="font-size:13px">the worst defect drops from 0.500 to essentially zero</span>
+          <span style="font-size:12px"><a href="concepts/collocation.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/local-quadratic-approximation-deep.html">
+          <strong>Local Quadratic Approximation</strong>
+          <span class="muted" style="font-size:13px">the bowl fits almost perfectly close in and drifts badly far out</span>
+          <span style="font-size:12px"><a href="concepts/local-quadratic-approximation.html">atlas card →</a></span>
+        </a></section>
+<h2>Dynamic programming & LQR</h2>
+<section class="grid"><a class="card" href="concepts/dynamic-programming-deep.html">
+          <strong>Dynamic Programming</strong>
+          <span class="muted" style="font-size:13px">the policy settles two sweeps before the values do</span>
+          <span style="font-size:12px"><a href="concepts/dynamic-programming.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/bellman-recursion-deep.html">
+          <strong>Bellman Recursion</strong>
+          <span class="muted" style="font-size:13px">one backup test, four moves, and a winner emerges</span>
+          <span style="font-size:12px"><a href="concepts/bellman-recursion.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/value-function-deep.html">
+          <strong>Value Function</strong>
+          <span class="muted" style="font-size:13px">without a value function, 65 of 71 cells are directionless</span>
+          <span style="font-size:12px"><a href="concepts/value-function.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/stochastic-dynamic-programming-deep.html">
+          <strong>Stochastic Dynamic Programming</strong>
+          <span class="muted" style="font-size:13px">20% slip redirects 20 of 71 cells to avoid the pit</span>
+          <span style="font-size:12px"><a href="concepts/stochastic-dynamic-programming.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/lqr-deep.html">
+          <strong>LQR</strong>
+          <span class="muted" style="font-size:13px">the gain stops changing after 26 steps</span>
+          <span style="font-size:12px"><a href="concepts/lqr.html">atlas card →</a></span>
+        </a></section>
+<h2>Replanning & safety (MPC)</h2>
+<section class="grid"><a class="card" href="concepts/model-predictive-control-deep.html">
+          <strong>Model Predictive Control</strong>
+          <span class="muted" style="font-size:13px">horizon H=2 crashes into the wall; H=8 stops safely</span>
+          <span style="font-size:12px"><a href="concepts/model-predictive-control.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/feasibility-deep.html">
+          <strong>Feasibility</strong>
+          <span class="muted" style="font-size:13px">three carts: one feasible, two already impossible</span>
+          <span style="font-size:12px"><a href="concepts/feasibility.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/recursive-feasibility-deep.html">
+          <strong>Recursive Feasibility</strong>
+          <span class="muted" style="font-size:13px">short horizons race into the trap, long horizons foresee it</span>
+          <span style="font-size:12px"><a href="concepts/recursive-feasibility.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/stability-under-replanning-deep.html">
+          <strong>Stability Under Replanning</strong>
+          <span class="muted" style="font-size:13px">the distance fell from 9.0 to 0.0 on every step</span>
+          <span style="font-size:12px"><a href="concepts/stability-under-replanning.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/reachability-deep.html">
+          <strong>Reachability</strong>
+          <span class="muted" style="font-size:13px">the safe/doomed boundary sits at 2.0 to 2.5 meters per second</span>
+          <span style="font-size:12px"><a href="concepts/reachability.html">atlas card →</a></span>
+        </a></section>
+<h2>Reinforcement learning</h2>
+<section class="grid"><a class="card" href="concepts/reinforcement-learning-deep.html">
+          <strong>Reinforcement Learning</strong>
+          <span class="muted" style="font-size:13px">episode 3 reaches the goal, then success rate climbs to 100%</span>
+          <span style="font-size:12px"><a href="concepts/reinforcement-learning.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/value-based-rl-deep.html">
+          <strong>Value-Based RL</strong>
+          <span class="muted" style="font-size:13px">from 88% to 100% and 18 steps, just from a scoreboard</span>
+          <span style="font-size:12px"><a href="concepts/value-based-rl.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/policy-deep.html">
+          <strong>Policy</strong>
+          <span class="muted" style="font-size:13px">the policy sharpens from 50/50 odds to 0.88 toward the goal</span>
+          <span style="font-size:12px"><a href="concepts/policy.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/policy-optimization-deep.html">
+          <strong>Policy Optimization</strong>
+          <span class="muted" style="font-size:13px">probability of reaching the goal leaps from 50% to 88%</span>
+          <span style="font-size:12px"><a href="concepts/policy-optimization.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/reward-deep.html">
+          <strong>Reward</strong>
+          <span class="muted" style="font-size:13px">a helpful bonus becomes the whole behavior</span>
+          <span style="font-size:12px"><a href="concepts/reward.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/exploration-deep.html">
+          <strong>Exploration</strong>
+          <span class="muted" style="font-size:13px">pure greed finds 0 out of 200; 30% randomness finds 120 out of 200</span>
+          <span style="font-size:12px"><a href="concepts/exploration.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/model-based-rl-deep.html">
+          <strong>Model-Based RL</strong>
+          <span class="muted" style="font-size:13px">~1000 remembered transitions are enough to reach the goal</span>
+          <span style="font-size:12px"><a href="concepts/model-based-rl.html">atlas card →</a></span>
+        </a></section>
+<h2>Imitation learning</h2>
+<section class="grid"><a class="card" href="concepts/imitation-learning-deep.html">
+          <strong>Imitation Learning</strong>
+          <span class="muted" style="font-size:13px">DAgger halves the gap by asking the expert about learner-visited states</span>
+          <span style="font-size:12px"><a href="concepts/imitation-learning.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/behavioral-cloning-deep.html">
+          <strong>Behavioral Cloning</strong>
+          <span class="muted" style="font-size:13px">on-band 0.08, off-band 3.72, a 46× difference</span>
+          <span style="font-size:12px"><a href="concepts/behavioral-cloning.html">atlas card →</a></span>
+        </a><a class="card" href="concepts/distribution-shift-imitation-deep.html">
+          <strong>Distribution Shift in Imitation</strong>
+          <span class="muted" style="font-size:13px">20% of steps swing far beyond the training band</span>
+          <span style="font-size:12px"><a href="concepts/distribution-shift-imitation.html">atlas card →</a></span>
+        </a></section>
+
+<footer>Stanford AA203 · the deep track · every quantity on every "real run" is measured, not asserted. Experiments in scripts/experiments/.</footer>
+</main></body></html>

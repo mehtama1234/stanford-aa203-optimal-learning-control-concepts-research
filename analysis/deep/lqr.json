@@ -1,0 +1,274 @@
+{
+  "id": "lqr",
+  "name": "LQR",
+  "kick": "LQR · first principles · the feedback rule that falls out of a bowl-shaped future cost",
+  "title": "LQR — when the future cost is a bowl, the best move is a straight line",
+  "lede": "The one problem it solves, the single assumption that unlocks it, a real run where you watch the feedback rule <em>stop changing</em> after a few steps, the one price dial that determines everything about how it behaves, its one honest weakness shown as a numerical breakdown, and the surprise that this tiny law lives inside trajectory optimization, constrained receding-horizon control, and learning baselines.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "dial",
+      "The one dial"
+    ],
+    [
+      "weakness",
+      "The one weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — re-planning the whole future at every twitch is too slow",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Picture a cart you can push along a line. Its state is two numbers — position and velocity — and your one lever is a force. It drifts a few centimetres off the mark; you nudge it back. It drifts again; you nudge again. This happens thousands of times a second on a drone rotor, a hard-drive head, a rocket near hover. Each correction is tiny."
+        },
+        {
+          "t": "para",
+          "html": "You <em>could</em> answer every drift by searching through all possible force sequences into the future, keeping the cheapest one, and applying its first step. That is correct and hopelessly slow: you would search the entire future just to move the cart two millimetres. The real question is much narrower and repeats forever: <strong>given the error I measure right now, how hard do I push back?</strong> We want that answer as a single <em>rule</em> — computed once, reused forever — not a new search every tick."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — assume the future cost is a bowl, and the best push becomes linear",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Two honest simplifications unlock everything. First, near the target, the world obeys a straight-line rule: the next state is a fixed multiple of the current state, plus another fixed multiple of your push. Second, we score error and effort by squaring them — the further off you are, the higher the cost; the harder you push, the higher the cost. Squares matter because they are the one cost shape with a magical property: if you imagine today's total future cost (squared) and work backward one step through the straight-line world, tomorrow's cost is also squared. The shape preserves itself. Nothing else does."
+        },
+        {
+          "t": "para",
+          "html": "Here is the payoff. Once you accept squared costs, the best push turns out to be dead simple: measure how far off you are and how fast you are drifting, multiply each by a fixed number, add them, and push back by that much. No searching, no re-planning — just two multiplications. Those two fixed numbers are the whole controller. (The matrix formula that produces them is in the recipe at the bottom.)"
+        },
+        {
+          "t": "para",
+          "html": "The method is: compute those two fixed numbers by working backward through time one step at a time, checking whether they stop changing. The question is whether they actually do settle down — which is exactly what the next run shows."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — the gain stops changing after 26 steps",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured, not asserted. We set up a cart with position and velocity (time step 0.1 seconds), penalised position error squares and push-effort squares equally, and walked backward through time one step at a time. The two numbers — how much to react to position error and how much to react to velocity drift — are printed at each step. The recipe at the foot shows the exact setup; the numbers that follow are the algorithm&rsquo;s output verbatim."
+        },
+        {
+          "t": "bars",
+          "caption": "The feedback gain starts near zero at the last step, climbs upward, and then locks onto a constant value. Within 26 steps backward it is within 1% of [2.788, 2.505] and stops changing.",
+          "rows": [
+            [
+              "1 step from end",
+              0.0,
+              "K_pos = 0.000"
+            ],
+            [
+              "3 steps from end",
+              0.107,
+              "K_pos = 0.298"
+            ],
+            [
+              "10 steps from end",
+              0.954,
+              "K_pos = 2.659"
+            ],
+            [
+              "26 steps (converged)",
+              1.0,
+              "K_pos = 2.788"
+            ],
+            [
+              "all earlier steps",
+              1.0,
+              "K_pos = 2.788"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the rule converges and stops changing.</strong> At the very last instant, push almost nothing — there is no future left. But more than about <strong>26 steps (2.6 seconds)</strong> from the end, every step uses the <em>same</em> constant rule: push back 2.788 times how far off you are, plus 2.505 times how fast you are drifting. The time-to-go only matters in the last 26 steps. This is why real systems do not run this calculation repeatedly — they use the constant rule it settles to. That constant rule is provably the best you can do for any step far enough from the end."
+        }
+      ]
+    },
+    {
+      "id": "dial",
+      "h2": "4 · The one dial — a single price sets everything",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "LQR has essentially one knob a designer turns: the price of pushing. Make pushing expensive and the controller is gentle, slow, and timid. Make it cheap and the controller slams hard, settles fast, but demands huge forces. Sweep this price across the same cart and measure the resulting rule, how fast it settles, and the peak force required. The result is a clean trade-off — no hand-tuning surprises, just a single smooth curve:"
+        },
+        {
+          "t": "table",
+          "headers": [
+            "R (push price)",
+            "K_pos",
+            "K_vel",
+            "settling time",
+            "peak force",
+            "personality"
+          ],
+          "rows": [
+            [
+              "0.01 (cheap to push)",
+              "7.989",
+              "4.417",
+              "1.0 s",
+              "7.99",
+              "twitchy, slams hard"
+            ],
+            [
+              "0.1 (moderate)",
+              "2.788",
+              "2.505",
+              "1.7 s",
+              "2.79",
+              "brisk"
+            ],
+            [
+              "1.0 (balanced)",
+              "0.932",
+              "1.412",
+              "3.0 s",
+              "0.93",
+              "balanced"
+            ],
+            [
+              "10 (expensive to push)",
+              "0.304",
+              "0.795",
+              "5.3 s",
+              "0.30",
+              "gentle"
+            ],
+            [
+              "100 (very expensive)",
+              "0.098",
+              "0.447",
+              "9.4 s",
+              "0.10",
+              "sluggish, barely tries"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "A 10,000× change in one price walks the controller from a 1.0-second slam to a 9.4-second glide, with peak force dropping almost exactly in step (7.99 → 0.10). <strong>The price weights are not decoration — they are the whole design.</strong> There is no hidden 'how aggressive' dial to adjust; aggressiveness <em>is</em> the ratio of position-error cost to push-effort cost."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — it assumes unlimited force and a perfect line",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "LQR's power comes from two assumptions: the world obeys a straight-line rule and the push can be as large as needed. Real motors and thrusters max out. We used the rule from the moderate case above (price = 0.1) but imposed a hard force limit of 1.0 units, then started the cart at increasing distances. We measured what actually happened (the real cost, accounting for the clipped force) versus what LQR predicted (the squared-cost formula):"
+        },
+        {
+          "t": "table",
+          "headers": [
+            "start error",
+            "force LQR demands (limit 1.0)",
+            "ideal cost",
+            "real clipped cost",
+            "blow-up"
+          ],
+          "rows": [
+            [
+              "0.5 m",
+              "1.39 (limited to 1.0)",
+              "2.2",
+              "2.3",
+              "×1.0"
+            ],
+            [
+              "1.0 m",
+              "2.79 (limited to 1.0)",
+              "9.0",
+              "10.1",
+              "×1.1"
+            ],
+            [
+              "3.0 m",
+              "8.36 (limited to 1.0)",
+              "80.9",
+              "132.3",
+              "×1.6"
+            ],
+            [
+              "8.0 m",
+              "22.31 (limited to 1.0)",
+              "575.0",
+              "1651.8",
+              "×2.9"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "At 0.5 m error the rule asks for 1.39 units against a limit of 1.0 — already asking too much. At 8 m it asks for <strong>22 units</strong> with only 1 available; the force gets clipped, the command is destroyed, and the real cost is <strong>2.9 times</strong> worse than LQR predicted. LQR is exactly optimal only when the straight-line model holds and the force never hits its limit. Outside that regime, it fails, and your job as an engineer is to know where that boundary is."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this tiny law is the engine inside everything",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "LQR looks like a toy: linear, squared-cost, no limits. Its real power is that almost every bigger method contains it as a piece."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Trajectory optimization (iLQR, DDP)</strong> handles nonlinear robots by taking the actual dynamics, locally straightening them around a guessed trajectory, replacing costs with squared approximations, solving an LQR problem inside that linear-squared world, stepping forward, and repeating. The inner loop is the same Riccati step you saw here. <strong>Constrained receding-horizon control (MPC)</strong> handles the force limit by re-solving a small squared program each time step. When the force is not limited, its answer is exactly the LQR rule. <strong>Learning algorithms</strong> use this linear-quadratic problem as a sanity check: it is the only basic continuous-control problem with a known optimal answer. If a learning method cannot discover the rule [2.788, 2.505] on this simple cart, something is wrong with the method."
+        },
+        {
+          "t": "insight",
+          "html": "One core idea, three different packages. The fact that squared costs preserve their shape through straight-line dynamics — the property that lets you turn 'how hard do I push?' into a multiplication by two fixed numbers — is the seed of all three. Master this backward iteration once and you have the engine inside trajectory optimization, constrained receding-horizon control, and every learning baseline. It is the only continuous-control problem where the answer is known for sure."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "local-quadratic-approximation.html",
+      "local quadratic approximation"
+    ],
+    [
+      "dynamic-programming.html",
+      "dynamic programming"
+    ],
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ],
+    [
+      "value-function.html",
+      "value function"
+    ]
+  ],
+  "recipe": {
+    "summary": "Double integrator, dt=0.1. Riccati iterated backward by hand (no scipy) so convergence is visible; ablation and saturation simulated forward. Run with numpy.",
+    "eq": "A = [[1, 0.1],[0, 1]];  B = [[0],[0.1]];  Q = [[1,0],[0,0]]\n# The rule is: multiply position error by K_pos, velocity error by K_vel, add, push back.\n# K_pos and K_vel are found by this backward iteration, repeated from final time:\nK = (R + Bᵀ P B)⁻¹ Bᵀ P A\nP = Q + Aᵀ P A - Aᵀ P B K\n# EXP1: print K each step -> converges to [2.788, 2.505] within 26 steps\n# EXP2: sweep R in {0.01,0.1,1,10,100}, simulate from x0=[1,0], measure settle + peak |u|\n# EXP3: fix R=0.1, clip |u|<=1.0, start at x0 in {0.5,1,3,8}, compare clipped vs ideal cost",
+    "note": "Full script: scripts/experiments/lqr_run.py. Numbers reported are the recursion's and the simulator's output verbatim."
+  }
+}

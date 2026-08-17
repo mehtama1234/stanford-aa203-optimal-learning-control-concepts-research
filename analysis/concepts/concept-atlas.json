@@ -872,7 +872,7 @@
     ],
     "family": "learning-based control",
     "plain_language_definition": "Directly adjust policy parameters to improve expected return.",
-    "ordinary_problem": "Sometimes it is more practical to tune the decision rule itself than to build a complete value table.",
+    "ordinary_problem": "A control policy has to act in situations it never saw while training, and the only feedback you can collect comes from the states the policy itself steers into. Building and storing a full value for every possible state ahead of time is wasteful and often impossible, so the improvement has to work directly on the decision rule using the trajectories it actually produces.",
     "naive_approach": "Change policy parameters blindly and keep lucky improvements.",
     "why_naive_fails": "Random changes waste trials and can erase behavior that already reaches the task.",
     "mathematical_object": "A parameterized policy and objective over expected return.",

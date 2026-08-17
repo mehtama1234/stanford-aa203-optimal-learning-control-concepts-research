@@ -13,6 +13,7 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +27,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Direct Transcription</h1>
 <p class="lede">Turn a continuous trajectory problem into a finite optimization problem over many time-grid variables.</p>
+<p><a href="direct-transcription-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>A computer cannot optimize over infinitely many points of a curve, so the curve must be represented by a finite set of decision variables.</p>
-    <p>A common wrong first move is: Optimize only the start and end points. It fails when the path between them may violate dynamics, obstacles, or actuator limits.</p>
+    <p>You describe the arm moving from 0 radians to 1.2 radians and let the optimizer choose the start and end points, assuming the motion in between will just interpolate smoothly. When the optimizer tries to jump from start to end in two 0.3-second leaps to save torque, the path looks fine in a plot. But at t=0.3 seconds the interpolated position is 0.6 radians with the chosen torque of 2 newton-meters, while the curve drawn between 0.0 and 1.2 actually passes through 0.85 radians halfway through. The arm is not at 0.6; it is at 0.85. The motor controller tries to track the drawing and the real state and the commanded state come apart.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a discretized trajectory with state and action variables at grid points. Use it when the path is the object and a nonlinear optimizer will solve the finite version.</p>
-    <p>What the object does: Add constraints that force neighboring grid points to approximate the dynamics.</p>
+    <p>The optimizer has to choose not just where the arm starts and ends, but exactly where it is at every moment in between, because the computer cannot check infinite points but the real arm passes through all of them. At times t=0.0, 0.2, 0.4, 0.6 seconds, the optimizer picks variables for position, velocity, and torque at each gridpoint. Between each pair of neighbors, the physics of the arm—the dynamics—says how the next state must follow from the current state and the applied force. The optimizer is only allowed to choose grid values that obey this rule: each next state must be reachable from the previous one by the actual arm model. Forcing the grid to respect the dynamics at every step is what direct transcription does.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a discretized trajectory with state and action variables at grid points in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Add constraints that force neighboring grid points to approximate the dynamics. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>Set up the arm problem: move from 0.0 rad to 1.2 rad in 0.6 seconds with a 5 newton-meter torque limit. The optimizer proposes joint angles q=[0.0, 0.4, 0.9, 1.2] at times t=[0.0, 0.2, 0.4, 0.6]. At t=0.2, with q_1=0.4, velocity v_1=1.0, and torque tau_1=2, the simple model predicts the next angle at t=0.4 should be q_2_pred = 0.4 + 0.2*(1.0 + 0.2*2/1.0)/2 ≈ 0.6 radians. The grid says q_2=0.9 radians. Defect = 0.9 - 0.6 = 0.3 radians. This is a lie: the curve shown does not match the physics claimed. To fix it, reduce q_2 from 0.9 to 0.6 so defect = 0.6 - 0.6 = 0. Now the path is truthful about what the arm can do in that interval while using only 2 newton-meters, which is legal. If the motion must also avoid a fixture that occupies angles 0.75 to 0.85, the original q_2=0.9 violates the obstacle constraint before the defect error. A repaired path that moves q_2 to 0.75 and applies tau_1=5 newton-meters (the motor limit) can reach that point while staying legal on both counts: zero defect and outside the fixture.</p>
     <p>The world check is the example: A robot arm path is represented by joint positions and torques at many time steps, with constraints tying each step to the next. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +61,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The discretization must be fine and accurate enough for the motion being planned.</p>
-    <p>When that condition fails, look for this visible break: a coarse grid hides collisions, unstable transitions, or excessive actuator demands.</p>
+    <p>Direct transcription exposes the middle states as decision variables, so the optimizer must make them obey the dynamics at every step. But the grid only checks points; if a collision or torque spike happens between two gridpoints, the grid does not see it. At t=0.3 seconds, if a fixture occupies positions 0.75 to 0.85 radians and the grid checks only t=0.2 (where q=0.70) and t=0.4 (where q=0.75), the curve between them may swing through 0.80 radians and clip the fixture. A finer grid with a check at t=0.3 forces that hidden violation to become a named variable with its own constraint. The grid spacing itself is a claim about which part of the motion is fine enough to trust.</p>
     <p><strong>Recognize it in a new problem:</strong> Use this when the path is the object and a nonlinear optimizer will solve the finite version.</p>
   </div>
 </section>

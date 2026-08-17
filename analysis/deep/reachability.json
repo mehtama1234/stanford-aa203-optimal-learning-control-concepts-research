@@ -1,0 +1,183 @@
+{
+  "id": "reachability",
+  "name": "Reachability",
+  "kick": "Reachability · first principles · the hard boundary between can-still-escape and already-lost",
+  "title": "Reachability — the sharp edge between safe and already-doomed",
+  "lede": "The one problem it solves, the naive mistake that ignores the laws of motion, a real run where you measure the exact speed that marks the boundary between stopping in time and crashing no matter what, what that hard line means for a controller, its one honest weakness shown as a growth curve, and the surprise that backward reachable sets are the invisible safety fences inside collision avoidance and receding-horizon planning.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "boundary",
+      "Reading the boundary"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — being close in space is not the same as being able to reach safety",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A cart rolls toward a wall 2 meters away at 3 meters per second. You see the distance and think: plenty of time to stop, the wall is still far. But the cart's brakes can only slow it by a fixed amount per second — this is a physical fact, not a choice. The time it will take to come to a stop is set by physics, not optimism."
+        },
+        {
+          "t": "para",
+          "html": "This is the core insight of reachability: <strong>spatial distance lies. Only the laws of motion tell the truth.</strong> You could be a meter away from safety and still have enough control left to reach it. You could be ten meters away and already be doomed — no control in the world can save you. The question is not 'how far?' but 'given my speed, my brakes, and the time I have left, is there a sequence of legal commands that gets me to safety?'"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — map out every state from which safety is still reachable",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Reachability flips the optimization problem on its head. Instead of picking the best path and hoping it works, it builds a map: a set of all the states — all combinations of position and speed — from which at least one legal control sequence reaches the goal (or avoids the danger). Every state inside this set has a way out. Every state outside it is lost."
+        },
+        {
+          "t": "para",
+          "html": "To build this map, you work backward from the target. First, mark every state that is already at the goal or already in danger. Then ask: which states, if the world steps forward one moment, might land in that marked set? Those states enter the backward map. Step backward again, and ask the same question of the new boundary. Repeat until the map stops growing. The result is a hard boundary: on one side, you can still escape; on the other side, all control paths lead to the same fate."
+        },
+        {
+          "t": "para",
+          "html": "This is the 'backward' part of backward reachability: you start at the ending (the target or the danger) and ask which earlier moments could still affect it. The map it produces is the set of 'safe states' — states from which the system can be steered to the goal by someone who acts legally and sees the disturbance in the worst possible light."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — the safe/doomed boundary sits at 2.0 to 2.5 meters per second",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured. We set up a cart 2 meters from a wall and swept its speed from low to high, asking at each speed: can a plan with a 10-step horizon (2 seconds of look-ahead) find a stopping sequence before hitting the wall? The force limit is real — the cart can brake or push with at most 1 unit of force each second. The script is listed in the recipe; the results are the planner's output verbatim."
+        },
+        {
+          "t": "bars",
+          "caption": "At low speeds, the planner finds a stopping sequence easily. At high speeds, no legal braking can stop in time. The boundary is sharp.",
+          "rows": [
+            [
+              "0.5 m/s",
+              1.0,
+              "CAN STOP"
+            ],
+            [
+              "1.0 m/s",
+              1.0,
+              "CAN STOP"
+            ],
+            [
+              "1.5 m/s",
+              1.0,
+              "CAN STOP"
+            ],
+            [
+              "2.0 m/s",
+              1.0,
+              "CAN STOP"
+            ],
+            [
+              "2.5 m/s",
+              0.0,
+              "ALREADY DOOMED"
+            ],
+            [
+              "3.0 m/s",
+              0.0,
+              "ALREADY DOOMED"
+            ],
+            [
+              "6.0 m/s",
+              0.0,
+              "ALREADY DOOMED"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: there is a hard speed that marks the edge.</strong> Push the cart at 2.0 meters per second from 2 meters out and a 10-step look-ahead plan finds a way to stop safely. Increase the speed by half a meter per second to 2.5 and <em>no plan stops in time</em> — the laws of physics forbid it. The boundary between the safe set and the lost set sits between these two speeds. Below it, your controls are strong enough. Above it, your controls are not strong enough. No planning algorithm can rewrite physics."
+        }
+      ]
+    },
+    {
+      "id": "boundary",
+      "h2": "4 · Reading the boundary — what the hard edge means for a controller",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "This boundary is the true safety line. A naive controller that only checks 'is the wall still ahead?' will happily let the cart cruise at 5 meters per second when it is 3 meters away, because the wall is indeed still ahead and the math looks safe in one step. Reachability asks a different question: 'Can I guarantee a full stop before I hit, given my brakes and my horizon, even if disturbance makes things worse?' The answer is no. The cart is already in the lost region."
+        },
+        {
+          "t": "para",
+          "html": "From the run above, a cart at 2 meters away is safe only if its speed is at most 2.0 m/s (with a 10-step horizon and the given brakes). If you see the cart creep into the 2.5 m/s range, the only safe act is not to plan a clever exit — it is to refuse the command. The state is outside the reachable set. In real systems, this refusal is called <strong>collision avoidance filtering</strong> — a hard check that says 'your commanded action would take me into a zone I cannot escape from, so I am not doing it.'"
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — computing the exact set is expensive in many dimensions",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The cart in the run above is a toy: two numbers (position and speed). Its reachability map is a line. Real systems have many more dimensions. A drone has position in 3D space, velocity in 3D, attitude (pitch, roll, yaw), and angular rates — 12 numbers at least. Each dimension the system gains explodes the cost of computing the backward set. For a coarse discretization of each dimension, the number of states to check grows as a power of the number of dimensions. Computing an exact reachable set for a 12-dimensional drone from scratch is out of reach."
+        },
+        {
+          "t": "para",
+          "html": "Practitioners work around this in several ways. Some projects use <strong>approximations</strong> — overapproximations that are easier to compute and still prove safety (though they may forbid some actually-safe actions). Others use <strong>local computation</strong> — compute the reachable set only near the current state and re-compute each cycle. Still others <strong>assume a model</strong> — if you trust your learned dynamics model or your linearization around a trajectory, the set you compute is only as good as that model. None of these is free. The cost is the honest price of guaranteeing safety in high dimensions."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this boundary is the safety fence inside every modern controller",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Reachability looks like an academic abstraction — a set, a boundary, a proof. In practice, it is the hidden spine of every safe controller in the real world."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Collision avoidance filters</strong> (the 'pass or reject' layer that checks a command before it goes to the robot) are built on backward reachability: if the current state is outside the reachable set for the goal, the filter says no. <strong>Model-predictive control (MPC)</strong> uses reachability twice: first, it re-solves a short-horizon optimization each step, and the result only works if it stays feasible — which it does because the terminal state (the state you expect to be in at the end of the look-ahead window) lies in the backward reachable set of the true goal. Second, MPC detects infeasibility when the current state steps outside the reachable set; it then declares the system unsafe and stops optimizing, alerting the operator. <strong>Learning-based policies</strong> that want to prove safety use reachability as a certificate: if a learned policy can be shown to keep the state inside the backward reachable set of the goal, the policy is safe by the laws of motion, not just by luck on the training set."
+        },
+        {
+          "t": "insight",
+          "html": "The 2.0–2.5 m/s boundary you saw in the cart run is a tiny instance of the most important safety concept in control engineering. Backward reachability is the language in which we ask 'can I still do this?' before we ask 'is this the cheapest way?' Every collision avoidance guarantee, every constraint that keeps a learning algorithm from crashing, every recursive-feasibility promise in a receding-horizon method traces back to computing or approximating the sets from which the goal is still reachable. It is the first line of defense between planning and crashing."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ],
+    [
+      "value-function.html",
+      "value function"
+    ]
+  ],
+  "recipe": {
+    "summary": "Cart on a line, state = [position, velocity], force limited to [-1, 1], dt=0.2. Model-predictive control planner with 10-step horizon. For each speed in {0.5, 1.0, 1.5, 2.0, 2.5, 3.0, ..., 6.0} m/s, call the planner from position 2.0 m to find a stopping sequence; record whether a feasible plan exists (CAN STOP) or not (ALREADY DOOMED). Run with Python.",
+    "eq": "For discrete time: the reachable set R_k (states reachable to goal in k steps) is computed backward:\nR_0 = T_goal (the target set)\nR_{k+1} = {x : ∃ control u, ∀ disturbance w, next_state(x, u, w) ∈ R_k}\nThe boundary you see is the limit of R as k → horizon length. States inside are safe; states outside are lost.",
+    "note": "Full script: scripts/experiments/mpc_run.py, EXP3 section. Numbers reported are the planner's feasibility output and the speeds swept, verbatim from the measurements."
+  }
+}

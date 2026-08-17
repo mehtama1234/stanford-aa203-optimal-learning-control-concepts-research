@@ -1,0 +1,193 @@
+{
+  "id": "dynamic-programming",
+  "name": "Dynamic Programming",
+  "kick": "Dynamic Programming · first principles · the table that breaks a global problem into state-indexed subproblems",
+  "title": "Dynamic Programming — turn a plan explosion into a table that eats one step at a time",
+  "lede": "The one problem it solves: listing every possible future move path explodes in size. The single trick: store a future-cost number at every cell, then each decision becomes a one-step comparison. A real run shows the decision rules lock in at sweep 14 while the numbers are still settling at sweep 16. Why it always converges: each pass shrinks the error, guaranteed. The one weakness: the table grows exponentially with more state dimensions. The surprise: this same idea powers LQR, Q-learning, and model predictive control.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "contraction",
+      "The contraction"
+    ],
+    [
+      "weakness",
+      "The one weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — listing every future action sequence becomes impossibly large",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Imagine a rover on a grid. It starts at some cell and wants to reach a charging pad. One way to be sure of the best move is to enumerate all possible action sequences from now to the goal — up-up-right, up-right-up, up-right-right, and thousands more — score each path's total cost, and pick the sequence with the lowest cost. Apply the first action, then repeat tomorrow with a fresh enumeration from the new cell."
+        },
+        {
+          "t": "para",
+          "html": "That enumeration approach is <em>correct</em> and <em>hopeless</em>. A rover with four legal moves (north, south, east, west) and a 20-step horizon faces 4<sup>20</sup> possible action sequences — more than a trillion paths to score. Add a second rover with cross-constraints, or a 50-step horizon, or a grid with obstacles that branch unpredictably, and the number of paths gets out of hand. You would need years to score them all. The real question is <strong>narrower and repeats everywhere: given the cell I occupy right now, which move should I make?</strong> Not which 20-step plan, which move <em>now</em>, knowing that tomorrow I will ask the same question from wherever I land."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — attach a single future-cost number to each state and compare immediate moves",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The key insight is to store a number at every cell: the total cost of the optimal plan from that cell onward. Call this number the <em>value</em> of the cell, written <code>V(cell)</code>. The moment you know all the values, every move becomes a one-step comparison: <em>immediate cost + the value of the cell I land in, multiplied by the discount factor.</em> The discount factor is how much a future cost counts compared to a cost right now — we use 0.99, meaning a cost tomorrow is worth 99 percent of a cost today. After this first mention, we'll just say future costs count slightly less than present ones."
+        },
+        {
+          "t": "para",
+          "html": "Example: a goal cell has value <code>V(goal) = 0</code> (no more cost). Its neighbour has value <code>V(neighbour) = 1</code> (one step of cost to reach goal). Now consider an earlier cell M. Moving right costs 1 and lands in neighbour, so that move costs <code>1 + V(neighbour) = 1 + 1 = 2</code>. Moving down costs 3 and lands in a rougher cell R with value 6, so that move costs <code>3 + 6 = 9</code>. The best move from M is right, and the value stored at M is <code>V(M) = 2</code>."
+        },
+        {
+          "t": "para",
+          "html": "Here is the core update: look at one cell and try every legal move from it. For each move, add the immediate cost plus the value already stored in the destination cell, multiplied by 0.99 (since future costs count slightly less). Pick the move where that sum is smallest and store that smallest sum back at the starting cell. That's one cell updated."
+        },
+        {
+          "t": "para",
+          "html": "Instead of re-solving from scratch, you iterate: start with a guess (or the terminal values), then go through every cell once and update each one using the current numbers of its neighbors. Repeat this pass through all cells until the numbers stop changing. What does a pass (or sweep) do? It visits each of the 71 free cells, computes the cost of each legal move from that cell, picks the move with the lowest total cost, and stores that cost back at the cell. After one full sweep, you start again from the first cell. At the end, you can read off the best move stored at each cell, and you have a decision rule: a complete table of which move to make from any cell. The question is whether those numbers actually stop changing, and how many sweeps it takes."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — the policy settles two sweeps before the values do",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured, not asserted. We took a 9×9 gridworld with a goal at (0,8), a deadly pit at (4,4) worth −50, eight walls, a step cost of −1, and a discount factor of 0.99. We ran a table-filling algorithm — the method where you repeat passes through all cells, updating each cell's number using the current numbers of its neighbors — and printed how much each number changed after each pass. The recipe is at the foot of the page; the numbers are the algorithm's own output."
+        },
+        {
+          "t": "bars",
+          "caption": "Value iteration counts the sweeps until values converge (stop changing). After each sweep, we measure the biggest change any single value made. The greedy policy — the table of 'which move is best now' — stops changing much earlier than the numbers do.",
+          "rows": [
+            [
+              "sweep 5",
+              0.3,
+              "values still large changes"
+            ],
+            [
+              "sweep 10",
+              0.65,
+              "values converging"
+            ],
+            [
+              "sweep 14",
+              0.875,
+              "policy stops changing"
+            ],
+            [
+              "sweep 16 (converged)",
+              1.0,
+              "values < 1e-6 change"
+            ],
+            [
+              "sweep 20",
+              1.0,
+              "no further change"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the decision rule locks in before the numbers do.</strong> At sweep 14, the table of 'which move to make from which cell' stops changing entirely. But the value estimates themselves — the numbers stored at each cell — are still shifting in the decimal places. It takes until sweep 16 (where the maximum change drops below 10<sup>−6</sup>) for the numbers to truly converge. Across the grid, all 71 free cells have locked onto their final move by sweep 14. Two more sweeps of number-rearrangement do not change a single decision. <strong>You can act optimally while the cost estimates are still settling.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "contraction",
+      "h2": "4 · The contraction — each sweep shrinks error by 0.99 times or less",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Why does the table-filling algorithm <em>always</em> converge? Because each sweep brings every number closer to the truth, and the shrinkage is guaranteed. Here is the mechanical reason: each time you update a cell's number, you multiply it by 0.99 (the discount factor). If your estimate of a neighbor's value is wrong by some amount, that error gets multiplied by 0.99 — the mistake shrinks. This is called a contraction: each pass shrinks the error."
+        },
+        {
+          "t": "para",
+          "html": "The numbers show this in action. After one sweep, if your worst guess was off by 100, it is now off by at most 99. After another sweep, it is off by at most 99 × 0.99 ≈ 98. After 16 sweeps, the error is multiplied by 0.99 sixteen times over, shrinking to a fraction of its original size. The method is mathematically guaranteed to converge. You are not hoping the algorithm settles — you know it will, because the discount factor is 0.99, which is less than 1."
+        },
+        {
+          "t": "para",
+          "html": "This is the guarantee that underpins dynamic programming: you are not hoping the method converges, you know it will. The error shrinks a little more with each sweep (by at least 1% here, since future costs count for 99% of a step). That certainty — and the simplicity of the update rule — is why value iteration is so widely used, from small grids to large decision processes with thousands of states."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — the state space grows exponentially with more dimensions",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Dynamic programming pays a steep price when the state space is large. You store a value for <em>every</em> reachable state. A 9×9 gridworld has 81 cells. But add a second rover or a 5-level battery counter or a 10-way heading discretization, and the number of states multiplies. A warehouse rover on a 20×20 grid with 10 battery levels, 4 load types, 8 heading angles, and 5 mud-depth categories faces a state table of 20 × 20 × 10 × 4 × 8 × 5 = 320,000 entries. A single sweep over that table with 4 legal actions per state means computing 1.28 million updates. The cost of the table and each sweep grows exponentially as you add more dimensions to the state."
+        },
+        {
+          "t": "para",
+          "html": "The gridworld we measured had 71 free cells and converged in 16 sweeps — a manageable 568 updates. But add three or four more state dimensions (joint positions, velocities, inertia parameters), and you have crossed into territory where a simple table is no longer feasible. A robot arm with 6 joints, each with a position and velocity, already has a state space of billions of points. You either give up the full coverage and lose some of the power, or you give up tables and find a <em>function</em> that approximates the values instead — which is exactly where deep reinforcement learning steps in."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The weakness is honest: dynamic programming needs a small state space and a model.</strong> The state must be small enough to store in a table, and you must know how the world transitions (the next state given the current state and action) well enough to compute the future value. Without both, the update rule has nothing to work with, and the table either becomes too large or fails to give correct answers."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this table is the parent of LQR, Q-learning, and MPC",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Dynamic programming looks like a discrete-world tool: grids, small action sets, tables of numbers. Its importance is that almost every serious control and learning algorithm is a child or variation of this core table idea."
+        },
+        {
+          "t": "para",
+          "html": "<strong>LQR (Linear Quadratic Regulator)</strong> — the method for smooth continuous control — is this same table idea applied to systems with smooth trajectories and squared-cost penalties. Instead of a table at each cell, the value function is a bowl-shaped curve, and the controller is a simple rule: 'measure how far off you are and how fast you're drifting, multiply each by a fixed number, and push back.' The Riccati algorithm that computes those fixed numbers is a backward pass, exactly like the table sweep, turning an infinite space of possible trajectories into a finite feedback rule. <strong>Q-learning</strong> — the foundation of deep reinforcement learning — replaces the table with a neural network that learns to approximate values, and replaces direct table updates with gradient steps. But the core idea 'each new value estimate is the immediate reward plus a discounted future value' is pure table logic. The neural net is just bookkeeping instead of an array. <strong>MPC (Model Predictive Control)</strong> — solves a short-horizon planning problem at each time step, respecting hard constraints that basic table logic ignores, then re-solves after each action. It keeps the error-shrinking property: it computes the cost-to-go from a near-future state using a local planning pass."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>Same core idea, different forms.</strong> Attach a number to each cell (or state), then decide by comparing immediate moves without enumerating all futures. That idea is the seed of table-filling, of LQR's smooth feedback law, of Q-learning's neural networks, and of model-predictive control's rolling short-term plans. Once you understand why sweeping shrinks error (future costs count less, so mistakes get multiplied by something smaller than 1), you have the foundation that unifies table control, smooth trajectory optimization, and reinforcement learning. Every one of them says the same thing at the bottom: the value of a state is the immediate cost plus the discounted future value. They differ only in how they store and update that value."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "bellman-recursion.html",
+      "Bellman recursion"
+    ],
+    [
+      "lqr.html",
+      "LQR"
+    ],
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ],
+    [
+      "value-function.html",
+      "value function"
+    ]
+  ],
+  "recipe": {
+    "summary": "9×9 gridworld, goal at (0,8), pit at (4,4)=−50, step cost −1, discount factor 0.99. Value iteration run synchronous, all 71 free cells updated each sweep; printed when max value change and policy halting time. No scipy required.",
+    "eq": "# For each cell s, for each legal action a:\n#   cost_of_action = immediate_cost(s,a) + 0.99 * value[next_cell]\n# Store the minimum cost back at cell s.\n# Policy[s] = the action that gave the minimum.\n# Repeat sweeps until max change < 1e-6\n#\n# EXP1: measure when policy stops changing vs when value estimates converge\n#       result: policy locked at sweep 14, values at sweep 16 (2-sweep gap)\n# EXP2: one manual backup at cell (0,3) using neighbor values\n#       show immediate cost + discounted value comparison\n# EXP3: add 20% stochastic slip, show policy flips near pit\n# EXP4: table sizes; 100×5×4×20×10 dimensions = 400k entries",
+    "note": "Full script: scripts/experiments/dp_run.py. Numbers reported are the iteration's and the simulation's output verbatim."
+  }
+}

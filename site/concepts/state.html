@@ -13,6 +13,7 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +27,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>State</h1>
 <p class="lede">The information carried forward because it is enough to predict what the system can do next.</p>
+<p><a href="state-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>A controller cannot remember every past detail, but it needs the pieces of the present that determine future motion.</p>
-    <p>A common wrong first move is: Store whatever measurements are available. It fails when some measurements are redundant, while missing velocity, battery charge, or contact mode can make the same position require different actions.</p>
+    <p>A beginner might assume that the current position or height alone determines what will happen next. A car at y = 0.20 meters left of center is just a number, until you realize that two cars at the same position—one steady and one drifting sideways at 1.5 m/s—will respond very differently to the same steering command. Position alone did not carry enough memory.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a state vector or structured state description. Use it when you need to ask what must be known now to predict the effect of the next action.</p>
-    <p>What the object does: Update the state through the dynamics after each action.</p>
+    <p>A controller must remember the pieces of the present that determine what can happen in the next moment. You need more than a snapshot; you need the information that a dynamics model will use to predict the next state. For a car, that is position and velocity; without velocity, you cannot say whether the car will veer away or collide after a steering command. For a battery, it is charge and temperature; for a shower, it is water temperature and pipe temperature. These pieces together form the state. The state is the minimal record that carries forward all the information the dynamics and cost need to rank futures.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a state vector or structured state description in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Update the state through the dynamics after each action. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>Take the car from the worked example at y = 0.20 meters with two scenarios. Car A has v_y = 0 m/s; Car B has v_y = -1.50 m/s. Apply steering u = +5 degrees for dt = 0.2 seconds. The update rule is y_next = y + dt*v_y. Car A predicts y_next = 0.20 + 0.2*0.00 = 0.20 meters. Car B predicts y_next = 0.20 + 0.2*(-1.50) = -0.10 meters. The same position and steering command produce different next positions because the sideways velocity was different. If you recorded only y = 0.20 as the state, you would falsely treat both cars as identical, and your predictions would be wrong for one of them.</p>
     <p>The world check is the example: A car&#x27;s lane position is not enough; speed and heading decide whether a steering command is safe. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +61,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The chosen state must contain the information needed by the dynamics and cost.</p>
-    <p>When that condition fails, look for this visible break: a controller built on an incomplete state may take identical actions in situations that are physically different.</p>
+    <p>The state must contain every variable that the dynamics use to compute the next step and every variable that the cost uses to score outcomes. If battery temperature does not appear in the state, the controller cannot check whether a climb violates the heat limit. If floor grip is missing from the state, two carts at the same position and speed will be treated as identical even though one is on wet floor and one is on dry floor. A hidden state variable turns different physical futures into a single predicted future.</p>
     <p><strong>Recognize it in a new problem:</strong> Ask what must be known now to predict the effect of the next action.</p>
   </div>
 </section>

@@ -13,6 +13,7 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +27,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>LQR</h1>
 <p class="lede">A control method for linear dynamics and quadratic costs that produces a structured feedback law.</p>
+<p><a href="lqr-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Near a nominal operating point, the controller needs fast feedback that trades state error against control effort.</p>
-    <p>A common wrong first move is: Re-solve a full nonlinear trajectory problem at every tiny deviation. It fails when that is too slow when the system only needs local corrections.</p>
+    <p>A delivery cart is 20 centimeters left of the center line. A simple proportional steerer—push back the full measured error—seems wise: u = -0.20 (20 centimeters to the right). But steering has a price. If harsh steering wears the cart or burns battery, pushing back all the error at once costs more in steering wear than the cart saves by reaching the line one step sooner. A cheap answer would accept a bigger sideways offset now to avoid the steering cost, but by how much? Guessing wastes effort.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is linear dynamics, quadratic cost, riccati recursion, and feedback gain. Use it when you need to look for small deviations around a nominal trajectory with quadratic penalties.</p>
-    <p>What the object does: Use quadratic value structure to compute how the control should respond to state error.</p>
+    <p>A controller near a nominal operating point must trade between two costs that pull against each other: the discomfort of being off the nominal trajectory and the cost of the steering effort needed to correct it. The controller needs a feedback rule that sees the current deviation and automatically computes the right correction—neither too harsh nor too weak—given those two cost rates. That rule must be fast to compute because it runs in every control cycle. In a linear dynamical system with quadratic costs, the optimal feedback rule is a linear gain applied to the state error, and finding that gain is a structured recursive problem. That is what LQR—linear-quadratic regulator—provides: a clear method to compute the feedback gain given the local linear dynamics and the relative weights on state error and control effort.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to linear dynamics, quadratic cost, riccati recursion, and feedback gain in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Use quadratic value structure to compute how the control should respond to state error. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>In the worked run below, the cart has lateral error e = 0.20 and local dynamics e_next = e + u. One-step cost is 5*e^2 (discomfort of being off-center) plus u^2 (steering effort) plus a future penalty 20*e_next^2. Substituting the dynamics, minimize 5*(0.20)^2 + u^2 + 20*(0.20 + u)^2. Taking the derivative: 2u + 40*(0.20 + u) = 0, so u = -0.190. For a general error e, the same derivative gives 2u + 40*(e + u) = 0, yielding u = -(20/21)*e, a feedback gain K = 20/21. If steering is made four times more expensive (cost 4*u^2 instead of u^2), the derivative is 8u + 40*(e + u) = 0, so u = -(5/6)*e and K = 5/6. Same state, different weights, different gain.</p>
     <p>The world check is the example: A drone hovering near level flight can use local feedback to correct small position and velocity errors. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +61,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The local linear-quadratic approximation must be valid for the deviations seen.</p>
-    <p>When that condition fails, look for this visible break: large nonlinear motion breaks the local model and the feedback becomes unsafe.</p>
+    <p>LQR assumes the linear dynamics and quadratic costs hold over the range of deviations the controller will see. If the cart is 70 centimeters off-center, the gain calls for u = -(20/21)*0.70 = -0.667 meters of steering, but the actuator clips to |u| &lt;= 0.10. The controller cannot deliver the requested correction, the cart remains 0.60 meters off, and it has left the regime where a small linear model is valid. Equally, the method cannot handle hard state constraints—like keeping the cart within the lane—or model errors such as tire slip or wind disturbances that break the written linear dynamics. LQR is a local method; when the state deviations grow large or actuator limits bind, the linear feedback law stops being the right full explanation.</p>
     <p><strong>Recognize it in a new problem:</strong> Look for small deviations around a nominal trajectory with quadratic penalties.</p>
   </div>
 </section>

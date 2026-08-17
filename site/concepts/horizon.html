@@ -13,6 +13,7 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +27,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Horizon</h1>
 <p class="lede">How far into the future the controller is asked to reason.</p>
+<p><a href="horizon-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Planning one second ahead and planning the whole mission are different problems.</p>
-    <p>A common wrong first move is: Pick an arbitrary lookahead window. It fails when a short horizon can miss delayed consequences; a long horizon can be too expensive or depend on unreliable forecasts.</p>
+    <p>A beginner might optimize over the next second because it is easy to predict, forgetting that the real consequence arrives in three seconds. A delivery drone with a three-second lookahead might choose full speed, draining battery before it reaches the windstorm 5 seconds ahead. A car merging with horizon 0.1 seconds stays in the lane because it does not see the truck approaching. Cutting the horizon too short makes every locally cheap action look good right up until it fails.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a finite horizon, infinite horizon, or receding horizon. Use it when you need to ask when the consequences of a bad action first appear.</p>
-    <p>What the object does: Limit or extend the future cost summed by the optimization.</p>
+    <p>A controller must decide how far ahead to reason, because consequences take time to unfold. A short lookahead avoids costly prediction, but it can miss the event that makes today&#x27;s choice catastrophic. A long lookahead catches distant risks but depends on weak forecasts and can be too expensive. The horizon is the window into the future that the optimizer is asked to weight; it determines which costs and constraints can influence the first action chosen.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a finite horizon, infinite horizon, or receding horizon in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Limit or extend the future cost summed by the optimization. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>Take the delivery drone from the worked example: 60 meters from pad, 8 m/s speed, 18 percent battery. Each second of full speed uses 2 percent battery and covers 8 meters. Each second of slow speed uses 1 percent battery and covers 4 meters. There is a wind band from 25 to 40 meters requiring 14 percent battery reserve to cross safely. With a 3-second horizon, you see 24 meters (full speed) or 12 meters (slow). Full speed costs 6 percent battery, leaving 12 percent. The score inside 3 seconds favors full speed. But at 5 seconds, full speed reaches 40 meters and leaves 8 percent battery, which is below the 14 percent reserve. The 3-step plan is locally good but globally illegal. A 10-second horizon reaches the wind band and exposes that neither full nor slow speed alone works; the controller needs a mixed strategy. The horizon length decided which future constraints and costs could veto the first command.</p>
     <p>The world check is the example: A car at position x=0 traveling at v=20 m/s must merge into a lane where a truck appears at x=100 m. If the planner has horizon N=1 (0.1 second lookahead), it sees the road is clear and plans to maintain v=20 m/s. One step later, the truck is now at x=98 m and collision is imminent. If horizon N=10 (1 second), the planner sees the truck approaching and begins deceleration at x=0: reduce to v=15 m/s over the first 0.5 seconds. After 1 second, x=16.25 m and the truck is at x=90 m, still safe.
 
 Horizon too short means the planner misses the truck entirely: optimal one-step action (maintain speed) is locally optimal but globally catastrophic. Horizon too long (N=100, 10 seconds) forces the planner to predict the truck&#x27;s behavior far in advance, which may be unreliable. The right horizon is 1 second: long enough to see the merge conflict clearly, short enough that prediction remains accurate. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
@@ -63,8 +63,7 @@ Horizon too short means the planner misses the truck entirely: optimal one-step 
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The horizon should match the time scale at which consequences become visible.</p>
-    <p>When that condition fails, look for this visible break: the controller repeatedly makes greedy moves because the real cost lies just beyond the horizon.</p>
+    <p>The horizon should be long enough to reach the first consequence that can change the best first action. If the real danger appears after the horizon ends, the optimizer cannot price it, and the controller is blind to it. If the horizon is so long that it depends on guesses far into an unreliable future, those guesses can dominate the near-term choice. A useful horizon reaches the first event that matters and stops before the guesses overwhelm the model.</p>
     <p><strong>Recognize it in a new problem:</strong> Ask when the consequences of a bad action first appear.</p>
   </div>
 </section>

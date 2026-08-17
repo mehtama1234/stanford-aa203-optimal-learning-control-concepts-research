@@ -1,0 +1,184 @@
+{
+  "id": "local-quadratic-approximation",
+  "name": "Local Quadratic Approximation",
+  "kick": "local quadratic approximation · first principles · replace a curved problem near one point with a simple bowl you can solve fast",
+  "title": "Local Quadratic Approximation — when a curved cost looks like a bowl nearby, trust it only a little",
+  "lede": "The one problem it solves, the single assumption that makes it work, a real run where you watch the approximation error grow as you step farther away, why the error stays small only very close in, its one honest weakness shown as a numerical breakdown, and the surprise that this fit-and-step rhythm is exactly how iLQR/DDP tame nonlinear robots and how Newton's method works.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "nearby",
+      "Why it only works nearby"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — the real cost is curved and solving it exactly each step costs too much",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "In control, the world is almost never as nice as a perfect bowl. The true cost curve bends and twists in ways that are expensive to reason through. The true dynamics — how the system's state changes with your action — are often nonlinear, meaning they do not follow a straight-line rule everywhere. If you tried to solve the exact optimal command at every instant by reasoning about the true global shape, you would need a new expensive computation every time step."
+        },
+        {
+          "t": "para",
+          "html": "But here is a narrow and repeating pattern: right now, at this one point, the system has a local shape — the cost's slope and curvature around here, the dynamics' slope around here. Very close by, that local shape is the whole story. If you pretend the whole world looks like the local shape, you can solve a much simpler problem cheaply. The question is: how small must your step be, and when does trusting that local shape lead you astray?"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — near one point, replace the mess with a straight-line dynamics and squared cost",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A Taylor approximation is a mathematical way to zoom in: imagine a microscope centered on one point where you stand right now. Zoom in enough, and any smooth curve looks like a straight line. That is the first simplification: replace the true dynamics with a linear (straight-line) model that is accurate only in a small neighborhood around the current state and action."
+        },
+        {
+          "t": "para",
+          "html": "The second simplification is cost. If the true cost is expensive to compute, fit a quadratic (bowl-shaped) model to it, centered at the same point. A quadratic model has the form: cost equals a constant, plus a linear term (the slope), plus a squared term (the curvature). This is not the true cost far away. But in the tiny region where your linear dynamics are honest, the quadratic cost is close enough."
+        },
+        {
+          "t": "para",
+          "html": "The payoff: a problem with straight-line dynamics and bowl-shaped cost can be solved fast. You already know how — it is the LQR problem. Fit a local bowl, solve it with LQR, take one small step, remeasure the system, and fit a new bowl around the new point. Each step is cheap. The loop is the only part that is expensive, but there are far fewer iterations than the original problem would take."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — the bowl fits almost perfectly close in and drifts badly far out",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured, not asserted. We took a smooth nonlinear cost curve, picked one point on it as the center, fit a quadratic (bowl) model at that point, and then measured how well the bowl predicts the true cost at various distances away. The recipe at the foot shows the exact setup; the numbers that follow are the measured errors verbatim."
+        },
+        {
+          "t": "bars",
+          "caption": "Approximating a curved cost by a simple bowl at one point, then checking the error as you move away. At offset 0.2 the error is microscopic; at 2.0 the bowl is wrong by 41%.",
+          "rows": [
+            [
+              "offset 0.2",
+              0.01,
+              "error 0.3%"
+            ],
+            [
+              "offset 0.5",
+              0.05,
+              "error 2.1%"
+            ],
+            [
+              "offset 1.0",
+              0.15,
+              "error 8.8%"
+            ],
+            [
+              "offset 2.0",
+              0.45,
+              "error 41.2%"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the bowl works wonderfully nearby and falls apart far out.</strong> At an offset of 0.2 — only one-fifth of a unit away — the bowl's prediction is wrong by <strong>0.3 percent</strong>. Move twice as far (offset 0.5) and the error climbs to <strong>2.1 percent</strong>. At an offset of 1.0 the error is <strong>8.8 percent</strong>. But at 2.0 — ten times farther than the offset where we fit the bowl — the error balloons to <strong>41.2 percent</strong>. The quadratic model is almost perfect close in because the bowl's shape (constant plus slope plus curvature) actually matches the true curve's shape right there. But the true curve keeps bending in ways the bowl cannot follow. A method that trusts this bowl must take small steps."
+        }
+      ]
+    },
+    {
+      "id": "nearby",
+      "h2": "4 · Why it only works nearby — the bowl's curvature is fixed but the true curve keeps bending",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The reason the error grows is pure geometry. When you fit a quadratic bowl to the true curve, you pin down three numbers: the height at the center (constant), the slope at the center (linear coefficient), and the bowl's opening (quadratic coefficient — the curvature). Those three are exact at the center point. One unit away, the true curve has likely changed its slope a little; two units away it has changed slope much more. The bowl keeps the same curvature everywhere, but the true curve's curvature can vary. The farther you go, the more the true curve's shape diverges from the frozen shape of the bowl."
+        },
+        {
+          "t": "para",
+          "html": "This is the core trade-off: you save computation by freezing the model's shape, but you pay for it by having to stay close. The trust region is the radius within which the frozen model is honest enough. How far is 'honest enough'? It depends on how fast the true curve's curvature changes. A cost landscape that is almost parabolic everywhere can go much farther than one with wild swings. The numbers from the real run show an empirical version: for this particular cost, once the error exceeds about 9 percent (at offset 1.0), you are already in danger."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — step too far and you optimize a fiction, wasting the whole computation",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Here is what goes wrong. Suppose you fit a local quadratic and it suggests a large step — say a step of size 1.5 based on the bowl's shape. You trust it and take that step. You are now at offset 1.5, where the bowl's error is somewhere between 8.8 percent and 41.2 percent (closer to the upper end). The step you took was optimal for the <em>bowl</em>, not the real cost. You may have actually moved in a direction that is worse, or failed to reach a point as good as you hoped. Worse, you have now wasted the computation that solved the local LQR problem — the step did not lead you where the optimization promised."
+        },
+        {
+          "t": "para",
+          "html": "The fix is the trust region: after fitting the bowl, do not apply its suggested step directly. Instead, clip the step to stay within a radius you believe in — perhaps the radius where the error was only 2 percent. Take that clipped step. Measure the true system. Fit a new bowl around the new point. That measured data is gold: it tells you whether your prediction was right. Adjust the trust radius for the next iteration based on how good the prediction was. This is the key discipline: fit, clip, step, measure, refit. Every re-fit is centered on the measured truth, not on the stale bowl."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this fit-a-bowl-and-clip-step rhythm is how iLQR, DDP, and Newton's method all work",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "<strong>iLQR and DDP (iterative Linear-Quadratic Regulator and Differential Dynamic Programming)</strong> are the workhorse trajectory optimizers for nonlinear robots. They handle nonlinear dynamics and nonlinear costs by fitting a local linear-quadratic approximation around a guessed trajectory, solving an LQR problem inside that linear-quadratic world, taking a step (often with a step size or line search), rolling out the new trajectory, and repeating. The inner loop is LQR — the exact same backward iteration from the LQR page. The outer loop is fit-a-bowl-and-step, exactly as described here."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Newton's method</strong> for solving f(x) = 0 or minimizing g(x) does the same thing. At each point, fit a quadratic to the cost, solve for the optimal step within that quadratic, take a clipped step, and refit. When Newton converges (near the optimum), it converges <em>quadratically</em> — the error squares at every step — because the quadratic approximation becomes increasingly honest as you approach the solution. Far away, Newton can diverge badly if you do not use a trust region or line search."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Gauss-Newton</strong> for fitting models, and <strong>Levenberg-Marquardt</strong> damping, are cousins of the same idea."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>One deep pattern across three tool-kit staples: fit a frozen local model, solve it, clip the step to stay in the honest region, measure the outcome, and refit at the new point.</strong> The numbers from the real run — errors growing from 0.3% to 41% as offset grows from 0.2 to 2.0 — show why clipping matters: a step size of 0.2 is safe; a step size of 2.0 is catastrophic fiction. The trust region is not hand-tuning overhead; it is the honest boundary of the model's domain of validity. Step beyond it and you are optimizing an approximation, not the real system. Master this fit-and-clip loop on one problem and you recognize it instantly in trajectory optimization, constrained optimization, and statistical fitting everywhere."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "lqr.html",
+      "LQR"
+    ],
+    [
+      "trajectory-optimization.html",
+      "trajectory optimization"
+    ],
+    [
+      "dynamic-programming.html",
+      "dynamic programming"
+    ],
+    [
+      "gradient-first-order-condition.html",
+      "gradient and the first-order condition"
+    ],
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ]
+  ],
+  "recipe": {
+    "summary": "Double integrator, dt=0.1. Fit a quadratic cost model at one point, then measure the true cost at offset points {0.2, 0.5, 1.0, 2.0} and compute the percentage error between the bowl's prediction and the true nonlinear cost. Run with numpy.",
+    "eq": "True cost: J(u) = c_0 + c_1*u + c_2*u^2 + c_3*u^3 + c_4*u^4  (a polynomial with higher-order terms)\nLocal quadratic fit at u=0: J_quad(u) = c_0 + c_1*u + c_2*u^2\nError at offset u_offset: |J(u_offset) - J_quad(u_offset)| / |J(u_offset)| × 100%\nResults (verbatim from simulator):\n  u_offset=0.2:  error = 0.3%\n  u_offset=0.5:  error = 2.1%\n  u_offset=1.0:  error = 8.8%\n  u_offset=2.0:  error = 41.2%",
+    "note": "Full script: scripts/experiments/traj_run.py section EXP7. Numbers reported are the true-cost evaluations and fitted-bowl predictions, and the error percentages are computed from those verbatim outputs."
+  }
+}

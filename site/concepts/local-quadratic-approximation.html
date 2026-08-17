@@ -13,6 +13,7 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +27,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Local Quadratic Approximation</h1>
 <p class="lede">Replace a hard problem near a point with a simpler curved bowl that is easier to optimize.</p>
+<p><a href="local-quadratic-approximation-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Nonlinear control can be too hard globally, but near a candidate trajectory its local shape may be usable.</p>
-    <p>A common wrong first move is: Trust the local approximation everywhere. It fails when a local bowl only describes nearby behavior; far away the real dynamics and cost may bend differently.</p>
+    <p>You fit a simple bowl-shaped curve to how the cost changes when you nudge the control, compute the bottom of that bowl mathematically, and jump all the way there in one step. The bowl fit uses data from small nudges around the current point—you tested -0.02, 0, and +0.02 meters—but the computed best point says jump 0.12 meters. That is five times farther than the data that fit the bowl. Outside that neighborhood, the real cost landscape is not a bowl; it may have a ridge, a cliff, or a different slope entirely. You jump to the computed optimum and land on a part of the landscape the bowl never described.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a taylor approximation, linearized dynamics, or quadratic cost model. Use it when a hard nonlinear problem is solved through repeated local models.</p>
-    <p>What the object does: Approximate locally, solve the easier problem, and update around a new point.</p>
+    <p>When the gripper is 6 centimeters too far left, you want to nudge it right, but before trying big moves you need to understand which direction helps and how quickly the improvement gets smaller as you move farther. By testing small adjustments—minus, zero, plus—you can see if moving right reduces cost and if the curve is bending upward (improvement shrinks). A quadratic shape (a parabola or bowl) fits this local data: it has a bottom, a steepness at the current point, and a bending rate. But that fit is only honest for nudges similar in size to the data used to fit it. Using the fitted bowl to predict what happens far away from the measured neighborhood is a lie. What you need is a repeated rhythm: fit the bowl in a small neighborhood, take one cautious step within that neighborhood, measure the cost there, refit the bowl around the new point, and repeat. Each step stays close enough that the bowl describes reality. This stepped approach using local quadratic approximations is how iterative controllers refine a plan.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a taylor approximation, linearized dynamics, or quadratic cost model in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Approximate locally, solve the easier problem, and update around a new point. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>The gripper starts too far left and the real cost surface has a steep wall (the bin rim) not far away. Test three nudges: delta u = -0.02 meters gives score 5.8, delta u = 0 gives score 4.0, delta u = +0.02 gives score 3.0. The slope at u=0 is about (3.0 - 5.8) / (0.04) = -70. The second difference is (5.8 - 2*4.0 + 3.0) / (0.02^2) = 2.8 / 0.0004 = 7000, which is the curvature. Fit a bowl q(delta_u) = 4.0 - 70*delta_u + 0.5*7000*delta_u^2. Taking the derivative and setting it to zero: -70 + 7000*delta_u = 0 gives delta_u_optimal = 0.01 meters. That is inside the tested band [−0.02, 0.02], so the prediction is credible. But the real landscape has a wall nearby: if you try 0.04 meters (twice as far as the data goes), the gripper hits the rim and the cost jumps to 12. The bowl predicted 4.0 - 2.8 + 1.4 = 2.6, way below the real 12. A safe controller clips the step to delta_u=0.02, applies it, and remeasures. New scores at -0.01, 0, +0.01 around the new center are 3.40, 3.15, 3.05. The gripper is now closer to the rim, so a new fit with c2=3.15, g2=-10, H2=833 suggests only delta_u2=0.012 meters, not another 0.02. The algorithm takes smaller steps the closer it gets to the wall because the bowl gets flatter. This is the essence: stay within the trust region where measurements exist, refit when you move, and let each new fit adapt to the changing landscape.</p>
     <p>The world check is the example: A walking robot can locally linearize around a planned footstep, but not around a fall. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +61,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The update must stay within the region where the approximation is credible.</p>
-    <p>When that condition fails, look for this visible break: the optimizer takes a step that is good for the approximation and bad for the real system.</p>
+    <p>The quadratic approximation is credible only inside the region where you actually fitted it. If the suggested step is much larger than the neighborhood used to fit the bowl, or if the prediction error grows (measured outcome is far from the fitted bowl&#x27;s forecast), the quadratic is explaining empty space. The wall, the bin rim, or a discontinuity in the contact model lives outside the fitted bowl&#x27;s territory. If the controller ignores the trust region and jumps far, the quadratic will lie about the cost and dynamics there, and the motion will fail.</p>
     <p><strong>Recognize it in a new problem:</strong> Use it when a hard nonlinear problem is solved through repeated local models.</p>
   </div>
 </section>

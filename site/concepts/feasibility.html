@@ -13,6 +13,7 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +27,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Feasibility</h1>
 <p class="lede">Whether there exists any action sequence that satisfies the constraints from the current state.</p>
+<p><a href="feasibility-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>A controller cannot optimize a plan that no physical or legal action can execute.</p>
-    <p>A common wrong first move is: Solve for the best plan and check constraints afterward. It fails when if no admissible plan exists, the optimizer&#x27;s output is not a plan; it is evidence that the setup is impossible or too tight.</p>
+    <p>You see a car too close to a truck at high speed and think &#x27;brake hard&#x27;—surely braking will work. But a wet road and tight spacing mean no braking sequence stops in time, the left lane has a box truck 0.5 meters away while you need 1.5 meters clearance, and the right side has a concrete barrier 0.8 meters out with the same clearance rule. In that instant, braking, swerving left, and swerving right all fail the constraints before they even start. The real question is whether any physical sequence of allowed commands can satisfy all the rules; if the answer is no, the state is not a planning problem—it is an emergency.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a feasible set or recursively feasible set. Use it before asking what is optimal; first ask whether anything legal remains possible.</p>
-    <p>What the object does: Check whether at least one trajectory obeys all dynamics and constraints.</p>
+    <p>Before asking what plan is cheapest, a controller must first ask whether any admissible plan exists. This is the feasibility question: does at least one trajectory, starting from right now, obey the dynamics and respect all the constraints (speed limits, clearances, stop lines, acceleration bounds) without hitting any forbidden region? A single number like &#x27;distance to goal&#x27; is not enough—the system must track all the constraints that could block an action. The set of all states from which at least one legal plan exists is the feasible set, and it is the ground on which optimization stands.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a feasible set or recursively feasible set in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Check whether at least one trajectory obeys all dynamics and constraints. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>A car is 18 meters behind a stopped truck, traveling at 22 m/s with a wet-road braking limit of 6 m/s². Full braking requires v²/(2a) = 22²/(2*6) = 40.3 meters to stop. Since 40.3 &gt; 18, straight braking hits the truck—that plan is outside the feasible set. Steering left opens onto a lane with a box truck 0.5 meters away, but the safety rule requires 1.5 meters clearance; steering left fails. Steering right faces a barrier 0.8 meters away, also violating the 1.5 meter rule. At this state, every obvious action family violates a constraint, so the feasible set for this state and this action model is empty. Now move the car back to 45 meters behind the truck. The same braking needs 40.3 meters, and 40.3 &lt;= 45 is true, leaving 4.7 meters of stopping margin. Now the feasible set contains at least the full-brake plan. The switch from empty to non-empty happens because the starting position changed; feasibility is a state-dependent property.</p>
     <p>The world check is the example: If a car is too close to a wall at high speed, no braking command may avoid impact within the remaining distance. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +61,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>Feasibility depends on the current state, constraint model, horizon, and actuator limits.</p>
-    <p>When that condition fails, look for this visible break: an mpc controller repeatedly solves impossible subproblems and returns unstable or emergency behavior.</p>
+    <p>Feasibility depends on whether the model includes the escape routes that actually exist. In the original 18-meter scenario, a shoulder lane 12 meters ahead is an emergency escape, but if the first model never includes &#x27;steer into shoulder&#x27; as an action, that escape is invisible and the feasible set truly looks empty. A different model with shoulder-steering added will find a plan: brake hard 0.5 seconds (moving 10.25 meters and slowing to 19 m/s), then steer into the shoulder (using 2.0 meters of lateral clearance). The set is empty or non-empty depending on how rich the action model is, so a controller reporting &#x27;infeasible&#x27; is not lying about the road—it is reporting the truth about its model.</p>
     <p><strong>Recognize it in a new problem:</strong> Before asking what is optimal, ask whether anything legal remains possible.</p>
   </div>
 </section>

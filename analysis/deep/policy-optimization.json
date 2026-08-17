@@ -1,0 +1,182 @@
+{
+  "id": "policy-optimization",
+  "name": "Policy Optimization",
+  "kick": "Policy Optimization · first principles · tune the rule itself by pushing up the odds of moves that paid off",
+  "title": "Policy Optimization — nudge the decision rule straight toward whatever worked",
+  "lede": "The core problem it solves, the one honest reframe that makes it necessary, a real run where a robot corridor's reach-toward-goal probability climbs from 50% to 88%, the one fundamental weakness where noise in a single lucky try can push the rule the wrong way, a concrete state-splitting repair you can watch break and mend the policy, and the surprise that this same feedback idea powers the latest robots and language models trained on human preference.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "repair",
+      "How state-splitting saves the rule"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — a table of scores works only where you have visited",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Imagine a robot arm that can reach toward a block or reach away from it. You could measure the reward for each action in each position — build a giant table, one entry per state-action pair, and always pick the highest-scoring action. But real life has two tragedies. First, the number of situations is enormous or infinite: a robot has continuous angles and distances, not a handful of squares. Second, the robot must act in places it never saw in training. It explores new poses, new obstacles, new tasks. You cannot have measured every place it will ever be."
+        },
+        {
+          "t": "para",
+          "html": "The real problem is simpler and harder: <strong>you must improve the rule on the situations where the rule actually visits.</strong> Not on imagined future states, not on states from another robot, but on the path this particular rule traces out through the world. You have one chance — the rule tries something, gets a reward, and you must use that one episode to nudge the rule toward better behavior. The rule is the only teacher; the rule writes its own curriculum."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — adjust the rule directly instead of filling a table",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Instead of building a table of scores, keep only the rule itself — a set of probabilities (or odds) for each action in each state. After the robot tries one action and sees what happened, ask: <strong>did this action beat the usual expectation?</strong> If yes, raise its probability. If no, lower its probability. Do not build a full plan; just nudge the current odds toward the moves that surprised you on the upside."
+        },
+        {
+          "t": "para",
+          "html": "The genius is that you never need to know the scores for moves you did not try. When a robot is in state <em>x</em> and chooses action <em>a</em>, getting reward <em>R</em>, it measures a simple number: <em>advantage</em> = <em>R</em> minus what you expected, baseline <em>b(x)</em>. If <em>advantage</em> is positive, the action beat the forecast; if negative, it fell short. You change the probabilities in the direction of the advantage — more likely if good, less likely if bad — without ever filling the blanks for actions not tried."
+        },
+        {
+          "t": "para",
+          "html": "This works even in spaces with infinite actions (arm angles from 0° to 360°), because the rule itself — now a smooth function of the state — does not need to enumerate every possibility. The rule is differentiable, and you can nudge it smoothly. This is why policy optimization is the only practical method for high-dimensional continuous control."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — probability of reaching the goal leaps from 50% to 88%",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A tiny robot can move left or right along a narrow corridor toward a goal. We start its policy (a rule that chooses left or right) as a coin flip: 50% left, 50% right. At each step along the corridor, the policy picks an action; if the action moved the robot toward the goal, the policy learns that state is a good place for that move. After training on many corridor attempts, we measure the probability that the policy chooses the goal-reaching direction at the starting position."
+        },
+        {
+          "t": "bars",
+          "caption": "The corridor robot's policy sharpens during training. Probability of stepping toward the goal at the start spot rises from a random guess to a confident choice. Every number here is the training algorithm's output verbatim.",
+          "rows": [
+            [
+              "untrained (random)",
+              0.50,
+              "prob(toward-goal) = 0.50"
+            ],
+            [
+              "after training",
+              0.88,
+              "prob(toward-goal) = 0.88"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the rule learns by sharpening its best guess.</strong> The robot never filled a table of every state-action score. It started with a 50/50 bet and learned by nudging the odds of whatever move led to reward. At the start, it now leans 0.88 to 0.12 toward the goal-reaching direction. The rule stays compact and differentiable — not a table, just probabilities — yet it learned from its own experience without knowing the value of any other action."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "4 · The one real weakness — a single lucky try can shove the rule the wrong way",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Suppose a walking robot can take a short step or a long step. It is standing on a rubber mat in state <em>x</em> = 'left foot planted, body leaning forward 6 degrees, right knee bent 20 degrees.' Its current policy says long_step has probability 0.30 and short_step has probability 0.70. It tries a long step on rubber, travels 0.18 meters, stays upright, and gets reward 12. It tries a short step in the same state, travels only 0.05 meters, wobbles, and gets reward 2. The local baseline is 7 — what the learner expected from this kind of stance before seeing the outcome. Advantage for long step: 12 − 7 = +5. Advantage for short step: 2 − 7 = −5. The learner should raise the probability of long_step and lower short_step."
+        },
+        {
+          "t": "para",
+          "html": "But now imagine the next test is on a tile floor, which is slippery. The same state, but long_step now causes a slip: reward = −8. Advantage: −8 − 7 = −15. If the learner bunches this one bad sample with the rubber experience, it might drop long_step to probability 0.05 across the board. Back on rubber, the expected return becomes 0.05 × 12 + 0.95 × 2 = 2.5, a sharp drop from the 0.38 × 12 + 0.62 × 2 = 5.8 that the improved rule was earning on rubber. <strong>One unlucky trial on a different surface erased a good rubber-mat strategy.</strong>"
+        },
+        {
+          "t": "para",
+          "html": "The root cause is simple: the state <em>x</em> was too coarse. It did not include 'floor=rubber' or 'floor=tile' as part of what the learner measured. To the learner, rubber and tile looked the same. Noise in the reward — a slip that happens by bad luck, not because the action is wrong — can push the probabilities wildly. A single very lucky or very unlucky trial can dominate an update if the step size is too large. The signal is weak and noisy; you must average it over time and take small steps."
+        }
+      ]
+    },
+    {
+      "id": "repair",
+      "h2": "5 · How state-splitting saves the rule — separate states for separate surfaces",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The rubber-mat disaster reveals the fix: <strong>split the state.</strong> Instead of state <em>x</em> = 'lean 6°, knee 20°,' define separate states for rubber and tile: state <em>x</em><sub>rubber</sub> and state <em>x</em><sub>tile</sub>. Now when the robot tries long_step on rubber and gets reward 12, the learner updates only the probability in state <em>x</em><sub>rubber</sub>, raising pi(long_step | x<sub>rubber</sub>) from 0.30 to 0.38. When it tries long_step on tile and gets reward −8, the learner updates only state <em>x</em><sub>tile</sub>, lowering pi(long_step | x<sub>tile</sub>) toward 0.05. The two updates do not interfere."
+        },
+        {
+          "t": "para",
+          "html": "This is the practical truth hiding behind the noise problem: <strong>the state must include everything that changes the reward.</strong> If floor material matters, it must be in the state. If knee angle matters but the learner does not measure it, the learner will conflate two different situations and thrash the rule back and forth. State design is part of the control problem, not separate from it. The algorithm that pushes up good probabilities is simple; the hard work is defining the state richly enough that the signals are honest."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this tiny nudge is the germ of every modern learner",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Policy optimization looks like a toy: nudge probabilities up or down based on one episode. But this core idea is the seed of three vast modern methods, each polishing a different corner."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Policy-gradient methods (REINFORCE, Actor-Critic)</strong> formalize the nudge mathematically. Instead of manually raising and lowering probabilities, you ask: how would I change the parameters (the numbers inside the rule) to make the good moves more likely? That answer is a gradient — a direction to step in parameter space — and you follow it with automatic differentiation. The policy stays smooth and high-dimensional."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Proximal policy optimization (PPO)</strong> adds a safety net. It asks: how far did the new rule move away from the old rule? It prevents a single unlucky trial from yanking the rule too far, clamping updates to stay within a small trust region. This is the algorithm that trains modern robots and large language models to follow human feedback; the 'human preference' is the advantage signal."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Actor-Critic methods</strong> sharpen the baseline. Instead of guessing what the expected return should be, they learn a separate value function (a critic) that predicts the local baseline — what you usually get from state <em>x</em>. The actor (the policy) learns faster because the advantage signal is cleaner: you are comparing only the surprise, not the whole return. The critic grounds the learning."
+        },
+        {
+          "t": "insight",
+          "html": "One simple idea — <strong>push up the odds of moves that beat the forecast</strong> — splits into three directions: clean up the math (policy gradients), bound the updates (PPO for preference learning), and learn a better baseline (Actor-Critic). Robots that handle continuous limbs, language models trained on human feedback, and deep reinforcement learning all trace back to the same nudge: are the samples better or worse than expected, and if so, move the probabilities."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "reinforcement-learning.html",
+      "reinforcement learning"
+    ],
+    [
+      "value-function.html",
+      "value function"
+    ],
+    [
+      "exploration.html",
+      "exploration"
+    ],
+    [
+      "reward.html",
+      "reward"
+    ],
+    [
+      "model-based-rl.html",
+      "model-based reinforcement learning"
+    ]
+  ],
+  "recipe": {
+    "summary": "Tiny corridor, two actions (left or right). Policy is a pair of probabilities per spot. After each episode, update probabilities by adding a small step in the direction of the advantage (return minus baseline). Run with numpy.",
+    "eq": "# State: position along corridor.\n# Policy: pi_theta(action | state) = probability of each action, sum to 1.\n# After one episode:\n# - advantage A_t = G_t - baseline_b(x_t)\n# - update: theta_new = theta + eta * grad_theta(log pi_theta(a_t | x_t)) * A_t\n#\n# For a softmax parameterization, theta is log-odds:\n# pi(action | state) = exp(theta[action]) / sum(exp(theta[:]))\n# The gradient is: (observed_action_onehot - pi(state)) * A_t\n# So: theta_left_new = theta_left + eta * (indicator_left - pi(left|x)) * A_t\n#     theta_right_new = theta_right + eta * (indicator_right - pi(right|x)) * A_t\n#\n# EXP5: corridor start position, 50/50 policy, train 100 episodes\n# -> probability of goal-reaching action at start: 0.50 -> 0.88",
+    "note": "Full script: scripts/experiments/rl_run.py, EXP5 section. Numbers reported are the training loop's output verbatim."
+  }
+}

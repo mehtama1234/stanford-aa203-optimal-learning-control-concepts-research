@@ -1,0 +1,191 @@
+{
+  "id": "objective-cost-function",
+  "name": "Objective / Cost Function",
+  "kick": "Objective / Cost Function · first principles · the scoring rule that makes one future better than another",
+  "title": "Objective / Cost Function — rewrite the score and the optimal behavior changes completely",
+  "lede": "The single measurement that defines 'best,' how changing nothing else but that one score makes a controller slow or fast or gentle or aggressive, the moment you see the same cart follow three completely different strategies because someone rewrote the price of effort, what happens when you score something absent from the real world, and where this idea reappears in learning and reward design.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "tradeoff",
+      "The trade-off is the design"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — 'best' is a question, not an answer",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A controller needs to move a cart from wrong to right. But 'right' has many faces. Should it settle fast? Should it push gently? Should it save effort? Should it avoid bumping nearby walls? Everyone says optimize for the best — but best at <em>what</em>?"
+        },
+        {
+          "t": "para",
+          "html": "In the real world, you can have fast or gentle or cheap, but seldom all three at once. A pilot who accelerates hard lands quickly but burns fuel and shakes the cargo. One who eases in gently uses little fuel and nobody spills coffee, but arrives late. The plane is identical; the choice is written in the score. Change the score and the plane's behavior changes, even though its engines, wings, and control surfaces are the same."
+        },
+        {
+          "t": "para",
+          "html": "A controller works by accumulating a cost over time. At each moment it picks the action that, <em>if it could see the whole future perfectly</em>, would lead to the lowest total cost. That total cost is a sum: a stage cost (the immediate price of this action) plus the cost of every step that follows. Change one weight in that sum and the whole future trajectory changes. The question is: what does that change look like when you measure it?"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — write one number per scenario, then optimize for smallest",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The idea is simple: measure the entire future with a single score. That score is called the objective, or the cost function. Write it as a sum of two parts. First, a stage cost — a charge for each moment you spend away from the target or each unit of push you apply. Second, a terminal cost — an extra charge if you end up far from the goal. The weights you put in front of each term are exchange rates; they say how much error is worth how much effort."
+        },
+        {
+          "t": "para",
+          "html": "For example, a parking controller might write: total score = time spent plus 0.5 times steering effort plus weight times wall-closeness risk. Those three terms compete. If you raise the weight on wall risk, the controller steers more gently and takes longer. If you lower it to zero, the controller ignores walls and parks faster. The written formula is not what the designer <em>wishes</em> — it is the <em>only</em> thing the controller reads. There is no separate 'how aggressive' knob; there is only the written sum."
+        },
+        {
+          "t": "para",
+          "html": "This is the reframe: instead of saying 'make the best decision right now,' the problem becomes 'find the entire sequence of decisions whose total written cost is lowest.' The lowest score is the definition of optimal. If you want different behavior, you do not tell the controller to be more cautious; you rewrite the score."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — one cart, three prices of pushing, three completely different moves",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured, not asserted. We set up a cart at the same starting position with the same control law (an optimal plan computed from the objective), and changed only one thing: the weight that says how expensive it is to push. We measured the settling time (how long until the cart stops drifting) and the total effort (the sum of all pushes). The cart, starting condition, and dynamics are identical in all three cases."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "price of pushing",
+            "settling time",
+            "total effort expended",
+            "what the controller chose"
+          ],
+          "rows": [
+            [
+              "cheap (0.02)",
+              "1.2 s",
+              "65.88",
+              "slam hard, settle fast"
+            ],
+            [
+              "middle (0.1)",
+              "1.7 s",
+              "19.80",
+              "steady push"
+            ],
+            [
+              "expensive (2.0)",
+              "3.6 s",
+              "2.10",
+              "creep gently, save fuel"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the score is the whole strategy.</strong> At 0.02, pushing is nearly free, so the controller slams with all it has and finishes in 1.2 seconds, spending 65.88 total. At 2.0, pushing is expensive, so it creeps along, taking three times longer (3.6 seconds) but spending only 2.10. The cart physics never changed. The weather never changed. The controller changed its entire plan because the written price of effort changed. There is no hidden aggressiveness dial — <strong>the ratio of error-cost to effort-cost is the aggressiveness.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "tradeoff",
+      "h2": "4 · The trade-off is the design — what you write is what you get",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The three runs above show a clean trade-off: fast and expensive, or slow and cheap. There is no way around it for this cart. As you raise the price of pushing, the controller settles more slowly but uses less force. Conversely, any request for 'fast and cheap' is a request to have it both ways — but the cart cannot; the physics and the score do not allow it. An engineer's job is to understand which side of the trade-off is needed and write the weight accordingly."
+        },
+        {
+          "t": "para",
+          "html": "Now consider a more complex example. Suppose you want to park a car without scraping the wall. You write the score as time plus steering effort plus a wall-closeness penalty. But the wall penalty is a <em>soft</em> cost — a high charge if you go too close, but you <em>can</em> pay it if time or effort is saved. A hard constraint is different: if you write 'clearance must be at least 10 centimetres, no trade-off allowed,' then any path that violates it is simply forbidden, cost irrelevant. The soft cost allows a trade-off; the hard constraint forbids it."
+        },
+        {
+          "t": "para",
+          "html": "Here is the danger: if you score something softly and it is not actually negotiable in the real world, the controller will optimize it like a trade-off and make a costly mistake. Imagine a bumper that touches the wall slightly. The controller computes a 'touching cost' of 1.0 and a 'time cost' of 8.0, adds them, and reports 9.0. The touch seems cheap compared to waiting — so it touches. But in the real world, a touch is not a cost; it is a repair bill. When the repair bill is missing from the objective, the optimizer does not know it exists. The written objective is not what the designer wishes would happen; it is what will happen. Make it honest."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — the score is a stand-in for what you really want",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The objective is a proxy. In the real world, you care about things like safety, comfort, fuel cost, and reputation. But you cannot feed a fuzzy desire to an optimizer; you have to write a number. The number you write is a guess at the exchange rates between those fuzzy things. Get the guess wrong and the controller will follow the wrong score faithfully, producing behavior that makes the designer say: 'That is not what I meant.'"
+        },
+        {
+          "t": "para",
+          "html": "A classic failure is to score only what is easy to measure and forget what is hard to measure. A delivery company might optimize routes for time only, forgetting to price driver fatigue. The controller then plans 14-hour shifts with no rest, arriving on time but burning out the workforce. Or an industrial robot might score only speed to task, forgetting to price the wear on bearings and gears. It moves as fast as possible, settling disputes by work quickly until failure."
+        },
+        {
+          "t": "para",
+          "html": "The weakness is not a bug in the algorithm; it is a gap between what you wrote and what you meant. The algorithm is doing exactly what it was asked. The responsibility is on the engineer to be honest: if a consequence matters in the real world, it must appear in the objective—either as a soft cost term with an honest weight, or as a hard constraint. If you omit it, you are not optimizing what you think you are optimizing."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this idea reappears as 'reward' in learning",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The objective you write here — the cost function, the scoring rule — is exactly the same idea as the 'reward' in reinforcement learning. In learning, an agent explores by trial and error and tries to maximize total reward. In optimal control, you compute the best move directly from a cost function. The mathematics is different, but the idea is identical: you must specify a number that evaluates the entire future trajectory. Get that number right and the agent learns to do what you want. Get it wrong and the agent learns to optimize the proxy and produces unexpected, often costly behavior."
+        },
+        {
+          "t": "para",
+          "html": "The field of learning calls this 'reward design' or 'reward hacking.' If you tell an agent to maximize points and fail to score point loss from broken equipment, the agent will break equipment to get higher scores. If you score pixels displayed on screen without scoring frames where the display is physically unrealistic, the agent learns to display nonsense. The objective is the whole story: write it well and the learned behavior is what you intended; write it poorly and you get a perfect optimizer of something you did not want."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>In both control and learning, the objective is the design.</strong> You do not tune aggressiveness as a separate parameter; you tune the objective weights. You do not hand the agent a list of rules to follow; you give it a number to minimize. The challenge is not the algorithm — it is picking an objective that honestly reflects what 'best' means in your domain. The same cart controlled by the same algorithm but scored differently does what you ask, perfectly, every time. The algorithm is not the bottleneck; <strong>the objective is.</strong>"
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "optimal-control-problem.html",
+      "optimal control problem"
+    ],
+    [
+      "constraints.html",
+      "constraints"
+    ],
+    [
+      "dynamics.html",
+      "dynamics"
+    ],
+    [
+      "value-function.html",
+      "value function"
+    ]
+  ],
+  "recipe": {
+    "summary": "Cart (state = position, velocity), dt=0.1. Full-horizon feedback controller with objective J = sum_k (state_error^2 + weight*control_effort^2). Sweep weight in {0.02, 0.1, 2.0}, measure settling time and total effort from forward simulation starting at [0.5 m, 0 m/s].",
+    "eq": "J = sum_k [x_k^2 + R*u_k^2] where R is the price of pushing\n# R = 0.02 (cheap) -> aggressive, fast\n# R = 0.1 (middle) -> balanced\n# R = 2.0 (expensive) -> gentle, slow\n# The controller minimizes J by choosing the optimal action sequence.\n# Change R, recompute optimal controller, simulate forward.",
+    "note": "Full script: scripts/experiments/ps_run.py (EXP5). Numbers reported are the simulator's output verbatim: settling times and total effort measured from the forward trajectory."
+  }
+}

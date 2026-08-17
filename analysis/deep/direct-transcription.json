@@ -1,0 +1,178 @@
+{
+  "id": "direct-transcription",
+  "name": "Direct Transcription",
+  "kick": "direct transcription · first principles · chop the path into knots, make the states and pushes the variables, and lock them with physics checks",
+  "title": "Direct Transcription — turn a smooth path into a finite list of numbers where every step obeys the physics",
+  "lede": "The one hard truth: a computer cannot optimize over infinite curve detail, so the path must be reduced to a few sampled points and numbers. The reframe: expose those numbers as decision variables, then add constraints that force each neighboring pair to obey the real dynamics. A real run where a hand-drawn path that ignores physics has a huge defect mismatch, and the solved path's defect shrinks to zero. What defects measure and where the method breaks down. And the surprise: trajectory optimization, model predictive control, and robot motion planning all use this same grid-and-check idea.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "defect",
+      "What the defect measures"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — a smooth curve has infinite detail; a computer cannot handle it",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Imagine a robot arm that must move from one angle to another in a smooth, gentle way. The arm's position at each instant of time is a curve — infinitely many points along the way. You would like a computer to find the smoothest, most fuel-efficient motion. But optimization works with a finite list of numbers: the computer chooses a handful of values and compares them to find the best. It cannot directly optimize a curve with infinite detail."
+        },
+        {
+          "t": "para",
+          "html": "You could just pin the start and end points and let the arm move however it wants in between. But that is not enough. The motion must obey the physics — how the arm actually accelerates, how its joints move given the forces applied. The motion must also respect limits: the motors can only push so hard, the joints can only bend so far, some regions of space might be blocked. Checking all these constraints over an infinite curve is impossible."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — sample the path at a grid of time points and make the samples the decision variables",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Here is the fix. Instead of optimizing an entire smooth curve, you sample it at a few moments in time — call these moments the knot points. At each knot, you write down the robot's position, velocity, and the force or torque being applied. These numbers — the state and control at each knot — become the decision variables. The computer now has a finite list to optimize: maybe 100 numbers instead of infinity."
+        },
+        {
+          "t": "para",
+          "html": "But you cannot just pick any 100 numbers. At each pair of neighboring knots, you must enforce a constraint: the second knot's state must be a plausible consequence of applying the first knot's control and letting the physics run for one time step. This constraint is the heart of the method — it ties the knots together so the path is actually reachable, not just a collection of wishful numbers."
+        },
+        {
+          "t": "para",
+          "html": "The technique is called direct transcription because you transcribe — convert — the continuous path into a discrete optimization problem. All the nasty infinite details are captured by the grid's fineness and the physics constraints between neighbors."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — a fake path has huge defect; the solved path has none",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured from a real optimization run. We set up a cart to move from position 0 to position 1, starting from rest, ending at rest, in 20 time steps (2 seconds total). At each of the 20 knots, we have the cart's position and velocity. Between knots, physics says: velocity times one time step tells you how far the position moved; acceleration times one time step tells you how velocity changed. The defect at a knot is the gap between what the grid claims the state should be and what the physics actually predicts it should be."
+        },
+        {
+          "t": "para",
+          "html": "We compared two paths. First, a hand-drawn path that claims the cart barely moves — staying near zero speed while its position marches from 0 to 1. This path ignores physics. Second, the computer's solution after optimizing to minimize total push effort while keeping the defect at zero everywhere."
+        },
+        {
+          "t": "bars",
+          "caption": "Hand-drawn path versus optimized path: defect comparison. The hand path's worst defect is 0.500; the optimized path's worst defect is 4.44e-16 (essentially zero).",
+          "rows": [
+            [
+              "hand-drawn path (ignores physics)",
+              0.999,
+              "max defect = 0.500"
+            ],
+            [
+              "optimized path (satisfies physics)",
+              1.0,
+              "max defect = 4.44e-16"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: defects shrink from huge to zero when physics is enforced.</strong> The hand-drawn path had a maximum defect of 0.500 — meaning at some knot, the state claimed by the grid was physically impossible by 0.5 units. The optimization algorithm moved the grid states around, changed the pushes, and after solving found a path where the worst defect was 4.44 times 10 to the minus 16 — a rounding error. Every single knot now sits where the physics says it must be. The path is not just a drawing; it is a real motion."
+        }
+      ]
+    },
+    {
+      "id": "defect",
+      "h2": "4 · What the defect measures — the gap between claimed and predicted state",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "At each time knot k, the grid specifies a state (position, velocity) and a control (push force). The physics model says: if you apply that push for one time step, the next state will be some specific value, predicted by the equations of motion. Write the predicted next state as x_predicted. The defect is simply x_claimed minus x_predicted — how far the grid's claimed value for the next state differs from what physics predicts."
+        },
+        {
+          "t": "para",
+          "html": "When the defect is zero, the grid points lie on a physically reachable path. When the defect is nonzero, the path violates the model: you cannot actually go from one grid point to the next by following physics. The optimization algorithm tries to drive all defects to zero by adjusting both the state and control variables — finding a path that is feasible."
+        },
+        {
+          "t": "para",
+          "html": "This is the distinction from collocation methods, which check that the curve's own slope (its derivative) matches physics at interior points. Direct transcription instead checks that neighboring grid points themselves obey the dynamics. Both enforce the same requirement — that the path is physically real — but in different ways."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — a coarse grid hides violations between the knots",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "If you use only a few knots to represent the path, you save computation time. But you also create gaps. Suppose your cart must avoid an obstacle. If you place knots at t=0, t=0.4, and t=0.8, but the obstacle sits at t=0.2, the grid might claim a path that avoids the obstacle at the knots while crashing through it in between. The computer sees only the knot values; it never checks what happens in the gap."
+        },
+        {
+          "t": "para",
+          "html": "The same problem arises with limits. If a motor can only push up to 5 units, but you set the control variable to 4 at one knot and 4 at the next, the model might predict that the velocity needs to hit 8 units briefly in the middle to stay on course. The knot values are legal, but the hidden motion in between violates the limit."
+        },
+        {
+          "t": "para",
+          "html": "The fix is to add more knots: shrink the time step between them. But more knots mean more decision variables, which slows the optimizer. The tension is real. In practice, you start with a coarse grid, solve it, then refine the grid where trouble was found and solve again — a process called mesh refinement."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this discrete grid trick underlies trajectory optimization, MPC, and motion planning",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Direct transcription looks like a small mechanical trick: grid it, transcribe the dynamics, solve. But it is the foundation of how motion planning actually works in the real world."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Trajectory optimization (iLQR, differential dynamic programming)</strong> uses this same idea but with a twist: the nonlinear robot dynamics are locally straightened at each knot, the costs are replaced with local quadratic approximations, and an LQR problem is solved inside that simplified world. The inner loop runs a transcription-like check. <strong>Model predictive control (MPC)</strong> re-solves a transcription problem every time step, keeping only the first move and re-planning when new information arrives. The receding horizon is just asking: which grid points do I see far enough ahead to trust? <strong>Robot motion planning</strong> in tools like KOMO and trajectory optimization frameworks uses direct transcription as the default: discretize the path, add physics and obstacle constraints to the grid, and let a general-purpose optimizer solve."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>One core idea, three different packages.</strong> The transcription of a continuous path into a finite decision problem — with physics constraints tying the knots together — is the backbone of modern motion planning. It trades the theoretical purity of a smooth curve for the practical reality that a computer needs numbers to work with. That trade-off won the race: every real robot does it."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "trajectory-optimization.html",
+      "trajectory optimization"
+    ],
+    [
+      "model-predictive-control.html",
+      "model predictive control"
+    ],
+    [
+      "collocation.html",
+      "collocation methods"
+    ],
+    [
+      "shooting-methods.html",
+      "shooting methods"
+    ]
+  ],
+  "recipe": {
+    "summary": "Double integrator cart (position, velocity) moved in 20 time steps (dt=0.1). Knots at each step; state and control are decision variables. Defect constraint: state_k+1 must match Euler-forward simulation of (state_k, control_k). Objective: minimize sum of squared controls. Solved with a general nonlinear optimizer.",
+    "eq": "state_k = [position_k, velocity_k]\ncontrol_k = force_k\nstate_k+1 = state_k + dt * f(state_k, control_k)\ndefect_k = state_k+1_actual - state_k+1_predicted\nConstraint: defect_k = 0 for all k\nObjective: minimize sum(control_k^2) for k=0..19",
+    "note": "Full script: scripts/experiments/traj_run.py. Numbers reported are measured defect values (maximum absolute value across all knots). EXP4 hand path worst-case defect 0.500; optimized path worst-case defect 4.44e-16 (solver output verbatim)."
+  }
+}

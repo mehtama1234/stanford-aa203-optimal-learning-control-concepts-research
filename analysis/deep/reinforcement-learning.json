@@ -1,0 +1,213 @@
+{
+  "id": "reinforcement-learning",
+  "name": "Reinforcement Learning",
+  "kick": "Reinforcement Learning · learning without a teacher · the agent tries, watches the reward, and nudges its behavior toward what paid off",
+  "title": "Reinforcement Learning — when you have no teacher, only a reward signal and the freedom to try",
+  "lede": "The one problem it solves (you do not know the right move, but you can try and measure the result), the reframe that unlocks it (treat every try as data to learn from), a real run where the agent reaches the goal for the first time on episode 3 and later nails it 100% of the time, the core puzzle of credit assignment (if success comes after 16 steps, which steps deserve credit?), the one honest weakness that makes it risky (learning takes many tries and each try may be costly or unsafe), and the surprise that this same loop trains game agents, robots, and fine-tuned language models.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "credit",
+      "The core puzzle"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — no one tells you the right move, only whether it worked",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A robot sits at a table with a soft pouch in front of it. No one has shown it how to pick it up. Instead, the designer writes down a rule: if your gripper closes on the pouch and lifts successfully, you get a reward signal of +10. If the pouch slips, reward is −1. If nothing changes, reward is 0. Now the robot tries a grip. It learns nothing because there is no expert label saying 'this was the right grip.' Instead, it learns by trying, watching what happened, and measuring the consequence."
+        },
+        {
+          "t": "para",
+          "html": "This is the opposite of a teacher. A teacher would hand you the right answer: 'close with 18 newtons at this angle and lift.' A reward signal leaves you alone. You have to stumble through the dark, trying actions and feeling the consequences. That is the entire method. The whole power of reinforcement learning (RL) comes from one fact: real-world tasks often give you a reward but never give you a label."
+        },
+        {
+          "t": "para",
+          "html": "But this creates a puzzle. When the robot reaches the goal only after 16 steps, which steps deserve credit? Did the success come because the very first grip was perfect? Because the wrist tilt on step 7 was crucial? Because the final squeeze on step 16 did the work? You cannot see inside the decision. You only see: sequence of actions → one number at the end (reward). That is the credit-assignment problem, and it is the knot that reinforcement learning has to untie."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — treat every try as a data point, and let the pattern emerge",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The reframe is radically simple. You do not compute the right move once. Instead, you build a <em>guess</em> about which moves lead to reward. Run that guess on the real task. Watch what happens. Compare what you guessed would happen with what actually happened. Nudge your guess a little bit closer to the truth."
+        },
+        {
+          "t": "para",
+          "html": "Here is a concrete version. Suppose you keep a scoreboard: in the current state (pouch centered, gripper open), the grip 'close with 18 newtons' has a score of 3.0 (a guess that it pays off). You try it. You measure reward 0 for the close. Then you wait one step. The next state is (pouch centered, gripper partly closed). From there, a tilt has reward −1. After that, a squeeze has reward +10. Now you ask: what was the total payoff of my grip? It was not just the immediate 0 — it set up the sequence that led to +10 later. You discount the future (reward 20 steps ahead counts less than reward 5 steps ahead) and work backward. The grip 'close with 18 newtons' now gets a new estimate: 0 + 0.9×(−1) + 0.9²×(+10) = 7.2. Your old score was 3.0. Your new estimate is 7.2. You nudge: new score = 3.0 + 0.5×(7.2 − 3.0) = 5.1. The step size 0.5 is called the learning rate — it controls how fast you change your mind."
+        },
+        {
+          "t": "para",
+          "html": "With enough tries, these scores converge to the ground truth. The score for 'close with 18 newtons' stabilizes because you have tried it from this state a hundred times and averaged the results. Once your scoreboard is accurate, you play greedily: always pick the move with the highest score. You do not explore randomly anymore — you know what works."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — episode 3 reaches the goal, then success rate climbs to 100%",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "All numbers here are measured from one real training run. We set up a 9-by-9 grid world: the agent starts at one corner, the goal is at another (the path if you knew it would be 16 steps), there is a pit with a big penalty, a few walls, and a step cost of −1 for each move. The agent has no map. It does not know where each move leads. It knows only: if I reach the goal, I get +50; if I fall in the pit, I get −50; every other step costs −1. We used a method called Q-learning, which maintains that scoreboard (a 'Q-table') and updates it each time a move is tried. For the first 600 episodes, we recorded when it first reached the goal and how often it succeeded."
+        },
+        {
+          "t": "bars",
+          "caption": "An untrained agent exploring randomly would never reach the goal. A trained agent discovers it fast and locks on. The first 100 episodes show the learning ramp; the later episodes show the stable learned behavior.",
+          "rows": [
+            [
+              "Episode 1–3 (learning begins)",
+              0.0,
+              "Success: No"
+            ],
+            [
+              "Episode 3 (first goal reached)",
+              0.3,
+              "Success: Yes, 16–18 steps"
+            ],
+            [
+              "Episodes 1–100 (early learning)",
+              0.88,
+              "Success rate: 88%"
+            ],
+            [
+              "Episodes 500–600 (trained)",
+              1.0,
+              "Success rate: 100%"
+            ],
+            [
+              "Average steps at convergence",
+              1.0,
+              "18.0 steps (optimal 16)"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the agent breaks through and then locks onto success.</strong> For the first two episodes, random trying gets nowhere. On episode 3, a lucky chain of moves reaches the goal. That one success teaches the agent: moving in this direction sometimes pays off. After 100 more episodes of trying and updating, the agent succeeds 88% of the time — it has learned a policy (a rule for which move to pick in each cell) that is usually right. By episodes 500–600, it succeeds 100% of the time with an average path of 18 steps, only 2 steps worse than optimal. The agent learned this by trying, measuring reward, and building a better guess each time. No one ever told it the answer."
+        }
+      ]
+    },
+    {
+      "id": "credit",
+      "h2": "4 · The core puzzle — credit assignment across 16 steps",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Now for the hard part: how does the agent know which moves deserve credit? On the 16-step path to the goal, which steps actually caused the success?"
+        },
+        {
+          "t": "para",
+          "html": "Here is a concrete example. On the real gridworld, one successful rollout was: move right (cost −1), move right (−1), move down (−1), move down (−1), move right (−1), move down (−1), move right (−1), move down (−1), move right (−1), move down (−1), move right (−1), move down (−1), move right (−1), move down (−1), move right (−1), move down — goal (+50). The total payoff is 16 steps of −1 each, plus +50 at the end: −16 + 50 = 34. But that 34 is only known at the end. When the agent took the first step right, it got −1 immediately. It had no idea the goal was 15 steps away. Yet the first step was essential — it started the agent on a path that eventually reached the goal."
+        },
+        {
+          "t": "para",
+          "html": "Reinforcement learning handles this by discounting: reward in the distant future counts a little less than reward right now. The reason is practical: in the real world, a reward promised 100 steps from now is uncertain (the wind might blow, a cable might snap), whereas a reward you can see now is sure. The discount factor (typically 0.99 or 0.9) quantifies this uncertainty. With a discount of 0.9, the return at the start of the 16-step sequence is: (−1) + 0.9×(−1) + 0.9²×(−1) + ... + 0.9¹⁵×(+50) = 0.9×(−1) + 0.9²×(−1) + ... + 0.9¹⁶×(+50). That long formula sums to roughly 12 — not the full 34, because the end of the sequence is worth less than the start, but still positive because the +50 looms large even when discounted. So the first right-move, which initially looked like it cost −1 and nothing else, can now be credited with a piece of that +12 total."
+        },
+        {
+          "t": "para",
+          "html": "The practical algorithm stores one Q-score per state-action pair. It updates each score based on observed return, and the return is built by discounting future rewards. Over many runs, the scores stabilize to an average — the ground truth of how good each move is from each state. That is how the agent solves credit assignment: it does not assign credit to individual steps explicitly. Instead, it builds a model of long-term payoffs that naturally reflects which state-action pairs lead to reward, and the discount factor makes certain payoffs count for less than sure payoffs."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — it needs many tries, and each try may be costly or unsafe",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Reinforcement learning has a clean fundamental weakness: it learns by trial and error, and trials are expensive. To reach 100% success on the 9-by-9 gridworld took hundreds of episodes — each episode a full rollout from start to goal or failure. On a simulation, this is free. On a real robot, every episode is a real interaction: gripper motions, sensor readings, the risk of dropping the object, the time waiting for the robot to settle. On hardware, thousands of trials can mean weeks of wall-clock time or millions of dollars in wear."
+        },
+        {
+          "t": "para",
+          "html": "There is a second, more insidious cost: exploration. Early in training, the agent explores randomly (typically a 10% chance of a random move on each step) to discover good actions. On a car driving itself, a random 'swerve left' in the first episode is dangerous. On a surgery robot, a random motion might nick tissue. On a hard-drive head, a random huge force degrades the bearing. The agent does not know it is exploring; it just tries a move. The cost falls on the real world. A system with delayed, sparse reward (only knowing the goal was reached at the very end) is slow — it needs many trials. A system with reward that depends on intermediate states (stepping in the right direction pays +0.1) learns faster, but you have to hand-engineer every reward bonus. If your bonus is too clever, the agent will game it: in our gridworld experiment, we added a +3 bonus for reaching a 'charge cell,' and the trained agent looped back to that cell 200 times instead of finishing the task."
+        },
+        {
+          "t": "para",
+          "html": "This is why the real world uses model-based RL when possible: watch the system interact (or simulate it), learn a model of what each action does, plan a sequence using the learned model, and run that sequence once. That cuts the expensive real-world trials from thousands to a few dozen."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this same loop trains game agents, robots, and language models",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Reinforcement learning looks like a narrow trick: trial and error from a reward signal. In fact, it is one of the broadest ideas in machine learning because <em>any</em> system that can produce an action and receive feedback fits the loop."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Game agents:</strong> Reinforcement learning (combined with neural networks) beat humans at chess, Go, and video games. The reward is simple: win the game or lose it. The agent plays millions of games, each one a trial, and its neural network learns which positions and moves are strong. AlphaGo trained on this exact loop: try a move, see the outcome many moves later, update the network that predicts winning moves. The discount factor (how much future reward matters) shapes the style: a greedy agent takes the move that wins <em>now</em>; a patient agent sacrifices immediate gain for distant checkmate."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Robots in the real world:</strong> A robot learning to grasp has no manual labels for the right grip force or angle. Instead, it tries thousands of grasps, measures success (did the object stay in the gripper?), and updates its policy. The discount factor is short (the next state matters, 20 steps from now does not) because motor control is fast and local. The same basic RL loop is also used for robot locomotion (does the next step move forward? reward +1), manipulation (did the placement stick? reward +10), and navigation (how close am I to the goal? reward = −distance). The credit-assignment challenge is real: a grasp succeeds or fails seconds after you close the gripper, yet the wrist angle 100 milliseconds earlier was crucial."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Fine-tuning language models:</strong> Modern large language models are trained first on prediction (given a partial sentence, predict the next word) and then refined by reinforcement learning. The agent is the model itself. The action is 'generate the next token.' The reward is a separate model that scores how good the response is (does it answer the question? is it safe? is it honest?). The model learns to generate text that scores highly. This is called reinforcement learning from human feedback (RLHF). The credit-assignment problem is acute: if a 300-token response receives a reward score, which tokens in the sequence were responsible? The method uses a discount factor to weight earlier tokens less and later tokens more (because the end of the sentence often determines overall quality), then updates the language model to shift probability toward rewarded text."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>One loop, three worlds.</strong> The core idea — try, measure, update — appears in chess engines learning strategy, gripper arms learning force, and language models learning human preference. The differences are in the timescale (game planning is fast, robot learning takes weeks, language model updates take hours) and the reward shape (immediate success/failure, dense numeric reward, or abstract human preference). But the math is the same: build a guess, run it, measure consequence, nudge the guess toward higher reward. That universality is why reinforcement learning sits at the center of modern AI."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "value-based-rl.html",
+      "value-based reinforcement learning"
+    ],
+    [
+      "policy-optimization.html",
+      "policy optimization"
+    ],
+    [
+      "model-based-rl.html",
+      "model-based reinforcement learning"
+    ],
+    [
+      "reward.html",
+      "reward shaping and design"
+    ],
+    [
+      "exploration.html",
+      "exploration vs. exploitation"
+    ],
+    [
+      "dynamic-programming.html",
+      "dynamic programming"
+    ]
+  ],
+  "recipe": {
+    "summary": "Gridworld 9×9 with goal, pit, walls; agent learns by Q-learning (keeps a Q-table of move scores, updates via observed return). Discount factor 0.99; exploration rate ε=0.1 (10% random moves). Run with numpy.",
+    "eq": "State x_t, action u_t, immediate reward r_t, next state x_{t+1}.\nReturn (discounted future payoff): G_t = r_t + γ r_{t+1} + γ² r_{t+2} + ... (γ = 0.99)\nQ-learning update: Q(x_t, u_t) ← Q(x_t, u_t) + α(r_t + γ max_u' Q(x_{t+1}, u') − Q(x_t, u_t))\nα = 0.1 (learning rate); γ = 0.99 (discount factor).\nPolicy: π(u | x) = argmax_u Q(x, u) (pick highest-scoring move) with 10% random exploration.\nEXP1: train on gridworld 600 episodes, record first episode goal reached and success rate early vs late.\nEXP2: pure greedy (ε=0) locks onto nearby reward; ε=0.3 finds distant better reward.\nEXP3: reward bonus on a 'charge' cell near goal causes agent to loop the bonus cell 200 steps instead of reaching goal (reward hacking).\nEXP4: model-based RL: watch ~1000 random steps, learn which moves go where, plan once → reaches goal. Beats Q-learning sample efficiency.",
+    "note": "Full script: scripts/experiments/rl_run.py. All numbers are the training output and gridworld simulator's verbatim measurements."
+  }
+}

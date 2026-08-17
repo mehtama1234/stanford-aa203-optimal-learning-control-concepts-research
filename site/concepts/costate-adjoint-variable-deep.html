@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Costate / Adjoint Variable (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="costate-adjoint-variable.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Costate · first principles · a backward-in-time price that judges what an early error costs you later</div>
+      <h1>Costate — how a shadow number carries tomorrow's cost back to today's decision</h1>
+      <p class="lede">The everyday reason you need it (an error now ripples into every later cost, so price it locally), the core idea (attach a number to each state that tracks how a small nudge there affects the rest of the path), a real run showing the price runs linearly in time while the best push falls out as a straight line, why it evolves backward (the end conditions pin it and it propagates into the past), the one hard barrier (coupled states each need their own price and they couple in the dynamics), and the surprise that this backward price is the same idea as backprop's gradients and hides inside LQR's cost-to-go formula.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#backward">Why it runs backward</a><a href="#coupled">The one hard barrier</a><a href="#surprise">The surprise</a><a href="costate-adjoint-variable.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — an early mistake echoes through everything after it</h2>
+      <div class="essay">
+      <p>A spacecraft needs to move slightly off its planned orbit to avoid debris. Right now, one second from now, or ten seconds from now — when does the timing of this move matter most? The answer is uncomfortable: it always matters, but in different ways. If you drift off course now, every future second has to handle the accumulated error. If the thrusters are limited, that early drift might mean you cannot reach the target later. If there are scheduled corrections, an early error changes how much later ones need to do. The immediate push costs immediate fuel. But <em>that same push</em> also causes a cascade of later consequences.</p>
+      <p>Here is the trap: to decide whether pushing now is a good idea, you need to know what it does to <em>everything downstream</em>. You cannot just measure the immediate fuel cost and stop there. Yet you cannot recompute the entire future trajectory every time you ask the question. You need a single number attached to right-now that somehow already includes the price of that future cascade. This is what the costate does: it is a <strong>running price that says how much future cost changes if you nudge the state right now</strong>.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — carry backward the downstream cost-to-go so you can price each earlier step</h2>
+      <div class="essay">
+      <p>Start at the goal. At time T, you either hit the target or you miss it. The penalty for missing is usually some function of how far off you landed — like squared distance. That penalty is a number. Now step back one moment. From position P at time T-1, you will apply a push to move toward position P-next at time T. The total cost from that push is: the immediate effort cost of the push, <em>plus</em> the final-time penalty of wherever you land.</p>
+      <p>Do this one more step back. From time T-2, you choose a push that creates a state at T-1, which then experiences the cost we just computed. So the cost-to-go from T-2 depends not just on the immediate push, but on what state you create at T-1 — because that state then determines everything downstream. The costate is the answer to the question: if I nudge the state at T-1 by a tiny amount, how much does the total remaining cost (from T-1 onward) change? That number is the sensitivity of future cost to present state. Call it lambda. It is the price.</p>
+      <p>Once you know that price at every moment — the costate lambda(t) — you can judge any push locally. A push is good if its immediate cost minus the benefit (how much costate decreases because you moved to a better state) is negative. This is the entire basis of indirect optimal control.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — the costate is linear in time, and the push it guides is a straight line</h2>
+      <div class="essay">
+      <p>We took the same least-effort cart problem from the LQR run — move from position 0 to position 1, speed 0 to speed 0, in 20 steps. We solved it using Pontryagin's indirect method, which says: the push at each moment is whatever makes the Hamiltonian (a blend of running cost and dynamics) smallest, and the costate evolves backward according to how the Hamiltonian changes with state. The result: the theory predicts the push must be a straight line in time (first push +1.429, last push −1.429). We measured whether the direct optimizer (that searches the entire push sequence) agrees.</p>
+      <div class="tw"><table><tr><th>measurement</th><th>theory (indirect)</th><th>direct optimizer (search)</th><th>match?</th></tr><tr><td>best total effort (J*)</td><td>from costate path</td><td>15.038</td><td>yes</td></tr><tr><td>push shape in time</td><td>straight line</td><td>R² = 1.00000 (perfect fit)</td><td>yes</td></tr><tr><td>first step push</td><td>−λ(0)</td><td>+1.429</td><td>yes</td></tr><tr><td>last step push</td><td>−λ(19)</td><td>−1.429</td><td>yes</td></tr></table></div>
+      <div class="insight"><strong>The discovered fact: the costate runs linearly in time, and because the best push equals minus the costate, the push falls out as a straight line with zero error (R² = 1.0).</strong> The indirect method (backward costate) and the direct method (search all push sequences) arrive at the exact same answer: a straight-line push from +1.429 to −1.429 over 2 seconds. This is not a coincidence — it is what optimality conditions prove. The costate here does not jump or wiggle; it is a constant-slope line backward in time. That smooth line directly produces the smooth line of pushes forward in time.</div>
+      </div>
+    </section>
+    <section class="fp" id="backward">
+      <h2>4 · Why it runs backward — the end sets the price, and it propagates into the past</h2>
+      <div class="essay">
+      <p>The costate evolution is deterministic once you know the costate at the final time. At time T, you have hit the target (or missed it). The penalty is known: a function of position and velocity. The gradient of that penalty with respect to position is the costate at T — it says how much the final penalty changes per meter of position error. That is your boundary condition.</p>
+      <p>Now work backward one step. At time T-1, you will apply a push and arrive at some T. The dynamics link the two: if you are at state S(T-1) and apply push u(T-1), you arrive at S(T) = A·S(T-1) + B·u(T-1), using matrix shorthand. The total cost-to-go from T-1 is immediate running cost plus final penalty. By the chain rule, the sensitivity of that total cost to S(T-1) is: the gradient of running cost at T-1, <em>plus</em> the costate at T, weighted by how much S(T) changes when you nudge S(T-1) (that weight is the matrix A in the dynamics). This gives the costate at T-1.</p>
+      <p>Repeat this for every earlier step. The costate at each moment is determined by the costate one step forward, plus the local running cost gradient, weighted by the dynamics. The answer flows backward. At time 0, the costate tells you the total cost-to-go sensitivity to the initial state — and this is usually zero if you are starting from a known state, because there is no choice there. Everything flows backward from the end.</p>
+      </div>
+    </section>
+    <section class="fp" id="coupled">
+      <h2>5 · The one real barrier — coupled states need coupled prices, and the dynamics couple them</h2>
+      <div class="essay">
+      <p>So far we have imagined a one-dimensional state — just position. Real systems have two or ten or a thousand state coordinates. The cart has position and velocity. The spacecraft has position and velocity in three dimensions. Each coordinate can have a different error penalty, a different sensitivity to the push.</p>
+      <p>The costate for each coordinate is not independent. If the dynamics say that velocity affects the next position (position tomorrow = position today + velocity times timestep), then the costate for position backward-in-time depends on both the position cost and the velocity cost-to-go. Position error and velocity error are coupled by the physics. The backward propagation of the costate must respect that coupling: the price of velocity includes how much it affects future position, and the price of position includes how much it affects future velocity through whatever runs after it.</p>
+      <p>This is where the costate becomes genuinely a vector, a matrix problem. You must solve for all state coordinates' prices at once, because they are interdependent through the dynamics. For a system with 100 state coordinates, you cannot compute the costate for coordinate 47 in isolation — you need to solve the backward propagation for all 100 together. This coupling is not a bug; it is the honest answer. But it means the costate is the solution to a boundary-value problem (end conditions known, initial conditions determined by solving backward), not a simple formula. For nonlinear systems, the boundary-value problem is as hard as the original optimization.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — the costate is backprop's gradient and LQR's cost-to-go in disguise</h2>
+      <div class="essay">
+      <p>The costate is not new; it lives in three major places, wearing different names. In a neural network, the backpropagation algorithm computes how much the output changes per nudge to each neuron by starting at the loss and flowing sensitivity backward through the layers. That backward-flowing sensitivity is the costate. In LQR, the value function — the minimum cost-to-go from a given state and time — is a quadratic function of state. Its gradient with respect to state is the costate. In trajectory optimization (like the indirect methods used in robotics), the Lagrange multiplier on the dynamics constraint is the costate: it prices how much better the trajectory becomes per tiny violation of the physics that we allow.</p>
+      <p>All three computations are the same idea: start from the end, compute how much future value (or loss, or cost) depends on present state, and propagate that dependency backward. Because all three use it, every algorithm that solves an optimal control problem — iLQR iterating on trajectory nonlinearities, Model Predictive Control solving a finite-horizon problem each step, policy-gradient learning algorithms computing baseline functions — relies on the costate or something isomorphic to it. The costate is not a control-theoretic curiosity; it is a fundamental idea in optimization that appears under many names.</p>
+      <div class="insight"><strong>One concept, three faces: the backward-flowing sensitivity in backprop (neural networks), the gradient of the value function in LQR (control), and the Lagrange multiplier on dynamics in indirect methods (trajectory optimization).</strong> Once you understand that the costate is the price of future cost attached to present state, and that it flows backward from end to start, you have the core idea that makes every one of these methods work. The names change, the details change, but the recursion is the same.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="hamiltonian-optimal-control.html">Hamiltonian and Pontryagin's conditions</a> · <a href="value-function.html">value function (cost-to-go)</a> · <a href="lqr.html">LQR feedback rule</a> · <a href="trajectory-optimization.html">trajectory optimization</a> · <a href="indirect-methods.html">indirect methods (calculus of variations)</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Double integrator (position, velocity) with least-effort cost. Pontryagin indirect method: costate evolves backward from terminal cost gradient; optimal push equals minus costate. Forward search (direct method) matches backward costate (indirect method) with R² = 1.0 on push linearity. Run with numpy.</p>
+      <div class="eq">Dynamics (discrete): x[t+1] = A x[t] + B u[t], where A = [[1, 0.1],[0, 1]], B = [[0],[0.1]]
+Terminal cost: J_T = 0.5 * (x[T] - x_target)² [squared position error]
+Running cost: sum over t of 0.5 * u[t]²
+
+Costate backward recursion:
+  lambda[T] = dJ_T/dx[T] = (x[T] - x_target) [terminal gradient]
+  lambda[t] = dL/dx[t] + Aᵀ lambda[t+1], where dL/dx[t] is running-cost gradient at t
+  u[t] = −(Bᵀ lambda[t+1]) [control is minus costate-weighted next-state effect]
+
+For the cart: u[t] = −0.1 * lambda[t+1,velocity_component]</div>
+      <p class="muted">Full script: scripts/experiments/traj_run.py (EXP2 section). Numbers reported are the solver's output verbatim: first-step push +1.429, last-step push −1.429, R² = 1.00000 on straight-line fit.</p>
+    </div></details>
+    <footer>Stanford AA203 · Costate / Adjoint Variable deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

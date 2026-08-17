@@ -1,0 +1,183 @@
+{
+  "id": "action-control-input",
+  "name": "Action / Control Input",
+  "kick": "Action · control input · the real lever, and why its limits reshape what is possible",
+  "title": "Action / Control Input — when the actuator has limits, tightening them stretches the time to reach a goal",
+  "lede": "What command you can actually issue (not the outcome you want), why it matters that every motor and thruster has bounds, a real run that tightens the force limit in steps and measures how long it takes to settle, the hard truth that below some limit the goal becomes unreachable, its one honest weakness shown as a numerical breakdown, and the surprise that respecting action limits is exactly what separates textbook feedback from working receding-horizon control.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "limits",
+      "What limits really cost"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — confusing what you want with what you can command",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A robot arm has an end-effector — the grip or tool at the tip. You want it to reach a shelf at position (x, y) = (1.2, 0.8). That is a goal. But the arm does not move by accepting position commands. It moves because motors apply torque to the joints. So the control input — the real lever you can turn — is a pair of torques, one for each joint, each bounded by what the motor can produce."
+        },
+        {
+          "t": "para",
+          "html": "The trap is to treat the goal as if it were the action. <strong>Write 'move the end-effector to x=1.2' as an action and you have written something the robot cannot obey.</strong> Actuators do not take outcome commands. They take force, torque, voltage, thrust — the concrete mechanical or electrical input. The planner's job is to choose a sequence of those concrete inputs such that, passing them through the physics and kinematics, the end-effector eventually lands at (1.2, 0.8)."
+        },
+        {
+          "t": "para",
+          "html": "This sounds like bookkeeping, but it splits the problem in two. Either you plan in outcome-space (outcome cost is low, but the plan might demand an impossible action), or you plan in action-space (every action is feasible by design, but you must understand what action produces what outcome). Most failure comes from mixing them."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — the action is what the actuator can actually do, and it has a range",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Separate the command from the outcome. The command is what you send to the motor, pump, jet engine, or steering servo. The outcome is what happens to the system state — position, velocity, temperature, heading. The link between them is the dynamics."
+        },
+        {
+          "t": "para",
+          "html": "For a cart pushed with force, the dynamics say: acceleration equals force divided by mass, velocity changes by acceleration times the time step, position changes by velocity times the time step. Feed in a force of 5 units and you get a specific acceleration; feed in 10 units and the acceleration doubles. But the motor will not accept an arbitrary force. It has a limit — perhaps the maximum is 8.4 units. It also has rate limits (it cannot jump from one force to a wildly different force in one time step) and dead zones (commands smaller than 0.02 units do nothing). The action set is the set of all commands the actuator can legally produce."
+        },
+        {
+          "t": "para",
+          "html": "If a planner asks for 10 units of force and the motor is capped at 1.0, the motor delivers only 1.0. The outcome is not what the plan predicted. If the planner was not told about the limit when computing the plan, the plan is wrong in a very particular way: the commanded force and the delivered force diverge. Planning without knowing the action limits is like planning a trip without knowing the speed limit — you end up overshooting time and arriving late."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — tightening the force limit stretches the settlement time",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran the same cart with the same feedback law on three force budgets. The controller knows the right move; the only thing changing is how much force the motor is allowed to deliver. Every number here is measured from a real simulation."
+        },
+        {
+          "t": "bars",
+          "caption": "As the force limit tightens, the controller must call for higher force (because the motor clips it), but the actual delivered force drops and settling time rises. At the hardest start, the controller asks for 8.4 units; without any limit it delivers 8.36 and settles in 3.6 seconds. Capped at 1.0 it delivers only 1.0 and takes 5.1 seconds. Capped at 0.3 it delivers 0.30 and takes 12.1 seconds.",
+          "rows": [
+            [
+              "No force limit",
+              0.36,
+              "delivered 8.36, settled 3.6 s"
+            ],
+            [
+              "Force capped at 1.0",
+              0.36,
+              "delivered 1.00, settled 5.1 s"
+            ],
+            [
+              "Force capped at 0.3",
+              0.10,
+              "delivered 0.30, settled 12.1 s"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: tightening the action limit stretches time, not impossibility — at first.</strong> The motor still obeys every command. With 1.0 units available the cart takes 42% longer to settle (5.1 s vs 3.6 s). With 0.3 units it takes more than 3 times as long (12.1 s). But the core feedback law runs unchanged; it just works slower because each step of correction moves the state by less. The limit does not break the controller — it just makes it limp."
+        }
+      ]
+    },
+    {
+      "id": "limits",
+      "h2": "4 · What limits really cost — below a threshold the goal vanishes",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Stretch the tightening further. If the force limit becomes so low that the motor cannot overcome friction or drag, the cart stops moving at all. This is not a slowdown — it is impossibility. The state becomes unreachable. In the experiment above, a limit of 0.3 still allows correction; the controller is slow but effective. But drop below the point where the motor can change the state at all — perhaps 0.05 units with this cart — and no feedback law can reach any goal you did not already occupy."
+        },
+        {
+          "t": "para",
+          "html": "This is the hard edge: <strong>every control problem has a reachability question hidden inside.</strong> Given the action limits, which states can you reach from the current state? If the goal is beyond that set, no plan will work. The action limit is not a tuning knob — it is part of the problem statement. A drone with half-dead rotors cannot reach its target altitude, no matter how clever the control law. A steering actuator with too much friction cannot deliver the correction needed to avoid a collision. An investment budget cap means some expansion projects become impossible in the timeline you planned."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — LQR assumes unlimited action",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The classical LQR (linear-quadratic regulator) assumes the actuator has no limits. It computes a feedback rule that is provably optimal for any straight-line system with squared costs and infinite force. But in the real run above, once the force limit is tight, the LQR rule asks for more force than the motor can produce. The command diverges from the delivery. The cost rises because the plan was optimized for a world that does not exist."
+        },
+        {
+          "t": "para",
+          "html": "What happens when the limit tightens? The planner does not know it should be less ambitious. It keeps asking for 8.4 units at the start. The motor delivers only 1.0 (or 0.3). The state does not move as predicted. On the next step, the feedback law sees the actual state, not the predicted state, and corrects — but it is always one step behind a system that is slipping under the limit."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — respecting the action limit is how control becomes receding-horizon",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "LQR is a fixed rule computed once. If you respect the action limits, you immediately face a problem: the rule might ask for an infeasible action. How do you stay feasible while staying optimal? The answer is <strong>model-predictive control (MPC)</strong> — also called receding-horizon control."
+        },
+        {
+          "t": "para",
+          "html": "MPC solves a small LQR problem (or something LQR-like) at every time step, but includes the action limit as a hard constraint in the solver. It computes the optimal action for this step while respecting the bound. On the next step, it re-solves. When there is no limit and the horizon is infinite, MPC gives exactly the LQR answer. But the moment the motor caps out, MPC re-plans — asking: what is the best move I can legally make right now? That is why MPC works on real robots and LQR does not."
+        },
+        {
+          "t": "para",
+          "html": "The other surprise: if you are learning a controller (reinforcement learning), you must teach it to respect action limits, or your policy will ask for moves the hardware cannot produce. Every learning algorithm that works on real robots has built in the constraint. The ones that train in simulation without limits and then deploy often fail catastrophically because their learned rule is asking for actions that do not exist."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>Action limits are not decoration — they are the reason we moved from LQR to MPC and from offline training to learning with hardware constraints.</strong> The moment the plan must fit inside what the actuator can do, the problem becomes a receding-horizon one. Every step you re-solve, taking into account what just happened and what is still legal. This is the boundary between textbook and practice."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "lqr.html",
+      "LQR — the feedback rule"
+    ],
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ],
+    [
+      "dynamics.html",
+      "dynamics — how action produces outcome"
+    ],
+    [
+      "state.html",
+      "state — what you must measure"
+    ],
+    [
+      "constraints.html",
+      "constraints — rules that bind the plan"
+    ]
+  ],
+  "recipe": {
+    "summary": "Double integrator cart, dt=0.1. Feedback controller from LQR (cost weights: position and effort). Simulation forwards with force saturation. Run with numpy.",
+    "eq": "dynamics: x_next = [[1, 0.1],[0, 1]] * x + [[0],[0.1]] * u_clipped\nu_clipped = clip(u, -limit, +limit)\nFeedback: u = K_pos * position_error + K_vel * velocity_error\nK_pos=2.788, K_vel=2.505 (from LQR with moderate cost weights)",
+    "note": "Full script: scripts/experiments/ps_run.py, experiment EXP3. All numbers reported are the simulator's output verbatim. Settling time is when the position stays within 0.01 of the goal for 5 consecutive steps."
+  }
+}

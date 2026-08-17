@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shooting Methods (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="shooting-methods.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Shooting Methods · first principles · guess the launch controls, simulate forward, measure where you land, adjust the guess</div>
+      <h1>Shooting Methods — turn a both-ends-fixed problem into a repeated guess-and-correct loop</h1>
+      <p class="lede">A problem that knows where it starts and where it must end, but not the control sequence between them. The reframe: parametrize the unknown controls, roll the physics forward, measure the endpoint miss, and nudge the guess. A real run where a single correction shrinks the miss from total failure to zero. How the miss itself tells you which way to adjust. Why shooting becomes touchy when small control changes swing the endpoint wildly. And the surprise that this guess-and-correct idea is not just a toy — spacecraft trajectory design uses the same correction loop to target landings.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#correction">How the miss tells you the fix</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="shooting-methods.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — you know start and end, but not the path between</h2>
+      <div class="essay">
+      <p>Picture a spacecraft on a collision course. You know its current position and velocity — where it is right now. You know where it must be in two hours — its destination. You know the thrusters will fire for the entire flight. But you do not know the exact size and direction of each thrust command along the way. The question is: <strong>what sequence of thruster firings will connect the current state to the destination?</strong></p>
+      <p>The same puzzle appears everywhere. A cart must travel from one place to another in a fixed time without stopping at intermediate waypoints. A robot arm must move its hand from point A to point B without hitting the table. A quadrotor must navigate through a canyon and arrive at a landing zone. In each case, you know the start, the end, and the physics (how the actuators change the state), but the control sequence itself is unknown.</p>
+      <p>One naive approach: make up a path that looks reasonable — a straight line from start to end, perhaps, or a smooth curve — and simply apply the controls that that path would need. The trap is instant: the guessed path might not be actually reachable given the real dynamics. The cart might not have enough force to follow the curve you drew. The spacecraft might not have enough fuel in the windows you allocated.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — guess the launch controls, simulate forward, read the endpoint miss</h2>
+      <div class="essay">
+      <p>Instead of guessing a path and hoping it works, guess the control numbers directly. In the simplest version, guess only the very first control — the launch — and roll the physics forward for the entire flight. Where does the ship land? Compare that endpoint to the target. You have now learned something: if the guess was too weak, the ship fell short; if too strong, it overshot. The size and direction of the miss is your signal.</p>
+      <p>This is the core idea: <strong>parametrize the unknown controls (often just one or two numbers), simulate forward from the initial state using those controls, measure the endpoint error, and treat that error as feedback for the next guess.</strong> It is exactly like aiming a cannon: fire a shot, observe where it lands, calculate how to aim differently, and fire again. The physics does all the hard work — you simply let it run and read the result.</p>
+      <p>The method gets its name because you are 'shooting' the trajectory forward into the future, starting from a guessed initial condition (the launch), and watching where it lands (the endpoint). Unlike methods that draw a path and then check it, shooting embeds the forward simulation into the loop. The endpoint residual — the gap between where you landed and where you wanted to land — is the optimizer's only signal. It feeds that residual back to improve the next guess.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — one correction reduces the miss from 1.000 to zero</h2>
+      <div class="essay">
+      <p>Every number here is measured, not asserted. We set up a simple double-integrator cart: it starts at position 0, speed 0, must reach position 1 meter and speed 0, and has 20 time steps (each 0.1 seconds). The challenge is to parametrize the control by just the initial acceleration and final acceleration — two numbers — and let the optimizer choose them. The script is traj_run.py; the numbers that follow are the algorithm's output verbatim.</p>
+      <figure><div class="barrow"><span class="lab">iteration 0 (initial guess)</span><div class="bar" style="width:150px"></div><span class="val">miss = 1.000</span></div><div class="barrow"><span class="lab">iteration 1 (corrected)</span><div class="bar" style="width:2px"></div><span class="val">miss = 0.000</span></div><figcaption>Endpoint miss (normalized distance from target) collapses in one correction. For a linear problem, the optimizer can find the exact answer in a single step.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: one correction is exact here.</strong> On the first iteration, the guess placed the cart 1 meter away from the target with velocity not yet zero. The endpoint miss, measured as a combination of position and speed error, was total failure: 1.000 (the worst possible). After a single correction — the optimizer computed new initial and final accelerations — the cart hit the target position exactly and arrived with zero velocity. The miss collapsed to 0.000. This happens because the problem is linear: the relationship between the launch controls and the final state is a straight line (no squares, no curves), so a linear optimizer solves it in one pass. A curved problem (nonlinear dynamics) takes several iterations, but the idea is identical: shoot forward, read the miss, adjust.</div>
+      </div>
+    </section>
+    <section class="fp" id="correction">
+      <h2>4 · How the miss tells you the fix — the endpoint error points the way</h2>
+      <div class="essay">
+      <p>The endpoint miss is not just a number; it is a vector — it has both size and direction. If the cart overshot the target position by 2 meters and was moving too fast, the miss vector is [2, too-fast]. That vector tells the optimizer exactly how to adjust the launch controls: it needs to dial back the initial acceleration and increase the braking at the end.</p>
+      <p>Mathematically, the optimizer uses the derivative of the endpoint with respect to the launch controls — how much a tiny change in the initial acceleration moves the final position. If increasing the initial acceleration by 0.1 moves the final position by 0.3, the derivative is 3. The optimizer inverts this: to move the final position by some target amount, change the initial acceleration by (target / 3). This inversion is called a <strong>sensitivity</strong> or <strong>Jacobian</strong> — it tells you how much each control lever moves each endpoint coordinate.</p>
+      <p>For a linear system, there is one sensitivity matrix that never changes, no matter which guess you make. The optimizer computes it once, applies it to the endpoint miss, and finds the exact correction. For a nonlinear system, the sensitivity changes with each new guess, so the optimizer must recompute it at each iteration, and convergence takes a few steps.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — small control changes can swing the endpoint wildly</h2>
+      <div class="essay">
+      <p>Shooting's strength — let the physics run forward — is also its Achilles heel. Imagine a spacecraft whose thrusters are extremely sensitive: a 1% change in the burn now can move the landing site by 100 kilometers. This is a real situation in space missions where the trajectory is shallow and small errors compound over a long coast phase. The sensitivity matrix becomes enormous in magnitude — the optimizer inverts it, and tiny numerical errors blow up. We say the problem is <strong>ill-conditioned</strong>: the sensitivity is so steep that you cannot trust the answer.</p>
+      <p>More subtly, a nonlinear problem with a steep sensitivity can trap the optimizer. If the initial guess is unlucky and lands far from the target, the optimizer computes a large correction. It applies that correction, simulates forward, and the new endpoint is even further away — the correction overshot. The optimizer tries to backtrack, but the nonlinearity means each step gives less information, and convergence stalls or oscillates.</p>
+      <p>The practical fix is <strong>multiple shooting</strong>. Instead of one long chain from start to end, break the trajectory into shorter segments. Add an intermediate state at a midpoint and let the optimizer choose that state too. Now each segment has less sensitivity, and the optimizer can adjust the midpoint state directly rather than hoping a tiny tweak to the launch controls will cascade correctly over the entire flight. The cost is higher-dimensional (more variables), but the conditioning is better and convergence is more robust.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this guess-and-correct loop is buried inside spacecraft trajectory design</h2>
+      <div class="essay">
+      <p>Shooting looks elementary: guess, simulate, measure, adjust. Its real power is that every practical spacecraft mission uses it as a core operation — with added engineering layers on top.</p>
+      <p><strong>Trajectory targeting for spacecraft</strong> (used by NASA, ESA, SpaceX, and every orbital mechanics team) works by propagating an orbit forward from an initial state, computing the miss at the destination, and using the miss to compute a correction maneuver. The Jacobian of the endpoint with respect to the initial velocity is explicit in orbital mechanics (it comes from the sensitivity of Keplerian orbits to the launch velocity). The loop is: compute trajectory sensitivity, apply it to the endpoint error, compute a velocity correction at the launch, and iterate until the target is hit. This is pure shooting.</p>
+      <p><strong>Indirect trajectory optimization</strong> solves for the adjoint (backward-in-time sensitivity) and uses it to construct optimal trajectories. It, too, is a shooting method: guess the initial costate (the adjoint state), propagate both the trajectory and its adjoint forward, and correct the costate guess until the boundary condition at the end is satisfied. The method is older than modern computers and carries the same numerical challenges as single shooting — which is why multiple-shooting variants dominate practical use.</p>
+      <p><strong>Receding-horizon (MPC) methods</strong> often parametrize the control by a small number of unknown numbers (the first few actuator values) and use a local sensitivity to correct them. Over a short horizon, the problem stays well-conditioned, and shooting converges in one or two steps. Extend the horizon and shooting becomes fragile — which is why longer-horizon MPC methods rely instead on direct transcription (turning the states and controls into explicit variables with defect constraints) or on more expensive robust techniques.</p>
+      <div class="insight">One core idea — parametrize, simulate, measure the miss, invert the sensitivity to correct — appears in orbital targeting, indirect optimization, and real-time MPC. The method's brittleness (ill-conditioning for sensitive systems) is the reason you see multiple-shooting and direct transcription in the wild. But the seed idea of 'guess the launch, see where it lands, adjust' is simple, powerful, and universal.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="trajectory-optimization.html">trajectory optimization</a> · <a href="indirect-methods.html">indirect methods</a> · <a href="direct-transcription.html">direct transcription</a> · <a href="model-predictive-control.html">model-predictive control</a> · <a href="local-quadratic-approximation.html">local quadratic approximation</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Double integrator, dt=0.1, fixed time T=2 seconds (20 steps). Parametrize by initial and final acceleration (two unknowns). Compute endpoint states by forward simulation. Optimizer inverts the Jacobian (endpoint sensitivity) and applies it to the miss vector to compute the next guess.</p>
+      <div class="eq">x_{k+1} = A x_k + B u_k  (forward simulation)
+r = x_final - x_target  (endpoint residual / miss)
+J = ∂x_final / ∂u_0, ∂u_1  (Jacobian: sensitivity of final state to launch controls)
+u_new = u_old - J^{-1} r  (Newton step: correct the launch by the sensitivity inverse applied to the miss)</div>
+      <p class="muted">Full script: scripts/experiments/traj_run.py. Numbers reported are the optimizer's and simulator's output verbatim. EXP3 demonstrates single shooting on a linear problem (exact solution in one iteration). The section on weakness discusses ill-conditioning in nonlinear and sensitive systems; multiple shooting is the practical remedy but is not shown here.</p>
+    </div></details>
+    <footer>Stanford AA203 · Shooting Methods deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

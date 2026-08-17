@@ -34,6 +34,7 @@ def page(title: str, body: str, active: str = "", depth: int = 0) -> str:
         ("lectures.html", "Lectures", "lectures"),
         ("transcripts.html", "Transcripts", "transcripts"),
         ("concepts.html", "Concepts", "concepts"),
+        ("deep-track.html", "Deep track", "deep-track"),
         ("course-spine.html", "Spine", "spine"),
         ("families.html", "Families", "families"),
         ("primitives.html", "Primitives", "primitives"),
@@ -234,7 +235,7 @@ CONCEPT_RUNS: dict[str, dict[str, str]] = {
         "math": "Once MPC applies its first control as feedback, the closed-loop update can be written x_{k+1}=f_closed(x_k). A Lyapunov-style check chooses a nonnegative function V(x), often the optimal MPC cost J_MPC^*(x), and asks whether V(f_closed(x)) - V(x) <= -stage_cost(x,pi_MPC(x)) or at least <= 0 near the equilibrium. In the robot run, V acts like stored energy: 2.57 drops to 0.935 after the real first move, so delta V = 0.935 - 2.57 = -1.635. The good second move gives delta V = 0.295 - 0.935 = -0.640, another decrease. The bad second move gives delta V = 1.18 - 0.935 = +0.245, which violates a nonincrease test even though feasibility still holds. If the stage cost for the second state were 0.10, the stronger test delta V <= -0.10 would accept -0.640 and reject +0.245. The delayed-braking case shows why nonincrease alone may be too weak for a task deadline. From E_0=0.935, two tiny decreases to E_1=0.90 and E_2=0.88 satisfy E_{k+1} <= E_k, but miss the required E_3 <= 0.20 target. A terminal constraint writes E_N <= 0.20. A terminal cost changes the score from sum stage_cost to sum stage_cost + 6*E_N, so ending a horizon at E_N=0.88 adds 5.28 points while ending at E_N=0.18 adds 1.08 points. The measured-state check is stricter than liking the predicted curve. If V_now=0.295 and stage_cost=0.10, the required next bound is V_next <= 0.295 - 0.10 = 0.195. A prediction that says V_next=0.18 passes. A measurement that comes back as V_next=0.24 fails because 0.24 > 0.195. The controller may still be feasible, and the robot may still look almost centered, but this step is feasible but not certified stable. Feasibility alone would only say the next optimization exists; stability asks whether the closed-loop sequence drains that stored cost toward the lower bound at the goal. The terminal ingredients matter because a short horizon can hide delayed error. A terminal cost prices what remains after the visible horizon, and a terminal set gives the final predicted state a place where a known local controller can keep reducing V. Outside the terminal set, the old proof has nothing to stand on. If those pieces are weak, repeated replanning can remain feasible while cycling, drifting, delaying, or amplifying velocity.",
     },
     "imitation-learning": {
-        "run": "A human teleoperates a robot through 200 drawer pulls. Each saved row says what the robot saw and what the human commanded: handle center x = 0.00 meters, gripper angle 0 degrees, pull speed 0.04 m/s; then handle center x = 0.01 meters, gripper angle 2 degrees, pull speed 0.05 m/s; and so on. Imitation learning uses those rows to build a policy, a rule that looks at the current observation and chooses a robot command. The reason this is useful is ordinary: nobody wants to write a full reward for latch friction, wrist angle, wood flex, and gentle contact. The human demonstration carries that know-how. But the rows are not magic. They only show what the expert did in the states the expert visited. In the 200 pulls, suppose 160 rows are centered pulls with handle angle between -2 and +2 degrees. Another 30 rows show a careful left-hook style: gripper angle -14 degrees and pull speed 0.03 m/s. Another 10 rows show a right-hook style: gripper angle +16 degrees and pull speed 0.02 m/s. Both hook styles open a sticky drawer, but averaging them gives about -4 degrees, a command that catches neither side of the handle. That is one imitation problem: if several good human choices exist, a simple squared-error learner can invent a middle action no human meant. The second problem appears when the learned policy is put in charge. If it misses the handle by 3 centimeters on the first pull, the handle may rotate 12 degrees. The training set may contain only 2 rows with handle angle 12 degrees because the human did not make that mistake. The learner is now asking its copied policy to control a state outside the examples. On rollout, the copied policy might command gripper angle 1 degree and pull speed 0.05 m/s, scraping the handle for 0.4 seconds. The expert correction in that same state is gripper angle -18 degrees, slow down to 0.02 m/s, and re-center before pulling. A DAgger-style repair is to roll out the learner for 50 drawer attempts, collect 17 off-center states it creates, ask the expert what action should be taken there, and add those 17 labeled states back into the dataset. Imitation learning is therefore not just 'watch and copy.' It is a choice about which expert behavior to copy, how to represent several valid choices, and how to get labels for states the learner creates after its own small mistakes.",
+        "run": "A human teleoperates a robot through 200 drawer pulls. Each saved row says what the robot saw and what the human commanded: handle center x = 0.00 meters, gripper angle 0 degrees, pull speed 0.04 m/s; then handle center x = 0.01 meters, gripper angle 2 degrees, pull speed 0.05 m/s; and so on. Imitation learning uses those rows to build a policy, a rule that looks at the current observation and chooses a robot command. The reason this is useful is ordinary: nobody wants to write a full reward for latch friction, wrist angle, wood flex, and gentle contact. The human demonstration carries that know-how. But the rows are not magic. They only show what the expert did in the states the expert visited. In the 200 pulls, suppose 160 rows are centered pulls with handle angle between -2 and +2 degrees. Another 30 rows show a careful left-hook style: gripper angle -14 degrees and pull speed 0.03 m/s. Another 10 rows show a right-hook style: gripper angle +16 degrees and pull speed 0.02 m/s. Both hook styles open a sticky drawer, but averaging them gives about -6.5 degrees, a command that catches neither side of the handle. That is one imitation problem: if several good human choices exist, a simple squared-error learner can invent a middle action no human meant. The second problem appears when the learned policy is put in charge. If it misses the handle by 3 centimeters on the first pull, the handle may rotate 12 degrees. The training set may contain only 2 rows with handle angle 12 degrees because the human did not make that mistake. The learner is now asking its copied policy to control a state outside the examples. On rollout, the copied policy might command gripper angle 1 degree and pull speed 0.05 m/s, scraping the handle for 0.4 seconds. The expert correction in that same state is gripper angle -18 degrees, slow down to 0.02 m/s, and re-center before pulling. A DAgger-style repair is to roll out the learner for 50 drawer attempts, collect 17 off-center states it creates, ask the expert what action should be taken there, and add those 17 labeled states back into the dataset. Imitation learning is therefore not just 'watch and copy.' It is a choice about which expert behavior to copy, how to represent several valid choices, and how to get labels for states the learner creates after its own small mistakes.",
         "math": "The dataset has pairs (x_i, u_i^expert). Behavioral cloning fits policy parameters theta so pi_theta(x_i) predicts the expert action on demonstrated states. A simple loss is L(theta)=sum_i ||pi_theta(x_i) - u_i^expert||^2. If a drawer state has 30 left-hook labels at -14 degrees and 10 right-hook labels at +16 degrees, a scalar squared-error model that predicts one angle a solves 30*(a - (-14))^2 + 10*(a - 16)^2. The derivative is 60*(a+14) + 20*(a-16) = 80a + 520, so the optimum is a = -6.5 degrees. That number is between the two styles, but it is not necessarily a working hook. A better representation may predict a distribution pi_theta(u|x) with two modes, or it may first choose a mode such as left_hook or right_hook and then output the matching continuous command. The next boundary is state distribution. The supervised loss is measured under the expert state distribution, the states produced when the human or expert policy acts. Deployment is different: x_{t+1}=f(x_t, pi_theta(x_t)), so the learned policy creates the next states it must handle. In the drawer example, the expert dataset has 2/200 = 0.01 of its rows at handle angle 12 degrees, but the learner rollout has 17/50 = 0.34 attempts that pass through off-center recovery states. If pi_theta makes a small early error, the learner state distribution can drift away from the expert distribution and the same supervised loss no longer tells whether recovery actions are known. Dataset aggregation changes the training distribution by collecting states x_j^learner visited by pi_theta, querying u_j^expert for those states, and retraining on both old demonstrations and learner-created states. Written as sets, D_0 is the original 200 expert rows, and D_1 = D_0 union {(x_j^learner,u_j^expert)} for the 17 recovery labels. The method still depends on the expert: if the expert labels are inconsistent, unsafe, or too expensive to query, imitation cannot quietly repair that missing knowledge.",
     },
     "behavioral-cloning": {
@@ -305,6 +306,22 @@ def concept_run(concept: dict[str, Any]) -> dict[str, str]:
     if not appendix:
         return base
     return {**base, "run": f"{base['run']} {appendix}"}
+
+
+try:
+    from concept_prose import CONCEPT_PROSE
+except Exception:
+    CONCEPT_PROSE = {}
+
+
+def prose_or(concept_id: str, key: str, fallback_html: str) -> str:
+    """Return de-templated per-concept paragraphs, escaped and joined as <p> bodies.
+
+    Falls back to the generic templated string when a concept has no bespoke prose."""
+    paras = (CONCEPT_PROSE.get(concept_id) or {}).get(key)
+    if not paras:
+        return fallback_html
+    return "</p>\n    <p>".join(esc(p) for p in paras)
 
 
 FAMILY_DEEPENING: dict[str, dict[str, str]] = {
@@ -1208,6 +1225,23 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
         run = concept_run(concept)
         mathematical_object = sentence_body(concept["mathematical_object"]).lower()
         recognition = recognition_sentence(concept["recognition_test"])
+        cid = concept["id"]
+        p_pressure = prose_or(
+            cid, "pressure_close",
+            f"A common wrong first move is: {esc(concept['naive_approach'])} It fails when {esc(concept['why_naive_fails']).lower()}",
+        )
+        p_object = prose_or(
+            cid, "object",
+            f"The working object is {esc(mathematical_object)}. {esc(recognition)}.</p>\n    <p>What the object does: {esc(concept['operation'])}",
+        )
+        p_inspect = prose_or(
+            cid, "inspect",
+            f"Before naming the method, point to {esc(mathematical_object)} in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>\n    <p>Now apply one command or one update. {esc(concept['operation'])} After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.",
+        )
+        p_boundary = prose_or(
+            cid, "boundary",
+            f"{esc(concept['assumption_boundary'])}</p>\n    <p>When that condition fails, look for this visible break: {esc(concept['failure_mode']).lower()}",
+        )
         learning_control_check = ""
         if concept.get("family") == "learning-based control":
             learning_control_check = """
@@ -1225,28 +1259,27 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>{esc(concept['name'])}</h1>
 <p class="lede">{esc(concept['plain_language_definition'])}</p>
+<p><a href="{concept['id']}-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>{esc(concept['ordinary_problem'])}</p>
-    <p>A common wrong first move is: {esc(concept['naive_approach'])} It fails when {esc(concept['why_naive_fails']).lower()}</p>
+    <p>{p_pressure}</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is {esc(mathematical_object)}. {esc(recognition)}.</p>
-    <p>What the object does: {esc(concept['operation'])}</p>
+    <p>{p_object}</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to {esc(mathematical_object)} in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. {esc(concept['operation'])} After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>{p_inspect}</p>
     <p>The world check is the example: {esc(concept['worked_example'])} Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -1260,8 +1293,7 @@ th { color: var(--muted); font-size: 13px; text-transform: uppercase; }
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>{esc(concept['assumption_boundary'])}</p>
-    <p>When that condition fails, look for this visible break: {esc(concept['failure_mode']).lower()}</p>
+    <p>{p_boundary}</p>
     <p><strong>Recognize it in a new problem:</strong> {esc(concept['recognition_test'])}</p>
   </div>
 </section>{learning_control_check}

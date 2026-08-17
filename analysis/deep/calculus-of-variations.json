@@ -1,0 +1,200 @@
+{
+  "id": "calculus-of-variations",
+  "name": "Calculus of Variations",
+  "kick": "Calculus of Variations · first principles · optimize over a whole path by demanding that no tiny wiggle lowers the cost",
+  "title": "Calculus of Variations — the best path is one where any tiny wiggle cannot lower the cost",
+  "lede": "The difference between picking the best number and picking the best whole trajectory. The key shift: instead of tweaking one point, demand that nudging <em>any part</em> of the path upward or downward, while obeying constraints, cannot reduce the total cost. A real run where that \"no-improving-wiggle\" condition forces the least-effort push to be a straight line in time, and a direct optimizer confirms it perfectly. Why this condition alone pins the shape. The honest limitation: it finds a stationary path, not necessarily the globally best one. And the surprise: this 1700s idea — born from the brachistochrone problem and the principle of least action — is the mathematical parent of the Hamiltonian, the costate, and nearly every trajectory-optimization method.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "mechanism",
+      "How the wiggle condition pins the shape"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — a path is not a single number, so how do you optimize it?",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Ordinary optimization answers 'What is the <em>single best number</em>?' — the lowest point on a bowl, the tilt at the top of a hill. You compute the slope (gradient), step downhill until the slope reaches zero, and you are done."
+        },
+        {
+          "t": "para",
+          "html": "But a controller does not choose one number; it chooses an entire <em>sequence</em> of moves through time — a push sequence, a steering curve, a path. The 'best' path is not a single value; it is a whole function of time. The cost depends on the entire curve: how hard you push at each instant, how much it costs, and whether it reaches the goal."
+        },
+        {
+          "t": "para",
+          "html": "The naive thought is 'optimize each point separately.' But a path is not independent points piled up; the physics stitches them together. If the cart is at position 0 at time 1, and the physics says 'position changes by velocity times 0.1 seconds,' then at time 1.1 the position <em>must</em> be close to 0. Neighboring points are locked together. A path is one connected object, not a pile of unrelated numbers."
+        },
+        {
+          "t": "para",
+          "html": "The real question is: how do you find the best whole curve when every point in the curve is connected to every other point by the physics?"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — demand that no small admissible wiggle improves the cost",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The calculus of variations asks: what if we do not search through every possible path, but instead check which paths <em>cannot be improved by a small nudge</em>? A path that cannot be improved by any tiny wiggle is a candidate for the best path."
+        },
+        {
+          "t": "para",
+          "html": "Here is the idea in plain words: imagine a path you have drawn through time. Now pick any small legal shape — a 'bump' that pushes the path up here and down there, or makes it wobble gently — and apply it. Check whether the total cost goes down, stays the same, or goes up. If <em>every legal bump you can draw makes the cost stay the same or go up</em>, then this path cannot be improved by nudging. It is a stationary path — a candidate for 'best.'"
+        },
+        {
+          "t": "para",
+          "html": "This is different from checking one slope. You are not computing how steep a hill is at a single point. You are asking: 'Does this entire curve have the property that every admissible wiggle either leaves cost alone or makes it worse?' If yes, the curve is locked in place and cannot be improved by local nudging. This is called the first-variation condition, and the equation it produces — the Euler equation — is the law the best path must obey."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — the no-improving-wiggle condition forces a straight-line push",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured from two different methods solving the same problem: an indirect solver (that enforces the 'no-improving-wiggle' condition) and a direct optimizer (that searches for the lowest-cost path). We started a cart at position 0 with zero velocity, commanded it to reach position 1 in 20 time steps (2 seconds), and asked for the least total push-effort (sum of squared force). One way to find the answer is to apply Pontryagin's principle — the modern version of the calculus of variations — which predicts that the best push must follow a specific shape. Another way is to ask a direct optimizer to search paths and find the cheapest one. Both should give the same answer if the theory is right."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "Method",
+            "Total effort (J*)",
+            "First step push",
+            "Last step push",
+            "R² to a line"
+          ],
+          "rows": [
+            [
+              "Pontryagin (indirect — enforces no-improving-wiggle)",
+              "15.038",
+              "+1.429",
+              "−1.429",
+              "perfect by design"
+            ],
+            [
+              "Direct optimizer (numerical search)",
+              "15.038",
+              "+1.429",
+              "−1.429",
+              "1.00000 (perfect fit)"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the no-improving-wiggle condition and direct search agree perfectly.</strong> Both methods found the same total cost (15.038), the same first push (+1.429), and the same final push (−1.429). The directly-optimized push sequence fits a mathematically perfect straight line, with R² = 1.00000. The theory predicted: this path cannot be improved by a small wiggle; therefore, any small bump makes the cost the same or worse. The direct optimizer confirmed: yes, exactly this path is the lowest-cost one. The indirect method and the direct method arrived at identical answers, proving that the 'no-improving-wiggle' condition is not a guess — it is an exact characterization of the best path."
+        }
+      ]
+    },
+    {
+      "id": "mechanism",
+      "h2": "4 · How the wiggle condition pins the shape — from intuition to the Euler equation",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The reason this works is deeper than it looks. When you write down 'the cost does not go down for any admissible bump,' you produce a mathematical statement: an integral over time of (some function) times (the bump shape) equals zero. This must hold for <em>every possible bump</em>, as long as the bump obeys the constraints (like keeping the endpoint fixed)."
+        },
+        {
+          "t": "para",
+          "html": "But here is the key insight: if an integral of (function f) times (any admissible bump) must equal zero, then f itself must be zero almost everywhere on the path. This is the 'fundamental lemma of the calculus of variations.' It sounds technical, but it means something simple: if you rearrange the 'cost does not go down' statement into the form (integral of f times bump), then demanding this integral vanish for all bumps is equivalent to demanding f = 0 everywhere. That equation — f = 0 along the whole path — is the Euler equation, and it is the condition the best path obeys."
+        },
+        {
+          "t": "para",
+          "html": "For the cart push problem, the Euler equation says: the second derivative of the push (its rate of change) must be zero. In other words, the push cannot accelerate; it must be a straight line through time. This is exactly what the data showed — the push starts at +1.429 and decreases linearly to −1.429. The 'no-improving-wiggle' condition, applied formally, produces the equation 'second derivative = 0,' and the solution to that equation is 'linear function,' which matches the measurement."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — it finds a stationary path, which may not be the global best",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The calculus of variations gives you a necessary condition: if a path is the best, it must satisfy the 'no-improving-wiggle' condition. But that condition is one-directional: it does not guarantee you found the globally best path. There can be multiple stationary paths. A path might be a local best (no nearby wiggle improves it) but not a global best (somewhere far away, a completely different path is cheaper)."
+        },
+        {
+          "t": "para",
+          "html": "Second, hard limits complicate the picture. If the cart has a force limit, and the optimal push keeps bumping against that limit, then the 'no-improving-wiggle' argument breaks down — you cannot legally apply a small bump in one direction if you are already at the edge of your constraint. The condition still works for <em>interior</em> moves (points not at a limit), but the boundary behavior (when a constraint is 'active') requires extra care: Karush-Kuhn-Tucker conditions or direct methods."
+        },
+        {
+          "t": "para",
+          "html": "In practice, this means: calculus of variations gives you a candidate answer. You must check that it is indeed the best (by comparing to direct search or other methods), and you must ensure the constraints (force limits, state bounds) are handled correctly. The method is elegant and exact for smooth, unconstrained problems; the moment constraints become active, you need to be more careful."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this 1700s idea is the seed of everything modern",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The calculus of variations was born in the 1700s from a spectacular problem: the brachistochrone — what curve gets a ball rolling downhill fastest from one point to another? The answer is not a straight line (the shortest path is slow because it is too steep at the start); it is a cycloid curve. Johann Bernoulli used the principle of least action — that nature minimizes some quantity — and found that the 'no-improving-wiggle' condition locked the shape."
+        },
+        {
+          "t": "para",
+          "html": "<strong>The Hamiltonian method and costate (adjoint variable)</strong> emerged as a modern reworking of this idea. Instead of writing the 'no-improving-wiggle' condition as an integral, you bundle the running cost and the physics into one quantity called the Hamiltonian. The condition becomes: the Hamiltonian must be minimized by your choice at every instant in time. The costate (or adjoint) is the 'price' — a backward-in-time sensitivity — that tracks how much each state decision costs in terms of future constraint violations. In the cart example, the costate runs linearly through time, which is exactly why the push is a straight line. This method powers Pontryagin's Maximum Principle and is the theoretical foundation for most modern trajectory optimization."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Trajectory optimization (iLQR, DDP)</strong> and <strong>constrained receding-horizon control (MPC)</strong> both use the same underlying idea, applied numerically. They repeatedly solve small versions of the calculus-of-variations problem — either by linearizing the dynamics and squares, or by solving an optimization program at each step. The inner mathematical loop is the same: you are hunting for a path where no admissible wiggle lowers the cost."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>One foundational principle produces three toolboxes.</strong> The brachistochrone was solved in 1697; the Hamiltonian method was formalized in the 1830s; modern numerical trajectory optimization was born in the 1970s–2000s. All three are asking the same question: 'What path has the property that no tiny admissible wiggle lowers its cost?' The answer method changed from hand calculus to numerical iteration to automatic differentiation, but the idea — that the best shape locks itself in place by obeying the 'no-improving-wiggle' condition — has never changed. If you understand why a straight line cannot be improved by a local bump in this cart problem, you hold the seed idea behind every modern trajectory optimizer."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "trajectory-optimization.html",
+      "trajectory optimization"
+    ],
+    [
+      "hamiltonian-optimal-control.html",
+      "Hamiltonian & optimal control"
+    ],
+    [
+      "indirect-methods.html",
+      "indirect methods"
+    ],
+    [
+      "costate-adjoint-variable.html",
+      "costate (adjoint variable)"
+    ],
+    [
+      "direct-transcription.html",
+      "direct transcription"
+    ]
+  ],
+  "recipe": {
+    "summary": "Double integrator, dt=0.1. Cart 0→1 in 20 steps, least push-effort (sum of squared force). Pontryagin's principle (indirect) predicts straight-line push. Direct optimizer (scipy minimize) searches for lowest-cost path. Both methods run on the same problem; outputs match exactly.",
+    "eq": "Dynamics: x_{k+1} = A x_k + B u_k,  A = [[1, 0.1], [0, 1]],  B = [[0], [0.1]]\nCost: J = sum_k u_k^2\nPontryagin: costate p evolves p_k = A^T p_{k+1} (backward), push u_k = -0.5 * B^T p_k\nDirect search: scipy.optimize.minimize over u sequence, forward simulate, return sum u^2\nIndirect result: p_0 = [−1.429, −1.429] at start (predicts u as straight line)\nDirect result: u = [+1.429, ..., −1.429] fits R² = 1.00000 to line, total cost 15.038",
+    "note": "Full script: scripts/experiments/traj_run.py. Numbers reported are the Pontryagin solver's predictions and the direct optimizer's output verbatim; they are identical, demonstrating exact agreement."
+  }
+}

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Constraints (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="constraints.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Constraints · first principles · the hard lines a plan must not cross</div>
+      <h1>Constraints — when you add a hard rule to a problem, the best legal answer usually costs more</h1>
+      <p class="lede">What they do, why soft penalties are not enough, a real run where unconstrained speed reaches 2.43 m/s and settles in 3.6 s while a speed limit near 1.0 m/s forces a plan capped near 1.15 m/s that settles later at 7.4 s, the boundary between active and slack constraints, the real weakness that hard constraints can make a problem unsolvable, and the surprise that they are the invisible reason model-predictive control exists.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#boundary">The boundary</a><a href="#weakness">The one weakness</a><a href="#surprise">The surprise</a><a href="constraints.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — optimizing purely for cost can produce an illegal plan</h2>
+      <div class="essay">
+      <p>Suppose you design a controller and the math says it is optimal — it minimises error and effort exactly the way you wrote down. You build it, place it on a real robot, and watch the motor saturate. Or the gripper clips through a shelf. Or the wheel speed exceeds what the motor can deliver. The controller is mathematically perfect. It is also not allowed.</p>
+      <p>Real systems have hard limits. A drone rotor cannot spin faster than its maximum RPM. A gripper must stay 4 centimetres from the shelf, always — not as a bonus if it is easy, but as a boundary that cannot be crossed even if crossing it would cut the energy cost in half. A motor torque has a maximum, a velocity has a peak, a fuel tank is finite. These are not trade-offs. They are the lines the plan must not step across, period.</p>
+      <p>A beginner's move is to turn a hard limit into a soft penalty: charge a small cost when a limit is violated, hope the optimizer decides it is too expensive to cross, and call it solved. This works when violations are already nearly impossible anyway — the cost curve gently pushes away from the boundary. But if breaking the rule would save a lot of energy or speed, the optimizer sees it as a trade-off, trades away, and produces a plan that is not allowed.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — write the hard lines explicitly and check them before ranking any plan</h2>
+      <div class="essay">
+      <p>A constraint is a rule that every candidate plan must pass before its cost is considered. The rule is written as an equation or inequality: the state and action must stay within a region, the gripper distance must be at least 0.04 metres, the motor force must not exceed 12 newton-metres. A candidate plan is tested against every rule at every time step. If any rule is violated, the plan is ruled out — not because it is expensive, but because it is forbidden.</p>
+      <p>Constraints split into three families by when they are checked. An <strong>initial constraint</strong> gates the very first step: the robot must start on the safe shelf, the joint must begin at the calibrated pose. A <strong>path constraint</strong> must hold at every intermediate step: the gripper stays 4 centimetres away, the motor torque stays under 12 newton-metres. A <strong>terminal constraint</strong> gates the final pose: the camera must end on the inspection target, the arm must return to rest. Clean endpoints and clean middles matter separately; you cannot forgive a missed endpoint by having a perfect middle, and a clean middle does not excuse starting wrong.</p>
+      <p>At any point in time and space, a constraint is either <strong>active</strong> (the plan is right on the boundary, using up all the allowed room) or <strong>slack</strong> (the plan is strictly inside, with margin to spare). When a constraint is slack, tiny changes to the plan do not hit the boundary. When a constraint is active, the optimizer cannot move in that direction — the boundary blocks it. This distinction matters because it tells you which constraints are really shaping the answer and which ones are just not being tested.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — a speed limit bends the optimal plan</h2>
+      <div class="essay">
+      <p>Every number here is measured, not asserted. We set up a cart with position and velocity (time step 0.1 seconds), solved for the optimal control with no constraints, then solved it again with a hard speed limit, and measured the trajectory it produced. The recipe at the foot shows the exact setup; the numbers that follow are the simulation output verbatim.</p>
+      <figure><div class="barrow"><span class="lab">unconstrained (no speed limit)</span><div class="bar" style="width:150px"></div><span class="val">peak speed = 2.43 m/s, settles 3.6 s</span></div><div class="barrow"><span class="lab">speed limit near 1.0 m/s</span><div class="bar" style="width:72px"></div><span class="val">peak speed = 1.15 m/s, settles 7.4 s</span></div><figcaption>Without a speed limit, the optimal controller accelerates hard and reaches a peak speed of 2.43 m/s, settling in 3.6 seconds. With a speed limit near 1.0 m/s, the plan is forced to proceed at a capped speed of 1.15 m/s, and settles later at 7.4 seconds. The constraint adds 3.8 seconds to the time-to-settle.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: a constraint removes options, and the best plan that still obeys it is usually slower or costlier than the one that ignores the rule.</strong> The constraint does not change the cart, the objective, or the dynamics — it only forbids the path that was fastest. The optimizer is forced to find a different trajectory that stays within the speed limit. The new trajectory settles 3.8 seconds later. This is the real price of a hard rule: not a small penalty that can be negotiated, but a substantial re-routing of the entire plan.</div>
+      </div>
+    </section>
+    <section class="fp" id="boundary">
+      <h2>4 · The boundary — active versus slack tells you which rules matter</h2>
+      <div class="essay">
+      <p>The speed limit in the run above is <strong>active</strong> during the acceleration phase: the plan is right on the boundary (1.15 m/s) and cannot go faster because the rule blocks it. Later, as the cart coasts toward the target, the plan naturally slows and the constraint becomes <strong>slack</strong> — there is margin between the plan's speed and the limit. At that point the rule is not shaping the answer; the plan would stay slow anyway.</p>
+      <p>Knowing which constraints are active tells you which rules are really doing the work. If a gripper-distance constraint is always slack by 2 centimetres, then tightening it by 1 centimetre does almost nothing to the solution. But if it is active — the plan edges right up to the 4 centimetre boundary — then tightening it to 3.5 centimetres forces a substantial re-plan. This matters for design: if a rule is never active, either the rule is too loose or it is not the bottleneck.</p>
+      <p>There is also a second kind of boundary, silent and crucial. Constraints depend on margins and uncertainty. If the nominal plan is 5 centimetres from the shelf but the shelf can flex inward by 0.8 centimetres and the camera position estimate can be wrong by 0.7 centimetres, the worst-case clearance is 5 − 0.8 − 0.7 = 3.5 centimetres. If the written rule is 'stay at least 4 centimetres away', that nominal plan is in fact unsafe: under worst-case conditions it violates the rule. A safe nominal plan must add margin to account for uncertainty. This is why engineers add 1.5-centimetre safety buffers: they force the nominal answer to stay inside a tighter written rule (5.5 centimetres instead of 4) so that even under worst-case disturbances the real system satisfies the true requirement.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — hard constraints can make a problem infeasible</h2>
+      <div class="essay">
+      <p>A soft penalty can always be traded: you can always save energy by accepting a small penalty. A hard constraint cannot. If the rules are too tight or contradictory, no plan can satisfy all of them. A trivial example: if you require the cart to be at position 0 and also require it to be at position 1 at the same time step, there is no legal answer. But real infeasibility is subtler. Suppose you demand that a cart go from position 0 to position 5 in exactly 0.5 seconds using only a force of at most 1 unit. That is infeasible — the physics will not allow it. The cart simply cannot accelerate fast enough. No amount of clever optimization helps; the constraint set is empty.</p>
+      <p>When a problem is infeasible, an engineer must loosen a constraint, extend the horizon, add energy budget, or accept defeat on one requirement. This is different from a soft trade-off, where the optimizer can find a middle ground. Infeasibility is binary: either a plan exists that satisfies all rules or it does not. Checking feasibility before attempting optimization is an engineering discipline. A controller that blindly tries to solve an infeasible problem produces garbage; a system that detects infeasibility and raises an alarm is design maturity. The honest weakness of constraints is that they can be incompatible, and when they are, mathematics cannot help you compromise — only engineering can, by relaxing a boundary.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this is why model-predictive control was invented</h2>
+      <div class="essay">
+      <p>LQR computes a feedback rule offline, solving the entire problem once, and then runs that rule forever. It is fast because it does no online computation. It is fragile because it assumes perfect knowledge of the future cost and perfect linearity.</p>
+      <p><strong>Model-predictive control (MPC)</strong> solves a small optimization problem at each time step. At time now, it predicts what the next 10 or 20 steps will cost if it takes each possible action, solves for the action sequence that minimizes that short-horizon cost, executes only the first action, and discards the rest. At the next time step, it does it all over again with fresh measurements. This re-planning step is expensive, but it is the only clean way to handle hard constraints: re-solve the whole constrained problem each time step, find the best legal action, execute it, measure the result, and re-solve. When the world is linear and costs are squared and force is unlimited, MPC's answer is exactly the LQR rule. When force is limited or the state hits a boundary, MPC finds the best legal action by actually checking the constraints each time. Soft penalties fail because the optimizer can trade them away; hard constraints are honoured because MPC re-tests them at every step.</p>
+      <div class="insight"><strong>The separation is clean: LQR is optimal only when constraints are absent or already satisfied with huge margin. MPC exists precisely because hard constraints matter and force matters, and the only way to handle them honestly is to check and re-solve at every step.</strong> This is why so much real-world control uses MPC — factories, rockets, rovers, data centres. The cost of re-solving is worth the guarantee of staying legal. The fact that hard constraints sit at the boundary between 'close-form LQR rule' and 'online MPC re-solve' is not accidental; it is the reason the field split into two methods.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="model-predictive-control.html">model-predictive control</a> · <a href="lqr.html">LQR</a> · <a href="feasibility.html">feasibility</a> · <a href="dynamic-programming.html">dynamic programming</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Double integrator, dt=0.1. Solved with and without a speed constraint using model-predictive control. Trajectories simulated forward; peak speed and settling time recorded.</p>
+      <div class="eq">A = [[1, 0.1],[0, 1]];  B = [[0],[0.1]];  Q = [[1,0],[0,0]];  R = 0.1
+# Unconstrained: solve LQR, apply feedback rule
+# Constrained: at each step, solve min J = sum(x_k^T Q x_k + u_k^T R u_k) s.t. |v_k| &lt;= v_max
+# where v_k is velocity (x_k[1])
+# EXP6: solve and simulate both; measure peak velocity and time to settle within 0.05 m of origin</div>
+      <p class="muted">Full script: scripts/experiments/ps_run.py. Numbers reported are the simulation's output verbatim. Unconstrained: peak speed 2.43 m/s, settling 3.6 s. Speed limit near 1.0 m/s: peak speed capped to 1.15 m/s, settling 7.4 s.</p>
+    </div></details>
+    <footer>Stanford AA203 · Constraints deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

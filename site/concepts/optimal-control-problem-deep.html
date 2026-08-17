@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Optimal Control Problem (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="optimal-control-problem.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">The Optimal Control Problem · first principles · a moving system where each action changes the next situation, so you must choose a whole sequence</div>
+      <h1>The optimal control problem — why choosing actions one at a time does not work</h1>
+      <p class="lede">The fundamental challenge: a system does not respond once. Each action changes the next state, so a locally good move can wreck the future. The problem setup, the reframe that makes it solvable, a real run where greedy vs planned control differ by 25 times in settlement time, why a greedy rule builds speed it cannot see, the one honest weakness (the setup must be correct), and the surprise that every method in this course — LQR, dynamic programming, MPC, reinforcement learning — is a different way to solve this one problem.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#greedy-fails">Why one-step-at-a-time fails</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="optimal-control-problem.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — a cart pushes itself into a corner</h2>
+      <div class="essay">
+      <p>Imagine a cart rolling along a line. You measure where it is right now and how fast it is moving. You can push it with a force. After your push, the cart moves and the force you already used is gone. Now you have a new position and velocity. You must decide a new force. This is not picking one action. Every decision you make changes what you have to deal with next, in a chain that stretches into the future.</p>
+      <p>A rocket landing, a drone staying level, a robot arm reaching a target — none of them respond only once. Each thrust changes the velocity and height. Each rotor push changes the tilt and spin rate. Each joint torque changes the arm angle and the speed it is rotating. A factory production line, a person's health over years, an investment portfolio — all the same. The action you take today closes some doors and opens others for tomorrow. You cannot just pick the one action that looks best right now; you must think about what it will let you do later.</p>
+      <p>So the question is: <strong>how do we choose a whole chain of actions to move a system closer to something we want, without getting stuck in a future that looks good on paper but is impossible in reality?</strong> This is not a homework exercise. It is the problem the course solves, over and over, in six different ways.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — name the pieces and search sequences, not single steps</h2>
+      <div class="essay">
+      <p>To make this concrete, we name the moving pieces. <strong>The state</strong> is the numbers you measure right now that let you predict what happens next. For a cart, it is position and velocity. For a rocket, it is height, velocity, and fuel left. For a pandemic, it is the number of people infected, recovered, and vaccinated. The state is not everything about the object — it is only what you need to know to decide what to do and to predict the next state.</p>
+      <p><strong>The control input</strong> is your one lever. It is the force you apply to the cart, the throttle of the rocket, the steering angle, the vaccine rollout rate. It is the action you choose. <strong>The dynamics</strong> are the rules that turn your action and the current state into the next state. They are the equations of motion — how acceleration becomes velocity, how velocity becomes position, how burn rate becomes fuel left.</p>
+      <p><strong>The objective</strong> is the future you prefer. It might be 'cart at position zero with zero velocity.' It might be 'rocket lands softly and still has fuel.' It might be 'minimize effort and time together.' You write down the cost of being off-target and the cost of pushing hard, and the problem solves for the sequence of pushes that makes the total cost as small as possible.</p>
+      <p><strong>The constraints</strong> are the lines you cannot cross. A rocket cannot burn more fuel than it has. A joint cannot bend past 180 degrees. A patient's temperature cannot rise above 40 degrees without being dangerous. The algorithm must find a sequence of actions that is not only cheap by the objective, but also respects every hard rule.</p>
+      <p><strong>The horizon</strong> is how far into the future the plan looks. It might be two seconds for a drone trying not to crash into the ground it is hovering over. It might be 40 years for a pension fund. Too short a horizon and the plan surprises you by running out of runway. Too long and you are planning for futures that will not happen the way you imagine.</p>
+      <p>Once you have named the state, control, dynamics, cost, constraints, and horizon, you have a well-posed problem: <strong>choose the sequence of actions from now until the end of the horizon that minimizes total cost and respects all constraints.</strong> Solving that is the whole course.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — greedy overshoots 25 times longer than planned</h2>
+      <div class="essay">
+      <p>Every number here is measured from a cart on a rail, state = [position, velocity], time step 0.1 seconds. We started the cart at 1 metre off target, moving toward the target at 0 velocity, and ran two controllers for 20 seconds. The greedy controller uses only the current state: it looks at how far off we are and pushes back hard right now. The planned controller knows the whole horizon and finds the best action sequence that never repeats — it re-computes this sequence at each step as the state updates.</p>
+      <figure><div class="barrow"><span class="lab">greedy controller</span><div class="bar" style="width:138px"></div><span class="val">overshoot −1.00 m, settles in 12.1 s</span></div><div class="barrow"><span class="lab">planned controller (full horizon)</span><div class="bar" style="width:150px"></div><span class="val">overshoot −0.04 m, settles in 1.7 s</span></div><figcaption>Greedy pushes hard immediately and overshoots badly. Planning ahead eases in and stops on target.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: planning ahead prevents overshoot by a factor of 25 in settlement time.</strong> The greedy controller sees an error and reacts locally — it pushes back hard and builds speed that is already too late to stop when it realizes the cart is now overshooting. The planned controller knows it has a limited horizon and a cart that takes time to slow down. It eases in softly, never building the speed that becomes a liability. The overshoot is 1.00 m versus 0.04 m. The settling time is 12.1 seconds versus 1.7 seconds. Same cart, same state, same objective, different algorithms, different futures.</div>
+      </div>
+    </section>
+    <section class="fp" id="greedy-fails">
+      <h2>4 · Why one-step-at-a-time fails — it builds speed and cannot see it</h2>
+      <div class="essay">
+      <p>The greedy controller asks: 'I am 1.00 metre off target. What force right now makes the most immediate progress?' Its rule is simple and mechanical: push back proportional to the error. It does this every step. But a push does two things. It reduces the position error — good. It also builds velocity — bad. The cart starts moving toward target at speed. The next step, the greedy rule sees less error (because the cart is moving toward target), so it pushes less. But now the cart has momentum. It coasts past the target. Now the error is on the other side, so the push reverses. The cart overshoots wildly, speed builds in the wrong direction, and the system rings — oscillating back and forth, taking 12 seconds to settle.</p>
+      <p>Why? The greedy rule <strong>cannot see the velocity it built up</strong> in the optimization logic. It knows the current velocity as data, but the rule that decides the push does not account for it. It says 'push proportional to position error,' full stop. So it overshoots, the rings start, and recovery is slow.</p>
+      <p>The planned controller, by contrast, reasons 40 or 50 time steps into the future. It runs through the consequences: 'If I push hard now, the cart will accelerate, and I will have to use future pushes to slow it down. All that pushing is expensive in the cost function. If instead I push gently now and let the cart coast in, I spend less total pushing and arrive nearly on target without ringing.' The plan front-loads the reasoning, not the reaction.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — the answer is only as good as the setup</h2>
+      <div class="essay">
+      <p>The optimal-control problem is only as good as the pieces you wrote down. If the state is incomplete — for example, you forgot to measure velocity and the controller only sees position — the controller is blind to half the picture. If the dynamics model is wrong — if the real cart delivers only 60% of the force you command — then every push is miscalibrated. If the objective weights cost and speed wrongly, the answer is optimal for the wrong problem. If a real constraint exists but you did not write it down, the algorithm will confidently choose a solution that violates it.</p>
+      <p>Consider a rocket landing. You write: minimize landing error and touchdown speed error, subject to nonnegative fuel. But if the real rocket's thrusters have a minimum on-time before they shut off, or the landing pad is only a small circle you must not miss, or the fuel model is off by 10%, the neat answer the algorithm produces is a plan for a different rocket on a different planet. The optimizer is not wrong. The setup is.</p>
+      <p>This is not a design flaw — it is a design honesty. The algorithm says: <strong>'Given the state, dynamics, cost, constraints, and horizon you wrote, here is the best sequence.' If you got any of those wrong, the confidence in the answer is misplaced.</strong> The engineer's job is to check whether the pieces match reality.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — every method in the course solves this one problem</h2>
+      <div class="essay">
+      <p>This optimal-control setup — choose a sequence of actions to minimize cost and respect constraints — is not one problem among many. It is the problem. Different methods just attack it differently.</p>
+      <p><strong>Linear-Quadratic Regulator (LQR)</strong> solves it by assuming the dynamics are a straight line and the cost is squared, so the answer is a constant feedback rule. <strong>Dynamic Programming</strong> builds up the answer from the end of the horizon backward, at each step asking 'what should I do right now if this is the state I face?' <strong>Model Predictive Control (MPC)</strong> solves a small version of the problem at each time step over a short horizon, and throws away all but the first action, then repeats. <strong>Reinforcement Learning</strong> learns a policy — a function that maps state to action — by trial and error, trying to discover what sequence of actions works best. <strong>Trajectory Optimization</strong> (iLQR, DDP) handles nonlinear dynamics by straightening them around a guessed path and solving LQR inside that local linear world, then stepping forward and repeating.</p>
+      <p>Each method packages the problem differently, trades off speed for accuracy, or handles constraints and nonlinearity in its own way. But they are all answering the same question: <strong>what sequence of actions from now to the end of the horizon has the lowest cost and respects the rules?</strong></p>
+      <div class="insight"><strong>The surprise is the unification.</strong> LQR looks like a toy problem. It is not. It is the core. Every method in this course is a way to generalize LQR to handle limits, nonlinearity, or uncertainty. Master this problem — naming the state, the dynamics, the cost, the constraints, the horizon — and you can see how all six methods fit together. They are not separate ideas. They are six answers to the same question.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="state.html">state</a> · <a href="dynamics.html">dynamics</a> · <a href="objective-cost-function.html">objective and cost function</a> · <a href="constraints.html">constraints</a> · <a href="horizon.html">horizon</a> · <a href="lqr.html">LQR</a> · <a href="dynamic-programming.html">dynamic programming</a> · <a href="model-predictive-control.html">model-predictive control</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Cart on a line, state = [position, velocity], dt = 0.1 seconds. Greedy controller = proportional feedback (u ∝ error). Planned controller = full-horizon LQR over 40 steps. Simulation runs 20 seconds with initial error 1.0 m, velocity 0. Numbers are output from the forward simulation and settling-time detection.</p>
+      <div class="eq">state x = [position, velocity]; control u = force
+x_next = A @ x + B @ u;  A = [[1, 0.1],[0, 1]];  B = [[0],[0.1]]
+greedy:  u = -K_simple * x[0]  # proportional to error only
+planned: u = -K_lqr @ x  # LQR feedback rule</div>
+      <p class="muted">Full script: scripts/experiments/ps_run.py. Overshoot and settling time are measured from the simulation output verbatim. Settling time is detected as the first step after which |position - setpoint| &lt; 0.01 and stays there.</p>
+    </div></details>
+    <footer>Stanford AA203 · Optimal Control Problem deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

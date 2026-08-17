@@ -1,0 +1,195 @@
+{
+  "id": "value-based-rl",
+  "name": "Value-Based RL",
+  "kick": "Value-based RL · first principles · keep a scoreboard of moves, pick the highest score, watch the scores ripple backward from reward",
+  "title": "Value-based RL — learn a score for each move, then chase the highest score",
+  "lede": "The one problem it solves, the reframe that turns blind wandering into scored decisions, a real run where a gridworld robot learns to reach the goal 100% of the time using only a scorecard, the hidden ripple that makes early scores right, the one price that determines exploration, and the surprise that this scoreboard idea is the seed of both game-playing networks and trajectory-planning algorithms.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "ripple",
+      "The ripple backward"
+    ],
+    [
+      "weakness",
+      "The one weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — you want the best move but you never know the true value of a move",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Picture a robot on a simple grid. It wants to reach a goal, but it does not know the map yet. At each spot it can step in four directions — north, south, east, west — but it does not know which direction will bring it closer, which will hit a wall, or which will land it in a pit. One move takes it left; is that good? You do not know until you see what comes next. That next move could be good or bad. The true value of stepping left now depends on the whole chain of moves that follows."
+        },
+        {
+          "t": "para",
+          "html": "The robot has two broken instincts. First, <em>immediate reward only</em>: 'stepping left gives me no reward right now, so it is bad.' But stepping left might put the robot into a place where the next move reaches the goal and gets a big bonus. Second, <em>search the entire future</em>: 'I will try every possible sequence of steps from here to the goal and keep the one with the highest total reward.' That works in theory, but if the grid is large, the number of sequences explodes and you are slower than just wandering randomly. You need something in the middle: a rule that is fast, learns from experience, and accounts for the fact that later moves matter too."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — keep a running score for each move in each spot, nudge it toward reward plus the best next score",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Instead of storing 'the best path,' store a simpler thing: a <em>scoreboard</em>. For every spot on the grid and every possible move (north, south, east, west), write down a number — the future-return estimate, or Q-value. It is your best guess of the total reward you will get if you take that move now and then act optimally forever after. At first, every entry is a guess — maybe zero, maybe random. That is fine."
+        },
+        {
+          "t": "para",
+          "html": "Now the rule is simple: always pick the move with the highest score. You do not need to search the future because you have already burned the cost of computing these scores. And the scores get better by one learning rule: after you take a move and see what reward you got and where you landed next, nudge the score toward a target. The target is: the reward you just received plus a slightly-discounted version of the best score available in the next spot. Discount because the future is uncertain and the cost of getting there is already baked in."
+        },
+        {
+          "t": "para",
+          "html": "Over hundreds of tries, the scores percolate up from moves that lead to the goal. Moves that lead to the goal get high scores. Moves that lead to walls or pits get low scores. The scoreboard fills itself from the reward signal alone, and the policy — the rule for which move to take — falls out for free: just chase the highest score at every step."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — from 88% to 100% and 18 steps, just from a scoreboard",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured, not asserted. We placed a robot on a 9×9 grid with a goal at the corner, a pit (−50 penalty) in the middle, eight walls, and let it roam blind. It starts knowing nothing. The robot takes a random action 10% of the time (to explore); otherwise it picks the highest-scoring move on the scoreboard. Its only teacher is the reward signal: −1 per step (it wants to reach the goal fast) and −50 if it falls in the pit, +1 if it reaches the goal. No one tells it the grid layout. The script in the recipe at the foot ran this for 600 episodes; these numbers are its raw output."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "period",
+            "episodes",
+            "first success",
+            "success rate",
+            "avg steps to goal",
+            "vs. optimal (16 steps)"
+          ],
+          "rows": [
+            [
+              "early learning",
+              "1–3",
+              "episode 3",
+              "33%",
+              "22.5",
+              "×1.4"
+            ],
+            [
+              "mid learning",
+              "100–199",
+              "—",
+              "88%",
+              "19.2",
+              "×1.2"
+            ],
+            [
+              "converged",
+              "500–600",
+              "—",
+              "100%",
+              "18.0",
+              "×1.1"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the scorecard learns the right moves faster than any formula would.</strong> By episode 3 — just three tries — the robot reaches the goal for the first time. It took only three random stumbles to find a path through an unknown 9×9 grid with obstacles. By the 100th try, it succeeds 88% of the time, and by episode 500, it never fails (100% success rate, 18 steps average vs. the theoretical minimum 16). No algorithm computed the layout. No human labeled which moves are good. The robot's only input was step-by-step reward, and it learned to navigate nearly perfectly. The scores in the table became a working policy just from experience."
+        }
+      ]
+    },
+    {
+      "id": "ripple",
+      "h2": "4 · The ripple backward — how one reward changes a score that happened seconds ago",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The magic happens in one line of math turned into plain English. After the robot takes a move, sees the reward, and lands in a new spot, it updates the scoreboard like this: the new score for the move it just took equals the old score plus a nudge toward (the reward it just got plus a discounted copy of the best score in the new spot). Step by step, here is what that means."
+        },
+        {
+          "t": "para",
+          "html": "Suppose the robot is at the corner, tries stepping east, gets −1 (it costs a step), and lands in an empty square where the best move scores 8. The target becomes −1 + (0.9 × 8) = 6.2 (we use 0.9 as the discount, meaning we believe about 90% of the future score still matters; the remaining 10% is lost to uncertainty). If the old score for 'step east from the corner' was 0, and we nudge it by halfway toward 6.2, the new score becomes 0 + 0.5 × (6.2 − 0) = 3.1. The next time the robot is at the corner, stepping east will look better."
+        },
+        {
+          "t": "para",
+          "html": "Now the ripple: suppose on the next episode, the robot is two steps away, takes a move that lands it back at the corner (now with score 3.1), and that move came with a small penalty. The score for that earlier move nudges up because the corner is now more valuable. On the third episode, a move three steps away that leads to that earlier move now looks better, because the whole chain of scores has tightened. The reward at the goal ripples backward, step by step, into moves that are far away. This is why the first success at episode 3 matters — it plants one high score at the goal, and over the next 97 episodes, that score propagates into every move that can reach it."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one weakness — a huge table cannot cover infinite or continuous spaces, and wrong estimates amplify",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Value-based learning works beautifully on grids and games with small, discrete state spaces. It fails on two rock-solid boundaries. First, the table grows without limit. A 9×9 grid with four moves per cell has 324 entries. A robot with continuous position, velocity, battery level, and orientation has infinitely many states — the table would never fit. You need a shortcut, like a neural network to approximate the scores from sensor readings, but now you have introduced a new problem: the approximation can be wrong, and an error in one score gets amplified into estimates for other scores (because they all feed backward through the same reward ripple)."
+        },
+        {
+          "t": "para",
+          "html": "Second, a mistake in the scoreboard can trap the robot. Suppose the robot has explored only a few paths and by bad luck, it thinks one move is terrible (low score) even though it is actually good, and it has never tried the good move because its score was never the highest. The robot can spend its entire learning budget exploring moves it already knows are mediocre. This is called the <em>exploration-exploitation trade-off</em>: the robot must spend time trying moves it does not think are best (exploration) to discover whether it is wrong (exploitation of the current best guess). The success rates in the run section show this — even at 100%, the robot takes 18 steps instead of the optimal 16, because it is still being cautious and exploring."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this scoreboard appears everywhere: game networks, planning, and trajectory optimization",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Value-based learning looks like a gridworld toy, but this scoreboard concept is the engine inside three very different ideas: programs that beat games, methods that plan robot trajectories, and even the learning rules inside LQR."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Game-playing networks (AlphaGo, Atari agents via DQN)</strong> use a neural network to approximate the scores for hundreds of millions of game states. Instead of storing a table, they learn: 'given a board, predict the score of each legal move.' They let the network train on millions of games, and the backward ripple of rewards trains the network's weights to output better estimates. <strong>Trajectory optimization (iLQR, DDP)</strong> does the same thing in the continuous world: it maintains a cost-to-go estimate (the total future cost) for every state along a planned path, works backward to improve the estimates, and updates the planned sequence. The backward ripple through LQR is exactly the same value-update principle, just with squared costs and linear dynamics instead of discrete rewards. <strong>Learning baselines and Q-learning critics</strong> use this scoreboard as the comparison signal: the actual return minus the predicted return is the surprise or 'temporal-difference error,' and it drives the learning. If you compare your controller to LQR on this grid, LQR would compute the optimal cost-to-go (a kind of score) in closed form; a value-based learner discovers it by trial."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>One idea, three worlds: discrete grids, continuous dynamics, and game trees all ride on the same principle.</strong> Learn or compute an estimate of the future value of each state (or state-action pair), work backward from the reward to tighten the estimates, and act by chasing the highest value. In discrete games it is called Q-learning. In continuous control with known dynamics it is LQR or iLQR. In learning-based continuous control it is a neural-network Q-function. The core loop is identical: get a reward signal, ripple it backward into past estimates, and let the policy fall out from the scored decisions."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "reinforcement-learning.html",
+      "reinforcement learning"
+    ],
+    [
+      "policy-optimization.html",
+      "policy optimization"
+    ],
+    [
+      "lqr.html",
+      "LQR (cost-to-go as a score)"
+    ],
+    [
+      "model-based-rl.html",
+      "model-based RL"
+    ],
+    [
+      "exploration.html",
+      "exploration"
+    ]
+  ],
+  "recipe": {
+    "summary": "9×9 gridworld, start (8,0), goal (0,8), pit −50 at (4,4), 8 walls. Q-learning with epsilon=0.1 (explore 10%), discount=0.99, learning_rate=0.5. Episode = 200-step budget or goal reached. Measurements: first success, success rate per 100-episode band, average steps in episodes 500–600.",
+    "eq": "After taking action a in state s, observe reward r, land in state s_next.\nTarget: y = r + discount * max_a' Q(s_next, a')\nUpdate: Q(s,a) <- Q(s,a) + learning_rate * (y - Q(s,a))\nPolicy: pick the action a with max Q(s,a) at each state (exploit), or random action with prob epsilon (explore).\nEXP1: run for 600 episodes, report first success episode, success rates in bands [1–100, 100–200, ..., 500–600], and average steps in band [500–600].",
+    "note": "Full script: scripts/experiments/rl_run.py. Numbers reported are the learner's output verbatim: first success=episode 3, band [1–100] 88%, band [500–600] 100% success, band [500–600] 18.0 avg steps."
+  }
+}

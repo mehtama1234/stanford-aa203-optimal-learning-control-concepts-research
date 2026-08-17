@@ -13,6 +13,7 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +27,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Trajectory Optimization</h1>
 <p class="lede">Choosing an entire path of states and actions that obeys dynamics while minimizing cost.</p>
+<p><a href="trajectory-optimization-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Many control tasks are not about one command but about a full motion plan.</p>
-    <p>A common wrong first move is: Plan a geometric path first and worry about dynamics later. It fails when a short path may require impossible acceleration, torque, or contact transitions.</p>
+    <p>You plan the robot&#x27;s arm path by moving through the air in a straight line from start to finish, then hand that geometric path to the motor controller and hope it catches up. A straight line at constant speed needs zero torque at the start to accelerate and infinite torque at the end to stop. The motor limit of 40 newton-meters cannot deliver either one. The real arm either overshoots and crashes into the work surface, or it stops short and leaves the task incomplete.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a state-action trajectory. Use it when the solution is a whole planned motion, not just a feedback rule.</p>
-    <p>What the object does: Optimize the path while enforcing dynamics and constraints.</p>
+    <p>The task is not just to end up at the right place, but to be at every right place at every right time while the motors stay within their limits and the robot does not bend a joint too far or too fast. No single position or single force command can promise this. The robot&#x27;s arm over 2 seconds lives in a space of states: positions, velocities, and control forces all tied together by the physics of inertia and friction. At each time step from t=0 to t=2, the state must say what the joint is doing and what torque the motor is putting out right now. Choosing all those states and controls together so the joints start where they are, end where they need to be, and never exceed what the motors can do is what trajectory optimization does.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a state-action trajectory in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Optimize the path while enforcing dynamics and constraints. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>Set up the walking robot from the worked run below. At t=0.6 seconds, the original plan has torso lean 17 degrees and knee torque 46 newton-meters. The motor limit is 40 newton-meters, so measure the violation: residual = 46 - 40 = 6 newton-meters over. Now adjust the plan: lift the middle foot sample from 0.26 to 0.26 meters, which forces the body to stand more upright to keep the same foot height. Measure the new torso lean at t=0.6: it drops to 11 degrees. Measure the knee torque: it drops to 38 newton-meters. Residual = 38 - 40 = -2 newton-meters, so the motor is now under its limit with room to spare. The footpath looks less direct on a drawing, but the robot can actually execute this motion without the knee motor saturating. That is the whole point: the path was repaired not by erasing constraints but by using all the state variables together to find a different shape that satisfies every one.</p>
     <p>The world check is the example: A robotic arm at joint angle q=0 must reach q=π/2 in 2 seconds, moving around an obstacle at q=π/4. A naïve path q(t) = (π/4)·t matches the geometric requirement but requires joint acceleration beyond motor limits: dq/dt grows unbounded near t=0. Trajectory optimization chooses a smoother path (e.g., quintic spline) with states q(t) and ů(t) at timesteps t=0, 0.5, 1.0, 1.5, 2.0 seconds, adding constraints: |u(t)| ≤ 2 N·m (torque limit) and q(t) ≠ π/4 ± 0.1 (obstacle avoidance). The optimizer finds q=[0, π/6, π/3, 5π/12, π/2] and u=[0.5, 0.8, 1.0, 0.6, 0] that obeys all constraints and minimizes integrated control effort (∫u²dt). This trajectory is executable on real hardware.
 
 Trajectory optimization differs from control: it produces a planned path that will be executed open-loop or passed to a local controller, not a feedback rule that reacts to state at each moment. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
@@ -63,8 +63,7 @@ Trajectory optimization differs from control: it produces a planned path that wi
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The optimized model must represent the dynamics and constraints that change the next feasible state.</p>
-    <p>When that condition fails, look for this visible break: the trajectory is visually plausible but cannot be executed.</p>
+    <p>The trajectory plan works only as well as the model inside the optimizer. If the model says the knee motor can produce up to 40 newton-meters but the real motor peaks at 35 newton-meters due to heating, a plan that satisfied the optimizer&#x27;s model still saturates and fails on the hardware. If the model leaves out a collision check and only measures foot height without asking whether the body or elbow swings through a wall, the plan will be feasible on paper and illegal in the room. The solver also needs time steps close enough that nothing important happens between them. If the timestep is 1 second but the foot brushes the top of the box partway through at 0.6 seconds, and there is no measurement between 0 and 1 second, the optimizer never sees the collision.</p>
     <p><strong>Recognize it in a new problem:</strong> Use this term when the solution is a whole planned motion, not just a feedback rule.</p>
   </div>
 </section>

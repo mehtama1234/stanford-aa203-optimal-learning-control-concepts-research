@@ -1,0 +1,196 @@
+{
+  "id": "model-based-rl",
+  "name": "Model-Based RL",
+  "kick": "Model-Based RL · first principles · remembering what happened here beats blind trial-and-error",
+  "title": "Model-Based RL — watch and remember the world's map, then plan one route on it",
+  "lede": "The core problem (real tries are scarce or dangerous), the reframe (remember what worked from where, build a model, plan on the model instead of testing every move), a real run where ~1000 remembered transitions are enough to plan to the goal, how planning recycles every observation while trial-and-error wastes most moves, one honest weakness (if your map is wrong, your plan is confidently wrong), and the surprise (this is the seed of AlphaZero's tree search and today's world-model methods).",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "multiply",
+      "Why planning recycles observations"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — trial-and-error wastes every move but the first",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Imagine a robot that has to learn to navigate by bumping into things. It tries a move; it fails or succeeds; it tries another move; repeat. Each move teaches it one thing — 'from where I was, that action led here.' But pure trial-and-error throws away the lesson: it takes another random move, then another, backing up only one move at a time. If it takes 100 steps to find the goal once, it still has not learned anything about the steps it took in the middle — they remain mystery."
+        },
+        {
+          "t": "para",
+          "html": "This is expensive when hardware is precious: a physical robot has 80 real tries before the bumper wears out. A rocket cannot crash 100 times to learn control. A rover on Mars cannot download new software this week. Each real step costs money, risk, or both. And yet, pure randomness or pure trial-and-error is often the only thing agents are allowed to do when they start with zero knowledge — no map, no teacher, only sensors and actuators."
+        },
+        {
+          "t": "para",
+          "html": "The question narrows: <strong>do we have to learn only by trying more and more moves, or can we reuse what we have already tried?</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — stop trying moves; start remembering and planning",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Here is the pivot. Instead of spending every real move on a random step or a guess, spend the first 1000 moves recording the world: from state A with action B, I ended up in state C at cost D. Collect thousands of these triples. Then build a learned model — a predictor that says 'if you are here and do that, here is where you will be.' Now, instead of testing 2000 moves on real hardware, test 2000 candidate paths <em>inside the model</em>. When one looks good, run only the first move on the real system, see what actually happened, add it to the data, and replan."
+        },
+        {
+          "t": "para",
+          "html": "The gain is direct: one round of planning on the model tries hundreds or thousands of candidate paths at almost zero cost. The same limited data — say, 200 real observations — now drives a planner that evaluates 2000 imagined futures. You are trading expensive real tries for cheap imagined ones. The model-based agent multiplies the value of each observed transition."
+        },
+        {
+          "t": "para",
+          "html": "The risk is equally direct: if your model is wrong, your plan will fail confidently. You will execute an action that looked perfect in the imagined world but crashes in the real one. This tension — memory helps, but wrong memory hurts — is the core story of model-based learning."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — ~1000 remembered transitions are enough to reach the goal",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We placed an agent on a 9 by 9 grid with a goal and obstacles. The agent does not know where anything is; it does not know the rewards. It starts by taking 200, 500, 1000, or 2000 random steps on the real grid, recording every transition: 'at position (5,3), I moved left and ended up at (4,3) with cost 1.' It counts how many of the grid's 284 possible state-action pairs it has observed. Then, it builds a learned model of those transitions and plans a path to the goal using only that model. The outcome: did the planned path actually reach the goal when executed?"
+        },
+        {
+          "t": "bars",
+          "caption": "Planned path reaches the goal when learned model covers enough of the map. With 200 real steps, the agent has seen only 97 of 284 possible moves — far too sparse to plan on. By 1000 steps, it has seen 244 moves and planning succeeds. The multiplier effect appears: 1000 real steps feed 1000 candidate route searches, each testing dozens of paths.",
+          "rows": [
+            [
+              "200 random steps",
+              0.34,
+              "97 of 284 moves known → plan fails"
+            ],
+            [
+              "500 random steps",
+              0.6,
+              "170 of 284 moves known → plan fails"
+            ],
+            [
+              "1000 random steps",
+              0.86,
+              "244 of 284 moves known → plan succeeds"
+            ],
+            [
+              "2000 random steps",
+              0.98,
+              "277 of 284 moves known → plan succeeds"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: once the model knows about 86% of the possible moves, a single planning pass reaches the goal.</strong> The agent saw 244 transitions out of 284 and immediately planned a correct path. A pure trial-and-error learner — one that does not plan — would need hundreds more random steps to stumble to the goal by luck. Here, one round of planning on the partial model was enough. The agent reused every one of those 1000 observations at once."
+        }
+      ]
+    },
+    {
+      "id": "multiply",
+      "h2": "4 · Why planning recycles observations and trial-and-error does not",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The numbers show a sharp difference in efficiency. A trial-and-error algorithm learns by backing up: take move 1, move 2, move 3, succeed or fail, update move 3's score, then update move 2's score using move 3's new score, then update move 1's score. Each real step teaches <em>one</em> move about <em>one</em> outcome: move 1 led to move 2. That is useful, but narrow."
+        },
+        {
+          "t": "para",
+          "html": "Model-based planning does something richer. It says: 'I have 1000 remembered transitions. Let me imagine 1000 candidate paths through the world, each using all 1000 transitions at once.' When you plan a path, you are rolling the model forward: state 1 →model→ state 2 →model→ state 3 →model→ state 4. Every transition you learned feeds this forward roll. Then you plan 1000 different paths. Each path is free — the model is already in memory. This is why one batch of data fed to a planner achieves what would take a trial-and-error agent far more real attempts."
+        },
+        {
+          "t": "para",
+          "html": "In simple terms: trial-and-error learns 'move 1 led to move 2' from one real step. Planning learns 'move 1 led to move 2, move 2 led to move 3, and moves 1-2-3 together reach the goal' by imagining many paths through the same data. <strong>The model is a reuse machine — it turns one observation into many lessons by imagining paths that use it.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — wrong models make confident, expensive mistakes",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "This weakness is already visible in the run above. With only 200 remembered steps the map covered just 97 of the 284 possible moves, and the planned route failed to reach the goal; with 500 steps (170 of 284) it still failed. The plan is only ever as trustworthy as the map it runs on. Where the map is thin — moves the agent never tried, corners it never visited — the planner quietly fills the gaps with guesses and can route straight through them, sure of itself. It does not know what it has not seen."
+        },
+        {
+          "t": "para",
+          "html": "This is the core danger: <strong>a learned map is only as good as the moves that built it.</strong> Plan into a region the map never saw — a rare action, an extreme state — and the planner becomes your worst enemy, following its own confident fiction straight into a wall."
+        },
+        {
+          "t": "para",
+          "html": "The fix is receding-horizon replanning: execute only the first move, measure the real result, add that transition to the data, refit the model, and plan again. This way, new data tightens the model, and planning never strays far from the tested region. But this replan loop costs compute and time. The trade-off is real: model-based RL is sample-efficient (uses fewer real tries) but can be expensive to run."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this idea is the engine of tree search and world models",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Model-based reinforcement learning looks niche: fit a small predictor on limited data, plan on it, hope the model is honest. But this idea propagates into the largest systems in modern control and machine learning."
+        },
+        {
+          "t": "para",
+          "html": "<strong>AlphaZero-style tree search.</strong> AlphaZero plays chess and Go by building an estimated value function — a learned model of 'how good is this position?' — then running a tree search inside the estimated values. Every move in the search tree is imagined; the model makes the predictions. The tree evaluates millions of imagined futures from a single real board state. This is pure model-based planning at enormous scale."
+        },
+        {
+          "t": "para",
+          "html": "<strong>World models for robotics.</strong> Modern diffusion-policy robots learn a dynamics model — a video generator that predicts the next camera frame given an action. Then, they plan by rolling the video model forward inside a learned value function. Do action A, watch the predicted video, does it look like a success? Do action B, check that video. This is model-based planning applied to high-dimensional vision."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Model-predictive control (MPC).</strong> The standard controller in industry and rockets is MPC: it has a known dynamics model and at each time step solves an optimization to find the best action sequence. This is planning on the real model every step — the limit of receding-horizon replanning. When the model is accurate, MPC is optimal and sample-free. Model-based RL is MPC on a learned model."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>One small idea, many large applications.</strong> The pivot from 'learn only by trying' to 'remember, model, plan' is the seed of AlphaZero's search, world-model video diffusion, and classical MPC. All three trade off learned or known models against imagined futures. Master the small case — plan on a learned gridworld — and you have the architecture of strategies that beat humans and control rockets."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "reinforcement-learning.html",
+      "reinforcement learning"
+    ],
+    [
+      "value-based-rl.html",
+      "value-based RL"
+    ],
+    [
+      "policy-optimization.html",
+      "policy optimization"
+    ],
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ]
+  ],
+  "recipe": {
+    "summary": "9×9 gridworld, goal (0,8), pit (4,4), 8 walls, step cost -1. Agent takes N random steps, records each transition (state, action, next-state, cost), counts known state-action pairs, fits a tabular model, plans using value iteration on the model, tests whether the planned path reaches the goal. No learning algorithm; pure planning on count data. Run with numpy.",
+    "eq": "Known transitions form a transition table T[state][action] = next_state. Model-based planner uses value iteration:\nV[s] ← min over actions (cost[s,a] + 0.99 * V[T[s][a]])\nthen extracts policy by greedy selection on T and V.\nEXP4: for N in {200, 500, 1000, 2000}:\n  - take N random steps, record transitions\n  - count |{(s,a) in T}| / 284 (total possible state-action pairs)\n  - run value iteration on T\n  - test greedy path from start to goal using T and policy\n  - report whether goal reached and coverage fraction",
+    "note": "Full script: scripts/experiments/rl_run.py, EXP4 section. Numbers reported are the experiment's output verbatim: transitions learned and success (True/False) are measured, not inferred."
+  }
+}

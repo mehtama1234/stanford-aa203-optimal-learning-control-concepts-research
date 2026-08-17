@@ -1,0 +1,174 @@
+{
+  "id": "collocation",
+  "name": "Collocation",
+  "kick": "Collocation · trajectory optimization · forcing the curve's own slope to match the physics at sampled interior points",
+  "title": "Collocation — a drawn path must obey the physics not just at the endpoints but at the places you look",
+  "lede": "The case where checking only endpoints lets a path hide an illegal bend, the reframe that samples interior points and demands the curve's slope match the dynamics there, a real run where a path's worst defect drops from 0.500 to nearly zero once interior checks are enforced, why a coarse mesh can still miss a collision between two checked points, the one honest weakness that no mesh can catch everything the real robot hasn't been told about, and the surprise that this idea is the workhorse inside every professional trajectory optimizer.",
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "interior",
+      "Why interior points matter"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ]
+  ],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — a path can be legal at its endpoints and bend through something impossible in between",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Picture a robot arm swinging from one side of a table to the other in one second. The start and end positions look safe — far from the fixture. But the straight path between them cuts straight through the fixture's corner. Nobody checked the middle. The trajectory optimizer recorded states only at the start and finish, so the collision never showed up."
+        },
+        {
+          "t": "para",
+          "html": "A path is not a sketch on paper; it is a continuous curve through time, described by a formula or a list of pieces. The optimizer chooses parameters — waypoint positions, slopes at knots, control inputs — to minimize effort or time or battery, and adds constraints on the state space (no collision, stay inside torque limits). But if the optimizer only checks the state at the endpoints and at a few knots, a smooth curve connecting them might bow inward and hide a collision, a force spike, or an acceleration that the arm cannot produce. Worse, the curve might claim to move from point A to point B in time T but actually move much slower or faster there — it has a momentum error. The path is a <em>drawing</em> that says it is legal, but the <em>physics at that drawing's interior</em> might not agree."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — enforce that the curve's slope at interior sample points must match the dynamics there",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Instead of just pinning the waypoints, also pin a set of interior sample points — call them collocation points — and demand that the curve's slope at each one equals what the physics says it should be. If the path says the arm is at position 0.14 metres and the torque should produce a speed of 0.6 metres per second, then the drawn curve's slope at that point must also be 0.6 m/s. If it is 0.9 m/s, the curve is trying to move faster than the motors can deliver — a defect."
+        },
+        {
+          "t": "para",
+          "html": "The method is: (1) choose smooth pieces — polynomials between knots, or a grid. (2) Decide where the interior sample points sit. (3) At each sample point, write a defect equation: the curve's slope minus the physics-predicted slope. (4) Add the constraint defect = 0. The solver now has to choose a curve and control inputs such that not only do the waypoints match, but the curve's own direction at interior points is physically honest."
+        },
+        {
+          "t": "para",
+          "html": "If you use only knot points, the polynomial or piecewise path between them is unchecked — it can bow however it wants. Add interior collocation points and the optimizer must bend the path so that its slope everywhere you look matches what the physics allows there. This catches collisions, force spikes, and momentum lies that endpoint-only checking misses."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — the worst defect drops from 0.500 to essentially zero",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every number here is measured, not asserted. We used a double integrator (a cart pushed by force) and built two candidate paths: a hand-drawn path that violates the dynamics badly, and an optimized path that enforces collocation constraints. We measured the worst defect at any point — the largest mismatch between what the curve claims is happening and what the physics allows."
+        },
+        {
+          "t": "bars",
+          "caption": "The hand-drawn path has a worst defect of 0.500 — it claims to have near-zero speed everywhere while its position jumps from 0 to 1 in 20 steps. The optimized path enforces collocation, and its worst defect shrinks to 4.44e-16, which is machine rounding error.",
+          "rows": [
+            [
+              "hand-drawn path",
+              0.5,
+              "worst defect = 0.500"
+            ],
+            [
+              "optimized with collocation",
+              1.0,
+              "worst defect = 4.44e-16"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: enforcing the curve's slope at interior points makes it physically honest.</strong> Without collocation, a path can move from start to finish while lying about its momentum at every point in between — a 0.500 m/s defect means the curve is missing half a metre per second of motion at its worst point. Once you pin the interior points and demand the curve's slope match the dynamics, that defect vanishes. The optimizer cannot hide a lie anymore. Every piece of the path now has to own its physics."
+        }
+      ]
+    },
+    {
+      "id": "interior",
+      "h2": "4 · Why interior points matter — a coarse mesh can still miss a hidden dip",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Now suppose you have two collocation points that both pass their constraints — the curve's slope at each matches the dynamics, and there is clearance from the obstacle. The path looks legal. But between these two checked points, the smooth curve might dip inward and touch the obstacle, or spike upward beyond a torque limit. The mesh is coarse; the path hides between the checks."
+        },
+        {
+          "t": "para",
+          "html": "Example: two checked points say the arm is at x=0.14 and x=0.16 metres, both clear of a fixture that occupies x=0.08 to 0.12 metres. But the cubic polynomial connecting them bows inward to x=0.115 at the midpoint — inside the fixture. A defect constraint between the knots would catch motion errors, but a collision happens silently in the smooth curve's shape, not in its first derivative. Add a collocation point at that midpoint, measure clearance there, and the collision becomes visible. The solver must widen the curve or slow it down."
+        },
+        {
+          "t": "para",
+          "html": "The boundary is the mesh resolution: collocation checks the points you specify and the smooth pieces you write down, not the unmodeled flex, backlash, or contact event hiding between them. A mesh that is too coarse lies by omission. A mesh that is fine enough — with collocation points at 0.1-second intervals, for instance — catches almost everything that matters."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — the answer is only honest between the points you checked",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "No matter how many collocation points you add, the method only enforces constraints at those points. A collision, force spike, or unmodeled dynamic can happen in the gap between two consecutive checks. If your mesh has a point at t=0.2 and the next at t=0.3, the whole interval from 0.2 to 0.3 is defended by only defect checks and smoothness at the endpoints. If the real robot has contact friction or cable stretch the model does not know about, the path might be valid according to the mathematical dynamics but illegal when executed."
+        },
+        {
+          "t": "para",
+          "html": "The solver's task is to minimize effort or time while respecting the constraints you write. If you did not write a constraint — because you did not know the path would probe it, or because you assumed the polynomial piece is smooth enough — the solver is not obligated to respect it. A path that is provably optimal under the mathematical model might fail on the real robot."
+        },
+        {
+          "t": "para",
+          "html": "The practical answer is not to add infinite points (impossible) but to: (1) Refine the mesh until adding more points stops changing the answer (mesh convergence). (2) Build a safety margin into your constraints — allow only half the torque limit, demand clearance from obstacles. (3) Test the computed path on a simulator or the real system. Collocation is a method, not a guarantee."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this idea is the core engine inside every professional trajectory optimizer",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Collocation looks like a special trick — sample a bunch of points, write defect equations, solve. Its real power is that almost every production trajectory optimizer is built on this core idea."
+        },
+        {
+          "t": "para",
+          "html": "<strong>Direct transcription</strong> is collocation's formal name: transcribe the infinite continuous optimization problem into a finite set of algebraic constraints (the defects) at knot points. Chop time into intervals, make the state and control at each knot the decision variables, and require that marching forward one interval matches the next interval's start. This is collocation with one sample point (the midpoint or the endpoint) per interval. <strong>Iterative LQR (iLQR) and differential dynamic programming (DDP)</strong> use local quadratic approximations of the cost and dynamics, which is a form of collocation on a best-fit trajectory — each iteration enforces that the curve stays close to the current best guess while satisfying the defect. <strong>Constrained nonlinear model-predictive control (MPC)</strong> samples the next 10 to 100 steps ahead, enforces dynamics constraints at each step — which is collocation on a rolling horizon — and re-optimizes as new measurements arrive."
+        },
+        {
+          "t": "insight",
+          "html": "The core insight is: <strong>a path drawn on paper that obeys the physics only at its endpoints is a lie between them. Force interior points to be honest.</strong> Once you accept that, collocation is inevitable. The method is not decoration on top of trajectory optimization; it is the skeleton. Every professional robot motion planner, spacecraft guidance system, and trajectory design tool used in industry uses this idea, usually in disguise, because it is the only practical way to make a continuous motion obey the discrete physics you can check."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "direct-transcription.html",
+      "direct transcription"
+    ],
+    [
+      "trajectory-optimization.html",
+      "trajectory optimization"
+    ],
+    [
+      "model-predictive-control.html",
+      "model-predictive control"
+    ],
+    [
+      "shooting-methods.html",
+      "shooting methods"
+    ]
+  ],
+  "recipe": {
+    "summary": "Double integrator cart, dt=0.1, 20 steps. Two paths: hand-drawn (near-zero speed claimed everywhere) and optimized with collocation constraints enforced at all 20 knot points. Defect measured as the worst mismatch between curve slope and physics-predicted slope.",
+    "eq": "Cart dynamics: x_{k+1} = x_k + 0.1*v_k,  v_{k+1} = v_k + 0.1*u_k\n# Defect at knot k: defect_k = (slope from curve) - (f(x_k, u_k))\n# Collocation constraint: defect_k = 0 for all k\n# Hand-drawn path: x = [0, 0.05, 0.1, 0.15, ..., 0.95, 1.0], v ≈ 0 everywhere\n# Defect = |v_curve| - |v_physics| at worst point = 0.500\n# Optimized path: enforce all defects = 0, minimize total effort sum(u_k^2)\n# Worst defect = 4.44e-16 (machine precision)",
+    "note": "Full script: scripts/experiments/traj_run.py, EXP4 section. Numbers are the hand-drawn and solver's output verbatim."
+  }
+}

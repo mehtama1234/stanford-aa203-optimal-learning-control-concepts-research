@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Action / Control Input (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="action-control-input.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Action · control input · the real lever, and why its limits reshape what is possible</div>
+      <h1>Action / Control Input — when the actuator has limits, tightening them stretches the time to reach a goal</h1>
+      <p class="lede">What command you can actually issue (not the outcome you want), why it matters that every motor and thruster has bounds, a real run that tightens the force limit in steps and measures how long it takes to settle, the hard truth that below some limit the goal becomes unreachable, its one honest weakness shown as a numerical breakdown, and the surprise that respecting action limits is exactly what separates textbook feedback from working receding-horizon control.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#limits">What limits really cost</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="action-control-input.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — confusing what you want with what you can command</h2>
+      <div class="essay">
+      <p>A robot arm has an end-effector — the grip or tool at the tip. You want it to reach a shelf at position (x, y) = (1.2, 0.8). That is a goal. But the arm does not move by accepting position commands. It moves because motors apply torque to the joints. So the control input — the real lever you can turn — is a pair of torques, one for each joint, each bounded by what the motor can produce.</p>
+      <p>The trap is to treat the goal as if it were the action. <strong>Write 'move the end-effector to x=1.2' as an action and you have written something the robot cannot obey.</strong> Actuators do not take outcome commands. They take force, torque, voltage, thrust — the concrete mechanical or electrical input. The planner's job is to choose a sequence of those concrete inputs such that, passing them through the physics and kinematics, the end-effector eventually lands at (1.2, 0.8).</p>
+      <p>This sounds like bookkeeping, but it splits the problem in two. Either you plan in outcome-space (outcome cost is low, but the plan might demand an impossible action), or you plan in action-space (every action is feasible by design, but you must understand what action produces what outcome). Most failure comes from mixing them.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — the action is what the actuator can actually do, and it has a range</h2>
+      <div class="essay">
+      <p>Separate the command from the outcome. The command is what you send to the motor, pump, jet engine, or steering servo. The outcome is what happens to the system state — position, velocity, temperature, heading. The link between them is the dynamics.</p>
+      <p>For a cart pushed with force, the dynamics say: acceleration equals force divided by mass, velocity changes by acceleration times the time step, position changes by velocity times the time step. Feed in a force of 5 units and you get a specific acceleration; feed in 10 units and the acceleration doubles. But the motor will not accept an arbitrary force. It has a limit — perhaps the maximum is 8.4 units. It also has rate limits (it cannot jump from one force to a wildly different force in one time step) and dead zones (commands smaller than 0.02 units do nothing). The action set is the set of all commands the actuator can legally produce.</p>
+      <p>If a planner asks for 10 units of force and the motor is capped at 1.0, the motor delivers only 1.0. The outcome is not what the plan predicted. If the planner was not told about the limit when computing the plan, the plan is wrong in a very particular way: the commanded force and the delivered force diverge. Planning without knowing the action limits is like planning a trip without knowing the speed limit — you end up overshooting time and arriving late.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — tightening the force limit stretches the settlement time</h2>
+      <div class="essay">
+      <p>We ran the same cart with the same feedback law on three force budgets. The controller knows the right move; the only thing changing is how much force the motor is allowed to deliver. Every number here is measured from a real simulation.</p>
+      <figure><div class="barrow"><span class="lab">No force limit</span><div class="bar" style="width:54px"></div><span class="val">delivered 8.36, settled 3.6 s</span></div><div class="barrow"><span class="lab">Force capped at 1.0</span><div class="bar" style="width:54px"></div><span class="val">delivered 1.00, settled 5.1 s</span></div><div class="barrow"><span class="lab">Force capped at 0.3</span><div class="bar" style="width:15px"></div><span class="val">delivered 0.30, settled 12.1 s</span></div><figcaption>As the force limit tightens, the controller must call for higher force (because the motor clips it), but the actual delivered force drops and settling time rises. At the hardest start, the controller asks for 8.4 units; without any limit it delivers 8.36 and settles in 3.6 seconds. Capped at 1.0 it delivers only 1.0 and takes 5.1 seconds. Capped at 0.3 it delivers 0.30 and takes 12.1 seconds.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: tightening the action limit stretches time, not impossibility — at first.</strong> The motor still obeys every command. With 1.0 units available the cart takes 42% longer to settle (5.1 s vs 3.6 s). With 0.3 units it takes more than 3 times as long (12.1 s). But the core feedback law runs unchanged; it just works slower because each step of correction moves the state by less. The limit does not break the controller — it just makes it limp.</div>
+      </div>
+    </section>
+    <section class="fp" id="limits">
+      <h2>4 · What limits really cost — below a threshold the goal vanishes</h2>
+      <div class="essay">
+      <p>Stretch the tightening further. If the force limit becomes so low that the motor cannot overcome friction or drag, the cart stops moving at all. This is not a slowdown — it is impossibility. The state becomes unreachable. In the experiment above, a limit of 0.3 still allows correction; the controller is slow but effective. But drop below the point where the motor can change the state at all — perhaps 0.05 units with this cart — and no feedback law can reach any goal you did not already occupy.</p>
+      <p>This is the hard edge: <strong>every control problem has a reachability question hidden inside.</strong> Given the action limits, which states can you reach from the current state? If the goal is beyond that set, no plan will work. The action limit is not a tuning knob — it is part of the problem statement. A drone with half-dead rotors cannot reach its target altitude, no matter how clever the control law. A steering actuator with too much friction cannot deliver the correction needed to avoid a collision. An investment budget cap means some expansion projects become impossible in the timeline you planned.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — LQR assumes unlimited action</h2>
+      <div class="essay">
+      <p>The classical LQR (linear-quadratic regulator) assumes the actuator has no limits. It computes a feedback rule that is provably optimal for any straight-line system with squared costs and infinite force. But in the real run above, once the force limit is tight, the LQR rule asks for more force than the motor can produce. The command diverges from the delivery. The cost rises because the plan was optimized for a world that does not exist.</p>
+      <p>What happens when the limit tightens? The planner does not know it should be less ambitious. It keeps asking for 8.4 units at the start. The motor delivers only 1.0 (or 0.3). The state does not move as predicted. On the next step, the feedback law sees the actual state, not the predicted state, and corrects — but it is always one step behind a system that is slipping under the limit.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — respecting the action limit is how control becomes receding-horizon</h2>
+      <div class="essay">
+      <p>LQR is a fixed rule computed once. If you respect the action limits, you immediately face a problem: the rule might ask for an infeasible action. How do you stay feasible while staying optimal? The answer is <strong>model-predictive control (MPC)</strong> — also called receding-horizon control.</p>
+      <p>MPC solves a small LQR problem (or something LQR-like) at every time step, but includes the action limit as a hard constraint in the solver. It computes the optimal action for this step while respecting the bound. On the next step, it re-solves. When there is no limit and the horizon is infinite, MPC gives exactly the LQR answer. But the moment the motor caps out, MPC re-plans — asking: what is the best move I can legally make right now? That is why MPC works on real robots and LQR does not.</p>
+      <p>The other surprise: if you are learning a controller (reinforcement learning), you must teach it to respect action limits, or your policy will ask for moves the hardware cannot produce. Every learning algorithm that works on real robots has built in the constraint. The ones that train in simulation without limits and then deploy often fail catastrophically because their learned rule is asking for actions that do not exist.</p>
+      <div class="insight"><strong>Action limits are not decoration — they are the reason we moved from LQR to MPC and from offline training to learning with hardware constraints.</strong> The moment the plan must fit inside what the actuator can do, the problem becomes a receding-horizon one. Every step you re-solve, taking into account what just happened and what is still legal. This is the boundary between textbook and practice.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="lqr.html">LQR — the feedback rule</a> · <a href="model-predictive-control.html">model-predictive control</a> · <a href="dynamics.html">dynamics — how action produces outcome</a> · <a href="state.html">state — what you must measure</a> · <a href="constraints.html">constraints — rules that bind the plan</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Double integrator cart, dt=0.1. Feedback controller from LQR (cost weights: position and effort). Simulation forwards with force saturation. Run with numpy.</p>
+      <div class="eq">dynamics: x_next = [[1, 0.1],[0, 1]] * x + [[0],[0.1]] * u_clipped
+u_clipped = clip(u, -limit, +limit)
+Feedback: u = K_pos * position_error + K_vel * velocity_error
+K_pos=2.788, K_vel=2.505 (from LQR with moderate cost weights)</div>
+      <p class="muted">Full script: scripts/experiments/ps_run.py, experiment EXP3. All numbers reported are the simulator's output verbatim. Settling time is when the position stays within 0.01 of the goal for 5 consecutive steps.</p>
+    </div></details>
+    <footer>Stanford AA203 · Action / Control Input deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

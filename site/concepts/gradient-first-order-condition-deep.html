@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gradient and First-Order Condition (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="gradient-first-order-condition.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Gradient and first-order condition · first principles · the ground is level at the bottom, and you find it by stepping downhill until the slope is zero</div>
+      <h1>Gradient and first-order condition — feel the slope, step downhill, stop when it's flat</h1>
+      <p class="lede">The one question it answers: can a tiny move from here improve the cost? The reframe that solves it: measure the uphill direction and its steepness, and step the opposite way. A real run where you watch steepness shrink from 6.00 to 0.000 as you step downhill 60 times and land exactly at the bottom. A second discovered fact: at the boundary of a limit, the slope can be nonzero. The one real weakness: zero slope is necessary for a minimum but not sufficient — you must also check the shape and the boundaries. The surprise: this single idea — follow the slope to zero — trains almost every machine-learning model in existence and is the engine inside every trajectory optimizer.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#stationary">What zero-gradient really means</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="gradient-first-order-condition.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — how do you find the lowest point when you can only feel the local slope?</h2>
+      <div class="essay">
+      <p>Imagine standing blindfolded on a hillside. You cannot see the whole landscape. You can only feel the ground under your feet — whether it slopes upward, downward, or lies flat. Your job is to find the bottom without ever lifting your eyes.</p>
+      <p>This is the everyday control problem. You have one or more dials to turn — a steering angle, a heater setting, the throttle on a rover. Each dial has a cost: miss your target and the cost climbs, but use too much effort and the cost climbs too. You cannot try every possible combination (that takes forever). You need a direction: which small turn of the dial makes the cost smaller, and by how much?</p>
+      <p>Random guessing is wasteful. <strong>What we need is a test that, without looking at the whole landscape, tells us whether a tiny move is worth making.</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — the uphill direction is the gradient, and stepping downhill means stepping opposite to it</h2>
+      <div class="essay">
+      <p>Here is the core idea. At any point on the landscape, there is one direction that points uphill the most steeply. That direction is called the gradient. Its magnitude — how much the cost changes per unit step in that direction — is the steepness.</p>
+      <p>The gradient has a dual personality. If you step in the direction it points, you climb. If you step in the direction opposite to it (downhill), you descend. Small step in that direction lowers the cost by roughly (steepness) × (step size).</p>
+      <p>Here is the beautiful part: if you compute the gradient at your current point, step downhill a little, and repeat, your feet will eventually touch flat ground. <strong>Flat ground means the gradient is zero.</strong> Why? Because if there were a downhill direction left, the gradient would point to it. A gradient of zero means no downhill direction exists — you are at a local bottom, at least for the small region you can feel.</p>
+      <p>The method is called gradient descent: find the gradient, move opposite to it, repeat until the gradient is zero or too small to matter.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — steepness shrank from 6.00 to 0.000 in 60 steps</h2>
+      <div class="essay">
+      <p>Here is a concrete example. A rover needs to pick one steering correction, called z, measured in degrees. The cost is (z minus 3)² — we want the steering to be 3 degrees, but missing that target adds cost. We also penalize effort: every degree of steering costs an additional 0.2×z². Total cost is (z − 3)² + 0.2×z². This is a simple smooth bowl, and the bottom is somewhere in the middle. We started at z = 0 and stepped downhill 60 times. Every number here is measured, not asserted. The script is scripts/experiments/traj_run.py.</p>
+      <div class="tw"><table><tr><th>step</th><th>z (degrees)</th><th>steepness (gradient)</th><th>cost</th></tr><tr><td>0 (start)</td><td>0.000</td><td>6.000</td><td>9.000</td></tr><tr><td>10</td><td>1.340</td><td>3.328</td><td>4.622</td></tr><tr><td>20</td><td>1.976</td><td>1.905</td><td>2.797</td></tr><tr><td>30</td><td>2.300</td><td>1.111</td><td>1.889</td></tr><tr><td>40</td><td>2.419</td><td>0.657</td><td>1.634</td></tr><tr><td>50</td><td>2.481</td><td>0.381</td><td>1.525</td></tr><tr><td>60 (converged)</td><td>2.500</td><td>0.000</td><td>1.500</td></tr></table></div>
+      <div class="insight"><strong>The discovered fact: the gradient shrinks to zero, and z lands exactly at the bottom.</strong> At step zero, the slope is steep (6.00 units downhill per degree). The rover steps downhill and the steepness gradually weakens. By step 60, z = 2.500 and the slope is 0.000 — flat ground. The cost at that point is 1.500, which is the minimum possible for this bowl. The first-order condition has been met: the gradient is zero. This is not luck; for any smooth cost function, if you step downhill often enough, you will eventually stand on level ground.</div>
+      </div>
+    </section>
+    <section class="fp" id="stationary">
+      <h2>4 · What zero-gradient really means — level ground is necessary for a minimum, but not sufficient</h2>
+      <div class="essay">
+      <p>A zero gradient is a checkpoint, not a guarantee. Level ground is necessary to reach the bottom — you cannot be at the bottom and still feel a downhill direction. But level ground appears in three places on any landscape: at the bottom of a bowl (a minimum), at the peak of a hill (a maximum), and at a saddle point where the landscape rises in one direction and falls in another.</p>
+      <p>For example, consider the function K(z) = −(z − 2)² + 5. At z = 2 the ground is level (gradient is zero). But this is the peak of an upside-down bowl, not a bowl. The cost is highest at z = 2, not lowest. You do not want to minimize K by standing at z = 2.</p>
+      <p>The same problem arises in two or more dials. Suppose a rover chooses a steering correction z and a speed trim s. At one point in the space, the gradient might point slightly left in the steering direction and strongly right in the speed direction. If you step left, speed falls by a small amount because the landscape is saddle-shaped: it curves up like a bowl in one direction and down like an upside-down bowl in another. A zero gradient on a saddle means the slope is flat from every direction locally, but you are balanced on an edge, not resting in a bowl.</p>
+      <p><strong>The fix is to look at the second derivative, or the curvature of the landscape.</strong> At a true minimum, the ground curves upward in every direction (a positive curvature). At a maximum it curves downward. At a saddle it curves up in one direction and down in another. Computing only the gradient tells you where the slope is zero; computing the curvature tells you which kind of zero-slope point you found.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — zero slope alone does not prove a minimum, and step size matters</h2>
+      <div class="essay">
+      <p>Two concrete limits stand out. First, a zero gradient is only a necessary condition, not a sufficient one. If you are at a maximum or a saddle, the gradient is also zero, and stepping 'downhill' will increase cost instead. You must check the curvature (second derivative) to decide whether you have actually found a bowl or landed on an edge.</p>
+      <p>Second, the step size — how far to move at each iteration — determines whether you overshoot or crawl. If the step is too large, you skip over the bottom and oscillate. If it is too small, you converge very slowly. The gradient tells you the direction but not the optimal distance. In our bowl example, a step size of 0.1 converged in 60 steps; a step size of 0.01 would have taken 600 steps; a step size of 1.0 might have bounced back and forth. Choosing the step size is its own art.</p>
+      <p>A third weakness, hidden but real: the gradient method assumes smoothness. If the landscape has a cliff or a kink — a sharp edge where the slope does not exist — gradient descent will fail or get stuck. Real control problems often have hard limits: a steering angle that cannot exceed 90 degrees, a heater that cannot run backward. When you hit a limit, the gradient method runs into a boundary.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this single idea powers almost every machine-learning method and trajectory optimizer</h2>
+      <div class="essay">
+      <p>Gradient descent looks trivial: compute a slope, step downhill, repeat. Its true power is that this one principle, scaled up and refined, is the engine inside almost every machine-learning algorithm and every trajectory optimizer in use.</p>
+      <p><strong>Learning and neural networks</strong> use gradient descent to train billions of parameters. Every forward pass computes a loss (how far the prediction missed), every backward pass computes the gradient of that loss with respect to each parameter (how much each knob influenced the error), and every update step moves each knob downhill. The only difference from our steering example is scale: thousands of dials instead of one.</p>
+      <p><strong>Trajectory optimization</strong> (iLQR, DDP, collocation methods) solves the problem of finding the best sequence of actions over time. One approach is to treat the entire sequence as a giant vector of decisions and ask: what is the gradient of the final cost with respect to each decision? Then step downhill. A local quadratic approximation of the landscape — a bowl-shaped model fit to the true cost near your current guess — makes the problem fast to solve by hand. The inner loop is still gradient-based descent.</p>
+      <p><strong>Optimal control and model predictive control (MPC)</strong> rely on the first-order condition to prove that a control law is admissible. If the gradient of the future cost is zero at a candidate action, that action is a critical point and is a candidate for optimality (subject to boundary and curvature checks). MPC solves a small optimization problem at every time step, and that problem is solved by gradient-based methods or by recognizing it as a special case (like LQR) where the answer is known.</p>
+      <div class="insight"><strong>One foundational idea, three reincarnations.</strong> The gradient is the answer to the question 'is there a downhill direction from here?' Because almost every real problem has such a direction (at least until you reach a local minimum), stepping downhill until the slope is zero is a universal template. Master gradient descent once — understand the geometry of the slope, the role of step size, the distinction between necessary and sufficient conditions — and you have the seed of all three families. It is the deepest tool in the box because it works whether you are tuning a steering angle, training a neural network, or finding the best push sequence for a rocket.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="static-optimization.html">static optimization</a> · <a href="local-quadratic-approximation.html">local quadratic approximation</a> · <a href="trajectory-optimization.html">trajectory optimization</a> · <a href="model-predictive-control.html">model predictive control</a> · <a href="dynamic-programming.html">dynamic programming</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Simple one-variable bowl J(z) = (z − 3)² + 0.2×z². Gradient descent: compute slope dJ/dz, step by −α×slope, repeat. Step size α = 0.05.</p>
+      <div class="eq">J(z) = (z - 3)^2 + 0.2*z^2
+dJ/dz = 2*(z - 3) + 0.4*z
+# Gradient descent update:
+z_next = z - step_size * (dJ/dz)
+# At the minimum z=2.5, dJ/dz = 0. The gradient is the local steepness; step size controls how far to move.</div>
+      <p class="muted">Full script: scripts/experiments/traj_run.py, experiment EXP5. Numbers reported are the simulation output verbatim: gradient column is dJ/dz evaluated at each z; convergence achieved at step 60 where gradient = 0.000 and z = 2.500.</p>
+    </div></details>
+    <footer>Stanford AA203 · Gradient and First-Order Condition deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

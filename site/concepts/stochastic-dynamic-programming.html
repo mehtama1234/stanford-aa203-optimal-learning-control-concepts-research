@@ -13,6 +13,7 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +27,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Stochastic Dynamic Programming</h1>
 <p class="lede">Dynamic programming when the next state is uncertain and future value must be averaged over possible outcomes.</p>
+<p><a href="stochastic-dynamic-programming-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>A controller often does not know exactly what will happen after an action because noise, disturbances, or environment changes intervene.</p>
-    <p>A common wrong first move is: Plan for the most likely next state only. It fails when rare but costly outcomes can dominate safety and expected cost.</p>
+    <p>A delivery rover can cross gravel or detour around it. Crossing is faster if it succeeds, but there is a 10 percent chance a disturbance will cause a serious slip that damages the axle. A planner that ignores the slip—planning only for the most likely outcome—will recommend crossing and send the rover into expensive failure 10 times per 100 trips. The future is not a single promise; rare bad outcomes still happen.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is an expected-value bellman equation. Use it when the same action can lead to several next states.</p>
-    <p>What the object does: Add immediate cost to the expectation of next-state value under the transition distribution.</p>
+    <p>A controller does not know for certain what will happen after an action because noise, slips, or environment changes intervene. The controller must price the action as the immediate cost it pays plus a weighted average of all the possible futures it might face, with each future weighted by how likely it is. That average—the expectation over all possible next states—becomes the stored value at the state after the action is taken. Dynamic programming then compares actions by their immediate cost plus that averaged future value, so rare but costly outcomes are properly accounted for in the decision. That is stochastic dynamic programming: the same backward reasoning as the deterministic method, but with the next-state value replaced by an expectation.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to an expected-value bellman equation in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Add immediate cost to the expectation of next-state value under the transition distribution. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>In the worked run below, a gravel crossing costs 1 minute now. With probability 0.6 it succeeds (future value 5), with probability 0.3 it slips left (future value 12), and with probability 0.1 it slips right (future value 20). The expected future value is 0.6*5 + 0.3*12 + 0.1*20 = 8.6 minutes, so the total gravel score is 1 + 8.6 = 9.6. Detour costs 4 minutes now and reaches a state with value 4 with probability 0.9 or a slow gate with value 9 with probability 0.1, totaling 4 + 0.9*4 + 0.1*9 = 8.5. Detour wins despite its larger immediate cost. Now suppose mud swells the slip-right damage from value 20 to value 200. The same gravel score becomes 1 + 0.6*5 + 0.3*12 + 0.1*200 = 27.6, and detour now wins decisively. The Bellman equation did not change; the transition model probabilities or the impact of rare slips changed.</p>
     <p>The world check is the example: A grid-world robot at cell (2,2) wants to reach (5,5). Each move forward succeeds with probability 0.9 but slips sideways with probability 0.1. Moving east succeeds 90% of the time (reaching (3,2)) and slips north to (2,3) with 10% probability. Deterministic DP would compute V(2,2) as min(cost(east) + V(3,2), cost(north) + V(2,3), ...). But here, moving east does not deterministically land at (3,2). Stochastic DP averages: V(2,2) = min( cost(east) + 0.9·V(3,2) + 0.1·V(2,3), cost(north) + 0.9·V(2,3) + 0.1·V(1,2), ... ). The value of (2,2) is the immediate cost plus a weighted average of the values of where the robot might end up (with probabilities 0.9 and 0.1).
 
 The optimal policy learned from stochastic DP avoids cells where slipping is dangerous (e.g., cells adjacent to obstacles) because V(slip_destination) is high. A deterministic algorithm would miss this penalty entirely. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
@@ -63,8 +63,7 @@ The optimal policy learned from stochastic DP avoids cells where slipping is dan
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The uncertainty model must describe the relevant randomness.</p>
-    <p>When that condition fails, look for this visible break: the policy is brittle because it ignores low-probability dangerous states.</p>
+    <p>The expected-value equation is only as good as the probability model it was given. If the table hides the weather—combining dry gravel at P(slip-right)=0.02 with wet gravel at P(slip-right)=0.16 into a mixed table at P(slip-right)=0.07—the stored value prices neither dry nor wet correctly, and the controller will be wrong on whichever condition actually occurs. The method also assumes an expectation is the right way to weigh outcomes; if a rare slip causes axle failure, safety rules such as P(failure) &lt; 1 percent may override the average cost, and the model must encode that constraint explicitly.</p>
     <p><strong>Recognize it in a new problem:</strong> Use it when the same action can lead to several next states.</p>
   </div>
 </section>

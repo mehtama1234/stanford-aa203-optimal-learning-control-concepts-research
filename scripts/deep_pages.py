@@ -144,8 +144,8 @@ def render(spec: dict) -> str:
         out.append("      </div>")
         out.append("    </section>")
     if spec.get("connects"):
-        BASES = {"aa203": "http://localhost:8011/concepts/", "brunton": "http://localhost:8012/", "piml": "http://localhost:8013/topics/"}
-        CLABEL = {"aa203": "AA203 · control", "brunton": "Brunton · data-driven", "piml": "physics-informed ML"}
+        BASES = {"aa203": "http://localhost:8011/concepts/", "brunton": "http://localhost:8012/", "piml": "http://localhost:8013/topics/", "ddps": "http://localhost:8014/concepts/"}
+        CLABEL = {"aa203": "AA203 · control", "brunton": "Brunton · data-driven", "piml": "physics-informed ML", "ddps": "DDPS · data-driven physics"}
         items = ""
         for c in spec["connects"]:
             course = c.get("course", "brunton")

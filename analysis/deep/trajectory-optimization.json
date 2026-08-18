@@ -214,6 +214,12 @@
       "id": "sindy",
       "label": "SINDy",
       "note": "Trajectory optimization needs the equations of motion. SINDy can supply them, recovered directly from measured data."
+    },
+    {
+      "course": "ddps",
+      "id": "differentiable-simulation",
+      "label": "differentiable simulation",
+      "note": "Gradients back through the dynamics — the same machinery."
     }
   ]
 }

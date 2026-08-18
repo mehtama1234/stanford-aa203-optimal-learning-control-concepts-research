@@ -241,6 +241,12 @@
       "id": "scientific-machine-learning",
       "label": "scientific ML",
       "note": "The physics-plus-data model that model-based control acts on."
+    },
+    {
+      "course": "ddps",
+      "id": "hybrid-twins",
+      "label": "hybrid twins",
+      "note": "A physics simulator plus a learned correction — a model to plan through."
     }
   ]
 }

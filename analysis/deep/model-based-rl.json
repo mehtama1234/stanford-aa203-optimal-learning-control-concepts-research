@@ -229,6 +229,18 @@
       "id": "dynamic-mode-decomposition",
       "label": "DMD",
       "note": "DMD builds a model of the dynamics from data — the kind of learned model this page plans through."
+    },
+    {
+      "course": "piml",
+      "id": "surrogate-modeling",
+      "label": "surrogate modeling",
+      "note": "A surrogate is the fast learned model a planner plans through."
+    },
+    {
+      "course": "piml",
+      "id": "scientific-machine-learning",
+      "label": "scientific ML",
+      "note": "The physics-plus-data model that model-based control acts on."
     }
   ]
 }

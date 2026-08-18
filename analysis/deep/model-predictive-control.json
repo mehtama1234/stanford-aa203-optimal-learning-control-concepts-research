@@ -215,6 +215,12 @@
       "id": "sensitivity-and-robustness",
       "label": "the waterbed law",
       "note": "The waterbed law bounds how much disturbance any loop can reject; MPC's robustness is spent inside that bound."
+    },
+    {
+      "course": "piml",
+      "id": "surrogate-modeling",
+      "label": "surrogate modeling",
+      "note": "A surrogate replaces the expensive simulator so MPC can re-solve in real time."
     }
   ]
 }

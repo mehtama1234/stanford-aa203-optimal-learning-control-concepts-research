@@ -204,6 +204,18 @@
       "id": "koopman-operator",
       "label": "Koopman",
       "note": "Koopman finds extra quantities in which the motion follows a fixed weighted sum, turning a bending system into one the linear tools here can handle."
+    },
+    {
+      "course": "piml",
+      "id": "physics-informed-neural-networks",
+      "label": "PINNs",
+      "note": "A PINN forces a network to obey a known governing equation — another route to the dynamics this page assumes."
+    },
+    {
+      "course": "piml",
+      "id": "neural-differential-equations",
+      "label": "neural differential equations",
+      "note": "Learns the state-to-rate-of-change rule directly from data: the dynamics, as a trainable model."
     }
   ]
 }

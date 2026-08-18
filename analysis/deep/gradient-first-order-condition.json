@@ -253,5 +253,13 @@
     "summary": "Simple one-variable bowl J(z) = (z − 3)² + 0.2×z². Gradient descent: compute slope dJ/dz, step by −α×slope, repeat. Step size α = 0.05.",
     "eq": "J(z) = (z - 3)^2 + 0.2*z^2\ndJ/dz = 2*(z - 3) + 0.4*z\n# Gradient descent update:\nz_next = z - step_size * (dJ/dz)\n# At the minimum z=2.5, dJ/dz = 0. The gradient is the local steepness; step size controls how far to move.",
     "note": "Full script: scripts/experiments/traj_run.py, experiment EXP5. Numbers reported are the simulation output verbatim: gradient column is dJ/dz evaluated at each z; convergence achieved at step 60 where gradient = 0.000 and z = 2.500."
-  }
+  },
+  "connects": [
+    {
+      "course": "piml",
+      "id": "optimization-for-learning",
+      "label": "optimization for learning",
+      "note": "The same descent-on-a-loss-surface machinery, seen from the model-training side."
+    }
+  ]
 }

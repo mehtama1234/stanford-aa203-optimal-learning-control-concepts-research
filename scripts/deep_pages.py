@@ -144,16 +144,19 @@ def render(spec: dict) -> str:
         out.append("      </div>")
         out.append("    </section>")
     if spec.get("connects"):
-        items = "".join(
-            f'<li style="margin:9px 0;padding-left:14px;border-left:3px solid #8b3f18">'
-            f'<a href="{BRUNTON_BASE}{esc(c["id"])}-deep.html" style="font-weight:700">{esc(c["label"])}</a>'
-            f' <span class="muted" style="font-size:13px">· {esc(c.get("course","Brunton · data-driven"))}</span>'
-            f'<div style="font-size:14.5px;margin-top:3px">{c["note"]}</div></li>'
-            for c in spec["connects"])
+        BASES = {"aa203": "http://localhost:8011/concepts/", "brunton": "http://localhost:8012/", "piml": "http://localhost:8013/topics/"}
+        CLABEL = {"aa203": "AA203 · control", "brunton": "Brunton · data-driven", "piml": "physics-informed ML"}
+        items = ""
+        for c in spec["connects"]:
+            course = c.get("course", "brunton")
+            href = BASES[course] + esc(c["id"]) + "-deep.html"
+            items += (f'<li style="margin:9px 0;padding-left:14px;border-left:3px solid #8b3f18">'
+                      f'<a href="{href}" style="font-weight:700">{esc(c["label"])}</a>'
+                      f' <span class="muted" style="font-size:13px">· {esc(CLABEL[course])}</span>'
+                      f'<div style="font-size:14.5px;margin-top:3px">{c["note"]}</div></li>')
         out.append(
-            '    <section class="fp" id="connects"><h2>Where this connects — the data side</h2>'
-            '<p class="muted">This page assumes it already has a model and a state. A sister course '
-            '(Steve Brunton&rsquo;s data-driven dynamics) is where those come from. Follow a link to see the concept that supplies it.</p>'
+            '    <section class="fp" id="connects"><h2>Where this connects — across the machine</h2>'
+            '<p class="muted">This concept links to sister courses that supply it, use it, or mirror it &mdash; the wider data&rarr;model&rarr;control pipeline. Follow a link to open the connected concept.</p>'
             f'<ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line);border-radius:10px;background:#fff">{items}</ul></section>')
     if spec.get("related"):
         rel = " · ".join(f'<a href="{esc(h)}">{esc(l)}</a>' for h, l in spec["related"])

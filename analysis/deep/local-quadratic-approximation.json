@@ -212,6 +212,12 @@
       "id": "koopman-operator",
       "label": "the Koopman operator",
       "note": "This page approximates a bending system as a fixed-weighted-sum rule near one point and re-approximates as it moves. Koopman aims to remove that limit by finding coordinates where the rule does not bend at all."
+    },
+    {
+      "course": "piml",
+      "id": "optimization-for-learning",
+      "label": "optimization for learning",
+      "note": "Conditioning of the loss surface is the training-side version of the local quadratic picture here."
     }
   ]
 }

@@ -18,9 +18,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "site" / "bridge-data-to-control.html"
 
-BRUNTON_BASE = "http://localhost:8012/"
-PIML_BASE = "http://localhost:8013/topics/"
-DDPS_BASE = "http://localhost:8014/concepts/"
+BRUNTON_BASE = "https://mehtama1234.github.io/eigensteve-concepts-research/"
+PIML_BASE = "https://mehtama1234.github.io/physics-informed-machine-learning-concepts-research/topics/"
+DDPS_BASE = "https://mehtama1234.github.io/ddps-seminar-series-concepts-research/concepts/"
 
 def e(s): return html.escape(str(s), quote=True)
 

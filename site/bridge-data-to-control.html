@@ -33,7 +33,7 @@
 <main>
 <div class="hero bridge-hero"><div class="kick">connecting the dots · three courses, one pipeline</div>
 <h1>Data → Equations → Control: One Machine</h1>
-<p class="lede">Three courses that look separate are three stages of one machine. <b>Steve Brunton&rsquo;s</b> half turns measured data into a model and a state. <b>Physics-informed ML</b> learns or solves the governing equations — the same move as Brunton&rsquo;s equation discovery, and the supplier of fast models. <b>AA203</b> turns a model and state into the best control. The actions AA203 commands become the next round of data, and the loop closes.</p>
+<p class="lede">Three courses that look separate are three stages of one machine. <b>Steve Brunton&rsquo;s</b> half turns measured data into a model and a state. <b>Physics-informed ML</b> and the <b>DDPS</b> seminar course learn, solve, and use the governing equations — the same move as Brunton&rsquo;s equation discovery, and the supplier of fast, differentiable models. <b>AA203</b> turns a model and state into the best control. The actions AA203 commands become the next round of data, and the loop closes.</p>
 </div>
 
 <svg class="machine" viewBox="0 0 820 250" role="img" aria-label="Three-node loop: data to Brunton to physics-informed ML to AA203 to actions and back to data">
@@ -46,8 +46,8 @@
   <text x="255" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#8b3f18">Brunton</text>
   <text x="255" y="78" text-anchor="middle" font-size="10.5" fill="#5d6875">model + state from data</text>
   <rect x="360" y="36" width="150" height="58" rx="10" fill="#f3f0fb" stroke="#5b45c7"/>
-  <text x="435" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#5b45c7">physics-informed ML</text>
-  <text x="435" y="78" text-anchor="middle" font-size="10.5" fill="#5d6875">learn / solve the law</text>
+  <text x="435" y="58" text-anchor="middle" font-size="12" font-weight="700" fill="#5b45c7">PIML &amp; DDPS</text>
+  <text x="435" y="76" text-anchor="middle" font-size="10.5" fill="#5d6875">learn / solve / use the law</text>
   <rect x="540" y="36" width="150" height="58" rx="10" fill="#eef5f4" stroke="#0b6b64"/>
   <text x="615" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#0b6b64">AA203</text>
   <text x="615" y="78" text-anchor="middle" font-size="10.5" fill="#5d6875">optimal control</text>
@@ -66,7 +66,7 @@
 </svg>
 <div class="legend3">
 <div class="side b"><h3>Brunton — from data</h3><p>Recover a model and a state from measurements: SINDy, DMD, Koopman, the Kalman filter, POD.</p></div>
-<div class="side p"><h3>Physics-informed ML — the law</h3><p>Learn or solve the governing equations: PINNs, symbolic regression, neural ODEs, operator learning, surrogates.</p></div>
+<div class="side p"><h3>Physics-informed ML &amp; DDPS — the law</h3><p>Learn, solve, and use the governing equations: PINNs, symbolic regression, neural ODEs, operator learning, surrogates (PIML); differentiable simulation, hybrid twins, inverse problems (DDPS). Two sibling courses in the middle.</p></div>
 <div class="side a"><h3>AA203 — to control</h3><p>Given a model and state, compute the best action: dynamic programming, LQR, trajectory optimization, MPC.</p></div>
 </div>
 <div class="eyebrow" style="font-family:ui-monospace,Menlo,monospace;font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--accent);margin:30px 0 6px">The connections</div>
@@ -75,8 +75,8 @@
 <div class="hop"><div class="hh"><h2>Hop 1 · Get the governing law</h2><div class="hs">Brunton and physics-informed ML are two routes to the same equation</div></div><div class="conn"><div class="top">
 <div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8012/sindy-deep.html">SINDy</a></div></div>
 <div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">the governing equation, chosen from data</div><div class="arrow">&rarr;</div></div>
-<div class="cell to"><span class="lab">downstream</span><div class="chips"><a href="http://localhost:8013/topics/symbolic-regression-deep.html">symbolic regression</a><a href="http://localhost:8013/topics/physics-informed-neural-networks-deep.html">PINNs</a></div></div>
-</div><div class="how"><b>How it hands off.</b> SINDy selects the few terms that make up the law. PIML&#x27;s symbolic regression is the same method under another name; a physics-informed neural network takes a known law and forces a network to satisfy it. One object — discovered, or enforced.</div></div>
+<div class="cell to"><span class="lab">downstream</span><div class="chips"><a href="http://localhost:8013/topics/symbolic-regression-deep.html">symbolic regression</a><a href="http://localhost:8014/concepts/scientific-machine-learning-deep.html">scientific ML</a><a href="http://localhost:8013/topics/physics-informed-neural-networks-deep.html">PINNs</a></div></div>
+</div><div class="how"><b>How it hands off.</b> SINDy selects the few terms that make up the law. PIML&#x27;s symbolic regression and DDPS&#x27;s scientific machine learning are the same method under other names; a physics-informed neural network instead takes a known law and forces a network to satisfy it. One object — discovered, or enforced.</div></div>
 <div class="conn"><div class="top">
 <div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8012/proper-orthogonal-decomposition-deep.html">POD</a></div></div>
 <div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">a few reusable coordinates</div><div class="arrow">&rarr;</div></div>
@@ -96,7 +96,12 @@
 <div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8013/topics/optimization-for-learning-deep.html">optimization for learning</a></div></div>
 <div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">descent on a stretched surface</div><div class="arrow">&rarr;</div></div>
 <div class="cell to"><span class="lab">downstream</span><div class="chips"><a href="concepts/gradient-first-order-condition-deep.html">gradient &amp; first-order condition</a><a href="concepts/local-quadratic-approximation-deep.html">local quadratic approximation</a></div></div>
-</div><div class="how"><b>How it hands off.</b> Training a model and solving a control problem are the same descent on a curved surface; how stretched that surface is decides how hard both are.</div></div></div>
+</div><div class="how"><b>How it hands off.</b> Training a model and solving a control problem are the same descent on a curved surface; how stretched that surface is decides how hard both are.</div></div>
+<div class="conn"><div class="top">
+<div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8014/concepts/hybrid-twins-deep.html">hybrid twins</a><a href="http://localhost:8014/concepts/differentiable-simulation-deep.html">differentiable simulation</a></div></div>
+<div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">a simulator you can trust and differentiate</div><div class="arrow">&rarr;</div></div>
+<div class="cell to"><span class="lab">downstream</span><div class="chips"><a href="concepts/model-based-rl-deep.html">model-based RL</a><a href="concepts/trajectory-optimization-deep.html">trajectory optimization</a></div></div>
+</div><div class="how"><b>How it hands off.</b> DDPS keeps a physics simulator in the loop — corrected by a learned residual (hybrid twins) and made differentiable so gradients flow straight through it. Both hand AA203 a model it can plan and optimise through.</div></div></div>
 <div class="hop"><div class="hh"><h2>Hop 3 · State and robustness, straight across</h2><div class="hs">Brunton hands AA203 what it cannot measure or exceed</div></div><div class="conn"><div class="top">
 <div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8012/kalman-filter-deep.html">the Kalman filter</a></div></div>
 <div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">the state you cannot directly measure</div><div class="arrow">&rarr;</div></div>

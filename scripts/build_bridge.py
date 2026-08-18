@@ -20,12 +20,14 @@ OUT = ROOT / "site" / "bridge-data-to-control.html"
 
 BRUNTON_BASE = "http://localhost:8012/"
 PIML_BASE = "http://localhost:8013/topics/"
+DDPS_BASE = "http://localhost:8014/concepts/"
 
 def e(s): return html.escape(str(s), quote=True)
 
 def link(course, cid, label):
     if course == "aa203": href = f"concepts/{cid}-deep.html"
     elif course == "brunton": href = f"{BRUNTON_BASE}{cid}-deep.html"
+    elif course == "ddps": href = f"{DDPS_BASE}{cid}-deep.html"
     else: href = f"{PIML_BASE}{cid}-deep.html"
     return f'<a href="{e(href)}">{e(label)}</a>'
 
@@ -34,8 +36,8 @@ HOPS = [
  {"title": "Hop 1 · Get the governing law", "sub": "Brunton and physics-informed ML are two routes to the same equation",
   "rows": [
    {"frm": [("brunton","sindy","SINDy")], "object": "the governing equation, chosen from data",
-    "to": [("piml","symbolic-regression","symbolic regression"), ("piml","physics-informed-neural-networks","PINNs")],
-    "how": "SINDy selects the few terms that make up the law. PIML's symbolic regression is the same method under another name; a physics-informed neural network takes a known law and forces a network to satisfy it. One object — discovered, or enforced."},
+    "to": [("piml","symbolic-regression","symbolic regression"), ("ddps","scientific-machine-learning","scientific ML"), ("piml","physics-informed-neural-networks","PINNs")],
+    "how": "SINDy selects the few terms that make up the law. PIML's symbolic regression and DDPS's scientific machine learning are the same method under other names; a physics-informed neural network instead takes a known law and forces a network to satisfy it. One object — discovered, or enforced."},
    {"frm": [("brunton","proper-orthogonal-decomposition","POD")], "object": "a few reusable coordinates",
     "to": [("piml","operator-learning","operator learning")],
     "how": "POD compresses a whole family of solutions to a few pieces; operator learning generalises that, mapping entire inputs to entire outputs through a few learned pieces."},
@@ -52,6 +54,10 @@ HOPS = [
    {"frm": [("piml","optimization-for-learning","optimization for learning")], "object": "descent on a stretched surface",
     "to": [("aa203","gradient-first-order-condition","gradient & first-order condition"), ("aa203","local-quadratic-approximation","local quadratic approximation")],
     "how": "Training a model and solving a control problem are the same descent on a curved surface; how stretched that surface is decides how hard both are."},
+   {"frm": [("ddps","hybrid-twins","hybrid twins"), ("ddps","differentiable-simulation","differentiable simulation")],
+    "object": "a simulator you can trust and differentiate",
+    "to": [("aa203","model-based-rl","model-based RL"), ("aa203","trajectory-optimization","trajectory optimization")],
+    "how": "DDPS keeps a physics simulator in the loop — corrected by a learned residual (hybrid twins) and made differentiable so gradients flow straight through it. Both hand AA203 a model it can plan and optimise through."},
   ]},
  {"title": "Hop 3 · State and robustness, straight across", "sub": "Brunton hands AA203 what it cannot measure or exceed",
   "rows": [
@@ -107,8 +113,8 @@ def machine_svg():
   <text x="255" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#8b3f18">Brunton</text>
   <text x="255" y="78" text-anchor="middle" font-size="10.5" fill="#5d6875">model + state from data</text>
   <rect x="360" y="36" width="150" height="58" rx="10" fill="#f3f0fb" stroke="#5b45c7"/>
-  <text x="435" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#5b45c7">physics-informed ML</text>
-  <text x="435" y="78" text-anchor="middle" font-size="10.5" fill="#5d6875">learn / solve the law</text>
+  <text x="435" y="58" text-anchor="middle" font-size="12" font-weight="700" fill="#5b45c7">PIML &amp; DDPS</text>
+  <text x="435" y="76" text-anchor="middle" font-size="10.5" fill="#5d6875">learn / solve / use the law</text>
   <rect x="540" y="36" width="150" height="58" rx="10" fill="#eef5f4" stroke="#0b6b64"/>
   <text x="615" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#0b6b64">AA203</text>
   <text x="615" y="78" text-anchor="middle" font-size="10.5" fill="#5d6875">optimal control</text>
@@ -151,12 +157,12 @@ def page():
 <main>
 <div class="hero bridge-hero"><div class="kick">connecting the dots · three courses, one pipeline</div>
 <h1>Data → Equations → Control: One Machine</h1>
-<p class="lede">Three courses that look separate are three stages of one machine. <b>Steve Brunton&rsquo;s</b> half turns measured data into a model and a state. <b>Physics-informed ML</b> learns or solves the governing equations — the same move as Brunton&rsquo;s equation discovery, and the supplier of fast models. <b>AA203</b> turns a model and state into the best control. The actions AA203 commands become the next round of data, and the loop closes.</p>
+<p class="lede">Three courses that look separate are three stages of one machine. <b>Steve Brunton&rsquo;s</b> half turns measured data into a model and a state. <b>Physics-informed ML</b> and the <b>DDPS</b> seminar course learn, solve, and use the governing equations — the same move as Brunton&rsquo;s equation discovery, and the supplier of fast, differentiable models. <b>AA203</b> turns a model and state into the best control. The actions AA203 commands become the next round of data, and the loop closes.</p>
 </div>
 {machine_svg()}
 <div class="legend3">
 <div class="side b"><h3>Brunton — from data</h3><p>Recover a model and a state from measurements: SINDy, DMD, Koopman, the Kalman filter, POD.</p></div>
-<div class="side p"><h3>Physics-informed ML — the law</h3><p>Learn or solve the governing equations: PINNs, symbolic regression, neural ODEs, operator learning, surrogates.</p></div>
+<div class="side p"><h3>Physics-informed ML &amp; DDPS — the law</h3><p>Learn, solve, and use the governing equations: PINNs, symbolic regression, neural ODEs, operator learning, surrogates (PIML); differentiable simulation, hybrid twins, inverse problems (DDPS). Two sibling courses in the middle.</p></div>
 <div class="side a"><h3>AA203 — to control</h3><p>Given a model and state, compute the best action: dynamic programming, LQR, trajectory optimization, MPC.</p></div>
 </div>
 <div class="eyebrow" style="font-family:ui-monospace,Menlo,monospace;font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--accent);margin:30px 0 6px">The connections</div>

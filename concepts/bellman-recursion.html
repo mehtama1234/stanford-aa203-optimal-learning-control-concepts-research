@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Bellman Recursion</h1>
 <p class="lede">The rule that today&#x27;s value equals immediate cost plus the best value of the next state.</p>
+<p><a href="bellman-recursion-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>A controller needs a local equation that accounts for the future without listing every full trajectory.</p>
-    <p>A common wrong first move is: Judge actions only by immediate cost. It fails when a cheap action can move the state into a costly future.</p>
+    <p>A warehouse robot at a junction sees that moving left costs 2 seconds while moving right costs 5 seconds. It picks left. Hours later, it returns to that same junction but now left leads into a dead-end blocked by workers, while right opens a shortcut. The robot should reverse direction, but if it only ever compared the immediate step costs, it has no way to learn that left is now worse overall—only that it is cheaper right now.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a recursive equation for the value function. Use it when a decision can be split into now plus the best continuation.</p>
-    <p>What the object does: For each action, add current cost to the next state&#x27;s value, then choose the best action.</p>
+    <p>A controller deciding right now needs a local rule that accounts for what happens after the chosen action without spelling out every future step. The rule must split the problem into two pieces: the cost of the action it is about to take, and a pre-computed summary of the cost of everything that comes after. When the controller adds immediate cost to that stored future price and picks the best action, it makes a decision that reckons with the whole path even though it only looks one step ahead. That accounting identity—comparing immediate cost plus the stored value of the next state—is the Bellman recursion.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a recursive equation for the value function in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. For each action, add current cost to the next state&#x27;s value, then choose the best action. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>In the worked run below, a robot at junction J can take aisle A (costing 2 seconds, leading to state C with stored future V(C)=9) or aisle B (costing 5 seconds, leading to state L with stored future V(L)=3). The Bellman step for aisle A is immediate cost plus next value: 2+9=11. For aisle B: 5+3=8. The junction stores V(J)=8 and remembers that B was the winner. If later the clear lane L becomes blocked and its future cost jumps to V(L)=14, the same Bellman step changes B to 5+14=19, and the junction now stores V(J)=11 and chooses A instead. The equation did not move; only the input future prices changed.</p>
     <p>The world check is the example: A car may brake now even if braking costs time because the next state&#x27;s value is safer. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The recursion depends on a correct state transition and cost decomposition.</p>
-    <p>When that condition fails, look for this visible break: if the state omits hidden variables, the next-state value is not enough.</p>
+    <p>The recursion assumes the stored next-state value V is correct and complete. If the state omits a hidden fact that changes the future—like a battery warning or a locked door—then the Bellman step reuses a future price that does not match the real future. Equally, the recursion assumes the one-step transition is accurate; if the model says moving right reaches state A but mud sends the robot to state B, the stored value no longer applies.</p>
     <p><strong>Recognize it in a new problem:</strong> Use it when a decision can be split into now plus the best continuation.</p>
   </div>
 </section>

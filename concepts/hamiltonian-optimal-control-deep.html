@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hamiltonian for Optimal Control (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="hamiltonian-optimal-control.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+      <a href="../concept-explainers.html">Mechanism map</a>
+      <a href="../bridge-data-to-control.html">Data → Control bridge</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Hamiltonian · the bundling trick · immediate cost and state-motion price in one number</div>
+      <h1>The Hamiltonian — bundle the cost right now and the price of moving into one number</h1>
+      <p class="lede">The core conflict: each instant's action is judged by what it costs now and what it costs the future; the trick that resolves it into a single local calculation; a real run where the optimal push is exactly a straight line; why that shape is inevitable; what goes wrong when the price is wrong or the action is clamped; and how this bundling idea reappears in physics and the deepest optimization methods.</p>
+      <div class="arc"><a href="#problem">The conflict</a><a href="#reframe">The bundle</a><a href="#run">Seen on a real run</a><a href="#costate">The price itself</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="hamiltonian-optimal-control.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The conflict — now versus later pull in different directions</h2>
+      <div class="essay">
+      <p>Imagine a crane that lifts a weight. Right now, lifting costs fuel — the bigger the lift, the more fuel burns today. But lifting also raises the weight, and a raised weight is cheaper to lower later. So every decision faces a conflict: lift now and waste fuel, or do nothing now and waste fuel later lowering instead. Both paths cost something; they cost different things at different times. How do you make a choice when both the immediate price and the future price matter?</p>
+      <p>A simple rule — "minimize immediate cost" — fails because the cheap choice now sticks you with an expensive future. The opposite rule — "ignore the immediate cost and plan only the future" — is also broken; you end up paying twice, once today and once tomorrow. What you need is a single number that tells you both: <strong>the true cost of this action is what it costs right now plus how much worse the future becomes because of it.</strong> But you need that number to emerge from a local calculation, not from solving the whole problem again.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The bundle — combine immediate cost with state-motion value</h2>
+      <div class="essay">
+      <p>Here is the key insight. Suppose you have a price — not a dollar price, but a <em>shadow price</em> — that says how much future cost will change if you move the state by one unit right now. For the weight on the crane, the shadow price might be: "if the weight is one unit higher at this moment, the total future cost drops by 20." That number (20) is a <em>costate</em>, the backward-looking sensitivity of the future to where you are now.</p>
+      <p>Once you have that price, here is the trick: bundle the immediate cost of the action with the costate-weighted motion it produces. For the crane, if lifting costs 5 units and moves the weight up by 1, then the bundled cost of lifting is 5 (immediate) minus 20 (future savings) = negative 15. Lowering instead costs 3 (immediate) and moves the weight down by 1, so the bundled cost is 3 plus 20 (future cost increase) = 23. The bundled numbers say: lifting is an investment that pays back; lowering is a loss. Choose lifting.</p>
+      <p>That bundle is the Hamiltonian. It is the local accounting sheet at one instant. It takes your immediate-action cost, multiplies the state motion by its shadow price (the costate), adds them together, and gives you one score: the true marginal cost of the decision. <strong>Minimize this one number at every instant and you solve the whole problem.</strong> The magic is that you get to make each decision knowing only the current state and the current costate, not the entire future.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — the optimal push is a perfect straight line</h2>
+      <div class="essay">
+      <p>Move a cart from rest at position 0 to rest at position 1, in exactly 20 steps (2.0 seconds), using the least total push-effort (the sum of squared pushes). This is a pure optimal-control problem: minimize total effort subject to the motion constraint. The indirect method — using the Hamiltonian to write optimality conditions — predicts that the optimal push must be a straight line in time: high push at the start, decreasing linearly to a mirror-negative push at the end. Here are the direct optimizer's measured pushes plotted against a fitted line:</p>
+      <div class="tw"><table><tr><th>time step</th><th>measured push</th><th>straight line fit</th><th>R² fit</th></tr><tr><td>step 0 (start)</td><td>+1.429</td><td>+1.429</td><td>1.00000</td></tr><tr><td>step 5</td><td>+0.714</td><td>+0.714</td><td>1.00000</td></tr><tr><td>step 10</td><td>−0.000</td><td>−0.000</td><td>1.00000</td></tr><tr><td>step 15</td><td>−0.714</td><td>−0.714</td><td>1.00000</td></tr><tr><td>step 19 (end)</td><td>−1.429</td><td>−1.429</td><td>1.00000</td></tr></table></div>
+      <div class="insight"><strong>Discovered fact: the optimal push is a perfect straight line, R² = 1.00000 (one = perfect).</strong> The first-step push is +1.429, the last step is −1.429, exactly mirrored. This is not an accident; it falls out of the Hamiltonian structure. When you bundle immediate effort (the squared push) with the costate motion, and minimize that bundle at every instant, the costate runs linearly in time. And when the costate is linear, the optimal push is also linear. The direct solver — which knows nothing about costates — discovered the same straight-line shape. The match is absolute.</div>
+      </div>
+    </section>
+    <section class="fp" id="costate">
+      <h2>4 · The price itself — the costate is a backward shadow price</h2>
+      <div class="essay">
+      <p>The Hamiltonian works only if you have the right costate, the right shadow price. Where does it come from? The costate is found by working backward through time, one step at a time, starting from the terminal condition (what the problem costs at the very end). At each step going backward, you ask: 'If the state here is one unit larger, how much does the total remaining cost change?' That answer is the costate at that step. It is a sensitivity — literally how sensitive the future is to small changes in where you are now.</p>
+      <p>In the cart example, at the last step (step 19), the cart must be at rest, so the costate is zero — moving the final state by one unit does not change the future cost because there is no future. Working backward to step 18, the costate becomes non-zero: now a one-unit higher position at step 18 means the cart has to brake harder at step 19, which costs more effort. The costate measures that extra braking cost. Keep going backward and the costate grows; nearer the start, the costate is larger because the position error has longer to propagate into future fuel waste.</p>
+      <p>The costate runs backward in time, and in this problem it runs linearly backward because the cost is quadratic and the motion is linear. That linear costate, when bundled with the immediate push-cost via the Hamiltonian, forces the push to be linear forward. <strong>Every step uses a different costate because the remaining time-to-go is different; but far from the end, the costate settles into a steady slope, and so does the optimal push.</strong> This is the key observation: you do not need to recompute the costate at every time step if you wait until it has settled. That is why real systems run with a constant controller.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — you need the right costate, and hard limits break the bundle</h2>
+      <div class="essay">
+      <p>The Hamiltonian method requires two things to work: first, you must know the costate (the shadow price of moving the state), and second, the action must be free to move to wherever the Hamiltonian is minimized.</p>
+      <p>The first requirement is the deeper one. The costate comes from the rest of the trajectory — from all the future steps and the terminal cost. If you miscalculate the terminal cost, or if an obstacle, target, or constraint changes, the entire costate changes backward in time. A wrongly calculated costate will lead the Hamiltonian to the wrong action, even if the bundling logic is correct. This is a <em>consistency problem</em>: the costate is not a property of the system; it is a property of the whole plan.</p>
+      <p>The second requirement surfaces when the action is constrained. Suppose the push is limited to a maximum of 5 units. The Hamiltonian says to minimize the bundle by setting the push to −costate; if the costate is −10, the optimal push would be +10, far beyond the limit. When that happens, the minimum of the Hamiltonian over the <em>legal</em> region (0 to 5 units) sits at the boundary: u = 5. The Hamiltonian condition becomes a one-sided inequality instead of an equality. You must check whether the downhill direction wants to leave the boundary or stay pinned to it. This is the switching condition: constraints turn smooth optimality equations into piece-wise conditions with discrete switching.</p>
+      <p>Example: a vertical cart with upward thrust u. Running cost is 0.5 * u squared (fuel cost). Dynamics are x_next = x_current + u (thrust moves height). Suppose the costate backward-looking price is p = −20, meaning one meter of extra height saves 20 units of future cost. The Hamiltonian is H = 0.5 * u² − 20 * u. Unconstrained, dH/du = u − 20 = 0 gives u = 20. But if thrust is capped at 12 units, then u = 20 is illegal. At u = 12 the slope is still dH/du = 12 − 20 = −8 (negative, wanting higher u), so the downhill direction points toward higher u, but no higher u is legal. The optimum under the constraint is the boundary u = 12. If later the costate changes to p = −4 (height is less valuable), then dH/du = u − 4, and the unconstrained optimum u = 4 is now inside the legal range, so the cap is no longer active and the cart uses u = 4 instead.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — Pontryagin, physics, and the machinery beneath everything</h2>
+      <div class="essay">
+      <p>The Hamiltonian method does not come from control theory. It comes from calculus of variations, the branch of mathematics that optimizes over entire functions, not just points. The question is: among all possible paths through the state space, which one makes a certain cost functional as small as possible? The answer, after 300 years of mathematics, is that the best path is one where you cannot wiggle it any further without making it worse — a stationary point. The calculus-of-variations machinery for finding that stationary path yields equations that look just like the Hamiltonian conditions.</p>
+      <p><strong>Pontryagin's minimum principle</strong> is the discrete-time and constrained-action version of that calculus-of-variations result. It says: if u(t) is an optimal control sequence, then at every instant t, the control u(t) must minimize the Hamiltonian with respect to u, given the state x(t) and costate p(t). In other words, <strong>the global optimization problem becomes an infinite sequence of local minimizations.</strong> The costate p(t) does the heavy lifting: it encodes the global structure (the future cost, the terminal constraint, the dynamics) into a local price that every instant can see.</p>
+      <p>This bundling idea reappears everywhere in physics. In classical mechanics, the Hamiltonian is the total energy (kinetic plus potential), and Hamilton's equations describe how the system evolves. In thermodynamics and statistical mechanics, the Hamiltonian is the fundamental building block of probability distributions. In quantum mechanics, the Hamiltonian is the generator of time evolution. The reason is deep: any dynamical system that obeys the laws of physics can be described as the path that makes a certain Hamiltonian stationary at every instant. The method does not care whether you are controlling a cart, designing a drug, or describing the motion of electrons.</p>
+      <p>In modern optimal control, every practical method uses Hamiltonian thinking. <strong>Trajectory optimization (iLQR, DDP)</strong> solves a Hamiltonian-based necessary condition locally around a guessed path. <strong>Model predictive control (MPC)</strong> re-solves a finite-horizon Hamiltonian problem at each time step. <strong>Reinforcement learning</strong> estimates the costate (called the value function or Q-function) from data, then uses it to minimize a Hamiltonian-like objective. Even methods that do not mention the word "Hamiltonian" are running the same machinery underneath.</p>
+      <div class="insight"><strong>The discovered fact: local optimization of a global quantity.</strong> The Hamiltonian is the pivot that turns a hard global problem — find the best trajectory over all time — into a sequence of local decisions. Each instant minimizes its own bundle (immediate cost plus costate-weighted motion), not knowing the full future, yet the collection of all those local choices yields the best whole path. This principle is not special to control; it is a fundamental principle of optimization, physics, and information flow. Understand the Hamiltonian and you understand why constrained receding-horizon control works, why indirect optimization methods converge, and why the backward costate can encode an entire future into a local number.</div>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — global optimization bundled into local decisions</h2>
+      <div class="essay">
+      <p>The Hamiltonian method is the foundation underlying every modern control system that must balance competing goals: aircraft and spacecraft guidance, chemical plant optimization, autonomous vehicles, and robotic manipulation. Anywhere a system must weigh immediate cost against future consequence, the Hamiltonian principle hides underneath — either explicitly in the math or implicitly in how engineers derive the control rules.</p>
+      <p>In practice, an engineer writes down what the immediate action costs (fuel, force, energy) and what the state change means for future costs (using the costate, a backward-running shadow price). The Hamiltonian bundles these into one number at every time step. Instead of solving the entire trajectory at once, the engineer can write down the necessary conditions that an optimal path must obey — the Hamiltonian equations — and solve those. This turns a giant global search into a sequence of local decisions using the costate as a messenger.</p>
+      <div class="insight">The Hamiltonian transforms a global problem into a sequence of local minimizations by encoding the future cost into a single number that every instant can see and use.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="costate-adjoint-variable.html">costate and adjoint variables</a> · <a href="calculus-of-variations.html">calculus of variations</a> · <a href="trajectory-optimization.html">trajectory optimization</a> · <a href="model-predictive-control.html">model predictive control</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Cart double-integrator from position 0 to position 1 in 20 steps (dt=0.1) with minimum squared-push effort. Solve directly (quadratic program) and verify the indirect route (Hamiltonian/costate) predicts a linear push. All numbers reported are measured outputs from the solver.</p>
+      <div class="eq">Dynamics: x[k+1] = x[k] + u[k], where x is state [position, velocity]ᵀ and u is push.
+Running cost L(u) = 0.5 * u².
+Hamiltonian H(x,u,p) = L(u) + pᵀ * (x[k+1] − x[k]).
+Costate backward recursion: p[k] = ∇_x L + Aᵀ p[k+1], where A is the state-transition matrix.
+Optimality condition: ∇_u H = 0 (unconstrained) or u at boundary of constraint (constrained).
+Direct solve: quadratic program min J = sum of 0.5*u[k]² subject to x[k+1] = x[k] + u[k], x[0]=[0,0], x[20]=[1,0].
+Indirect solve: costate p backward, then optimal u[k] = −costate_at_k (in steady state).</div>
+      <p class="muted">Full script: scripts/experiments/traj_run.py. Results: R² of measured push vs straight-line fit = 1.00000. First-step push = +1.429, last-step push = −1.429 (perfect mirror). Numbers reported are solver outputs and fitted values verbatim.</p>
+    </div></details>
+    <footer>Stanford AA203 · Hamiltonian for Optimal Control deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

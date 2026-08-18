@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Gradient and First-Order Condition</h1>
 <p class="lede">A local test for whether a tiny move can immediately improve the objective.</p>
+<p><a href="gradient-first-order-condition-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>An optimizer needs a direction that says which small change makes the score better or worse.</p>
-    <p>A common wrong first move is: Try random changes until the cost goes down. It fails when random search wastes structure and becomes expensive in high-dimensional control trajectories.</p>
+    <p>A rover trying to steer correctly might think: the error is 3 degrees and I am at 0, so make the steering 3. But steering has its own cost—using too much steering is wasteful. The right balance is not obvious from just the target; you need to check whether moving slightly in any direction makes the combined cost go down.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a gradient, derivative, or stationarity condition. Use it when tiny changes to a decision have meaningful, computable effects.</p>
-    <p>What the object does: Differentiate the objective and look for directions of improvement or stationarity.</p>
+    <p>When you change a knob by a tiny amount, some directions will lower your cost and others will raise it. The gradient is the direction-by-direction scorecard that says which small nudges help. If you are climbing a hill and every small step downward is blocked by a wall, the gradient might point downhill but be useless; if a small step in some direction lowers cost and nothing forbids that step, the gradient shows you where to move. A stationary point is where no legal tiny move is predicted to improve cost, and finding where the gradient points zero is often a powerful filter for candidates.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a gradient, derivative, or stationarity condition in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Differentiate the objective and look for directions of improvement or stationarity. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>A rover chooses steering angle z to minimize J(z) = (z - 3)^2 + 0.2*z^2, the squared miss of a 3-degree target plus the cost of steering effort. At z = 0, the slope dJ/dz = 2*(0 - 3) + 0.4*0 = -6. A small move +0.1 is predicted to save 6*0.1 = 0.6 in cost. At z = 2.5, the slope is dJ/dz = 2*(2.5 - 3) + 0.4*2.5 = 0. Check numerically: J(2.4) = 1.512, J(2.5) = 1.5, J(2.6) = 1.512. The slope-zero point is locally best. Now add a hard stop z &lt;= 2.0. At z = 2.0, the slope is -1.2, pointing toward more steering, but moving +0.1 is illegal. The best reachable point sits at the boundary with nonzero slope.</p>
     <p>The world check is the example: If increasing steering torque slightly reduces path error but increases actuator cost sharply, the gradient exposes the tradeoff. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>Gradient reasoning is local and depends on smoothness and the chosen coordinates.</p>
-    <p>When that condition fails, look for this visible break: the method stops at a local stationary point that still violates the real safety or mission goal.</p>
+    <p>The gradient is a local test that works only near the point it is computed at, and only if the cost is smooth enough to differentiate. A stationary point is a candidate, not a proof: it could be a local maximum, a saddle, or just one of many stationary points. If the model omits a real cost such as hitting a rock, the gradient of the incomplete cost can point in a direction the complete cost would forbid.</p>
     <p><strong>Recognize it in a new problem:</strong> Use it when tiny changes to a decision have meaningful, computable effects.</p>
   </div>
 </section>

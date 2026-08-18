@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Shooting Methods</h1>
 <p class="lede">Guess controls or missing boundary values, simulate forward, and adjust the guess until the endpoint or constraints match.</p>
+<p><a href="shooting-methods-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>A trajectory problem often knows where it starts and what it wants to hit, but the control sequence between them is unknown.</p>
-    <p>A common wrong first move is: Guess the whole path without checking how dynamics generate it. It fails when the guessed path may not be reachable from the initial state.</p>
+    <p>A first urge is to guess a whole trajectory shape—heights and speeds at each time—without checking whether the system can actually reach it from the starting state. A 1-meter displacement in one second looks reasonable until you realize the starting velocity was zero and there was no time to accelerate.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a parameterized initial condition or control sequence plus forward simulation. Use it when you need to look for a method that treats simulation as the constraint-enforcing step.</p>
-    <p>What the object does: Shoot the dynamics forward and optimize the parameters by endpoint error and cost.</p>
+    <p>A hard control problem often fixes some facts at the start (where the system begins) and other facts at the end (where it must arrive, or what a final price must equal), while leaving the connecting piece — an initial costate, or the whole control sequence — unknown. Pinning down both ends at once is awkward. There is an easier move: guess the unknown starting values, simulate the dynamics forward from the known start (which automatically produces a physically real trajectory), and look at how far the simulated endpoint lands from the target. The size and sign of that endpoint miss tell you how to nudge the guess, exactly like aiming a cannon, watching where the shot falls, and correcting the angle. This guess-then-simulate-then-measure-then-adjust loop is the shooting method: it trades an awkward two-point problem for repeated, honest forward runs.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a parameterized initial condition or control sequence plus forward simulation in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Shoot the dynamics forward and optimize the parameters by endpoint error and cost. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>A cart starts at x = 0, v = 0 and must reach x = 10, v = 0 in 2 seconds using two acceleration commands. Try u_0 = 4 m/s^2 and u_1 = -1 m/s^2. Simulate forward: v_1 = 4, x_1 = 4, then v_2 = 3, x_2 = 7. The cart is short and moving. Try u_0 = 10 m/s^2 and u_1 = -10 m/s^2: v_1 = 10, x_1 = 10, v_2 = 0, x_2 = 10. Perfect endpoint, but both speed commands are extreme. If the motor limit is |u| &lt;= 8, the u = 10 shot is illegal. If there is a cable obstacle between x = 5.0 and x = 5.5, the endpoint perfect shot flies past x = 10 in the first second, so it jumps over the cable and the final endpoint miss r = 0 does not prove the path avoided it. The optimizer can only discover such path violations by checking the simulated trajectory.</p>
     <p>The world check is the example: Aim a spacecraft burn sequence, simulate where it lands, then adjust the burn parameters. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>Forward simulation must be stable enough that small parameter changes are informative.</p>
-    <p>When that condition fails, look for this visible break: sensitive dynamics make the shot miss wildly or create an ill-conditioned optimization.</p>
+    <p>Shooting is natural when only controls or a few boundary values are unknown and forward simulation is stable and fast. When many state limits must be enforced along the path—a cable here, a speed limit there, a position bound elsewhere—endpoint error alone is blind to path violations. Multiple shooting splits the trajectory into pieces and adds join points to give the optimizer more handles mid-trajectory, but each piece must still be simulated from a reached state to be checked against path rules.</p>
     <p><strong>Recognize it in a new problem:</strong> Look for a method that treats simulation as the constraint-enforcing step.</p>
   </div>
 </section>

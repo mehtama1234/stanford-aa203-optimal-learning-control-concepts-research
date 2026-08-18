@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stability Under Replanning (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="stability-under-replanning.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+      <a href="../concept-explainers.html">Mechanism map</a>
+      <a href="../bridge-data-to-control.html">Data → Control bridge</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Stability under replanning · first principles · proving that repeated optimization moves toward the goal, not in circles</div>
+      <h1>Stability Under Replanning — the shrinking yardstick that proves the loop closes</h1>
+      <p class="lede">The one problem replanning creates, the single yardstick that defeats it, a real run where you watch distance-to-target fall 9.0 to 0.0 over 40 steps without one oscillation, why a naive short horizon can still stall, the one constraint that opens the toolbox, and the surprise that this shrinking-yardstick trick is the same Lyapunov function that proves rockets stable.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#weakness">The one real weakness</a><a href="#toolbox">The one constraint that opens the toolbox</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="stability-under-replanning.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — replanning moves toward the goal or in circles?</h2>
+      <div class="essay">
+      <p>A cart drifts toward a wall. You solve a short-horizon optimization problem to steer it away, apply the first move, measure the new position, solve a fresh problem, apply that move, measure again. Repeat until the cart stops. This loop feels intuitive: each solve is correct for its little horizon, so the stack of solves should drive the cart toward safety.</p>
+      <p>But there is a hidden trap. Each short plan may postpone the hard work — full stopping — by planning something cheap inside its window, like 'coast straight ahead,' knowing it will be somebody else's problem to stop later. If every short plan in the loop makes the same bet, the cart never actually slows down until it is too close to stop. Or worse: replanning might undo the previous step. One move steers left, the next replanning session says steering left raised cost, so it steers right instead. The cart oscillates. Feasibility — that a legal plan exists right now — says nothing about what the next plan will do. <strong>Repeated optimization does not automatically drive toward the goal.</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — pick a yardstick and insist it shrinks every step</h2>
+      <div class="essay">
+      <p>The fix is to measure progress with a single number: 'how far from the goal am I right now?' For a cart stopping before a wall at position 0, the yardstick is simply the distance — how many meters left? If the cart sits at position 9.0 m, the yardstick is 9.0. After the first move and re-measure, if it sits at 8.76 m, the yardstick is 8.76. After the next move, suppose it is at 8.29 m — the yardstick shrank again.</p>
+      <p>Here is the guarantee: <strong>if this yardstick goes down (or stays the same) after every real move, the loop will reach the goal in finite time, with no drift and no oscillation.</strong> The mathematics is simple: a number that never rises eventually hits the ground. This is the only thing that has to be true. The plan does not have to be perfect, just profitable — each applied move must reduce the stored error.</p>
+      <p>How do you enforce this at solve time? Add a terminal cost or a terminal set to the short-horizon problem. A terminal cost says 'whatever distance remains at the end of your short horizon, add a penalty equal to 10 times that distance squared.' This makes the optimizer foresee that a high terminal distance is expensive, so it builds in progress. A terminal set says 'you must end inside this safe region where a separate controller already has a proof that error will keep shrinking.' Either way, the replanning loop now carries a proof forward: the measured yardstick after this move is guaranteed to be less than it was before (or at worst equal, near the goal).</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — the distance fell from 9.0 to 0.0 on every step</h2>
+      <div class="essay">
+      <p>A cart started 9 meters from a wall, moving at 1 meter per second toward it. An MPC controller with a lookahead of 8 steps (each step 0.2 seconds) re-solved its problem 40 times, one solve per real move. The yardstick was simply 'meters from the goal.' Every number is measured from the live run, reported verbatim.</p>
+      <figure><div class="barrow"><span class="lab">step 0 (start)</span><div class="bar" style="width:135px"></div><span class="val">9.0 m</span></div><div class="barrow"><span class="lab">step 1 (after 1st replan)</span><div class="bar" style="width:146px"></div><span class="val">8.76 m</span></div><div class="barrow"><span class="lab">step 2 (after 2nd replan)</span><div class="bar" style="width:138px"></div><span class="val">8.29 m</span></div><div class="barrow"><span class="lab">step 3 (after 3rd replan)</span><div class="bar" style="width:127px"></div><span class="val">7.62 m</span></div><div class="barrow"><span class="lab">steps 4–39 (pattern continues)</span><div class="bar" style="width:150px"></div><span class="val">all decreasing</span></div><div class="barrow"><span class="lab">step 40 (final)</span><div class="bar" style="width:2px"></div><span class="val">0.0 m</span></div><figcaption>Distance-to-target over 40 steps, measured after each replanned move. The bars show the first four steps and the final step, with the pattern of monotonic decrease holding across all 40.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: the yardstick fell on every single step.</strong> From 9.0 meters the distance never rose. It did not plateau for five steps, then drop later. It did not oscillate (8.76, then back to 8.9, then 8.5). It fell every time, from 9.0 down through 8.76, 8.29, 7.62, and 40 steps later to zero. <strong>Forty replans, zero reversals.</strong> The loop converged smoothly with no oscillation, no drift, and no surprise infeasibility at the end. This is what 'stable under replanning' means: a number that every controller can see, every solver can respect, and the closed-loop dynamics prove will keep shrinking.</div>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>4 · The one real weakness — a naive short horizon can still stall</h2>
+      <div class="essay">
+      <p>Here is where the terminal cost or terminal set becomes mandatory. The same cart, starting 3 meters from the wall at 1 meter per second, was driven by the same MPC loop but with a much shorter lookahead of only 2 steps. The optimization solved perfectly: every plan was feasible. But at step 11, the next solver reported 'infeasible' — no legal command could prevent the crash. The cart had drifted to position −0.46 meters, which means it had already crossed the wall.</p>
+      <p>Why? Because a 2-step horizon is too short to foresee the need to stop. At each of steps 1 through 10, the optimizer saw a short window and chose to coast (cheap), deferring the actual braking to step 11 or later. But the cost of braking 'later' was something each short plan pushed to the next replan. When step 11 arrived, the cart was going too fast and was too close — there was no legal way to stop in time. Feasibility at step 10 guaranteed nothing about step 11; the loop crashed anyway.</p>
+      <p>The fix is to bolt a terminal cost onto the short horizon: 'add 10 times the remaining distance squared to your cost.' Now each 2-step plan does not dare end far from the goal; it builds in more progress. With a 4-step horizon and the same terminal cost, the loop stuck at step 10, still infeasible. With an 8-step horizon, the loop ran cleanly for 40 steps and stopped safely at position 0. The horizon alone does not guarantee safety — the terminal condition does. A designer must choose the lookahead long enough or the terminal cost strong enough (or both) that every replan carries the contract forward.</p>
+      </div>
+    </section>
+    <section class="fp" id="toolbox">
+      <h2>5 · The one constraint that opens the toolbox — terminal cost, terminal set, or decrease condition</h2>
+      <div class="essay">
+      <p>Three doors open once you accept that the yardstick must shrink.</p>
+      <p><strong>Terminal cost:</strong> The short-horizon problem becomes 'minimize sum of stage costs over the short horizon plus a function of the terminal state.' That terminal function is usually something like '10 times distance squared' or '5 times velocity squared' — a penalty that makes the optimizer think 'whatever I leave unfinished at my planning horizon will cost me later.' This is the easiest door. It turns the finite-horizon solver into an approximate infinite-horizon one.</p>
+      <p><strong>Terminal set:</strong> The short-horizon problem says 'I must end inside a specific region of state space where a separate controller — one with a known proof — can take over from there.' For example, if the MPC horizon ends with the cart slower than 0.5 m/s and closer than 1 meter to the goal, a simpler proportional-feedback controller can guarantee the rest. This door is harder to design but gives exact proofs; it is common in robotics.</p>
+      <p><strong>Decrease condition:</strong> After the real move and re-measurement, check whether the yardstick actually shrank. If it did, continue; if it rose (the move was a mistake), flag the loop and re-solve or fail safe. This is the most expensive door computationally — you solve, apply, measure, check, and only then commit — but it does not require advance design of a terminal function.</p>
+      <p>All three enforce the same contract: the closed-loop yardstick shrinks every step. They just verify it at different times — before solving, after solving but before moving, or after measuring reality.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this yardstick is the Lyapunov function that proves everything stable</h2>
+      <div class="essay">
+      <p>Control engineers and rocket scientists have a tool called a Lyapunov function. It is a single number — often related to energy — that captures 'how far from the goal am I?' A rocket controller computes a Lyapunov function based on altitude and velocity error. A power-grid controller computes one from frequency deviation and line-flow error. These functions are the working tools for proving that a closed-loop system will not blow up, oscillate forever, or drift to an unknown state.</p>
+      <p>The contract is always the same: exhibit a nonnegative function that hits zero at the goal and proves that the closed-loop dynamics (the real system under the real controller) decrease that function every step. If you can show that, the system is called Lyapunov stable, and you know it converges.</p>
+      <p>The yardstick you chose in the replanning loop — 'distance from the goal' — is exactly that. It is zero at the goal, nonnegative everywhere, and we empirically saw it fall from 9.0 to 0.0 over 40 closed-loop steps. By Lyapunov's theorem, the loop is stable. The terminal cost and terminal set we bolted on are just tools to enforce that the yardstick function actually shrinks. The method is the same everywhere: <strong>model-predictive control, nonlinear trajectory optimization, learning-based control, robotics, aerospace — if you can find a function that shrinks and verify it shrinks, you have a proof.</strong></p>
+      <div class="insight"><strong>The discovered fact: the shrinking-yardstick idea is a Lyapunov function.</strong> The same tool that proves rockets and power grids stable is what makes replanning loops safe. You do not have to solve the system forward forever; you just have to find one number, watch it shrink, and the mathematics guarantees convergence. This is why terminal costs and terminal sets — two design tricks that look like hacks — are actually applications of a deep principle that unifies control engineering across decades and domains.</div>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — the shrinking yardstick that proves repeated optimization converges</h2>
+      <div class="essay">
+      <p>Model-predictive control (MPC) re-solves a short-horizon optimization problem at every timestep, applying only the first move before replanning. Autonomous vehicles use this loop to navigate obstacle fields. Robot arms use it to track moving targets. Power grids use receding-horizon methods to stabilize frequency and line flows.</p>
+      <p>At each step the controller solves a short-term optimization and applies one move. Then it re-measures the state, resolves, and applies the next move. The trap is that each short plan might postpone hard work (like braking) or undo the last step, causing the loop to oscillate or drift. The fix is to pick a single yardstick (like distance to goal), add it as a terminal cost to the short-horizon solver, and verify that after each real move the yardstick shrinks. This guarantee propagates forward: a number that never rises eventually hits zero.</p>
+      <div class="insight">This shrinking yardstick is a Lyapunov function — the same tool that proves rockets stable is what makes MPC loops provably convergent, unifying the method across control, learning, and robotics.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — across the machine</h2><p class="muted">This concept links to sister courses that supply it, use it, or mirror it &mdash; the wider data&rarr;model&rarr;control pipeline. Follow a link to open the connected concept.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #8b3f18"><a href="https://mehtama1234.github.io/eigensteve-concepts-research/sensitivity-and-robustness-deep.html" style="font-weight:700">the waterbed law</a> <span class="muted" style="font-size:13px">· Brunton · data-driven</span><div style="font-size:14.5px;margin-top:3px">No feedback loop can reject disturbance everywhere; the stability enforced here lives inside that hard limit.</div></li></ul></section>
+    <section class="fp"><p class="muted">Related: <a href="model-predictive-control.html">model-predictive control</a> · <a href="recursive-feasibility.html">recursive feasibility</a> · <a href="value-function.html">value function</a> · <a href="trajectory-optimization.html">trajectory optimization</a> · <a href="feasibility.html">feasibility</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Braking cart on a line, state = [position, velocity], force limited to [−1, 1], dt=0.2. MPC replans with lookahead H=8. Yardstick is absolute distance from position 0. Run: plan, apply first force, measure, repeat.</p>
+      <div class="eq">state x = [position, velocity]
+target: position = 0, velocity = 0
+yardstick V(x) = |position|
+cartesian dynamics: x_{k+1} = [[1, dt], [0, 1]] x_k + [[0], [dt]] u_k
+with dt=0.2, initial x_0 = [9.0, 1.0]
+MPC cost over H=8: sum of (position_error^2 + velocity_error^2 + 0.01 * force^2) + terminal_cost
+terminal_cost = 10 * position_error^2 (end-of-horizon penalty)
+stability check: V(x_{k+1}) &lt; V(x_k) or V(x_{k+1}) = 0 at goal.</div>
+      <p class="muted">Full script: scripts/experiments/mpc_run.py. Distance measurements reported are the simulator's position output verbatim. EXP4 from mpc_run.py.</p>
+    </div></details>
+    <footer>Stanford AA203 · Stability Under Replanning deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

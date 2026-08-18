@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Recursive Feasibility</h1>
 <p class="lede">The property that after applying today&#x27;s MPC action, tomorrow&#x27;s optimization problem is still feasible.</p>
+<p><a href="recursive-feasibility-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Replanning only protects the system if today&#x27;s legal move does not leave the controller with no legal move next time.</p>
-    <p>A common wrong first move is: Check only that the current MPC problem has a solution. It fails when the first action of a feasible plan can lead to a state where the next problem is infeasible.</p>
+    <p>You solve an MPC problem and get a feasible plan, so you apply the first move. But after that first move lands and you measure the real state, the next MPC solve finds no legal plan. Each individual solve was feasible, but they did not chain together. A delivery cart closing on a narrow doorway at 1.4 m/s with 1.1 meters left can find a braking plan from its current state, but that plan leaves the next state (1.1 m, 1.4 m/s) unable to brake below the speed limit and stop line simultaneously—the first move was not illegal at the time, but it handed the next solver an impossible problem.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a recursively feasible set or terminal condition. Use it when you need to ask whether solving now preserves the ability to solve later.</p>
-    <p>What the object does: Design the MPC problem so feasibility propagates from one solve to the next.</p>
+    <p>Feasibility at one step is not enough if the controller must replan many times. After today&#x27;s legal first move and the real measurement that follows, the next MPC solve must still find a legal plan. This stronger idea—that a feasible plan leaves the successor state with a feasible plan—is recursive feasibility. It requires the MPC problem to protect not just this optimization but the next one, by ensuring the first move lands in a state that still has legal continuations. A terminal condition like &#x27;speed below 0.2 m/s and stopping margin of 0.4 meters&#x27; enforces this link: the horizon problem does not end where it pleases, but only in states from which a local controller can take over and keep braking safely.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a recursively feasible set or terminal condition in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Design the MPC problem so feasibility propagates from one solve to the next. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>A delivery cart rolling toward a 2.0-meter-distant doorway solves an MPC problem with a three-step horizon and receives the feasible plan: brake gently, brake harder, then enter a terminal slow zone (speed ≤ 0.2 m/s, stopping margin ≥ 0.4 m). The predicted states are (1.4 m/s, 1.9 m left), (1.0 m/s, 1.4 m left), (0.2 m/s, 1.0 m left). The first command (gentle brake) is legal—no constraint is violated in the current state. But recursive feasibility asks: after that first command is applied and the real state is measured, can the next solve still find a legal three-move plan? If the measured successor turns out to be (1.1 m/s, 1.15 m left) instead of planned (1.0, 1.4), the stopping distance needed is 1.1²/(2*0.8) = 0.756 meters, leaving only 1.15 - 0.756 = 0.394 meters of margin. That measured state requires 0.394 m margin but the terminal condition demands 0.4 m; the state is outside the safe handoff set. The cart is still inside the corridor, the speed is still reasonable, every input is still legal—yet the next optimization cannot promise a legal continuation because the measured state landed in the wrong place.</p>
     <p>The world check is the example: A car must not enter a narrow lane unless it can still brake or steer safely in the next planning step. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The guarantee depends on model accuracy, constraints, and terminal set design.</p>
-    <p>When that condition fails, look for this visible break: the controller works for a few replans and then hits an infeasible optimization.</p>
+    <p>Recursive feasibility holds only if the real measured successor stays in the set from which the old plan&#x27;s tail can be shifted forward and a new first command appended. If model errors are large—the cart drifts 0.15 meters more than expected—or if the terminal set is chosen too tight (leaving no room for real noise), the promise breaks. The old plan u_1^*, u_2^* from the predicted state can anchor the next solve only if the measured state lands close enough. If the terminal condition assumes perfect model tracking and the real cart is noisier, every loop iteration will push states deeper into infeasibility.</p>
     <p><strong>Recognize it in a new problem:</strong> Ask whether solving now preserves the ability to solve later.</p>
   </div>
 </section>

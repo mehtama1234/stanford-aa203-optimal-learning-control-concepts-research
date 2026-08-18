@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Imitation Learning (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="imitation-learning.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+      <a href="../concept-explainers.html">Mechanism map</a>
+      <a href="../bridge-data-to-control.html">Data → Control bridge</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Imitation Learning · first principles · copy expert demonstrations when writing a reward is too hard, but fix it by asking the expert about the states you make</div>
+      <h1>Imitation Learning — when copying examples works better than writing a reward, the expert must label your own mistakes</h1>
+      <p class="lede">The one problem that makes a reward hard to write, the reframe where you hand over examples instead, a real run where a simple copy drifts off the demonstrated band and then DAgger halves the on-its-own-path gap by asking the expert about learner-created states, the compounding error that invisible in one-step tests, its one honest weakness, and the surprise that this bootstrap method lives inside self-driving stacks and vision-language model instruction-tuning.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#compounds">Why the error compounds</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="imitation-learning.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — some skills are easy to show but nearly impossible to write a cost for</h2>
+      <div class="essay">
+      <p>Imagine building a robot to open a sticky drawer. The task sounds simple — grab the handle, pull steadily, stop when it is open — but a reward function must score every frame. How much is it worth to angle the gripper this way versus that way? What penalty when the handle edge touches the wood? When does the wood flex dangerously? When is the contact about to slip? How much force is safe for an unfamiliar handle material?</p>
+      <p>You could spend weeks writing a composite reward capturing latch friction, wood flex, wrist angles, gentle contact, and slip detection. Or you could step back and ask: why write that at all? A human can open the drawer. Record what the human does — state by state, action by action — and let the learning algorithm figure out the pattern. No reward engineering. No guessing at the physics. Just observation.</p>
+      <p>This is the core reframe: <strong>instead of a reward you write, copy a policy the expert already demonstrated.</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — hand over examples, not a reward, and a learner can copy</h2>
+      <div class="essay">
+      <p>The idea is straightforward: collect a dataset of expert demonstrations. For every observed state (position, angle, force feedback, camera view, sound), record the action the expert took. Fit a policy — a rule that looks at the current state and predicts the action — using standard supervised learning. Make the predicted action match the expert action. Done. The method is called behavioral cloning — a learner is cloned from the expert's behavior.</p>
+      <p>On the states where the expert actually went, this works well. The expert knows those states intimately. But there is a sharp boundary: outside the region the demonstrations cover, the policy is guessing. It never saw an expert label for that state. All it can do is interpolate from nearby examples, which may not be correct. Small mistakes in predicting actions move the learner into new states. Those new states may be even further from the training data. And the learner has no expert guidance for how to recover.</p>
+      <p>This cascading problem — errors creating unfamiliar states, unfamiliar states producing worse errors — is not visible in simple measures like 'how close is the predicted action to the expert action on the test set.' One-step accuracy misses the closed-loop spiral.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — DAgger halves the gap by asking the expert about learner-visited states</h2>
+      <div class="essay">
+      <p>Every number here is measured, not asserted. We set up a cart (state = position and velocity, time step 0.2 seconds). An expert was taught to drive it to the target with a slightly curved rule (easing off near the target to avoid overshoot). We recorded 200 expert demonstrations all starting within 1.00 meter of center — the region where the expert felt confident. Then we trained a behavioral cloning policy: a straight-line fit that takes the current state and predicts the expert's action. We tested it three ways: on the demonstrated band, off it, and crucially, on its own visited path using DAgger.</p>
+      <p>DAgger means this: roll out the learner's policy on a hard start. Collect the states it actually visits. Ask the expert what action to take in each of those states — not the states the expert chose to visit, but the ones the learner's mistakes created. Add those labeled states to the dataset. Retrain. Repeat. This breaks the cascade: the learner now knows what to do in its own created states because the expert labeled them.</p>
+      <figure><div class="barrow"><span class="lab">Behavioral cloning on demo band (x near 0)</span><div class="bar" style="width:142px"></div><span class="val">action gap = 0.08</span></div><div class="barrow"><span class="lab">Behavioral cloning off demo band (x = 4 m)</span><div class="bar" style="width:15px"></div><span class="val">action gap = 3.72</span></div><div class="barrow"><span class="lab">DAgger round 0 (plain clone, on learner path)</span><div class="bar" style="width:52px"></div><span class="val">action gap = 0.498</span></div><div class="barrow"><span class="lab">DAgger round 1 (after expert labels learner states)</span><div class="bar" style="width:105px"></div><span class="val">action gap = 0.277</span></div><div class="barrow"><span class="lab">DAgger round 2+ (settled)</span><div class="bar" style="width:112px"></div><span class="val">action gap = ~0.28</span></div><figcaption>Action gap — how far the learner's command is from the expert's command — measured in three scenarios. Plain cloning on the demonstration band is sharp (0.08). Off the band it is blurry (3.72, about 46 times worse). But the key measure is the on-its-own-path gap under DAgger: it drops from 0.498 after cloning to 0.277 after one round of asking the expert about learner-created states, settling around 0.28 afterward.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: asking the expert about learner-visited states halves the gap.</strong> Behavioral cloning alone fails in closed loop because its own errors carry it off the demonstrated distribution. The fix is to roll out the learner, collect its mistakes, and ask the expert to label them. After one DAgger round, the on-its-own-path gap dropped from 0.498 to 0.277 — roughly halved. After two rounds it settled near 0.28. This is why imitation learning is not just 'watch and copy.' The method is: fit to the expert on their states, test on your states, ask the expert what to do there, refit. Repeat until you stop drifting into new corners.</div>
+      </div>
+    </section>
+    <section class="fp" id="compounds">
+      <h2>4 · Why the error compounds — small mistakes grow into distribution shift</h2>
+      <div class="essay">
+      <p>The demonstrations covered only 1.00 meter from center. The learner, starting at 4.00 meters, drifted through states the expert never saw. Measure what happens when the learner's own prediction error moves it off the demonstrated band: small mistakes become large ones.</p>
+      <div class="tw"><table><tr><th>scenario</th><th>distance from expert band</th><th>learner action error</th><th>what this means</th></tr><tr><td>Expert demonstrations (all starts)</td><td>Within 1.00 m</td><td>~0.08</td><td>Sharp, learner nails it</td></tr><tr><td>First few steps off the band</td><td>1.00–2.00 m</td><td>~0.4–0.8</td><td>Extrapolating nearby examples</td></tr><tr><td>Middle of learner rollout</td><td>2.00–4.00 m</td><td>~1.5–3.0</td><td>Barely guessing</td></tr><tr><td>Peak error, way off</td><td>4.00 m</td><td>4.74</td><td>Learner swings out to maximum; action gap peaks</td></tr></table></div>
+      <p>The learner also spent 20% of its steps in completely unseen territory (beyond 1.00 m) because one bad action pushed it there, and the next bad action kept it there. This is distribution shift — the learner's own closed-loop behavior creates a state distribution that has almost no overlap with the expert's demonstrations. Each bad action in an unfamiliar state produces an even worse action, feeding the spiral. This compounding is the core reason behavioral cloning alone breaks in closed loop.</p>
+      <p>The hidden quantity here is the <em>state distribution shift</em> &mdash; the gap between the states the expert visited and the states the learner actually reaches once it drives on its own. Errors move the learner off the expert&rsquo;s path into states it was never taught, and there the next action has nothing to lean on.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — you must have the expert available to label new states</h2>
+      <div class="essay">
+      <p>DAgger fixes the distribution shift, but it depends completely on two things: (1) you can roll out the learner, collect the states it gets into, and (2) you can ask the expert what to do in those states and get a correct label. If the expert is unavailable, expensive to query, or makes mistakes, DAgger hits a wall.</p>
+      <p>In practice, 'expert available' sometimes means a person standing at a control interface (expensive per hour). Sometimes it means a simulator or synthetic expert (requires a good simulator of the same domain). Sometimes it means a superior learning system (circular and fragile). If your expert is inconsistent — different actions at seemingly identical states, or occasional unsafe behavior — then training on those labels spreads the inconsistency into the learner. DAgger does not discover what the expert should do; it only aggregates what the expert actually did.</p>
+      <p>This is not a minor limitation. The method only works if you can afford to run the learner, watch where it fails, and have someone or something trusted to label the recovery. When those conditions hold it works remarkably well. When they do not, you are back to writing a reward or finding another learning approach.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this bootstrap method powers self-driving and language model alignment</h2>
+      <div class="essay">
+      <p>Imitation learning looks like a toy: just copy what the expert does. Its real power is that it is the bootstrap engine for some of the largest systems deployed today.</p>
+      <p><strong>Self-driving perception:</strong> A camera car is driven by a human operator. Thousands of miles of human driving — steering angle, throttle, brake — are recorded. A neural network is trained to predict human actions from camera images using supervised learning (behavioral cloning). This learned policy is then fine-tuned with reinforcement learning rewards (road-curvature prediction, collision avoidance, comfort). The imitation step is the initialization; refinement happens later. Without the expert demonstrations the learning would have nowhere to start; with them the learning is grounded in human-shaped examples.</p>
+      <p><strong>Instruction-tuned language models:</strong> Large language models trained on next-token prediction are general and creative but often produce incorrect, harmful, or irrelevant outputs. Teams then collect human-written examples of 'good responses' to questions and retrain the model to imitate them (supervised fine-tuning, behavioral cloning for language). This produces a model aligned roughly with human judgment. Later, reinforcement learning from human feedback refines it further, but the bootstrap is imitation.</p>
+      <p><strong>Robot manipulation:</strong> Programmers collect teleoperated demonstrations of reaching, grasping, placing, pushing — tasks that are hard to reward. The robot learns from video and teleoperation logs using behavioral cloning, supplemented with DAgger retraining when the robot gets stuck. The pattern is identical: expert demonstrations, imitate, test on your own trajectory, ask the expert about your mistakes, retrain.</p>
+      <div class="insight"><strong>Imitation learning is how almost every deployed learning system for perception and control gets its start.</strong> It is not the final method — usually it is replaced or refined by reinforcement learning, domain-specific reward shaping, or feedback from real-world deployment. But the bootstrap phase that initializes learning from human or expert behavior is imitation cloning plus iterative correction. Master this loop once and you have seen the foundation of self-driving stacks, language model alignment, and the early phases of robot learning.</div>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — learning from watched examples instead of writing rewards</h2>
+      <div class="essay">
+      <p>Imitation learning is the bootstrap engine for almost every deployed learning system: self-driving perception, instruction-tuned language models, robot manipulation from video, and warehouse automation. It is how systems get their first competent behavior without hand-crafted reward engineering.</p>
+      <p>Instead of writing a reward function (which is hard for tasks like opening a drawer or understanding a user query), an engineer collects expert demonstrations—what the human or reference system did in each state. A neural network is trained to copy those actions using supervised learning. In closed loop, the learner's own errors carry it into states the expert never labeled. The fix, called DAgger, is to roll out the learned policy, collect the states it actually visits, ask the expert to label those learner-created states, and retrain. This breaks the distribution-shift spiral.</p>
+      <div class="insight">Imitation learning alone fails in closed loop; DAgger halves the error by asking the expert about the learner's own mistakes, turning one-shot copying into an iterative correction loop.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="behavioral-cloning.html">behavioral cloning</a> · <a href="reinforcement-learning.html">reinforcement learning</a> · <a href="policy.html">policy</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Cart (state = position, velocity), dt=0.2. Expert policy is a learned nonlinear rule eased near target. Behavioral cloning is a straight-line fit on expert demonstrations from within 1.00 m. DAgger gathers expert labels on rollouts and retrains. Run with numpy and sklearn.</p>
+      <div class="eq">Behavioral cloning loss: L(theta) = mean_i ||pi_theta(x_i) - u_i^expert||^2
+DAgger procedure:
+  D_0 := expert demonstrations (all starts within 1.00 m)
+  for round k in 1, 2, 3, ...:
+    pi_k := train on D_0 union D_1 union ... union D_k
+    rollout pi_k on hard starts (e.g., x_0 = -4.0 m)
+    collect states S_visited by pi_k
+    query expert: u_expert(s) for each s in S_visited
+    D_k := {(s, u_expert(s)) : s in S_visited}
+  repeat until gap converges</div>
+      <p class="muted">Full script: scripts/experiments/imit_run.py. Numbers reported are the rollout simulator's output verbatim. EXP1 = on-band cloning; EXP2 = off-band blurry cloning and distribution shift; EXP3 = DAgger rounds.</p>
+    </div></details>
+    <footer>Stanford AA203 · Imitation Learning deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

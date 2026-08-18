@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Model-Based RL</h1>
 <p class="lede">Learn or use a model of the environment so the agent can plan, simulate, or improve from imagined consequences.</p>
+<p><a href="model-based-rl-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Real interaction can be expensive, so the agent benefits from predicting what actions would do before trying all of them.</p>
-    <p>A common wrong first move is: Learn only from real trial-and-error. It fails when hardware, safety, and sample cost can make pure trial-and-error impractical.</p>
+    <p>A cart robot can test a braking plan on the learned dynamics model and pick the one that predicts the best result before running it on hardware. The trap is that the model was fit on only 80 trials with brake values mostly below 50 percent, so it has never seen a 60 percent brake on a dusty floor. The planner finds that action looks best and the robot tries it, but real friction is different and the cart slides instead of stopping. The model was confident in a state where the data barely covered it.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a learned transition model, planner, and policy or value update. Use it when you need to look for RL that learns or uses a predictive model rather than relying only on direct experience.</p>
-    <p>What the object does: Use the model to simulate futures, plan actions, or generate training targets.</p>
+    <p>Real interaction can be expensive because hardware wears, safety margins must be respected, and data are scarce, so an agent benefits from predicting what actions would do before executing all of them. A learned dynamics model is a rule that takes a state and action and predicts the next state, capturing the consequences the agent does not want to discover only by trial and error. But if the model is trained on 80 trials and planning asks it about states the data barely contained, the planner can find actions that work only in simulation. A safer loop uses the model to reject obviously bad plans, executes only the first action, measures the real next state, and replans with updated data.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a learned transition model, planner, and policy or value update in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Use the model to simulate futures, plan actions, or generate training targets. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>On the cart stopping problem, the learned model predicts that Sequence C (brake 60 percent, then 0 percent, then 0 percent) will stop 0.28 meters from the shelf. The one-step prediction is f_hat(position 1.40, velocity 0.60, brake 60 percent) = (1.54, 0.42). But on the real dusty floor, the actual next state is (1.58, 0.55). The position error is 0.04 meters and velocity error is 0.13 m/s. If this error repeats for three steps, the total prediction error compounds and the stop margin shrinks. An ensemble of five models might predict final margins of 0.28, 0.26, 0.09, -0.04, and 0.31 meters—a wide spread that warns the planner not to trust this sequence. Sequence B predicts margins of 0.24, 0.23, 0.25, 0.22, and 0.24 meters with much tighter agreement, so the planner can choose it with more confidence.</p>
     <p>The world check is the example: A robot learns a dynamics model from limited pushes and uses it to plan a manipulation sequence before executing. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The learned model must be accurate enough in the states used for planning.</p>
-    <p>When that condition fails, look for this visible break: the planner exploits model errors and chooses actions that work only in simulation.</p>
+    <p>The model must be accurate enough in the states the planner will choose. If the learned dynamics underestimate braking distance by 0.10 meters near the shelf, the planner can find a sequence that looks safe in the learned model and hits the shelf in the real system. Receding-horizon replanning and adding new transitions narrow the gap between the data distribution and the planner&#x27;s distribution, but they do not erase a model that is confident in the wrong region.</p>
     <p><strong>Recognize it in a new problem:</strong> Look for RL that learns or uses a predictive model rather than relying only on direct experience.</p>
   </div>
 </section>

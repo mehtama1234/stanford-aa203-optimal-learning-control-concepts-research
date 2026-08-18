@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Reinforcement Learning</h1>
 <p class="lede">Learn a policy through interaction by using reward feedback from actions and their consequences.</p>
+<p><a href="reinforcement-learning-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>The designer may not know the best action labels, but the system can try actions and receive feedback.</p>
-    <p>A common wrong first move is: Try actions randomly until reward improves. It fails when feedback can be delayed, sparse, unsafe, or expensive, so exploration and credit assignment matter.</p>
+    <p>A beginner might try: collect a bunch of rollouts from a task, look at which one scored the highest, and copy the actions from that best rollout in sequence. But rollouts are messy. The highest-scoring manipulation trial might have a gentle grip that looked useless at frame one (reward 0), then a tilt that actually made things worse (-1), then finally a squeeze that lifted the object (+10). Copying just that sequence teaches nothing; the next time the object arrives from a different angle, the early gentle grip is wrong. The issue is that one good return is one sample, not proof—and the high score came from combining a lucky start with a corrective middle and a successful end. You need to credit which actions helped and which hurt across all your rollouts, not just replay the winners.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a policy, reward, value function, and transition process. Use it when behavior is learned from trial, consequence, and reward rather than expert labels alone.</p>
-    <p>What the object does: Collect experience and update the policy or value estimates to increase expected return.</p>
+    <p>When you try actions on a real system and measure what happens, you get a stream of consequences: action, then feedback, then the next state, then more consequences. That feedback might be delayed or come in a single number at the end. You need a way to trace backward through that stream and figure out which of your choices made the good outcome likely. You could guess the best action blindly and memorize a table of &quot;do this action here,&quot; but you have no ground truth labels like a supervised learner would. You need to learn from the states you actually visit and the rewards you actually receive, adjusting your choices as you discover what works. That systematic learning from interaction and consequence is reinforcement learning.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a policy, reward, value function, and transition process in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Collect experience and update the policy or value estimates to increase expected return. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>Set up a soft pouch on a robot gripper. The robot tries a light grip (12 newtons) and measures: grip closes, pouch stays on table, reward 0. It then tilts the wrist 15 degrees and measures: pouch slips, reward -1. It then squeezes with 18 newtons and measures: pouch lifts 6 centimeters, reward +10. Now add up the rewards with a discount factor γ = 0.9. Starting from the first action, the total return is G_0 = 0 + 0.9×(−1) + 0.9²×10 = 7.2. That 7.2 means the first grip was not useless; it prepared the pouch for the later squeeze. If you only looked at the first action in isolation (reward 0), you would think light grip was bad. But the return through the whole sequence credits it. Try the same states again with different forces: 30 newtons grip, 2-centimeter lift, tear the pouch, rewards +2 then -12. The return is G_0 = 2 + 0.9×(−12) = -8.8. A learner comparing the two should not copy the 30-newton grip just because its immediate number was higher; the later damage outweighs the initial success. Discount-weighted return is the signal that ties early actions to later consequences.</p>
     <p>The world check is the example: A robot learns a manipulation strategy by trying motions and improving actions that lead to successful grasps. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>RL needs a reward signal and interaction process that match the real task.</p>
-    <p>When that condition fails, look for this visible break: the agent exploits reward loopholes or learns unsafe exploration behavior.</p>
+    <p>Reinforcement learning needs a reward signal that actually measures what you care about, and interaction that does not hide the consequences. If you are learning from only two rollouts of a pouch pickup, both from the same object angle, and you have never tried grasps in the rain-wet condition that the real robot will face, your credit assignment is correct for dry pouches but wrong for wet ones. If your reward gives +1 for any lift, ignoring whether the pouch tears, the learner will find a destructive squeeze that lifts fast and claims credit. The visible break is when the robot works well in training but fails on the real task—because the reward was incomplete, the explored conditions were too narrow, or a lucky early sample created a spurious credit pathway that collapses under different state distributions.</p>
     <p><strong>Recognize it in a new problem:</strong> Use it when behavior is learned from trial, consequence, and reward rather than expert labels alone.</p>
   </div>
 </section>

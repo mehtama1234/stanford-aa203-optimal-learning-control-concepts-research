@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Behavioral Cloning</h1>
 <p class="lede">The simplest imitation-learning setup: treat expert actions as labels and train a policy by supervised learning.</p>
+<p><a href="behavioral-cloning-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>The learner has examples of what action the expert took in each state and wants to mimic that mapping.</p>
-    <p>A common wrong first move is: Assume high supervised accuracy means good closed-loop control. It fails when a small prediction error changes the next state, and errors accumulate because future inputs are policy-generated.</p>
+    <p>A driving policy trained on 1,000 expert images centered in the lane achieves 98 percent steering accuracy on held-out expert frames. When deployed, the policy drifts 2 centimeters right after the first timestep, then drifts 5 centimeters right by the second step, then 9 centimeters by the third, reaching 18 centimeters by the fourth step—a state that appeared in only 3 of the 1,000 training frames. The test accuracy score on expert states did not predict the closed-loop failure because each small error feeds into the next input, and the policy was never trained on the recovery states it creates by its own mistakes.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a supervised policy model trained on expert state-action pairs. Use it when you need to look for imitation framed as ordinary supervised prediction of expert actions.</p>
-    <p>What the object does: Minimize prediction error between policy actions and expert actions.</p>
+    <p>A learner has examples of what action an expert took in each observed state and wants to predict those actions as accurately as possible. Behavioral cloning frames this as ordinary supervised learning: minimize the prediction error between policy outputs and expert-labeled actions. But prediction error on expert states does not tell whether the policy will recover when its own actions push it into a state the training data did not contain. The policy is a supervised model trained on state-action pairs that learns to map observations to expert-like decisions.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a supervised policy model trained on expert state-action pairs in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Minimize prediction error between policy actions and expert actions. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>On 1,000 centered-lane frames, the expert action is nearly always 0 degrees steering. On 50 frames near a parked van, the expert steers -12 degrees (left path); on another 50 frames near the same van, the expert steers +12 degrees (right path). A squared-error supervised learner sees that van-like image labeled -12 degrees in 50 examples and +12 degrees in 50 examples. Minimizing sum of (predicted - labeled)^2 for this frame gives a prediction of 0 degrees, the average of the two modes. On test frames this model is off by only 1 degree on average. But during closed-loop control, that 1 degree bias compounds: after 20 steps the car has drifted 0.25 meters toward the lane edge. The new camera view is not in the training distribution and contains trees on the left edge. The expert would steer -8 degrees there, but the cloned policy still predicts roughly 0 degrees and the car continues drifting.</p>
     <p>The world check is the example: A lane-following policy trained on expert driving images may fail after drifting slightly toward the lane edge. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The training data must represent the states induced by the learned policy.</p>
-    <p>When that condition fails, look for this visible break: compounding errors move the policy outside the expert dataset.</p>
+    <p>Behavioral cloning works when the training data represent the states induced by the learned policy during deployment. But closed-loop control creates a different distribution of states than the expert generated, because the policy&#x27;s own errors change the inputs it sees next. Without labels for those off-expert states, the supervised loss does not warn that recovery is missing.</p>
     <p><strong>Recognize it in a new problem:</strong> Look for imitation framed as ordinary supervised prediction of expert actions.</p>
   </div>
 </section>

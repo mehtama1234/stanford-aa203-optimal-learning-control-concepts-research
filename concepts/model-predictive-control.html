@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Model Predictive Control</h1>
 <p class="lede">Repeatedly solve a finite-horizon control problem, apply the first action, observe the new state, and solve again.</p>
+<p><a href="model-predictive-control-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>A controller needs future planning but cannot perfectly trust a long open-loop plan.</p>
-    <p>A common wrong first move is: Compute the whole plan once and execute it blindly. It fails when disturbances and model errors make the real state drift from the planned trajectory.</p>
+    <p>You might plan a 10-second trajectory offline, hand it to the robot, and trust it. But a bump, a gust, or a modeling error will push the real state off the predicted curve—and by the time you notice, the whole plan is stale. The cart in the warehouse example arrived 0.10 meters off-course because a floor bump slowed it differently than the model said, so the old second and third brake commands no longer make sense from the actual position and speed.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a receding-horizon optimization problem. Use it when you need to look for repeated short-horizon optimization in a feedback loop.</p>
-    <p>What the object does: Optimize over a horizon, apply the first control, shift the horizon, and replan.</p>
+    <p>A robot needs a plan to move intelligently, but the real world is noisier than any model. The controller must look ahead a few steps to catch coming constraints—like a loading mark or a doorway—but it cannot trust its own predictions far into the future. Instead of computing a long plan once, the system repeatedly solves a short-horizon problem, applies only the first action, measures where it actually landed, and solves again from there. This back-and-forth between short optimization and real feedback is the core operation of model predictive control.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a receding-horizon optimization problem in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Optimize over a horizon, apply the first control, shift the horizon, and replan. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>A warehouse cart at 10:00:00 is 3.0 meters from a loading mark, moving at 1.0 m/s, and solves a plan with three half-second brake commands: [-0.8, -0.6, -0.2] m/s². Plugging these into the dynamics v_next = v + 0.5*u and p_next = p + 0.5*v_next, the prediction is p reaches 3.30 m, then 3.53 m, then 3.70 m—all below the 4.0 m stop line, so the plan looks feasible. The controller applies only the first command (-0.8) for the next 0.5 seconds. A floor bump then slows the cart more than expected; the real state at 10:00:00.5 is measured as p = 3.40 m and v = 0.50 m/s, not the predicted (3.30, 0.60). The old second and third commands [-0.6, -0.2] were optimized for the state (3.30, 0.60), but that state never happened. Solving again from the measured (3.40, 0.50), the new plan might be [-0.4, -0.3, -0.1], which gives new predictions reaching 3.55 m, 3.625 m, 3.675 m. The key point: the applied sequence is not [-0.8, -0.6, -0.2] because replanning discards the old tail whenever reality drifts.</p>
     <p>The world check is the example: An autonomous car plans a few seconds ahead, drives the first fraction, then replans after seeing traffic move. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The optimizer must solve fast enough and the horizon/terminal conditions must protect future feasibility.</p>
-    <p>When that condition fails, look for this visible break: the controller makes locally feasible moves that paint it into a corner later.</p>
+    <p>MPC works only if the solver finishes its optimization before the control deadline arrives. In the cart example, if solving takes 0.8 seconds but the control period is 0.5 seconds, the answer is stale on arrival—the cart has drifted to a new state while the optimizer was working. A second boundary is terminal protection: each feasible plan must not only satisfy constraints over the horizon but must also leave the system in a state where the next MPC solve can still find a legal continuation. If the first move steers the system into a corner with no next plan, the loop has painted itself into a corner legally but irreversibly.</p>
     <p><strong>Recognize it in a new problem:</strong> Look for repeated short-horizon optimization in a feedback loop.</p>
   </div>
 </section>

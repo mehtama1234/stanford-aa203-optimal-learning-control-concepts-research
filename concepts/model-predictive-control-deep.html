@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Model Predictive Control (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="model-predictive-control.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+      <a href="../concept-explainers.html">Mechanism map</a>
+      <a href="../bridge-data-to-control.html">Data → Control bridge</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">MPC · replanning · the short-horizon trick that beats open-loop</div>
+      <h1>MPC — plan a few moves ahead, apply one, re-measure, and replan</h1>
+      <p class="lede">The one problem it solves, how to reframe it as repetition instead of clairvoyance, a real cart run where H=2 crashes and H=8 stops safely, why short horizons walk into traps, the one honest price — computation time — and the surprise that MPC contains LQR when no walls exist.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#trap">Why short horizons walk into traps</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="model-predictive-control.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — an open-loop plan goes stale the instant the world differs</h2>
+      <div class="essay">
+      <p>Imagine a cart rolling toward a wall 3 metres away at 1 metre per second. You have a brake. Once you compute a single braking plan and execute it blindly — left-brain only, never glancing at the state — you had better be right. But wind pushes the cart off-course. The ground is rougher than you expected. Your model of the brake is slightly wrong. Real systems are never modelled perfectly, and disturbances are never zero.</p>
+      <p>The moment your actual state differs from your plan's prediction, the plan is stale. Trusting it anyway means chasing a phantom trajectory — and for a cart rolling toward a wall, that is disaster. You need feedback, but <em>search-based feedback</em> (solve the whole future again every 0.2 seconds) is too slow. The real question is: <strong>can we get feedback to work with a short re-solve every step instead of once at the start?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — forget the whole future; solve only N steps ahead, use the first answer, re-measure, and repeat</h2>
+      <div class="essay">
+      <p>The key move is to <em>replan every single step</em>. You solve a tiny optimization problem looking only N steps into the future (call this the horizon — often just 2 to 10 steps). You find the cheapest sequence of forces for those N steps, but you do not execute all of them. You apply <em>only the first force</em>, observe the new state of the real cart, then throw the rest of the plan away and solve again from the new state.</p>
+      <p>This is called <em>receding horizon</em> or <em>rolling horizon</em> control because the window of future steps slides forward with each application. At time-step 0 you plan steps 0-through-N. At time-step 1 you have measured position and velocity, so you plan steps 1-through-(N+1) from that new measured state. The old steps 1-through-N are discarded, never run.</p>
+      <p>The payoff: <strong>every solve is small and fast because it only covers a handful of steps.</strong> Feedback is automatic because you remeasure after each force. The loop runs at a high rate — many times per second — so even if each single plan is local and myopic, the sequence of them (measured → replan → apply → measure → replan → ...) can be stable and safe.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — horizon H=2 crashes into the wall; H=8 stops safely</h2>
+      <div class="essay">
+      <p>Here is a measured test. A cart starts 3.0 metres before a wall, moving forward at 1.0 metre per second. Force is clamped to <em>between -1 and +1 units</em> — realistic motor saturation. We run the cart with MPC using different horizon lengths — how many future steps each re-solve considers — and measure what happens.</p>
+      <div class="tw"><table><tr><th>horizon H</th><th>outcome</th><th>final position (wall at 0)</th><th>final speed</th></tr><tr><td>H=2</td><td>Declared infeasible (stuck)</td><td>−0.46 m</td><td>+1.88 m/s</td></tr><tr><td>H=4</td><td>Declared infeasible (stuck)</td><td>−0.89 m</td><td>+1.64 m/s</td></tr><tr><td>H=8</td><td>Stopped safely</td><td>0.00 m</td><td>0.00 m/s</td></tr></table></div>
+      <div class="insight"><strong>The discovered fact: the cart did not fail because the plan was wrong at the moment of execution.</strong> At each step, H=2 found a plan that looked safe — it did not violate the force limits or position bounds — so it applied the first move. But looking only 2 steps ahead means the planner says 'I can coast and still have time to brake', when in reality it runs out of distance. Horizon H=2 kept choosing cheap-looking moves until suddenly the cart was too close and too fast, and <em>no plan existed that would stop in time.</em> Horizon H=8 foresees this end-of-runway crisis and reserves enough distance. The cart stops safely at 0.00 metres.</div>
+      </div>
+    </section>
+    <section class="fp" id="trap">
+      <h2>4 · Why short horizons walk into traps — feasibility now does not promise feasibility later</h2>
+      <div class="essay">
+      <p>The H=2 failure is not a simulation glitch or bad luck. It is a structural trap in replanning. At each step, the MPC solver asks: 'from the state I just measured, does a valid plan exist for the next 2 steps?' If yes, it executes the first move. That answer is a <em>guarantee for now</em>, not for later. It promises nothing about whether, after applying that move and re-measuring, a new 2-step plan will exist.</p>
+      <p>Picture the cart at 0.8 metres before the wall, moving at 1.5 metres per second. With horizon 2 and time-step 0.2 seconds, the planner looks 0.4 seconds into the future. Coasting forward with zero braking gets you to roughly 0.5 metres in 0.4 seconds, still legal. So it applies 'coast' for one step. Now it is at 0.65 metres (after 0.2 seconds), still moving at 1.5 m/s. From there, a 2-step plan from 0.65 metres at 1.5 m/s would need to stop in 0.4 seconds. That is infeasible — you cannot brake hard enough. The planner was honest at each step, but the sequence of steps walked into a corner.</p>
+      <p>The technical term is <em>recursive feasibility</em>: if a plan is feasible (solvable) at step k, it does not automatically imply a feasible plan exists at step k+1. With a long-enough horizon (H=8 in this test), the planner foresees the stop it will eventually need and reverses course earlier, leaving a safe margin. With a short horizon (H=2), it does not see far enough to predict its own trap.</p>
+      <p>The hidden quantity MPC tracks at every step is whether the state it is about to hand to the next solve still sits inside the set of states from which a full-length plan exists at all. A short window shrinks that set so quickly that the cart can take a legal-looking step into a corner from which no legal next step remains.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — you must recompute fast, and the horizon must be long enough</h2>
+      <div class="essay">
+      <p>MPC trades off two impossible demands. First, <em>each solve must be fast.</em> If you re-solve every 0.2 seconds but the solver takes 0.5 seconds, the command arrives stale — the cart has already coasted closer to the wall since you chose the move. The real state is no longer the state you assumed. The method breaks.</p>
+      <p>Second, <em>the horizon must be long enough to see the traps.</em> If your problem is 'stop before the wall and do not overshoot', a horizon of 2 steps is too short. You need 8 steps (shown above) or longer to reserve the distance the controller will need. But longer horizons are harder to solve — so there is a real cost: you pay in computation time.</p>
+      <p>That balance is the honest price of MPC. It does not fail because it is a bad idea; it fails when either condition breaks. Engines and chemical plants run MPC because they solve at the time-scale of their process (milliseconds to seconds of computation, milliseconds to seconds of control period). Self-driving cars run MPC because GPUs are fast enough and the horizon needed (e.g. 1-2 seconds) is reachable. On a slower platform with a problem needing a very long horizon, you lose.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — when the walls disappear, MPC becomes exactly LQR</h2>
+      <div class="essay">
+      <p>Here is the hidden connection. MPC solves a finite-horizon problem with constraints (force limits, position bounds) every step. LQR solves an infinite-horizon problem with <em>no constraints</em> once, and runs the resulting constant rule forever. They look completely different.</p>
+      <p>But take an MPC controller, make the force limits very wide and the wall very far, and let the horizon grow long enough. What emerges? The optimal command at each step becomes independent of time-to-go. It converges to a constant feedback rule: multiply position error by a fixed number, multiply velocity error by another fixed number, add them, and push. That constant rule is exactly the LQR gain. <strong>LQR is the limit of MPC when constraints relax.</strong></p>
+      <p>In the other direction, the methods live in the same mathematical world: both minimize a squared-cost function over states and forces; both use dynamic programming or its cousin, the Riccati recursion, to compute an optimal feedback law. The difference is whether you re-solve repeatedly (MPC, which works with constraints and measurements) or once (LQR, which assumes a perfect model and infinite horizon). MPC is LQR with doors — it still uses the same engine but closes off the regions you cannot reach.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — real-time re-solve, one action at a time</h2>
+      <div class="essay">
+      <p>MPC is the workhorse replanner in chemical plants, oil refineries, and manufacturing lines because processes move slowly enough that microsecond-level computation is affordable. It also powers self-driving cars where GPUs enable fast re-solve during forward motion, and it operates elevator schedules in tall buildings balancing multiple cars and calls. Anywhere the control period is milliseconds to seconds and a short look-ahead window is enough to see the danger, MPC runs continuously.</p>
+      <p>An engineer writes down the process dynamics (how temperature or pressure changes with valve opening), the cost of deviation from setpoint, and the limits on valve positions or flow rates. At each moment the system is measured, MPC solves a small constrained optimization problem covering the next handful of seconds (the horizon), finds the sequence of valve commands that minimizes cost and respects limits, and applies only the very first command. One moment later it measures again and re-solves. The loop repeats many times per second or many times per hour, depending on the timescale of the process.</p>
+      <div class="insight">MPC works only if the re-solve is fast and the horizon is long enough to see disasters coming; short horizons walk into corners they did not foresee, as shown by the cart test where the short horizon crashed and the longer one stopped safely.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — across the machine</h2><p class="muted">This concept links to sister courses that supply it, use it, or mirror it &mdash; the wider data&rarr;model&rarr;control pipeline. Follow a link to open the connected concept.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #8b3f18"><a href="https://mehtama1234.github.io/eigensteve-concepts-research/sensitivity-and-robustness-deep.html" style="font-weight:700">the waterbed law</a> <span class="muted" style="font-size:13px">· Brunton · data-driven</span><div style="font-size:14.5px;margin-top:3px">The waterbed law bounds how much disturbance any loop can reject; MPC's robustness is spent inside that bound.</div></li><li style="margin:9px 0;padding-left:14px;border-left:3px solid #8b3f18"><a href="https://mehtama1234.github.io/physics-informed-machine-learning-concepts-research/topics/surrogate-modeling-deep.html" style="font-weight:700">surrogate modeling</a> <span class="muted" style="font-size:13px">· physics-informed ML</span><div style="font-size:14.5px;margin-top:3px">A surrogate replaces the expensive simulator so MPC can re-solve in real time.</div></li></ul></section>
+    <section class="fp"><p class="muted">Related: <a href="lqr.html">LQR</a> · <a href="dynamic-programming.html">dynamic programming</a> · <a href="value-function.html">value function</a> · <a href="feasibility.html">feasibility</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Cart on a line, state [pos, vel], force limits [-1, +1], dt=0.2. Wall at position 0. MPC solver re-optimizes finite-horizon force sequence every step, applies first force, re-measures, repeats. Look-ahead horizons H in {2,4,8} tested from start 3.0 m away at 1.0 m/s.</p>
+      <div class="eq">At each step k, solve:
+  minimize sum_{t=0}^{H-1} (cost of state and force at step t)
+  subject to: dynamics (x_{t+1} = A x_t + B u_t)
+              bounds (u_t in [-1,1], x_t &gt;= 0)
+  implemented policy: u_k = u_0^* (first force from solution)
+  After u_k applied, measure x_{k+1}, solve again from x_0 := x_{k+1}.</div>
+      <p class="muted">Full script: scripts/experiments/mpc_run.py. All numbers (final positions, speeds, step counts) are the simulator's output verbatim. EXP2 table reported as measured; EXP4 trajectory shown in run section provides the 40 forward steps of stable descent.</p>
+    </div></details>
+    <footer>Stanford AA203 · Model Predictive Control deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

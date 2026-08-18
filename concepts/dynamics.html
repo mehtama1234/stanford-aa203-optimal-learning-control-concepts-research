@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Dynamics</h1>
 <p class="lede">The rule that says how the current state and action produce the next state.</p>
+<p><a href="dynamics-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Actions matter only through how they move the system. The controller needs a rule for that movement.</p>
-    <p>A common wrong first move is: Plan as if the action immediately creates the desired result. It fails when momentum, delay, friction, and coupling can make the result arrive later or in a different direction.</p>
+    <p>A beginner might assume that steering the wheel immediately points the car, that raising the gas pedal instantly lifts the drone, or that turning the shower knob immediately produces hot water. In truth, momentum carries the car sideways before heading changes, motors accelerate gradually before height rises, and pipes hold cold water before hot water reaches the shower head. A plan based on instant responses will predict reachable futures that never arrive.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a transition equation or differential equation. Use it when you need to if an action&#x27;s effect depends on current motion, write the dynamics before optimizing.</p>
-    <p>What the object does: Propagate the state forward one step or through continuous time.</p>
+    <p>A controller must know the rule that turns a command into the next state. You cannot predict whether a lane change is safe, whether a climb is fast enough, or whether a shower is warming without understanding how thrust becomes acceleration, how steering becomes heading, or how the handle command becomes the water temperature you feel. That rule is the dynamics. It is the physical law that connects state now, action now, and state next.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a transition equation or differential equation in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Propagate the state forward one step or through continuous time. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>Take the car from the worked example at speed 20 m/s, heading 0 degrees, with steering command u = 5 degrees and dt = 0.2 seconds. On dry asphalt, yaw_rate = 0.30 rad/s, so next heading = 0 + 0.2*0.30 = 0.06 rad. Apply the same command again: heading becomes 0.06 + 0.2*0.30 = 0.12 rad. Do it a third time: heading reaches 0.18 rad. Now redo it on ice with yaw_rate = 0.05 rad/s and lateral slip v_y = -1.0 m/s. After three commands, heading is only 0.03 rad, but the car has also drifted y = 3*0.2*(-1.0) = -0.6 meters sideways. The same steering inputs produced different heading change and added sideways motion in the icy case. The dynamics changed; the command stayed the same.</p>
     <p>The world check is the example: Turning a steering wheel changes heading gradually; the car does not slide sideways to the target lane. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The dynamics must match the time scale and operating region where the controller acts.</p>
-    <p>When that condition fails, look for this visible break: a model mismatch makes a plan look feasible on paper and fail on hardware.</p>
+    <p>The dynamics must match the real physics at the time scale and speeds where the controller operates. A model that works for slow steering on dry asphalt will give wrong predictions for skidding on ice or for actuator delays. If the plan uses one dynamics model but the hardware follows a different one, the plan is correct for the wrong physics.</p>
     <p><strong>Recognize it in a new problem:</strong> If an action&#x27;s effect depends on current motion, write the dynamics before optimizing.</p>
   </div>
 </section>

@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Policy Optimization</h1>
 <p class="lede">Directly adjust policy parameters to improve expected return.</p>
+<p><a href="policy-optimization-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
-    <p>Sometimes it is more practical to tune the decision rule itself than to build a complete value table.</p>
-    <p>A common wrong first move is: Change policy parameters blindly and keep lucky improvements. It fails when random changes waste trials and can erase behavior that already reaches the task.</p>
+    <p>A control policy has to act in situations it never saw while training, and the only feedback you can collect comes from the states the policy itself steers into. Building and storing a full value for every possible state ahead of time is wasteful and often impossible, so the improvement has to work directly on the decision rule using the trajectories it actually produces.</p>
+    <p>A beginner might try a few random perturbations to the action rule—nudge one parameter up, see if returns improve, keep it or revert—and hope to stumble into a better policy. But your current rule may already handle some important cases well, and random changes can wreck those cases to chase a noisy lucky trial. A walking robot learns to take short steps on its home carpet (return 12) and long steps on concrete (return 2). If you randomly bump the long-step probability up because a single concrete trial got lucky, you erase the learned preference for short steps, and now your next carpet trial returns 2 instead of 12. Random tuning treats every parameter change as equally risky and loses any structure the policy has already learned.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a parameterized policy and objective over expected return. Use it when the learning rule modifies the policy directly.</p>
-    <p>What the object does: Estimate a gradient or improvement direction and update policy parameters.</p>
+    <p>A policy is a decision rule—a concrete algorithm that maps state to action. Once you have a policy, you need to make it better. You could try to build a complete value table for every state-action pair and then use it to choose actions, but that is offline and brittle: states you never visited in training stay unknown, and you only learn from the states your random exploration happened to touch. A smarter move is to tune the policy rule itself based on what actually happened when you ran it. Policy optimization directly adjusts the parameters of your decision rule—the gains in a feedback law, the weights in a neural network policy, the probability of each action in a softmax—so that actions from high-return rollouts become more likely in those states, and actions from low-return rollouts become less likely. That direct adjustment of the rule, guided by the returns it actually earned, is policy optimization.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a parameterized policy and objective over expected return in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Estimate a gradient or improvement direction and update policy parameters. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>A small walking robot chooses between short_step and long_step. In state x (left foot planted, body leaning forward 6 degrees), the policy says π(long_step|x) = 0.30 and π(short_step|x) = 0.70. It tries long_step, travels 0.18 meters, stays upright, and gets return G = 12. The expected return from this state before trying anything was b(x) = 7, so the advantage of long_step is A = 12 − 7 = +5. In a nearby state it tries short_step, travels 0.05 meters, wobbles, and gets G = 2, so the advantage is A = 2 − 7 = −5. Policy optimization does not change the policy by adding up votes or refilling a table. It updates the parameters directly: if you observed advantage +5 for long_step, shift the policy to make long_step more likely in that state; if you observed advantage −5 for short_step, shift it to make short_step less likely. With a small step size, π(long_step|x) becomes 0.38 and π(short_step|x) becomes 0.62. The expected return from this state improves from 0.30 × 12 + 0.70 × 2 = 5.0 to 0.38 × 12 + 0.62 × 2 = 5.8. That is the rule changing at the place where actions are chosen, pulled by the advantage signals the learner observed.</p>
     <p>The world check is the example: A robot arm has a parameterized policy for pushing objects: move at speed u = θ₁ · x_distance + θ₂, where x_distance is how far the object is from the goal and θ₁, θ₂ are tunable gains (θ₁=2.0, θ₂=0.5 initially). After one trial, the policy reaches the object in 3.2 seconds and scores return R=85 (penalizing speed squared plus contact jerk). A trial with slightly higher θ₁=2.2 reaches it in 2.8 seconds with R=92 because smoother accelerations reduce jerk penalty.
 
 Policy optimization measures how changing θ affects return, computes an improvement direction (e.g., increase θ₁, decrease θ₂), and updates: θ₁ ← 2.2, θ₂ ← 0.45. Several such updates, each based on observed returns from actual or simulated trials, gradually tune the policy toward better performance without changing its functional form. The optimization terminates when returns plateau or a performance target is met. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
@@ -63,8 +65,7 @@ Policy optimization measures how changing θ affects return, computes an improve
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>Gradient estimates can be noisy and depend on exploration and reward quality.</p>
-    <p>When that condition fails, look for this visible break: the update overfits noisy returns or collapses exploration.</p>
+    <p>A policy update is based on samples from specific states, and if your state description is too coarse, one update can wreck a good action in a completely different scenario. The walking robot learns that long_step is good on rubber mats (A = +5), so it shifts π(long_step) up to 0.38. Later it tries long_step on a tile floor, slips, and gets return −8, giving advantage A = −8 − 7 = −15. A large update with step size η = 0.20 can flip π(long_step) all the way down to 0.05. Now on rubber (where long_step was good), the expected return crashes from 0.38 × 12 + 0.62 × 2 = 5.8 to 0.05 × 12 + 0.95 × 2 = 2.5. The tile sample was correct for tile, but the policy update ignored the fact that state was missing floor material. A probability-ratio check catches this: if old π(long_step|x) = 0.30 and new π = 0.05, the ratio is 0.05/0.30 = 0.167, far outside the safe range [0.8, 1.2]. The visible break is a robot that suddenly stops using an action that worked well before, because a different type of state corrupted the shared parameters.</p>
     <p><strong>Recognize it in a new problem:</strong> Use it when the learning rule modifies the policy directly.</p>
   </div>
 </section>

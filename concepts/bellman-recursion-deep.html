@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bellman Recursion (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="bellman-recursion.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+      <a href="../concept-explainers.html">Mechanism map</a>
+      <a href="../bridge-data-to-control.html">Data → Control bridge</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Bellman Recursion · first principles · one equation that turns tomorrow's best move into today's decision</div>
+      <h1>Bellman Recursion — split every decision into cost now plus the best continuation</h1>
+      <p class="lede">The one equation that saves recomputing entire paths, the insight that splits any choice into what you pay right now plus a single stored number for your future, one real backup from a gridworld where four moves are tested and one winner emerges, how repeating this backup across every state makes all the numbers self-consistent, the hidden catch that breaks when your state label is incomplete, and the fact that the Riccati step in LQR, the sample update in Q-learning, and MPC's tail optimization are all the same one-step computation.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#fixed-point">The fixed point</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="bellman-recursion.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — recomputing full paths over and over wastes enormous work</h2>
+      <div class="essay">
+      <p>Imagine a robot in a warehouse standing at a junction between two aisles. One aisle is crowded, the other is clear. To pick an item and return to the loading dock, the robot could trace every possible route to the dock from each aisle and calculate the cost of each. For a 50-cell warehouse with 4 neighbors per cell, that is hundreds of thousands of complete paths to explore before taking even one step. Multiply that by ten decisions every second — and the number quickly becomes impossible to handle.</p>
+      <p>The core waste is that the same futures get calculated over and over. State C (the crowded aisle) will be reached from many earlier starting points, and each calculation re-derives the full cost from C to the loading dock from scratch. This is the problem: <strong>the same piece of the future is recalculated every time it is needed.</strong> The fix is to calculate the best future cost from C once, store it as a single number V(C), and reuse it every time any earlier state reaches C.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — store one number for your future and plug it into today's choice</h2>
+      <div class="essay">
+      <p>The reframe is one equation. Instead of planning full paths, split every decision into two pieces: (1) the immediate cost you pay right now if you take action <em>a</em>, and (2) the best future cost already stored at the state you land on.</p>
+      <p>Here is how it works in plain words: <strong>to evaluate one action at your current state, look at three things:</strong> the cost of taking that action right now, the next state you land in, and the best-known cost for getting from that next state all the way to the goal. Add the cost now to the future cost. Do this for all possible actions, and pick the one with the smallest total. Store that smallest number as the value of your current state. Later, if you land on this state from somewhere else, you can reuse that stored number instead of recalculating the whole path to the goal.</p>
+      <p>This is not a full plan — it is an equation that each state can solve on its own if someone has already figured out its neighbors' values. The key insight is that you can work backwards: if you fill in values for all states one step ahead of the goal, use the equation to solve for the value at each earlier state, then repeat step by step, the equation works everywhere at once. Each state only needs to remember one number — the best total cost from that state to the goal — and the neighbors' stored values carry the rest of the problem.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — one backup test, four moves, and a winner emerges</h2>
+      <div class="essay">
+      <p>Every number here comes from a real gridworld calculation. A 9×9 grid with the goal at (0,8), four moves (N, S, E, W), each step costs −1, and we apply a discount factor of 0.99 (a realism dial: future costs matter, but not as much as immediate ones; a cost five steps away counts as about 95% of what a cost today counts). At state (0,3), the values of the four neighboring cells have already been calculated: V(0,2)=−4.90 (north), V(1,3)=−4.90 (south), V(0,4)=−2.97 (east), V(0,2)=−4.90 (west). Now one backup computes the total cost of each of the four moves.</p>
+      <div class="tw"><table><tr><th>Action</th><th>Cost now</th><th>Next state</th><th>V(next)</th><th>Q-value</th></tr><tr><td>N (north)</td><td>-1</td><td>(0,3)</td><td>-3.94</td><td>-4.901</td></tr><tr><td>S (south)</td><td>-1</td><td>(1,3)</td><td>-4.90</td><td>-5.852</td></tr><tr><td>E (east)</td><td>-1</td><td>(0,4)</td><td>-2.97</td><td>-3.940 (max)</td></tr><tr><td>W (west)</td><td>-1</td><td>(0,2)</td><td>-4.90</td><td>-5.852</td></tr></table></div>
+      <div class="insight"><strong>The fact: one step backward computes the best move, and one number replaces four.</strong> Each total cost is −1 (the step cost) plus 0.99 times the stored value of where you land. East wins because the next state (0,4) is closest to the goal and has the smallest value (−2.97), so going east costs only −1 + 0.99 × (−2.97) = −3.940. North and South and West all cost more (−4.901, −5.852, −5.852). This computation stores V(0,3)=−3.940 and records the rule: from (0,3), always go E. This rule is the policy — your decision-making recipe. In one computation, four moves collapse into one choice. Later, if you land on (0,3) from anywhere else, you can reuse V(0,3)=−3.940 without calculating all the way to the goal again — the work is split across all the states that use it.</div>
+      </div>
+    </section>
+    <section class="fp" id="fixed-point">
+      <h2>4 · The fixed point — repeat the computation everywhere until all values steady into agreement</h2>
+      <div class="essay">
+      <p>One backup at one state is not enough, because the equation links all states together. State C's value depends on the values of its neighbors, but those neighbors' values depend on C too. To break this circle, you repeat.</p>
+      <p>Start with a rough guess for every state's value (often zero). Go through all states one by one and run the computation at each state, replacing the old value with the newly computed total cost. Then repeat the whole cycle. After 16 complete cycles on the gridworld, the values stop changing — the largest change from one cycle to the next drops below one millionth. The reason this works: each cycle shrinks the error (the gap between what you guessed and what is right) by at most 1% — the discount factor of 0.99. Since the error shrinks by 1% per cycle, it eventually becomes zero, and all the values land on the unique set of numbers where each state's value exactly matches the cost computed from its neighbors.</p>
+      <p>Here is what actually happens in practice: before cycle 1, values are 0 everywhere. The first cycle at the goal spreads a small cost to its neighbors, the second cycle pushes that cost out one layer further, and by cycle 14 the decisions stop changing — you could start using the rule 'from each state, pick the best move' with confidence. But the number values themselves keep drifting slightly in the decimals for 2 more cycles until the full agreement is perfect at cycle 16. The decision freezes before the arithmetic does, which means you can begin acting on the policy even while the cost estimates are still settling down.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — it only works if your state label is complete</h2>
+      <div class="essay">
+      <p>The Bellman equation assumes that the state, once you measure it, tells you everything you need to make a good decision going forward. But if the state label is incomplete — if it forgets the battery level, or whether a door is locked, or whether there is a pallet waiting, or how much time is left — then the stored V(state) is based on incomplete information and the recursion will reuse a cost that does not match your real situation.</p>
+      <p>Here is a concrete example: suppose a robot is at shelf state S with one step left on the clock (deadline = 1), versus the same shelf S with ten steps left (deadline = 10). The optimal cost V(S) is completely different — with only one step, the robot must grab fast and rush to the dock or miss the deadline; with ten steps, it can be careful. But if the state label 'shelf S' drops the deadline, the backup will use the stored value for 10 steps when making a 1-step decision, recommend a slow careful action, and the deadline will pass. The Bellman backup is perfect mathematics, but garbage in state label means garbage out.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — the LQR backward pass, Q-learning, and MPC all do the same one-step computation</h2>
+      <div class="essay">
+      <p>The Bellman backup — immediate cost plus discounted future value — looks like a grid-and-discrete idea. It is not. It is the heart of almost every control method that joins what happens one step away with what happens far away.</p>
+      <p><strong>LQR's backward pass</strong> (a classic control algorithm) works backward in time from the end of a time horizon. At each time step it computes the total cost from that step forward. Hidden inside that matrix math is a Bellman backup: the total cost from the next time step is added to the immediate cost of the current move, weighted by the dynamics of the system. <strong>Q-learning</strong> takes one real step in the world, sees the immediate reward and the next state, and updates the stored value using the same idea: immediate reward plus the discounted value of the next state, compared to the old guess. That is the Bellman backup, learning one step at a time from real data. <strong>MPC (model-predictive control — plan a few steps ahead, take one step, then replan)</strong> optimizes a short horizon into the future; it tacks a terminal cost to the end based on what it knows about the system's far-future behavior — often the LQR steady-state cost, which is itself what you get when you iterate the Bellman backup until it stops changing. Change the problem from a grid to continuous space, from discrete decisions to smooth trajectories, from counting steps to a horizon of time — the one-step backup stays the same.</p>
+      <div class="insight"><strong>One equation, three disguises.</strong> LQR counts backwards in time using matrices, Q-learning counts one step at a time in the real world, MPC counts a short horizon and pins a fixed-point value at the end. All three compute the same thing: 'immediate cost plus the best future, stored in one number.' Understand this backup and you have understood the core of every method that optimizes over trajectories, every method that learns a policy, and the foundation of learning control.</div>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — the one equation that collapses future paths into one stored number at each location</h2>
+      <div class="essay">
+      <p>Bellman recursion is the hidden backbone of every method that chains decisions through time: warehouse robots planning pickup routes, game-playing agents choosing moves deep into a game tree, reinforcement-learning systems training policies one step at a time, aircraft trajectory optimization finding fuel-efficient descent paths, chess engines evaluating positions, data-center job schedulers deciding which jobs to run now. Any system that converts 'path from here to goal' into 'immediate cost plus the best future cost stored here' uses this equation.</p>
+      <p>The recursion works by splitting every decision: instead of planning entire paths from start to goal (an explosion of combinations to explore), evaluate one action by looking at three things—the immediate cost, the next state reached, and the best-known cost-to-go stored at that next state. Add immediate to stored future. Do this for all possible actions, pick the cheapest, and store that as the best cost at your current state. Now anywhere else that reaches this state can reuse the stored cost instead of recalculating the whole path. Repeat this at every state, and the values stop changing after a handful of cycles on a small gridworld.</p>
+      <div class="insight">One backup equation done everywhere until values lock in place is the entire foundation of dynamic programming, Q-learning, and MPC, which is why understanding the backup means understanding three generations of control algorithms.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="dynamic-programming.html">dynamic programming</a> · <a href="lqr.html">LQR</a> · <a href="value-function.html">value function</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">9×9 gridworld, goal (0,8), pit at (4,4), step cost −1, γ=0.99. Value iteration (Bellman backups) until convergence.</p>
+      <div class="eq">Q(x, a) = c(x,a) + γ · V(x_next)
+V(x) = max_a Q(x,a)
+# Sweep: for each state x, compute Q for all 4 actions, store V(x) = max, record policy pi(x) = argmax
+# EXP1: count sweeps until max value change &lt; 1e-6 and policy freezes
+# EXP2: one backup by hand at (0,3): North/South/East/West Q-values, pick the max
+# EXP3: re-solve with 20% slip (stochastic), count cells that flip policy
+# EXP4: examine V grid, verify it breaks ties when immediate rewards are uniform</div>
+      <p class="muted">Full script: scripts/experiments/dp_run.py. Numbers reported are the grid's values and backups, printed by the run verbatim. State truth (position without omitting deadline or obstacles) is assumed.</p>
+    </div></details>
+    <footer>Stanford AA203 · Bellman Recursion deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

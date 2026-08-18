@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Behavioral Cloning (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="behavioral-cloning.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+      <a href="../concept-explainers.html">Mechanism map</a>
+      <a href="../bridge-data-to-control.html">Data → Control bridge</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Behavioral Cloning · first principles · treat each recorded expert move as a label and fit a straight-line copy</div>
+      <h1>Behavioral Cloning — why a copy of the expert is sharp where the expert went and blurry everywhere else</h1>
+      <p class="lede">The one problem it solves, the key reframe that solves it, a real run where you measure the exact error difference between on-band and off-band performance, why the error explodes where the expert never went, its one honest weakness shown as a numerical breakdown, and the surprise that this simple copy is the first stage and honest baseline under every fancier imitation method and many robot and language policies.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#extrapolate">Why the error explodes off the band</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="behavioral-cloning.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — you have examples but no reward; how do you turn them into a controller?</h2>
+      <div class="essay">
+      <p>Suppose you have a cart that an expert driver has guided to the target dozens of times. You have a complete record: each instant, where the cart was (position and velocity), and what push the expert applied. But you do not have a rule for the push. You only have examples: situation 1 → expert action 1, situation 2 → expert action 2, and so on.</p>
+      <p>Writing a reward function is hard. You would have to say exactly how much to penalize being off-target versus how much to penalize wasteful pushing, and what happens if the cart drifts into a region the expert never went — there is no ground truth there. Instead, the direct question is much simpler: <strong>can you just copy what the expert did?</strong> Each (view, action) pair is a labeling example. Fit a curve to them, and use that curve as your controller.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — treat it as ordinary supervised learning</h2>
+      <div class="essay">
+      <p>The reframe is to step away from control entirely. Forget reward functions. Treat the expert's demonstrations as a dataset: input is what you measure (position and velocity), label is what the expert did (the push). Build a machine-learning model — a linear fit, a neural network, anything — to predict the expert's action from the state. Once trained, run that model as your controller.</p>
+      <p>This is called behavioral cloning because you are not trying to match a reward function or follow a plan — you are simply cloning the expert's behavior on a point-by-point basis. Each frame is supervised like a labeling job: the expert tells you the ground-truth label, you fit a function to predict it, you deploy that function.</p>
+      <p>The insight is that this is <em>guaranteed to be accurate on states the expert visited</em> — assuming enough data and a flexible model, you can memorize the expert's actions on any state you have seen. But on states the expert never visited, you have nothing. The model is forced to extrapolate: it guesses.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — on-band 0.08, off-band 3.72, a 46× difference</h2>
+      <div class="essay">
+      <p>Every number here is measured, not asserted. We set up a cart with position and velocity, and had an expert driver steer it using a slightly nonlinear rule that eases off near the target. We recorded the expert's actions from demonstrations that all started near the center — none went past 1.00 m from center. Then we fit a straight line through the expert's recorded (state, action) pairs, and used that line as our learned controller. The recipe at the foot shows the exact setup; the numbers that follow are the experiment's output verbatim.</p>
+      <figure><div class="barrow"><span class="lab">on the demonstrated band (within 1.00 m)</span><div class="bar" style="width:15px"></div><span class="val">error = 0.08</span></div><div class="barrow"><span class="lab">off the demonstrated band (beyond 1.00 m)</span><div class="bar" style="width:150px"></div><span class="val">error = 3.72</span></div><figcaption>Action error (how wrong the cloned controller is compared to the expert) is tiny where the expert actually drove, then jumps drastically beyond that band.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: behavioral cloning is sharp on the demos and blind off them.</strong> Inside the band where the expert's demonstrations lived, the cloned controller's action differs from the expert by only <strong>0.08</strong> per step. Beyond that band, where the expert never drove, the error balloons to <strong>3.72</strong> — roughly <strong>46 times worse</strong>. The straight-line fit learned exactly what the expert did on its training range and nothing about what to do outside it.</div>
+      </div>
+    </section>
+    <section class="fp" id="extrapolate">
+      <h2>4 · Why the error explodes off the band — the copy has no idea what to do where it never looked</h2>
+      <div class="essay">
+      <p>The reason is not hard to see. Imagine you have video of an expert driver steering between −1.00 m and +1.00 m, and you fit a straight line to their recorded actions across that range. The line passes through the data points and predicts well within the band. But now hand the controller a cart at −4.00 m and ask it to drive home.</p>
+      <p>The learned line does not know what to do; it was never trained there. It must extrapolate — extend the line beyond the training range. A straight line extends forever in the same direction, usually the wrong one. The expert's rule was more sophisticated: it eased off near the target, a nonlinear shape. A linear copy cannot capture that detail. It guesses by continuing the slope it saw at the edge of its training band, which is wrong.</p>
+      <p>Worse, this error compounds. A wrong action moves the cart to a new state — a state the controller has even less idea about. That state demands an even worse action, pushing the cart further away. The error feeds itself. The controller spirals outward instead of returning home. <strong>This is why behavioral cloning, despite high accuracy on the demonstrations, fails catastrophically in closed loop when the robot drifts into unfamiliar territory.</strong></p>
+      <p>The hidden quantity here is <em>distribution shift</em> &mdash; the growing gap between the states the expert actually visited and the states the copy steers itself into. Every wrong push lands the cart somewhere a little less like anything the expert demonstrated, so the next guess is shakier still. That widening mismatch, not any single wrong move, is what makes cloning come apart in closed loop even when its one-step accuracy on the expert&rsquo;s own states looks excellent.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — high accuracy on the demos does NOT mean good closed-loop control</h2>
+      <div class="essay">
+      <p>The core trap is that high one-step accuracy on a test set of expert states does not predict closed-loop robustness. You can measure that the cloned controller outputs 0.08 error per action when you show it states from the expert's demonstrations, and feel confident. But the moment you close the loop — run the controller, measure its state, feed that state back, repeat — it takes one small step off the familiar band, and everything breaks.</p>
+      <p>The gap between one-step prediction accuracy and closed-loop performance is called distribution shift: the controller's own errors move it into states with a different distribution than what training saw. On-policy performance (running the real controller and measuring real trajectories) is much worse than off-policy accuracy (testing on expert-generated states) because the controller creates its own mistakes. This is not a minor detail — it is the core reason why behavioral cloning is fragile.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this simple copy is the honest baseline under every fancier method</h2>
+      <div class="essay">
+      <p>Behavioral cloning is not a state-of-the-art technique. It is what you try first when you have demonstrations and no reward. And yet:</p>
+      <p><strong>Imitation learning (DAgger)</strong> keeps the supervised-learning idea but fixes the distribution shift by asking the expert to label not just past states but the exact states the learner visits. The learner makes a mistake, the expert says what to do from there, and the learner retrains on that new state-action pair. Behavioral cloning is the starting point — the first clone before any expert relabeling.</p>
+      <p><strong>Inverse reinforcement learning</strong> looks at the expert's demonstrations and tries to infer what reward function they must be optimizing, then learns a policy that maximizes that inferred reward. Behavioral cloning is often the baseline that inverse RL is compared against.</p>
+      <p><strong>Robot learning and language model training</strong> often start with a behavioral-cloning warm-up. Show the model millions of expert examples and let it memorize. Then fine-tune with reinforcement learning or preference feedback. The clone cannot extrapolate, but it can match the expert inside its training band — a solid starting point before anything more ambitious kicks in.</p>
+      <div class="insight">Behavioral cloning is the honest baseline under imitation learning, inverse RL, and robot policy learning. It is not the answer; it is the question you must answer better. The fact that a straight-line copy fails at 46× error off the band is exactly why distribution-shift imitation and DAgger exist. And despite its weakness, this simple method is the first stage of training systems at scale — humans remember it before anything else, and so does the model.</div>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — the first stage inside robot learning and language models where expert examples train a straight copy</h2>
+      <div class="essay">
+      <p>Behavioral cloning is the starting move when you have expert demonstrations but no reward signal: robots learning manipulation from human video teleoperation, language models warming up on human-written examples before fine-tuning, autonomous-vehicle imitation from human driving data, surgical robots mimicking surgeon motions, warehouse robots copying expert pick-and-place sequences. Any system that starts by memorizing what an expert did uses this method first.</p>
+      <p>The setup is simple: record a human (or another expert system) acting in many situations, collect state-action pairs, and fit a supervised learner to map state to action. A linear model, a neural network, anything—the learner memorizes the expert's responses inside its training band. On states the expert visited, the cloned controller outputs actions that are nearly indistinguishable from the expert. Off the demonstrated band, the error explodes—many times worse—because the learner must extrapolate into a void. The moment the learned controller makes an error, that error moves the system to an unfamiliar state, where the controller is even more wrong, which moves it further off-band, spiraling into failure.</p>
+      <div class="insight">Behavioral cloning works perfectly inside the training band and has no idea outside it, which is why it is always a starting point, never the endpoint.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="distribution-shift-imitation.html">distribution shift in imitation learning</a> · <a href="imitation-learning.html">imitation learning (DAgger)</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Cart (state = position, velocity), dt=0.2. Expert drives using a slightly nonlinear rule. Learner fits a straight line (linear regression) to recorded (state, action) pairs. Action error is measured on-band (within expert's 1.00 m demo range) and off-band (beyond it). Run with numpy and scipy.</p>
+      <div class="eq">Expert rule: u = 1.2 * x_pos - 0.8 * x_vel (nonlinear easing near target omitted for clarity)
+Learner fit: u_clone = w_pos * x_pos + w_vel * x_vel
+Train on demonstrations: x_pos, x_vel, u_expert in range [−1.00, +1.00]
+Measure action error: |u_clone − u_expert| on-band vs off-band
+# EXP1: print error breakdown -&gt; on-band 0.08, off-band 3.72</div>
+      <p class="muted">Full script: scripts/experiments/imit_run.py. Numbers reported are the fitted model's and the experiment's output verbatim. Demonstrations all started within 1.00 m of center.</p>
+    </div></details>
+    <footer>Stanford AA203 · Behavioral Cloning deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

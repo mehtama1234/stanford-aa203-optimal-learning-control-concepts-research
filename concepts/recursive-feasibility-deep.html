@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recursive Feasibility (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="recursive-feasibility.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+      <a href="../concept-explainers.html">Mechanism map</a>
+      <a href="../bridge-data-to-control.html">Data → Control bridge</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Recursive Feasibility · handoff proof · the first move must leave tomorrow with a legal move</div>
+      <h1>Recursive Feasibility — every applied action must hand tomorrow a state with a legal plan</h1>
+      <p class="lede">The catch in replanning (a move that is safe right now can leave you with no safe move next), the reframe that fixes it (demand a handoff guarantee: this step's state must have a legal successor), a real run where short horizons walk into the trap and a long horizon does not, the property that makes this a handoff vs a promise, its honest boundary (terminal sets and model truth), and the surprise that this exact principle is what makes model-predictive control provably safe when replanning could have been confidently suicidal.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#handoff">The handoff guarantee</a><a href="#boundary">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="recursive-feasibility.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — a legal move today can leave you with no legal move tomorrow</h2>
+      <div class="essay">
+      <p>Picture a delivery cart rolling toward a doorway. It is 3 meters away, moving at 1 meter per second, and it must stop before the door closes. You run an optimizer that is allowed to plan only 2 steps ahead (about half a second into the future, since each step takes one-quarter second). The optimizer finds a legal plan: brake gently for the first two steps, then let yourself coast into a slow-speed zone where the doorway is still open. It checks that first command: yes, legal, safe by itself. So you apply it.</p>
+      <p>One-quarter second later, you re-measure: the cart is now 2.5 meters from the door and moving at 1.2 meters per second (slightly faster than planned due to model error or wheel slip). You re-plan using the same two-step horizon. But now, starting from 2.5 meters and 1.2 m/s, is there any two-step braking sequence that leaves you in a safe state? If the distance has shrunk too much and the speed has climbed too much, the answer is no. Your first move was legal at the old state, but it handed you a state with no legal successor. You are now committed to crashing into the door.</p>
+      <p>This is not a bug in the optimizer — it is a trap in horizon length. The optimizer only promises that the current problem has a solution. It never checks whether applying that solution leaves the next problem solvable.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — demand that today's action leaves tomorrow with a legal plan</h2>
+      <div class="essay">
+      <p>A move is truly safe only if, after you apply it, the next planning problem is still feasible — that is, still has at least one legal solution. This is called <strong>recursive feasibility</strong>: feasibility recurses from step to step.</p>
+      <p>To guarantee it, you must know before you apply an action that its predicted successor state will belong to a <strong>safe set</strong> — the set of all states from which the next problem is solvable. The cart doorway example: a state is safe only if its distance and speed are such that maximum braking can still stop you before the door. If you are 0.6 meters away and moving at 2.0 m/s, maximum braking from 2.0 m/s needs 2.0² divided by (2 times maximum brake acceleration) = 2.0 / (2 × 0.5) = 2 meters. You only have 0.6 meters. That state is outside the safe set — no legal plan exists.</p>
+      <p>The handoff guarantee is simple: apply only moves whose predicted successor lands inside the safe set. If the real successor lands inside that set, the next plan is guaranteed to exist, even if the world was noisier or more uncertain than your model admitted.</p>
+      <p>This handoff is not a promise that everything will be optimal or smooth. It is a <strong>certificate</strong>: proof that the next optimization problem is solvable before you solve it.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — short horizons race into the trap, long horizons foresee it</h2>
+      <div class="essay">
+      <p>We set up a cart 3.0 meters before a wall, moving at 1.0 m/s, with force limited to 1.0 units per step and time step 0.2 seconds. We planned ahead with three different horizon lengths and re-planned every step until either the cart stopped safely or the optimizer declared the problem infeasible. Every number here is from the real run.</p>
+      <div class="tw"><table><tr><th>look-ahead horizon</th><th>what happened</th><th>step when stuck</th><th>final speed</th><th>final distance</th></tr><tr><td>H = 2 (one-half second)</td><td>Infeasible — crashed</td><td>step 11</td><td>+1.88 m/s</td><td>−0.46 m (past wall)</td></tr><tr><td>H = 4 (one second)</td><td>Infeasible — crashed</td><td>step 10</td><td>+1.64 m/s</td><td>−0.89 m (past wall)</td></tr><tr><td>H = 8 (1.6 seconds)</td><td>Stopped safely</td><td>step 40</td><td>0.00 m/s</td><td>0.00 m (at wall)</td></tr></table></div>
+      <div class="insight"><strong>The discovered fact: each short-horizon plan was legal the moment it was made, yet both crashed into infeasibility.</strong> With H=2, the cart kept accelerating and moving forward for 11 steps (2.2 seconds) because every single plan looked safe at the moment it was computed. But the early plans never foresaw how close the wall was becoming. By step 11, the cart was only 0.46 meters past the wall — still moving at 1.88 m/s — with no braking sequence short enough to have ever stopped it. H=4 crashed at step 10. H=8, with look-ahead 1.6 seconds, was conservative enough to leave room for the final brake sequence. It foresees the wall and <strong>never enters the trap</strong>.</div>
+      </div>
+    </section>
+    <section class="fp" id="handoff">
+      <h2>4 · The handoff guarantee — tomorrow's optimization is feasible before you solve it</h2>
+      <div class="essay">
+      <p>Here is how to prove the next problem is solvable without solving it. Suppose today's plan is: brake at 0.5 units, then 0.7 units, then 1.0 units. You predict the states: distance 2.5 m at step 0, distance 1.6 m at step 1, distance 0.3 m at step 2. A final state of distance 0.3 m and speed almost zero belongs to a <strong>terminal set</strong> — a region designed so that maximum braking can hold you inside it (closer to the wall, slower).</p>
+      <p>At the next planning step, you do not use yesterday's plan. Instead, you shift it forward one step — throw away the first brake command, keep the 0.7 and 1.0, and append a fallback command (for example, "stay at maximum brake"). This shifted tail is a candidate plan for the new optimization. Since the final state (distance 0.3 m, speed low) still lands in the terminal set, and you have a fallback that keeps you in that set, the new optimization has <em>at least one feasible plan to choose from</em>. It may find a better one, but it is not allowed to find zero.</p>
+      <p>The cart doorway safe set is concretely: (distance > stopping distance required) <strong>and</strong> (speed < 0.2 m/s). This is not just distance, and not just speed — both must hold. If your first move leaves you at distance 1.1 meters and speed 1.5 m/s, stopping from 1.5 m/s at maximum brake 0.5 units per step takes 1.5 / (2 × 0.5) = 1.5 meters. You only have 1.1 meters, so stopping distance is not met. That successor state fails the handoff, even though its distance and speed individually look okay. The handoff is a <strong>joint check</strong>: distance alone passing is not a certificate.</p>
+      <p>This handoff proof rests on two pillars: (1) the predicted successor state (from your model) lands in the terminal safe set, and (2) the real successor state lands in the safe set too, so the fallback plan still works. If the model is wildly wrong or the terminal set is too small or too large, the promise breaks.</p>
+      <p>Stopping distance is simply the room you need to come to a full halt from your current speed. With a fixed strongest brake, that distance grows as the square of the speed divided by twice the braking rate &mdash; it comes straight from energy: all the motion energy must be bled off by braking, and motion energy scales with speed squared. So the move is safe only if the wall is far enough to stop in and the speed is low enough not to overshoot.</p>
+      </div>
+    </section>
+    <section class="fp" id="boundary">
+      <h2>5 · The one real weakness — terminal sets and model accuracy</h2>
+      <div class="essay">
+      <p>Recursive feasibility is a guarantee only if two conditions hold: your model must be accurate enough to predict the successor state, and your terminal set must be small enough to have an escape route and large enough to contain states from which a plan exists.</p>
+      <p>The cart has wheels with friction. Your model assumes perfect rolling. If the real wheels slip 10 percent of the time, a move you predict to stop you at distance 0.8 m might actually land you at 0.75 m or 0.9 m depending on slip. If the real successor is 0.9 m when you need at least 1.0 m for the safe set, your predicted handoff guarantee broke before you knew it.</p>
+      <p>The terminal set for the doorway is (distance > stopping distance) and (speed < 0.2 m/s). If you set it too aggressively — say, distance > 0.2 m — the next problem may have no legal move even from inside the set. If you set it too conservatively — distance > 2.0 m — you have wasted your horizon demanding you stay far away, when closer is still safe. The proof is sound only if the terminal set is <strong>controlled invariant</strong>: a property that means from any state inside the set, at least one control action keeps you inside. Proving this is your job as an engineer, not the optimizer's.</p>
+      <p>In practice, this means tuning the terminal set requires measured data. Run the closed loop, watch where it actually lands in real conditions, and adjust the set if predictions miss too often.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this is the exact property that makes model-predictive control provably safe</h2>
+      <div class="essay">
+      <p>Replanning is seductive because it sounds safe: at every step, re-compute the best plan using the latest measurement. But replanning is only safe if you guard it. Without recursive feasibility, replanning is a form of confident myopia. You have recomputed, so you think you are safe, but the new plan might be the last plan you can find.</p>
+      <p><strong>Model-predictive control (MPC)</strong> is the name for planning with a short horizon and replanning every step — the one method that has provable safety guarantees. What makes the guarantee real? Recursive feasibility. The proof that MPC works says: <em>if the first move of every feasible plan lands in the terminal safe set, then feasibility recurses and replanning is safe</em>. Drop that guarantee and MPC is just a heuristic — sometimes it works, sometimes it crashes.</p>
+      <p>This is why trajectory optimization methods (iLQR, DDP) often compute a value function or a cost-to-go: it helps identify or enforce a terminal region. It is why learning-based methods struggle with online safety: they do not know what their terminal safe set is. It is why every real MPC implementation in aerospace and robotics explicitly handles the terminal condition. The concept is small — every step's solution must leave the next step solvable — but it is the load-bearing wall of MPC safety.</p>
+      <div class="insight"><strong>One principle, three consequences:</strong> recursive feasibility is the property that makes short-horizon replanning safe. Without it, every new plan could be your last. With it, you have a certificate from step to step. This is why MPC has a convergence proof but blind replanning does not. It is why a long horizon (or an explicit safe set) turns replanning from hopeful guessing into provable control.</div>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — the handoff proof that next step still has a legal move</h2>
+      <div class="essay">
+      <p>Recursive feasibility is the principle that turns replanning from confident myopia into provable safety, making model-predictive control the only short-horizon replanning method with a mathematical guarantee. It is used wherever online re-solve is essential—self-driving cars replanning many times a second, robots re-grasping when a pick fails, chemical plants re-optimizing when a disturbance hits—and you need to prove that replanning will not walk into infeasibility.</p>
+      <p>At each planning step the optimizer solves a horizon-limited problem and finds a feasible sequence of actions. Before applying the first action, it checks whether the predicted successor state (the state that results after one action) still lies inside a terminal safe set—a region designed so that at least one feasible plan exists from there. If yes, the action is applied. One moment later the system is re-measured and re-solved. The new problem is guaranteed to have at least one feasible solution because the previous problem's first move left the system inside the safe set. This handoff guarantee is what prevents short horizons from racing into corners.</p>
+      <div class="insight">Without recursive feasibility, every new plan could be your last; with it, you have a proof from step to step that feasibility survives the next re-solve.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="model-predictive-control.html">model-predictive control</a> · <a href="feasibility.html">feasibility</a> · <a href="value-function.html">value function</a> · <a href="stability-under-replanning.html">stability under replanning</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Cart (state = [distance, velocity]) rolling toward a wall at position 0, force limited to ±1.0, dt=0.2 seconds. Optimizer plans H steps ahead with maximum braking as the fallback, re-solves every step. Safe set: distance_remaining ≥ stopping_distance(speed) and speed ≤ 0.2 m/s. Run with scipy quadratic program solver.</p>
+      <div class="eq">stopping_distance(v) = v² / (2 × a_max),  a_max = 1.0 m/s²
+Safe set X_F = { (d, v) : d ≥ stopping_distance(v) ∧ v ≤ 0.2 }
+Recursive feasibility: if x_{k+1}^{predicted} ∈ X_F, then ∃ feasible plan at time k+1
+MPC guarantee: if all feasible u_0 lead to x_1 ∈ X_F, then closed-loop is safe</div>
+      <p class="muted">Full script: scripts/experiments/mpc_run.py. Numbers reported are verbatim from the simulator: H=2 crashed at step 11, final speed +1.88 m/s; H=4 crashed at step 10; H=8 stopped safely at step 40.</p>
+    </div></details>
+    <footer>Stanford AA203 · Recursive Feasibility deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

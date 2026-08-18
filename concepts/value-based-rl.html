@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Value-Based RL</h1>
 <p class="lede">Learn how good states or state-action pairs are, then choose actions using those learned values.</p>
+<p><a href="value-based-rl-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Instead of directly learning the action rule, the agent can learn a future-return scoreboard.</p>
-    <p>A common wrong first move is: Estimate immediate reward only. It fails when the best action may have low immediate reward but lead to high future return.</p>
+    <p>A beginner might start by learning a complete policy: store an action for each state so that next time you see that state, you pick the stored action. That seems direct. But in a warehouse, the fork state &quot;two meters from shelf, box loaded, battery 22 percent, aisle blocked&quot; appears only a handful of times, and you will almost certainly land in states where your stored action has never been tried. Value-based learning avoids that brittleness by not trying to write the full action rule upfront. Instead, you write a scoreboard that estimates future return for each action in each state—a Q-table or value function. Then you pick the action with the highest score. If you later learn that an action you thought was great actually leads to bad outcomes, the scoreboard updates, and your policy changes automatically without rewriting the whole action rule.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a state-value or action-value function. Use it when you need to look for RL methods where action choice is derived from learned values.</p>
-    <p>What the object does: Update value estimates from experience and act greedily or near-greedily with respect to them.</p>
+    <p>When you face a choice between actions, you do not know which one will pay off best in the long run—only the immediate result is visible. You need a way to rank actions based on something other than today&#x27;s reward. A scoreboard that estimates the sum of future discounted rewards for each action-in-state pair lets you compare them fairly. Call it Q(state, action). If Q values capture not just the immediate payoff but the downstream consequences of state choices, you can pick greedily—choose the action with the highest Q value—and your one-step greedy choice will tend toward the long-term best trajectory. That future-return estimator, Q, is called an action-value function, and building and refining it through experience is value-based reinforcement learning.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a state-value or action-value function in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Update value estimates from experience and act greedily or near-greedily with respect to them. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>A warehouse robot is at a fork: state x is &quot;two meters from shelf, box loaded, battery 22 percent, aisle B blocked.&quot; Its current Q-table says Q(x, turn_left) = 3 and Q(x, turn_right) = 7. The greedy action is turn_right. It takes that action, gets reward −1 (one more second of travel), and lands in a next state where the best stored action value is 10. With γ = 0.9, the new target is y = −1 + 0.9 × 10 = 8. The old Q(x, turn_right) was 7, so the update moves it closer to 8. With step size α = 0.5, the new entry is 7 + 0.5 × (8 − 7) = 7.5. Now push the scoreboard. You discover that the next state is actually a slick floor where charging is slower and riskier than you thought. The entry Q(x_next, charge) was 10 based on two smooth-floor samples with returns 11 and 9. After deployment you see five total samples: [11, 9, −4, −2, 0] because three new slick-floor runs went badly. The mean drops to 2.8. The max in your Q-learning target changes from 10 to 2.8 (if charge is still the best action despite the bad samples). Your old Q(x, turn_right) = 7 would now update toward y = −1 + 0.9 × 2.8 = 1.52. The action ranking flips because the scoreboard was repaired with new evidence, not because the reward formula changed.</p>
     <p>The world check is the example: A robot learns a manipulation task by Q-learning, where Q(state, action) estimates the future return (discounted sum of rewards) after taking that action. Initially, Q(grasp_from_top, any_angle) = 0 and Q(grasp_from_side, any_angle) = 0 (no data). After 20 trials of top grasps, 90% succeed (reward r=+1), 10% fail (reward r=-2): estimated Q(top) ≈ 0.9·1 + 0.1·(-2) = 0.7. After 20 side-grasp trials with 60% success, Q(side) ≈ 0.6·1 + 0.4·(-2) = -0.2. A simple value-based policy chooses the action with highest Q: pick grasp_from_top because Q(top)=0.7 &gt; Q(side)=-0.2.
 
 After more trials, suppose the object is rotated and side grasps are re-evaluated: 95% now succeed, giving Q(side) ← 0.95·(+1) + 0.05·(-2) = 0.85. The policy automatically switches to side grasps (Q(side)=0.85 &gt; Q(top)=0.7), having learned from experience. The controller never had an explicit rule &#x27;use side grasp for rotated objects&#x27;; it learned Q-values that implicitly encode this preference through accumulated rewards. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
@@ -63,8 +65,7 @@ After more trials, suppose the object is rotated and side grasps are re-evaluate
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The value representation must generalize correctly across the visited state-action space.</p>
-    <p>When that condition fails, look for this visible break: function approximation error makes the agent overvalue bad actions.</p>
+    <p>A value function is an estimate—a guess from limited samples—not a ground truth label. If you visit a state only under smooth-floor conditions and later encounter it on a slick floor, your Q estimates are too optimistic and your greedy action choice will be wrong. If your representation of &quot;state&quot; is so coarse that it treats smooth floors and slick floors as identical, your Q updates from slick-floor failures will corrupt your smooth-floor estimates, and the policy will break on both surfaces. The visible failure is a robot that chose an action confidently, but that action was learned from incomplete experience and fails when conditions shift even slightly.</p>
     <p><strong>Recognize it in a new problem:</strong> Look for RL methods where action choice is derived from learned values.</p>
   </div>
 </section>

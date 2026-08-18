@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Indirect Methods</h1>
 <p class="lede">Solve an optimal-control problem by first deriving equations that an optimal trajectory must satisfy.</p>
+<p><a href="indirect-methods-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Instead of searching over all paths directly, use mathematical structure to reduce the search to conditions of optimality.</p>
-    <p>A common wrong first move is: Discretize everything immediately and hand the whole problem to a numerical optimizer. It fails when direct search can be large and blind to the state and cost sensitivities already implied by the equations.</p>
+    <p>A direct first move is to discretize the whole problem immediately—pick a grid of times, make position and control independent variables on the grid, and throw everything at a numerical optimizer. But the physics says the position at the next time must come from the current position and the chosen control; you have already thrown away that structure. The optimizer has to learn it back.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is necessary conditions such as state, costate, and stationarity equations. Use this lens when the analytic necessary conditions are central to the method.</p>
-    <p>What the object does: Derive the boundary-value problem implied by optimality and solve those equations.</p>
+    <p>Searching directly over every possible path is enormous, and most candidate paths are obviously bad. But a genuinely optimal path is not arbitrary: calculus pins down exact conditions it must obey — the state moving forward under the dynamics, a price moving backward in time that measures how an early error changes all later cost, and a condition at each instant that the control is set where it can no longer be improved. Writing those conditions down and solving them together means you never wander through bad paths at all; the mathematics of optimality has already shrunk the field to a small boundary-value problem. Approaches that solve these optimality conditions first, instead of proposing whole paths and scoring them, are the indirect methods.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to necessary conditions such as state, costate, and stationarity equations in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Derive the boundary-value problem implied by optimality and solve those equations. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>A cart must move from 0 to 1 meter in 2 seconds with cost integral of 0.5*u^2 dt. The indirect method writes the Hamiltonian H = 0.5*u^2 + p*u, applies stationarity dH/du = u + p = 0 to get u = -p, and applies the costate equation p_dot = 0 to find p is constant. Now the entire family of candidate paths depends on one unknown: the initial value p(0). If p(0) = -0.5, then u = 0.5 everywhere and x(2) = 1 exactly. This is solved by asking: which one constant value of p makes the endpoint land at 1? If the endpoint were free with penalty phi(x(2)) = 10*(x(2) - 1)^2, the boundary condition flips: p(2) = d_phi/dx = 20*(x(2) - 1). Since p is constant and x(2) = 2*p(0), the condition becomes p(0) = 20*(2*p(0) - 1), giving p(0) = -20/41 and x(2) = 40/41. The method did not search a grid; it solved the structure.</p>
     <p>The world check is the example: For a spacecraft transfer, the indirect method derives equations for both the state path and the shadow price of state errors. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>It depends on correct derivation and can be sensitive to boundary guesses.</p>
-    <p>When that condition fails, look for this visible break: the equations are hard to solve numerically or describe only a local candidate.</p>
+    <p>The indirect method produces a candidate answer until every boundary condition and constraint is satisfied. If an active inequality constraint like x(t) &lt;= 0.8 is violated by the smooth necessary-condition solution, the smooth equations alone do not describe the full answer; you must add the active-constraint arc and resolve. The boundary is fragility to incomplete derivation: a forgotten constraint or sign error in the adjoint equation will cause the solver to hunt for a path that does not exist.</p>
     <p><strong>Recognize it in a new problem:</strong> Choose this lens when the analytic necessary conditions are central to the method.</p>
   </div>
 </section>

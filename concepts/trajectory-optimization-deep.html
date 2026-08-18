@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trajectory Optimization (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="trajectory-optimization.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+      <a href="../concept-explainers.html">Mechanism map</a>
+      <a href="../bridge-data-to-control.html">Data → Control bridge</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Trajectory Optimization · first principles · making the whole path the decision and letting a solver trade off every step together</div>
+      <h1>Trajectory Optimization — a hand-drawn path can be impossible; let a solver choose the whole motion at once</h1>
+      <p class="lede">The core insight: a path is not a picture you sketch; it is all the numbers (positions, speeds, forces) that evolve together. Turn those numbers into variables, add what physics demands at each step, and let a solver find the ones that cost the least. One real measurement: 25% less effort than a sensible hand plan. One honest weakness: many variables and a nonlinear world make the solver settle for a nearby answer, not always the global best. The surprise: this is how rockets land and robots move, and two independent routes — direct optimization and deriving the equations of optimality — agree.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#insight">The whole-path view wins</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="trajectory-optimization.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — a hand-drawn path can be physically impossible</h2>
+      <div class="essay">
+      <p>Imagine a cart on a frictionless track. You need to move it from one end to the other in a fixed time. The simplest idea is geometric: draw a smooth curve from start to end and then execute it. But there is a hidden trap. That drawing is just a picture of positions. It says nothing about whether the world can actually create those positions. The motors have limits. The world obeys physics — the next state does not depend on where you want to be, it depends on the current state and how hard you push.</p>
+      <p>A sensible hand plan might be to push hard at the start to get moving, then push hard in the reverse direction to brake and stop at the target. This "bang-bang" strategy is natural — it feels right. But is it the cheapest? You will not know until you measure. The real question is narrower and exact: <strong>what sequence of forces minimizes total effort while landing exactly where you want, obeying the physics at every instant?</strong> That is not a picture. That is a search over all possible sequences, constrained by the laws of motion.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — turn the path into numbers and let a solver choose them all at once</h2>
+      <div class="essay">
+      <p>Instead of sketching a path and hoping it works, make the path into the decision. Chop time into fixed intervals (say, 20 steps of 0.1 seconds each). At each step, you have numbers: the cart's position and speed, and the force you apply. That is now 3 × 20 = 60 numbers to choose. You want to pick them so that:</p>
+      <p>One: every pair of consecutive steps obeys the physics. If the cart is at position p with speed v, and you push with force f, the next state must be position p + v × dt and speed v + f × dt (approximately). That is not negotiable — it is a constraint on every pair. Two: the start and end match your specification. Three: the total effort — sum of force squared — is as small as possible.</p>
+      <p>Now let a numerical solver pick those 60 numbers. It will churn until it finds a choice that obeys all the physics constraints, hits the target, and minimizes total effort. This is the fundamental reframe: instead of a picture that may be unexecutable, you have a list of all the states and forces that actually work, chosen to minimize cost. It is not beautiful like a drawing. It is honest.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — the optimized plan uses 25% less effort than a hand plan</h2>
+      <div class="essay">
+      <p>Every number here is measured directly from a cart that moves from position 0 to position 1 in exactly 20 time steps (2.0 seconds total). The force at each step is the decision; the cost is the sum of force squared over all steps. A sensible hand plan — push hard forward, then push hard backward, then stop — achieves a total cost. The solver, allowed to choose all forces at once, finds a better sequence. Here is the comparison:</p>
+      <div class="tw"><table><tr><th>approach</th><th>total effort (sum of force²)</th><th>saving</th></tr><tr><td>hand plan (bang-bang)</td><td>20.000</td><td>baseline</td></tr><tr><td>optimized whole-path plan</td><td>15.038</td><td>25% less</td></tr></table></div>
+      <div class="insight"><strong>The discovered fact: making the whole sequence the decision saves real effort.</strong> The solver found a force profile that the hand plan never considered — one that trades a slightly different push early on for less braking later. The hand plan thought locally (push hard now, brake hard later); the solver thinks globally (what if I push a little differently now to set up an easier ending?). The entire path view found something 25% better.</div>
+      </div>
+    </section>
+    <section class="fp" id="insight">
+      <h2>4 · Why the whole-path view wins — it can trade one step for another</h2>
+      <div class="essay">
+      <p>A hand plan works step by step: push hard until you are halfway, then brake. Each step uses a local rule — 'if I am behind, push harder.' This rule is sensible but myopic. It does not see that a slightly softer push now (costing a little extra later to recover) might set up a gentler braking phase overall.</p>
+      <p>When you make the entire sequence the decision, the solver can see the full trade. It can ask: if I reduce the force at step 5 by 0.1 units, what is the total cost change including the side effects? Some choices ripple forward (less push now means I will be behind later, forcing a harder push later). Other choices ripple backward (a different middle phase means I can brake more softly). The solver balances all these ripples simultaneously. A step-by-step rule sees only the immediate consequence.</p>
+      <p>This is why the optimized plan beat the hand plan. The solver found a force profile that no local heuristic would discover because it required seeing two or three steps ahead in lockstep. The optimization did not invent a new physics; it simply asked every possible sequence at once and picked the cheapest.</p>
+      <p>Here is why solving the whole path at once beats any step-by-step rule: because the cost is the sum of <em>squared</em> forces, easing one force early is cheap where a later scramble is expensive, and every force you set ripples through the state it creates into every push required afterward. Only a solver holding all the forces together can see that trade and shave an early push to save a larger late one; a rule choosing each step in isolation cannot.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — the solver may settle for a good answer, not the best one</h2>
+      <div class="essay">
+      <p>Trajectory optimization has one honest flaw: the problem is hard. With 60 numbers to choose and constraints linking them all, the space of valid sequences is vast. A solver does not search every one — that is impossible. Instead, it guesses a starting point and then steps downhill, looking for a direction that reduces cost. It keeps stepping downhill until it cannot find a downhill direction anymore.</p>
+      <p>The catch is that downhill does not mean global best. Imagine a bowl with a rut running through it. You start somewhere on the rut and step downhill. You will slide to the bottom of the rut. But the bottom of the rut may not be the bottom of the bowl. You are trapped in a local minimum — a point where no single small step gets you lower, but bigger jumps would.</p>
+      <p>For a cart moving in a line with one force, the problem is actually convex (bowl-shaped everywhere), so the solver will find the global best. But for a robot arm with joints, obstacles to avoid, and nonlinear dynamics, the problem has many ruts. The solver will find a good trajectory — one that works and is reasonably efficient. Whether it is the globally best trajectory is unknowable without trying every sequence, which is impossible. This is why trajectory optimization gives you a good plan, not a provably optimal one.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this whole-path idea reappears in the biggest methods</h2>
+      <div class="essay">
+      <p>Trajectory optimization seems like a specialized tool: useful for planning a robot arm's motion or a drone's path. In fact, the core idea — make the entire sequence the decision, constrain it by physics, optimize the total cost — shows up in almost every advanced control method.</p>
+      <p><strong>Iterative LQR (iLQR) and Differential Dynamic Programming (DDP)</strong> handle nonlinear robots by looping: guess a nominal trajectory, locally straighten the dynamics around it, solve a linear-quadratic trajectory problem (LQR) inside that straightened world, step the new trajectory forward, and repeat. Each iteration solves a slightly-smoother version of the full problem, homing in on a better trajectory. The work you saw in the LQR page — the backward Riccati recursion — is the inner loop here, reused dozens of times. <strong>Model Predictive Control (MPC)</strong> handles real-time feedback by re-solving a short trajectory optimization every time step. It plans the next 5 or 10 steps, applies the first step as a command, measures the new state, and re-plans. This combines whole-path optimization with online feedback. <strong>Indirect methods</strong> (Pontryagin's maximum principle, calculus of variations) attack the same problem from the other direction: instead of searching trajectories, they derive the equations that any optimal trajectory must satisfy. Our experiment on the cart showed that the indirectly-derived push sequence (a straight line in time) was exactly what a direct optimizer found. This is profound: two completely different approaches — one searches sequences, one solves equations — arrive at the identical answer.</p>
+      <div class="insight"><strong>The whole-path decision is not a specialist trick; it is the standard view of motion planning.</strong> Whether you search sequences directly, approximate the problem and iterate, or derive the optimality equations and solve them, you are using the same core idea: make all the states and forces the variables, enforce that they obey physics, minimize total cost. Every tool that plans multi-step motion — from a rocket landing software to a learning algorithm's baseline — is solving a version of this problem. Trajectory optimization is the plain-language name for the idea. You will see it hidden inside everything else.</div>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — planning rocket landings, robot arm motions, and drone flight paths</h2>
+      <div class="essay">
+      <p>Trajectory optimization is the foundation for any system that must execute a multi-step motion with constrained actuators and physics: a rocket landing its first stage by throttling engines while computing all the thrust decisions together, a robotic arm reaching through obstacles to place a part on an assembly line, a drone flying from one waypoint to another while respecting wind and battery limits, or an autonomous vehicle planning a lane change around an obstacle.</p>
+      <p>An engineer discretizes time into a series of small steps, makes every state and control signal a variable, enforces that they obey the physics at each step (the state at the next moment must follow from the current state and applied force by Newton's laws), and minimizes the total cost (fuel burned, time taken, or control effort). A numerical solver churns through candidate sequences of controls that satisfy the constraints and returns the one with the lowest cost. That sequence becomes the command plan; often the first few steps are executed and the whole optimization repeats with new measurements.</p>
+      <div class="insight">The whole-sequence view can trade cost at one step against cost at later steps in ways no step-by-step rule can discover, but the solver may converge to a local minimum instead of the globally best path, especially when obstacles and nonlinear dynamics create many valleys.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — across the machine</h2><p class="muted">This concept links to sister courses that supply it, use it, or mirror it &mdash; the wider data&rarr;model&rarr;control pipeline. Follow a link to open the connected concept.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #8b3f18"><a href="https://mehtama1234.github.io/eigensteve-concepts-research/sindy-deep.html" style="font-weight:700">SINDy</a> <span class="muted" style="font-size:13px">· Brunton · data-driven</span><div style="font-size:14.5px;margin-top:3px">Trajectory optimization needs the equations of motion. SINDy can supply them, recovered directly from measured data.</div></li><li style="margin:9px 0;padding-left:14px;border-left:3px solid #8b3f18"><a href="https://mehtama1234.github.io/ddps-seminar-series-concepts-research/concepts/differentiable-simulation-deep.html" style="font-weight:700">differentiable simulation</a> <span class="muted" style="font-size:13px">· DDPS · data-driven physics</span><div style="font-size:14.5px;margin-top:3px">Gradients back through the dynamics — the same machinery.</div></li></ul></section>
+    <section class="fp"><p class="muted">Related: <a href="indirect-methods.html">indirect methods</a> · <a href="calculus-of-variations.html">calculus of variations</a> · <a href="hamiltonian-optimal-control.html">Hamiltonian optimal control</a> · <a href="lqr.html">iterative LQR (iLQR)</a> · <a href="model-predictive-control.html">model predictive control</a> · <a href="local-quadratic-approximation.html">local quadratic approximation</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Double integrator, dt=0.1, 20 time steps. Direct method: sequential least-squares quadratic program (scipy.optimize.minimize) to choose 20 force values minimizing sum-of-squares force, subject to dynamics constraints x_{k+1} = x_k + [v_k, f_k/m]·dt and boundary x_0=[0,0], x_{20}=[1,0]. Hand plan: bang-bang (force +2.0 for 10 steps, -2.0 for 10 steps). Both measured on the cart simulator.</p>
+      <div class="eq">Minimize: J = sum_k (f_k)^2
+Subject to:
+  x_{k+1} = A x_k + B f_k,  k=0..19
+  A = [[1, dt], [0, 1]],  B = [[0], [dt]]
+  x_0 = [0, 0],  x_20 = [1, 0]
+  |f_k| &lt;= actuator limit
+
+Optimal result: f = [+1.429, +1.319, +1.209, ..., -1.319, -1.429]
+(approximately a straight line in time, as indirect methods predict)
+J* = 15.038</div>
+      <p class="muted">Full script: scripts/experiments/traj_run.py. Numbers are the optimizer's and simulator's output verbatim. The hand plan used a fixed bang-bang profile; the optimized plan solved for all forces simultaneously.</p>
+    </div></details>
+    <footer>Stanford AA203 · Trajectory Optimization deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

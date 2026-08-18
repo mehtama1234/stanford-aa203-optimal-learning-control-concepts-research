@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Reachability</h1>
 <p class="lede">The set of states a system can get to, or must avoid, under allowed actions and disturbances.</p>
+<p><a href="reachability-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Before optimizing a path, the controller must know which futures are even possible or unsafe.</p>
-    <p>A common wrong first move is: Assume the target is reachable because it is nearby in space. It fails when dynamics, speed, actuator limits, and disturbances decide reachability, not visual distance alone.</p>
+    <p>You see a safe state 2 meters away and assume it is reachable—you can just drive there. But a fast car, weak brakes, and a tight wall mean there is no sequence of steering and braking commands that stops in time before hitting the wall. Reachability is not about distance on the map; it is about whether the system&#x27;s physics, controls, and allowed disturbances permit a trajectory that lands you in the safe zone. A state that looks nearby may be unreachable, and a faraway state with a better escape path may still be reachable.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a reachable set or backward reachable set. Use it when you need to ask whether the state can still reach safety under legal actions.</p>
-    <p>What the object does: Propagate sets through dynamics under allowed actions and possible disturbances.</p>
+    <p>Before a safety controller can trust an escape plan, it must know which states the system can actually reach under its true dynamics and limits, and which bad outcomes it might be forced into by disturbances. Reachability is the map of which futures are possible—either the set of states reachable from here under good controls, or the set of &#x27;bad&#x27; states that the system might get forced into under worst-case disturbances even if the controller tries its best to avoid them. If a good goal is unreachable, or a bad collision zone cannot be escaped, then no plan can save the system. The reachable set and backward avoidance set are the boundaries that safety and planning must respect.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a reachable set or backward reachable set in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Propagate sets through dynamics under allowed actions and possible disturbances. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>Two cars are 5 meters apart with the rear car drifting toward the front at 0.6 m/s. The front car can move sideways at most 0.4 m/s, and collision happens if lateral gap drops below 0.3 meters. From a current gap of 1.2 meters, the front car&#x27;s best lateral move (0.4 m/s) and the worst rear drift (0.6 m/s) give next gap = 1.2 + 0.4 - 0.6 = 1.0 meters, which is still above 0.3—safe in one step. From 0.5 meters, the same best and worst gives 0.5 + 0.4 - 0.6 = 0.3, exactly on the boundary—no safety margin. From 0.4 meters, the result is 0.4 + 0.4 - 0.6 = 0.2, already inside the collision zone. Working backward: states that land in danger after one step form the one-step avoidance set (gap ≤ 0.5). States that would land in that set after one step (even with best control and worst disturbance) form the two-step set: a gap of 0.7 gives 0.7 + 0.4 - 0.6 = 0.5, so 0.7 is in the two-step danger set, while 0.8 gives 0.8 + 0.4 - 0.6 = 0.6, outside the one-step set, so it is safe.</p>
     <p>The world check is the example: A fast car near a wall may be physically unable to stop before collision even if the wall is still several meters away. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>Reachability depends on a model of dynamics, controls, constraints, and disturbances.</p>
-    <p>When that condition fails, look for this visible break: a safety controller trusts an escape route that the system cannot actually execute.</p>
+    <p>Reachability depends on an honest model of dynamics, control authority, and disturbances. A cart that wants to reach a loading bay p ∈ [3.0, 3.4] within two seconds can choose forward motion 0 to 0.8 m/s each step, but headwind can subtract 0 to 0.2 m/s. From p = 1.8 with maximum control twice, worst-case gives 1.8 + (0.8 - 0.2) + (0.8 - 0.2) = 3.0 and best-case gives 1.8 + 0.8 + 0.8 = 3.4—the bay is reachable. From p = 1.6, the worst case gives only 2.8, missing the target. If the model forgot the headwind, or overestimated control authority, the computed reachable set will lie and the controller will trust states that are actually unreachable.</p>
     <p><strong>Recognize it in a new problem:</strong> Ask whether the state can still reach safety under legal actions.</p>
   </div>
 </section>

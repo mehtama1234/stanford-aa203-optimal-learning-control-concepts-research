@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Exploration</h1>
 <p class="lede">Trying actions to discover consequences the agent does not yet know.</p>
+<p><a href="exploration-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>An agent cannot improve only from familiar behavior if better actions have never been tested.</p>
-    <p>A common wrong first move is: Always take the action that currently looks best. It fails when early estimates are wrong or incomplete, so greed locks in mediocre behavior.</p>
+    <p>A greedy robot always pulls the drawer at 0 degrees and 18 newtons because that worked 7 out of 10 times. The trap is stopping there: early success numbers are based on a few tries, so the robot has never learned if 12 degrees might work better on rotated handles or angled pulls. The robot&#x27;s best estimate is wrong or incomplete, not because it is stupid, but because it asked only one question.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is an exploration strategy or stochastic policy. Use it when you need to ask what the learner must try before it can know which action is best.</p>
-    <p>What the object does: Trade off exploiting known reward against collecting information from uncertain actions.</p>
+    <p>A robot needs to spend some of its learning time on actions that currently look bad because better strategies may exist in parts of the problem it has not tried yet. It cannot improve faster than the information it collects, and testing only the action that looks best means the data stay crowded in one corner of the state-action space. If several good behaviors exist—for example, pulling at 0 degrees works, pulling at 12 degrees also works but the robot has tested it only twice—then skipping the uncertain one locks in suboptimal behavior. The thing that tracks this tradeoff between using what works now and trying what might work better is called an exploration strategy or stochastic policy.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to an exploration strategy or stochastic policy in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Trade off exploiting known reward against collecting information from uncertain actions. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>On the warehouse gripper, the learned pull is 0 degrees, 18 newtons, 0.04 m/s, with 7 out of 10 successes recorded. An epsilon-greedy exploration with epsilon = 0.10 says: on 90 pulls out of 100, use the known action; on 10 pulls, try a different action drawn from a safe set (for example, angle between -15 and +15 degrees, force between 18 and 25 newtons). After the 10 exploration pulls, suppose 9 work at angle +12 degrees, force 22 newtons. Now the controller has a new estimate: +12 degrees succeeded 9 out of 10 times. The old 0-degree action is 0.70; the new +12-degree action is now 0.90. The cost of trying it was roughly one fewer success on those 10 trials, but the gain is 0.20 more success rate on future pulls in that same state. Exploration made the missing comparison visible.</p>
     <p>The world check is the example: A robot learning to grasp has tried only the top-centered grasp (100% success) and the side grasp (unknown success rate). Early on, the agent is confident the top grasp works, so always choosing it gives reward 1.0 per trial. But if the object is ever rotated, the top grasp may fail catastrophically. Exploration means sometimes (say 10% of trials) deliberately trying the side grasp even though the estimate of its success is low or uncertain. After 50 side-grasp trials, the robot discovers the side grasp succeeds 95% of the time and works better on rotated objects.
 
 The agent could greedily exploit the top grasp (max immediate reward) forever and miss this better strategy. Instead, it allocates some trials to side grasps, paying a short-term cost (e.g., 10 failed grasps over 100 trials) to gain information. Once the side grasp is learned to be superior, the agent switches permanently, recovering the investment through higher long-term return. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
@@ -63,8 +65,7 @@ The agent could greedily exploit the top grasp (max immediate reward) forever an
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>Exploration must respect safety and data-collection cost.</p>
-    <p>When that condition fails, look for this visible break: unsafe exploration damages hardware or learns from unrepresentative trials.</p>
+    <p>Exploration must happen within safety limits and data-collection budget. If the gripper tries forces above 25 newtons or angles above 15 degrees without constraint, it may break the handle before learning anything useful, or consume all trials on high-risk actions that will never be used. The boundary breaks when exploration is either too reckless (testing forces that damage hardware) or too wide (exploring states the final policy should never visit), because then the learning data are expensive, unsafe, or dominated by useless information.</p>
     <p><strong>Recognize it in a new problem:</strong> Ask what the learner must try before it can know which action is best.</p>
   </div>
 </section>

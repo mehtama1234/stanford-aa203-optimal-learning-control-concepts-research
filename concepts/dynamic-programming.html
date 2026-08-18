@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Dynamic Programming</h1>
 <p class="lede">Solve a time-coupled decision problem by breaking it into state-indexed future-cost subproblems.</p>
+<p><a href="dynamic-programming-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>A planner needs to know which action is best now, but that depends on the best plan after the next state.</p>
-    <p>A common wrong first move is: Enumerate every possible action sequence from the start. It fails when the number of sequences grows explosively with horizon and branching.</p>
+    <p>A naive planner lists every possible action sequence from start to goal: if a rover chooses left or right at each of 10 steps, that is 2^10=1024 paths to enumerate. But once the rover visits the same cell from a hundred different earlier routes, it re-solves the identical subproblem a hundred times instead of once, making the enumeration collapse.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is a value function over states and time. Use it when the same future subproblem appears after many different action histories.</p>
-    <p>What the object does: Work backward or iterate: combine immediate cost with the best future value after each action.</p>
+    <p>A planner often stumbles on the same future subproblem from many different starting points. When a delivery cart reaches a junction, the best path from there to the warehouse does not depend on which earlier turn the cart took. Rather than re-solve that future a hundred times, the planner can compute it once, store the answer at the junction, and hand it to every earlier decision that passes through there. That stored answer—the best remaining cost from each state onward—is what dynamic programming calls the value function over states. It turns a blowup of path comparisons into reusable state-indexed bookkeeping.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to a value function over states and time in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Work backward or iterate: combine immediate cost with the best future value after each action. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>Take the muddy-cell example from the worked run below. State M can move right for cost 1 to reach state A (whose future cost is already solved as V(A)=1), or down for cost 3 to reach state R (with V(R)=6). Dynamic programming writes V(M)=min(1+V(A), 3+V(R))=min(2,9)=2 and stores the right action. Now move to earlier state S. From S, moving east costs 2 to reach M, so that branch is 2+V(M)=2+2=4. Moving south costs 1 to reach R, so that is 1+V(R)=1+6=7. The update stores V(S)=4. The working part is not the direction labels; it is that both M and S borrowed V(M)=2 without re-examining what happens after M. Compute once, reuse everywhere.</p>
     <p>The world check is the example: A grid-world robot chooses a move by adding the step cost to the value of the cell it will reach. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>The state must summarize the future-relevant information and the transition model must be usable.</p>
-    <p>When that condition fails, look for this visible break: the state space becomes too large or the model is wrong.</p>
+    <p>The state label must contain all facts that change the future. If two cells are both labeled R but one has damaged wheels and the other has healthy wheels, one number V(R) cannot price their different futures. The method falsely reuses the subproblem and the stored policy points the wrong way. Equally, the state must be small enough that covering every possible combination of state values is computationally feasible; if the state space grows to millions of entries, even one pass through all states becomes impractical.</p>
     <p><strong>Recognize it in a new problem:</strong> Use it when the same future subproblem appears after many different action histories.</p>
   </div>
 </section>

@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Static Optimization</h1>
 <p class="lede">Choosing the best point when the decision does not itself unfold through system dynamics.</p>
+<p><a href="static-optimization-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>Many control methods reduce pieces of the course to ordinary optimization subproblems.</p>
-    <p>A common wrong first move is: Assume static optimization is the whole control problem. It fails when control decisions are chained; a good static decision can be bad once future states are included.</p>
+    <p>You choose a single charging power for the robot battery and assume that power is good for the entire hour regardless of how the temperature changes or whether the charge arrives early. At 4 kilowatts the battery reaches 46 degrees Celsius in 20 minutes, above the 45-degree limit, but you decided on the number before measuring temperature and cannot change it now. The battery heats past its safe point and loses capacity.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is an objective function and feasible set. Use it when you need to if there is no state transition, start with static optimization; if there is, treat it as a component.</p>
-    <p>What the object does: Search for a point with the smallest cost or largest reward.</p>
+    <p>The charging station must pick one power setting now and cannot change it during the hour, because the physics of the charger itself is not being controlled—only the decision of which knob to turn. Given an interval of allowed choices, a limit on electrical current, and a penalty for being far from the desired 6 kilowatts, the engineer wants to find the one setting that makes the most sense. The choice is a single number from a bounded legal set, and once chosen, it drives a measurable outcome: battery charge gained and heat produced. Optimizing that one decision for one outcome is static optimization.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to an objective function and feasible set in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Search for a point with the smallest cost or largest reward. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>The battery robot has one hour to charge before a delivery route. The desired power is 6 kilowatts, the wall outlet allows at most 4 kilowatts, and the cost of missing the target is (z - 6)^2. At z=4 kilowatts, cost = (4 - 6)^2 = 4. At z=3 kilowatts, cost = (3 - 6)^2 = 9. At z=0, cost = 36. Among legal choices z in [0, 4], the minimum cost is at z=4. But add a thermal constraint: after 20 minutes at constant power z, the battery temperature is T(z) = 30 + 2*z degrees Celsius. At z=4, temperature T(4)=38 + 8 = 46 degrees, above the 45-degree limit. The temperature constraint T(z) &lt;= 45 becomes g_thermal(z) = T(z) - 45 = z - 15 if we plug in the formula. At z=4, g_thermal(4) = 4 - 15 = -11 &lt;= 0, actually feasible. But let&#x27;s use a model that rises steeply: T(z)=30 + 4*z^2 / (5 - z). At z=4, T(4)=30 + 64/1 = 94, which is too high. Use T(z)=30+3*z. At z=4, T(4)=42. At z=3.8, T=41.4 and cost=(3.8-6)^2=4.84. The best legal choice is now z=3.8 kilowatts because it is feasible and better than z=3 (cost 9). This is a static problem because choosing z does not reveal a new state that changes what the next z should be. The choice is one number, the cost is final, and nothing rolls forward.</p>
     <p>The world check is the example: Choosing a single throttle setting for fuel use ignores that the rocket&#x27;s velocity changes after the throttle is applied. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>Static optimization is appropriate only when future dynamics have already been folded into the objective or constraints.</p>
-    <p>When that condition fails, look for this visible break: the solution is optimal for one snapshot and poor over the trajectory.</p>
+    <p>Static optimization is only valid if choosing one number now settles the whole problem and nothing the optimizer does changes what future decisions see. If the robot might arrive at the charger hot or cold and a smart controller would use a different power for each arrival temperature, the problem is no longer static—it is sequential control where the state (current temperature) changes what decision is best. The moment the choice of z today changes the temperature the robot has tomorrow, and that new temperature is fed back into the next optimization, the problem breaks static optimization and becomes a sequential decision chain.</p>
     <p><strong>Recognize it in a new problem:</strong> If there is no state transition, start with static optimization; if there is, treat it as a component.</p>
   </div>
 </section>

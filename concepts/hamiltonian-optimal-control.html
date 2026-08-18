@@ -13,6 +13,9 @@
 <a class="" href="../lectures.html">Lectures</a>
 <a class="" href="../transcripts.html">Transcripts</a>
 <a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../deep-track.html">Deep track</a>
+<a class="" href="../concept-explainers.html">Mechanism map</a>
+<a class="" href="../bridge-data-to-control.html">Data → Control bridge</a>
 <a class="" href="../course-spine.html">Spine</a>
 <a class="" href="../families.html">Families</a>
 <a class="" href="../primitives.html">Primitives</a>
@@ -26,28 +29,27 @@
 <p><a href="../concepts.html">Back to concept atlas</a></p>
 <h1>Hamiltonian for Optimal Control</h1>
 <p class="lede">A combined expression that packages immediate cost with how actions move the state into future cost.</p>
+<p><a href="hamiltonian-optimal-control-deep.html" style="display:inline-block;border:1px solid var(--accent);border-radius:999px;padding:6px 14px;text-decoration:none;font-weight:700">Read the deep dive — seen on a real run &rarr;</a></p>
 <section class="fp">
   <div class="kick">01 · the ordinary pressure</div>
   <h2>Why this idea has to exist</h2>
   <div class="essay">
     <p>An action must be judged both by what it costs now and by how it changes the state that future costs depend on.</p>
-    <p>A common wrong first move is: Choose the action with the smallest immediate cost. It fails when the cheap action now can steer the state into an expensive region.</p>
+    <p>A cheap first move is to choose each control action by just minimizing what it costs right now—burn the least fuel at this instant, or apply the smallest force today. But a small cheap action now can leave the system in a bad place where future costs explode. A careful rocket burn costs more fuel today but puts you on a trajectory where you do not need costly later corrections.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">02 · the object</div>
   <h2>What the math keeps track of</h2>
   <div class="essay">
-    <p>The working object is the hamiltonian in an optimal-control necessary condition. Use it when a local action must be priced by immediate and future state effects together.</p>
-    <p>What the object does: Combine stage cost, dynamics, and costate sensitivity, then choose controls that satisfy the necessary condition.</p>
+    <p>Every action you take has two competing prices. There is what it costs immediately—the fuel burned or the power consumed at this moment. But there is also how it changes the state that future costs depend on; if you nudge the cart height upward, every later decision gets to work from a different starting point. To make a good local choice at each instant, you need one unified accounting sheet that sees both the immediate bill and the future value of the state change. This unified expression, the Hamiltonian, combines the running cost with the costate&#x27;s valuation of where your action moves you.</p>
   </div>
 </section>
 <section class="fp">
   <div class="kick">03 · read it with your hands</div>
   <h2>What to inspect first</h2>
   <div class="essay">
-    <p>Before naming the method, point to the hamiltonian in an optimal-control necessary condition in the setup. Ask what a person could measure, command, update, price, or forbid in one small run.</p>
-    <p>Now apply one command or one update. Combine stage cost, dynamics, and costate sensitivity, then choose controls that satisfy the necessary condition. After that operation, ask what changed in the next state, the path, the value, the constraint set, the policy, or the learned model. If nothing concrete changes, the explanation is still only a label.</p>
+    <p>Suppose a cart is at height x and can choose upward thrust u with immediate fuel cost 0.5*u^2. The costate p tells the future price of height: if p = -20, one extra meter of height reduces downstream penalty by about 20. The Hamiltonian is H = 0.5*u^2 + p*u. Try u = 0: H = 0. Try u = 10: H = 50 - 200 = -150. Try u = 20: H = 200 - 400 = -200. Try u = 30: H = 450 - 600 = -150. The best balance is u = 20 because it makes the Hamiltonian most negative. Now the future price changes to p = -4 (the cart is nearly on target). Then H(u) = 0.5*u^2 - 4*u: H(0)=0, H(4)=8-16=-8, H(12)=72-48=24. The optimal local choice moves to u = 4. The same motor and the same running cost; only the backward price changed.</p>
     <p>The world check is the example: A rocket burn costs fuel immediately but may reduce future position error; the Hamiltonian puts both effects in one local calculation. Try the same question on another car, drone, rover, robot arm, or reward signal. The concept should still name what changes, what is paid for, and what can fail.</p>
   </div>
 </section>
@@ -61,8 +63,7 @@
   <div class="kick">05 · boundary</div>
   <h2>Where the idea stops working</h2>
   <div class="essay">
-    <p>It gives necessary conditions under model and smoothness assumptions, not automatic global optimality.</p>
-    <p>When that condition fails, look for this visible break: a trajectory satisfies local equations but is not the best or violates practical constraints.</p>
+    <p>The Hamiltonian gives a necessary condition for optimality, not a guarantee of success. The control that minimizes H at each instant is the best local choice assuming the costate is correct and no constraints are violated. But if a real cost is missing from the model—say, motor overheating above 8 units of thrust—then the Hamiltonian&#x27;s ledger is incomplete and its recommendation can be wrong. The boundary is truthfulness of the model: if the running cost or dynamics are incomplete, the Hamiltonian balances a false accounting sheet.</p>
     <p><strong>Recognize it in a new problem:</strong> Use it when a local action must be priced by immediate and future state effects together.</p>
   </div>
 </section>

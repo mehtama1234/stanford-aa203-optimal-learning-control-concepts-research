@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Exploration (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="exploration.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+      <a href="../concept-explainers.html">Mechanism map</a>
+      <a href="../bridge-data-to-control.html">Data → Control bridge</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">Exploration · learning-based control · sometimes you must try a move you don't yet believe is best</div>
+      <h1>Exploration — the move you don't expect may be the one that matters</h1>
+      <p class="lede">The core problem: an agent locked into its current best guess will never discover anything better. The reframe: take random moves now and then, on purpose, to sample the unknown. A real run where pure greed finds nothing while controlled randomness finds the hidden prize. Why the trade-off stings: every random move costs you in the moment but may reveal a better future — get the dial wrong and you learn nothing or waste all your time. The real weakness: randomness can be unsafe on hardware and must shrink over time. And the surprise: exploration is why learning agents beat games humans couldn't, and the same tension appears in A/B testing and medical trials.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#tradeoff">The trade-off</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="exploration.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — if you only take your best guess, you can't find anything better</h2>
+      <div class="essay">
+      <p>Imagine you are learning to reach for a cup on a table. You try the most obvious reach — straight forward at eye level — and it works 7 times out of 10. The other 3 times, you knock the cup over or miss. You <em>could</em> keep reaching the same way, getting 70% success every time from now on. But what if reaching at a slight angle, with a twist of the wrist, succeeds 95% of the time? You will never know, because you are always choosing the reach you already believe works best.</p>
+      <p>This is the core bind: <strong>an agent that always takes its current best guess is locked out of better discoveries.</strong> It optimizes what it already knows instead of learning what it doesn't. Mathematicians call this <em>greedy</em> — always taking the top choice by current estimates. Greedy works great for squeezing the last bit of reward from knowledge you already have. But it kills learning. The move the agent has never tried might be the best move there is.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — deliberately take a random move now and then to sample the unknown</h2>
+      <div class="essay">
+      <p>The fix is counterintuitive but unavoidable: <strong>intentionally choose moves you don't yet believe are best.</strong> On purpose. Not because they look good, but to find out what happens. The simplest way is <em>epsilon-greedy</em> (we call the dial 'epsilon'): with some small probability — say 10% — pick a random move instead of your current best guess. The other 90% of the time, act on what you have learned.</p>
+      <p>This is not chaos. The agent is not a gambling fool. It is a learner willing to spend some trials collecting data it doesn't have. When you try the angled reach in 10 of your next 100 attempts, you pay a short-term cost: some of those 10 might fail, and you miss 10 chances to score your reliable 70%. But you gain information. If the angled reach actually succeeds 95% of the time, you have now <em>seen</em> a better move. From then on, you can exploit it.</p>
+      <p>The philosophy is: a little bit of random sampling now buys you the knowledge to make better choices later. Greedy with zero randomness is myopic — it gets stuck on the first passable move. Greedy with a controlled dose of randomness is <em>learning</em>.</p>
+      <p>The hidden quantity here is <em>coverage</em> &mdash; whether you have tried each move from each state often enough to trust your estimate of its value. The learner keeps a running value estimate for every move, starting as a pure guess and nudged after each try toward the reward seen plus the best value expected next. Greedy behaviour trusts those guesses too early; deliberate randomness spends a little reward now to buy the evidence that makes them true.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — pure greed finds 0 out of 200; 30% randomness finds 120 out of 200</h2>
+      <div class="essay">
+      <p>Every number here is measured on a real run. We built a 6-step corridor: the agent starts in the middle. One exit is two steps to the left and pays a reward of +1. Another exit is four steps to the right and pays +10. The agent learns by trying random moves, keeping a running estimate of which move wins from each spot, and acting on that estimate. We ran the learning 200 times each with three different exploration amounts — and measured how many times the agent ended at the big +10 exit when acting greedily (no more randomness) after training.</p>
+      <div class="tw"><table><tr><th>ε (random move chance)</th><th>Found the +10 exit?</th><th>Times out of 200</th></tr><tr><td>ε = 0.0 (pure greedy, no randomness)</td><td>No</td><td>0 / 200</td></tr><tr><td>ε = 0.1 (random 10% of training)</td><td>No</td><td>0 / 200</td></tr><tr><td>ε = 0.3 (random 30% of training)</td><td>Yes</td><td>120 / 200</td></tr></table></div>
+      <div class="insight"><strong>The discovered fact: greedy with zero or tiny randomness walks to the near +1 and stays there, never seeing the far +10; only enough randomness uncovers the better prize.</strong> Pure greedy (ε = 0.0) and light randomness (ε = 0.1) both fail. The agent sees the +1 early, locks onto it because it works, and with almost no random moves, never wanders far enough to bump into the +10. At ε = 0.3, the agent explores enough to discover the +10 exists; then on half the runs, it learns the bigger exit is better and reaches it. The gap between 0/200 and 120/200 is the difference between 'stuck forever' and 'found the hidden prize.'</div>
+      </div>
+    </section>
+    <section class="fp" id="tradeoff">
+      <h2>4 · The trade-off — every random move costs now but may reveal a better future</h2>
+      <div class="essay">
+      <p>The agony of exploration is that <em>every random move has an immediate cost.</em> In the corridor, if the agent is at the left exit earning +1 per step and is forced to try a random move, that move might lead down a dead end (negative reward), eating into today's score. The agent pays a real price to gather data.</p>
+      <p>But that cost is only worth it if the data reveal something important enough to justify it. If you randomise 50% of the time in a scenario where all moves are equally good, you have wasted half your trials. If you randomise 1% of the time when there is a massive +10 exit hiding four steps away, you have wasted the 99% you spent being sure, and you will never find it. <strong>The dial must be tuned:</strong> enough randomness to escape the false local maximum (the near +1), but not so much that you throw away success exploring dead ends.</p>
+      <p>This is why the problem is so central to learning. You must balance two incompatible goals: <em>maximize reward right now</em> (greedy) and <em>learn what you don't know</em> (exploration). In theory, you could compute the right balance — it is a formal optimisation. In practice, most algorithms use a simple knob (epsilon or a bonus for uncertainty) that the engineer tunes by trial and error.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — randomness can be unsafe, and you must shrink it over time</h2>
+      <div class="essay">
+      <p>On a real robot, a random move is not abstract. It is a gripper closing on your finger, a wheel lurching sideways on a staircase, or a drone rotor spinning up unpredictably. A 10% random move might be a 10% chance of a crash, a drop, or a $50,000 repair. This is the hard boundary that theory papers gloss over: <strong>randomness has real cost outside the simulation.</strong></p>
+      <p>The second problem is that randomness must eventually stop. If you are still exploring 30% of the time after 10,000 runs and have found the best move, you are throwing away 3,000 runs that could have been executing your learned policy perfectly. <strong>Exploration is a tool for learning, not a permanent mode of life.</strong> Real algorithms decay epsilon over time (or shrink the uncertainty bonus) so the agent shifts from 'try things' to 'act on what I know.' Early on, epsilon = 0.5; later, epsilon = 0.1; eventually, epsilon = 0.01. The agent is front-loading its experimentation.</p>
+      <p>On robotics systems, this becomes a safety constraint: we set a maximum randomness (never more than 10% chance of a wild move, because harder risks the equipment), and we ensure it shrinks to nearly zero so the final policy is reliable and repeatable.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this tension appears in every domain that learns from data</h2>
+      <div class="essay">
+      <p>Exploration is not unique to robot learning. The same conflict — harvest what you know versus sample what you don't — appears in unexpected places.</p>
+      <p><strong>In game-playing AI:</strong> AlphaGo, AlphaZero, and every learning agent that beat human champions used exploration. AlphaGo evaluated thousands of strange moves that looked bad by classical play (the exploration). Most were indeed bad. But some of them led to winning lines humans had never thought to search. The breakthrough moves — the ones that beat Lee Sedol — lived in the regions the agent only found because it was willing to look beyond the greedy best-guess line of play. No pure greedy player would have discovered them.</p>
+      <p><strong>In A/B testing:</strong> A company has a webpage conversion rate of 3.2%. They could show everyone that version forever (greedy). Instead, they send 10% of visitors to a new design (exploration). Most of the time it is worse. But occasionally it is better. The company pays the cost of a 0.3% dip on 10% of traffic — real money — to find out whether the other 90% should switch. This is the same exploration trade-off, applied to website design.</p>
+      <p><strong>In clinical trials:</strong> A hospital has a proven cancer treatment. A new drug shows promise in the lab. Do doctors give all patients the proven treatment (greedy)? Or do they enroll some patients in a trial of the new drug (exploration), knowing that some may respond worse? The ethical weight is enormous, but the logic is the same: investing trials in the unknown now, paying a cost in outcomes, to learn whether that unknown is actually better. The FDA requires this exploration because without it, medicine would never advance past the first passable treatment.</p>
+      <div class="insight"><strong>The deeper pattern:</strong> in every system that learns from data — whether you are teaching a robot, tuning a website, or discovering medicine — you face the same fundamental choice: exploit what you know and win today, or explore and learn. The methods differ (epsilon-greedy for robots, random traffic for websites, randomized trials for medicine), but the core trade-off is universal. The best systems do not solve it perfectly; they <em>acknowledge it and tune it consciously.</em> Ignore exploration and you trap yourself in a local optimum. Ignore exploitation and you waste resources gathering useless data. The art is the balance.</div>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — the deliberate randomness that finds better moves you have never tried</h2>
+      <div class="essay">
+      <p>Exploration is essential in game-playing agents like AlphaGo that beat human champions by exploring moves no human would consider, reinforcement learning agents learning in simulators or robots, A/B testing on websites where a variant serves a small share of traffic despite currently looking worse, and clinical trials where some patients receive an unproven drug to learn if it is better than the standard treatment.</p>
+      <p>A robot learning to reach for objects starts by trying the most obvious reach, which works much of the time. If it always repeats that reach, it will never discover an angled technique that succeeds far more often. The solution is epsilon-greedy: with some small probability, pick a random move instead of the best guess. Most tries exploit what is known; a few tries explore the unknown. Over time, the exploration reveals that the angled reach is better, and the learner switches. As training progresses, the randomness is reduced so the final policy is reliable.</p>
+      <div class="insight">Pure greedy behavior stays trapped in whatever worked first, so some amount of deliberate randomness is necessary to discover better moves.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="reinforcement-learning.html">reinforcement learning</a> · <a href="policy.html">policy</a> · <a href="value-function.html">value function</a> · <a href="model-based-rl.html">model-based reinforcement learning</a> · <a href="reward.html">reward</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">6-spot gridworld corridor (start middle, left exit +1 at 2 steps, right exit +10 at 4 steps). Agent learns by taking random moves, updating a running value estimate for each move-at-each-spot pair (a 'Q-table'), then acts greedily on the learned estimates. Epsilon-greedy means: with probability epsilon pick a random move; with probability 1-epsilon pick the move with the highest learned value. Run with numpy.</p>
+      <div class="eq">Q[state, move] += learning_rate * (reward + discount_factor * max(Q[next_state, :]) - Q[state, move])
+if random() &lt; epsilon:
+    move = random_legal_move()
+else:
+    move = argmax(Q[state, :])
+# EXP2: 6-corridor with L=+1, R=+10
+#   Sweep epsilon in {0.0, 0.1, 0.3}
+#   For each epsilon, train 200 times
+#   After training, act greedily (epsilon=0) and measure: final position == right exit (+10) ?
+#   Result: ε=0.0 → 0/200, ε=0.1 → 0/200, ε=0.3 → 120/200</div>
+      <p class="muted">Full script: scripts/experiments/rl_run.py. All numbers reported are the run's output verbatim.</p>
+    </div></details>
+    <footer>Stanford AA203 · Exploration deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

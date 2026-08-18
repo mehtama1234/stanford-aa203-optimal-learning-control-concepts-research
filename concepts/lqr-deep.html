@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LQR (deep) · Stanford AA203 Control Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <style>
+    .arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+    .arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:3px 10px;background:var(--paper)}
+    .arc a:hover{border-color:var(--accent)}
+    .barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+    .barrow .lab{width:130px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--muted);text-align:right}
+    .bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}
+    .bar.alt{background:var(--accent-2)}
+    .barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink)}
+    .eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef5f4;border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+    .insight{border-left:3px solid var(--accent-2);background:#fbf3ee;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:15.5px}
+    figure{margin:16px 0}figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+    .tw{overflow-x:auto}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AA203 Control Lab</a>
+    <nav>
+      <a href="../index.html">Overview</a>
+      <a href="../concepts.html">Concepts</a>
+      <a href="lqr.html">Atlas card</a>
+      <a href="../course-spine.html">Spine</a>
+      <a href="../derivations.html">Derivations</a>
+      <a href="../concept-explainers.html">Mechanism map</a>
+      <a href="../bridge-data-to-control.html">Data → Control bridge</a>
+    </nav>
+  </header>
+  <main>
+    <div class="hero">
+      <div class="kick">LQR · first principles · the feedback rule that falls out of a bowl-shaped future cost</div>
+      <h1>LQR — when the future cost is a bowl, the best move is a straight line</h1>
+      <p class="lede">The one problem it solves, the single assumption that unlocks it, a real run where you watch the feedback rule <em>stop changing</em> after a few steps, the one price dial that determines everything about how it behaves, its one honest weakness shown as a numerical breakdown, and the surprise that this tiny law lives inside trajectory optimization, constrained receding-horizon control, and learning baselines.</p>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#dial">The one dial</a><a href="#weakness">The one weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="lqr.html">Atlas card</a></div>
+    </div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — re-planning the whole future at every twitch is too slow</h2>
+      <div class="essay">
+      <p>Picture a cart you can push along a line. Its state is two numbers — position and velocity — and your one lever is a force. It drifts a few centimetres off the mark; you nudge it back. It drifts again; you nudge again. This happens thousands of times a second on a drone rotor, a hard-drive head, a rocket near hover. Each correction is tiny.</p>
+      <p>You <em>could</em> answer every drift by searching through all possible force sequences into the future, keeping the cheapest one, and applying its first step. That is correct and hopelessly slow: you would search the entire future just to move the cart two millimetres. The real question is much narrower and repeats forever: <strong>given the error I measure right now, how hard do I push back?</strong> We want that answer as a single <em>rule</em> — computed once, reused forever — not a new search every tick.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — assume the future cost is a bowl, and the best push becomes linear</h2>
+      <div class="essay">
+      <p>Two honest simplifications unlock everything. First, near the target, the world obeys a straight-line rule: the next state is a fixed multiple of the current state, plus another fixed multiple of your push. Second, we score error and effort by squaring them — the further off you are, the higher the cost; the harder you push, the higher the cost. Squares matter because they are the one cost shape with a magical property: if you imagine today's total future cost (squared) and work backward one step through the straight-line world, tomorrow's cost is also squared. The shape preserves itself. Nothing else does.</p>
+      <p>Here is the payoff. Once you accept squared costs, the best push turns out to be dead simple: measure how far off you are and how fast you are drifting, multiply each by a fixed number, add them, and push back by that much. No searching, no re-planning — just two multiplications. Those two fixed numbers are the whole controller. (The matrix formula that produces them is in the recipe at the bottom.)</p>
+      <p>The method is: compute those two fixed numbers by working backward through time one step at a time, checking whether they stop changing. The question is whether they actually do settle down — which is exactly what the next run shows.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — the gain stops changing after 26 steps</h2>
+      <div class="essay">
+      <p>Every number here is measured, not asserted. We set up a cart with position and velocity (time step 0.1 seconds), penalised position error squares and push-effort squares equally, and walked backward through time one step at a time. The two numbers — how much to react to position error and how much to react to velocity drift — are printed at each step. The recipe at the foot shows the exact setup; the numbers that follow are the algorithm&rsquo;s output verbatim.</p>
+      <figure><div class="barrow"><span class="lab">1 step from end</span><div class="bar" style="width:2px"></div><span class="val">K_pos = 0.000</span></div><div class="barrow"><span class="lab">3 steps from end</span><div class="bar" style="width:16px"></div><span class="val">K_pos = 0.298</span></div><div class="barrow"><span class="lab">10 steps from end</span><div class="bar" style="width:143px"></div><span class="val">K_pos = 2.659</span></div><div class="barrow"><span class="lab">26 steps (converged)</span><div class="bar" style="width:150px"></div><span class="val">K_pos = 2.788</span></div><div class="barrow"><span class="lab">all earlier steps</span><div class="bar" style="width:150px"></div><span class="val">K_pos = 2.788</span></div><figcaption>The feedback gain starts near zero at the last step, climbs upward, and then locks onto a constant value. Within 26 steps backward it is within 1% of [2.788, 2.505] and stops changing.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: the rule converges and stops changing.</strong> At the very last instant, push almost nothing — there is no future left. But more than about <strong>26 steps (2.6 seconds)</strong> from the end, every step uses the <em>same</em> constant rule: push back 2.788 times how far off you are, plus 2.505 times how fast you are drifting. The time-to-go only matters in the last 26 steps. This is why real systems do not run this calculation repeatedly — they use the constant rule it settles to. That constant rule is provably the best you can do for any step far enough from the end.</div>
+      </div>
+    </section>
+    <section class="fp" id="dial">
+      <h2>4 · The one dial — a single price sets everything</h2>
+      <div class="essay">
+      <p>LQR has essentially one knob a designer turns: the price of pushing. Make pushing expensive and the controller is gentle, slow, and timid. Make it cheap and the controller slams hard, settles fast, but demands huge forces. Sweep this price across the same cart and measure the resulting rule, how fast it settles, and the peak force required. The result is a clean trade-off — no hand-tuning surprises, just a single smooth curve:</p>
+      <div class="tw"><table><tr><th>R (push price)</th><th>K_pos</th><th>K_vel</th><th>settling time</th><th>peak force</th><th>personality</th></tr><tr><td>0.01 (cheap to push)</td><td>7.989</td><td>4.417</td><td>1.0 s</td><td>7.99</td><td>twitchy, slams hard</td></tr><tr><td>0.1 (moderate)</td><td>2.788</td><td>2.505</td><td>1.7 s</td><td>2.79</td><td>brisk</td></tr><tr><td>1.0 (balanced)</td><td>0.932</td><td>1.412</td><td>3.0 s</td><td>0.93</td><td>balanced</td></tr><tr><td>10 (expensive to push)</td><td>0.304</td><td>0.795</td><td>5.3 s</td><td>0.30</td><td>gentle</td></tr><tr><td>100 (very expensive)</td><td>0.098</td><td>0.447</td><td>9.4 s</td><td>0.10</td><td>sluggish, barely tries</td></tr></table></div>
+      <div class="insight">A 10,000× change in one price walks the controller from a 1.0-second slam to a 9.4-second glide, with peak force dropping almost exactly in step (7.99 → 0.10). <strong>The price weights are not decoration — they are the whole design.</strong> There is no hidden 'how aggressive' dial to adjust; aggressiveness <em>is</em> the ratio of position-error cost to push-effort cost.</div>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — it assumes unlimited force and a perfect line</h2>
+      <div class="essay">
+      <p>LQR's power comes from two assumptions: the world obeys a straight-line rule and the push can be as large as needed. Real motors and thrusters max out. We used the rule from the moderate case above (price = 0.1) but imposed a hard force limit of 1.0 units, then started the cart at increasing distances. We measured what actually happened (the real cost, accounting for the clipped force) versus what LQR predicted (the squared-cost formula):</p>
+      <div class="tw"><table><tr><th>start error</th><th>force LQR demands (limit 1.0)</th><th>ideal cost</th><th>real clipped cost</th><th>blow-up</th></tr><tr><td>0.5 m</td><td>1.39 (limited to 1.0)</td><td>2.2</td><td>2.3</td><td>×1.0</td></tr><tr><td>1.0 m</td><td>2.79 (limited to 1.0)</td><td>9.0</td><td>10.1</td><td>×1.1</td></tr><tr><td>3.0 m</td><td>8.36 (limited to 1.0)</td><td>80.9</td><td>132.3</td><td>×1.6</td></tr><tr><td>8.0 m</td><td>22.31 (limited to 1.0)</td><td>575.0</td><td>1651.8</td><td>×2.9</td></tr></table></div>
+      <div class="insight">At 0.5 m error the rule asks for 1.39 units against a limit of 1.0 — already asking too much. At 8 m it asks for <strong>22 units</strong> with only 1 available; the force gets clipped, the command is destroyed, and the real cost is <strong>2.9 times</strong> worse than LQR predicted. LQR is exactly optimal only when the straight-line model holds and the force never hits its limit. Outside that regime, it fails, and your job as an engineer is to know where that boundary is.</div>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this tiny law is the engine inside everything</h2>
+      <div class="essay">
+      <p>LQR looks like a toy: linear, squared-cost, no limits. Its real power is that almost every bigger method contains it as a piece.</p>
+      <p><strong>Trajectory optimization (iLQR, DDP)</strong> handles nonlinear robots by taking the actual dynamics, locally straightening them around a guessed trajectory, replacing costs with squared approximations, solving an LQR problem inside that linear-squared world, stepping forward, and repeating. The inner loop is the same Riccati step you saw here. <strong>Constrained receding-horizon control (MPC)</strong> handles the force limit by re-solving a small squared program each time step. When the force is not limited, its answer is exactly the LQR rule. <strong>Learning algorithms</strong> use this linear-quadratic problem as a sanity check: it is the only basic continuous-control problem with a known optimal answer. If a learning method cannot discover the rule [2.788, 2.505] on this simple cart, something is wrong with the method.</p>
+      <div class="insight">One core idea, three different packages. The fact that squared costs preserve their shape through straight-line dynamics — the property that lets you turn 'how hard do I push?' into a multiplication by two fixed numbers — is the seed of all three. Master this backward iteration once and you have the engine inside trajectory optimization, constrained receding-horizon control, and every learning baseline. It is the only continuous-control problem where the answer is known for sure.</div>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — the autopilot loop inside aircraft, drones, and disk drives</h2>
+      <div class="essay">
+      <p>LQR is the workhorse regulator wherever a system must be held near a setpoint cheaply and predictably: aircraft and spacecraft attitude control, quadrotor drones, the read-write head of a hard drive, camera gimbals, and the balancing loop of a self-balancing robot. Anywhere small deviations follow a near-straight-line rule and you care about both error and effort, LQR is often the first controller engineers reach for.</p>
+      <p>In practice an engineer straightens the real machine around its operating point, writes down two price weights—one on being off-target, one on control effort—and solves once for a fixed set of gains. Those gains ship as a tiny piece of code: read the sensors, multiply by the gains, command the actuator, repeat many times a second. Tuning means re-choosing the two weights, not rewriting logic.</p>
+      <div class="insight">Because the gains are computed ahead of time and the live cost is just a couple of multiplications, LQR runs on the cheapest microcontrollers—which is exactly why it is everywhere.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — across the machine</h2><p class="muted">This concept links to sister courses that supply it, use it, or mirror it &mdash; the wider data&rarr;model&rarr;control pipeline. Follow a link to open the connected concept.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #8b3f18"><a href="https://mehtama1234.github.io/eigensteve-concepts-research/koopman-operator-deep.html" style="font-weight:700">the Koopman operator</a> <span class="muted" style="font-size:13px">· Brunton · data-driven</span><div style="font-size:14.5px;margin-top:3px">LQR needs the rule to be a fixed weighted sum. Koopman is the step that turns a bending system into one, so LQR applies across the whole range, not only near one point.</div></li></ul></section>
+    <section class="fp"><p class="muted">Related: <a href="local-quadratic-approximation.html">local quadratic approximation</a> · <a href="dynamic-programming.html">dynamic programming</a> · <a href="model-predictive-control.html">model-predictive control</a> · <a href="value-function.html">value function</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Double integrator, dt=0.1. Riccati iterated backward by hand (no scipy) so convergence is visible; ablation and saturation simulated forward. Run with numpy.</p>
+      <div class="eq">A = [[1, 0.1],[0, 1]];  B = [[0],[0.1]];  Q = [[1,0],[0,0]]
+# The rule is: multiply position error by K_pos, velocity error by K_vel, add, push back.
+# K_pos and K_vel are found by this backward iteration, repeated from final time:
+K = (R + Bᵀ P B)⁻¹ Bᵀ P A
+P = Q + Aᵀ P A - Aᵀ P B K
+# EXP1: print K each step -&gt; converges to [2.788, 2.505] within 26 steps
+# EXP2: sweep R in {0.01,0.1,1,10,100}, simulate from x0=[1,0], measure settle + peak |u|
+# EXP3: fix R=0.1, clip |u|&lt;=1.0, start at x0 in {0.5,1,3,8}, compare clipped vs ideal cost</div>
+      <p class="muted">Full script: scripts/experiments/lqr_run.py. Numbers reported are the recursion's and the simulator's output verbatim.</p>
+    </div></details>
+    <footer>Stanford AA203 · LQR deep dive · every quantity measured, not asserted.</footer>
+  </main>
+</body>
+</html>

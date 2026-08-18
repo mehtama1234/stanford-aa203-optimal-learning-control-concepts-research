@@ -1,101 +1,117 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Data → Model → Control: One Machine</title>
+<title>Data → Equations → Control: One Machine</title>
 <link rel="stylesheet" href="assets/styles.css">
 <style>
 .bridge-hero .kick{color:var(--accent-2)}
-.loop{max-width:760px;margin:22px auto 6px;display:block}
-.loop text{font-family:Inter,system-ui,sans-serif}
-.legend2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0 26px}
-.legend2 .side{border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:14px 16px}
-.legend2 .side h3{margin:0 0 4px;font-size:16px}
-.legend2 .side.data h3{color:var(--accent-2)}.legend2 .side.control h3{color:var(--accent)}
-.legend2 .side p{margin:0;font-size:14px;color:var(--muted)}
-.conn{border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:0;margin:14px 0;overflow:hidden}
-.conn .top{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch}
-.conn .cell{padding:14px 16px}
-.conn .from{background:#fbf3ee;border-right:1px solid var(--line)}
-.conn .to{background:var(--soft);border-left:1px solid var(--line)}
-.conn .mid{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 14px;min-width:150px;text-align:center;background:var(--paper)}
+.machine{max-width:820px;margin:22px auto 8px;display:block}
+.legend3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:10px 0 26px}
+.legend3 .side{border:1px solid var(--line);border-radius:10px;background:var(--paper);padding:13px 15px;border-top:3px solid var(--line)}
+.legend3 .side.b{border-top-color:#8b3f18}.legend3 .side.p{border-top-color:#5b45c7}.legend3 .side.a{border-top-color:#0b6b64}
+.legend3 .side h3{margin:0 0 4px;font-size:15.5px}
+.legend3 .side.b h3{color:#8b3f18}.legend3 .side.p h3{color:#5b45c7}.legend3 .side.a h3{color:#0b6b64}
+.legend3 .side p{margin:0;font-size:13px;color:var(--muted)}
+.hop{margin:26px 0 6px}
+.hop .hh{border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:12px}
+.hop h2{margin:0;font-size:21px}.hop .hs{font-size:14px;color:var(--muted)}
+.conn{border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:0;margin:12px 0;overflow:hidden}
+.conn .top{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch}
+.conn .cell{padding:13px 15px}
+.conn .from{background:#faf6f3;border-right:1px solid var(--line)}
+.conn .to{background:#eef5f4;border-left:1px solid var(--line)}
+.conn .mid{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 14px;min-width:160px;text-align:center}
 .conn .mid .obj{font-size:13px;color:var(--ink);font-weight:600;line-height:1.35}
-.conn .mid .arrow{font-family:ui-monospace,Menlo,monospace;color:var(--accent);font-size:18px;margin:2px 0}
-.conn .lab{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:block;margin-bottom:6px}
-.conn .from .lab{color:var(--accent-2)}.conn .to .lab{color:var(--accent)}
+.conn .mid .arrow{font-family:ui-monospace,Menlo,monospace;color:var(--accent);font-size:17px}
+.conn .lab{font-family:ui-monospace,Menlo,monospace;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);display:block;margin-bottom:6px}
 .conn .chips a{display:inline-block;margin:0 5px 5px 0;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:13px;text-decoration:none}
-.conn .from .chips a:hover{border-color:var(--accent-2)}.conn .to .chips a:hover{border-color:var(--accent)}
-.conn .how{padding:12px 16px;border-top:1px solid var(--line);font-size:14.5px;color:#24323a;background:#fff}
+.conn .how{padding:11px 15px;border-top:1px solid var(--line);font-size:14.5px;color:#24323a;background:#fff}
 .conn .how b{color:var(--accent-2)}
-@media(max-width:760px){.conn .top{grid-template-columns:1fr}.conn .from,.conn .to{border:0;border-bottom:1px solid var(--line)}.legend2{grid-template-columns:1fr}}
+@media(max-width:720px){.conn .top{grid-template-columns:1fr}.conn .from,.conn .to{border:0;border-bottom:1px solid var(--line)}.legend3{grid-template-columns:1fr}}
 </style></head><body>
 <header class="topbar"><a class="brand" href="index.html">Stanford AA203 Control Lab</a>
 <nav><a href="index.html">Overview</a><a href="concepts.html">Concepts</a><a href="deep-track.html">Deep track</a><a href="concept-explainers.html">Mechanism map</a><a class="active" href="bridge-data-to-control.html">Data → Control bridge</a></nav></header>
 <main>
-<div class="hero bridge-hero"><div class="kick">connecting the dots · two courses, one pipeline</div>
-<h1>Data → Model → Control: One Machine</h1>
-<p class="lede">Steve Brunton's data-driven course and Stanford AA203 optimal control look like separate subjects. They are two halves of the same machine. Brunton's half turns <b>measured data into a model and a state</b>; AA203's half turns <b>that model and state into the best control</b>. Brunton produces exactly what AA203 assumes — and the actions AA203 commands generate the next round of data, closing the loop.</p>
+<div class="hero bridge-hero"><div class="kick">connecting the dots · three courses, one pipeline</div>
+<h1>Data → Equations → Control: One Machine</h1>
+<p class="lede">Three courses that look separate are three stages of one machine. <b>Steve Brunton&rsquo;s</b> half turns measured data into a model and a state. <b>Physics-informed ML</b> learns or solves the governing equations — the same move as Brunton&rsquo;s equation discovery, and the supplier of fast models. <b>AA203</b> turns a model and state into the best control. The actions AA203 commands become the next round of data, and the loop closes.</p>
 </div>
 
-<svg class="loop" viewBox="0 0 760 260" role="img" aria-label="Closed loop: data to model to control back to data">
-  <defs><marker id="ah" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
-    <path d="M0,0 L7,3 L0,6 Z" fill="#0b6b64"/></marker></defs>
-  <rect x="30" y="100" width="150" height="60" rx="10" fill="#fff" stroke="#d7e0e6"/>
-  <text x="105" y="126" text-anchor="middle" font-size="14" font-weight="700" fill="#17202a">measured data</text>
-  <text x="105" y="145" text-anchor="middle" font-size="11" fill="#5d6875">sensors, trajectories</text>
-  <rect x="300" y="20" width="160" height="66" rx="10" fill="#fbf3ee" stroke="#e6cdbc"/>
-  <text x="380" y="46" text-anchor="middle" font-size="13" font-weight="700" fill="#8b3f18">Brunton</text>
-  <text x="380" y="64" text-anchor="middle" font-size="11" fill="#5d6875">discover model + state</text>
-  <rect x="580" y="100" width="150" height="60" rx="10" fill="#e8f2f0" stroke="#bcd">
-  </rect>
-  <text x="655" y="126" text-anchor="middle" font-size="13" font-weight="700" fill="#0b6b64">AA203</text>
-  <text x="655" y="145" text-anchor="middle" font-size="11" fill="#5d6875">optimal control</text>
-  <rect x="300" y="176" width="160" height="60" rx="10" fill="#fff" stroke="#d7e0e6"/>
-  <text x="380" y="202" text-anchor="middle" font-size="14" font-weight="700" fill="#17202a">actions</text>
-  <text x="380" y="220" text-anchor="middle" font-size="11" fill="#5d6875">commands to the world</text>
-  <path d="M180,120 C240,60 260,50 300,52" fill="none" stroke="#8b3f18" stroke-width="2" marker-end="url(#ah)"/>
-  <path d="M460,53 C520,55 540,70 590,110" fill="none" stroke="#0b6b64" stroke-width="2" marker-end="url(#ah)"/>
-  <path d="M655,160 C655,210 520,206 462,206" fill="none" stroke="#0b6b64" stroke-width="2" marker-end="url(#ah)"/>
-  <path d="M300,206 C200,206 120,190 105,162" fill="none" stroke="#5d6875" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#ah)"/>
-  <text x="240" y="150" font-size="11" fill="#8b3f18">model+state</text>
-  <text x="470" y="150" font-size="11" fill="#0b6b64">given model</text>
-  <text x="150" y="212" font-size="11" fill="#5d6875">new data</text>
+<svg class="machine" viewBox="0 0 820 250" role="img" aria-label="Three-node loop: data to Brunton to physics-informed ML to AA203 to actions and back to data">
+  <defs><marker id="ah" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#0b6b64"/></marker>
+  <marker id="ag" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#5d6875"/></marker></defs>
+  <rect x="18" y="104" width="120" height="52" rx="10" fill="#fff" stroke="#d7e0e6"/>
+  <text x="78" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#17202a">measured data</text>
+  <text x="78" y="145" text-anchor="middle" font-size="10.5" fill="#5d6875">sensors, trajectories</text>
+  <rect x="180" y="36" width="150" height="58" rx="10" fill="#faf6f3" stroke="#8b3f18"/>
+  <text x="255" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#8b3f18">Brunton</text>
+  <text x="255" y="78" text-anchor="middle" font-size="10.5" fill="#5d6875">model + state from data</text>
+  <rect x="360" y="36" width="150" height="58" rx="10" fill="#f3f0fb" stroke="#5b45c7"/>
+  <text x="435" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#5b45c7">physics-informed ML</text>
+  <text x="435" y="78" text-anchor="middle" font-size="10.5" fill="#5d6875">learn / solve the law</text>
+  <rect x="540" y="36" width="150" height="58" rx="10" fill="#eef5f4" stroke="#0b6b64"/>
+  <text x="615" y="60" text-anchor="middle" font-size="13" font-weight="700" fill="#0b6b64">AA203</text>
+  <text x="615" y="78" text-anchor="middle" font-size="10.5" fill="#5d6875">optimal control</text>
+  <rect x="700" y="104" width="104" height="52" rx="10" fill="#fff" stroke="#d7e0e6"/>
+  <text x="752" y="128" text-anchor="middle" font-size="13" font-weight="700" fill="#17202a">actions</text>
+  <text x="752" y="145" text-anchor="middle" font-size="10.5" fill="#5d6875">to the world</text>
+  <path d="M138,120 C160,80 168,66 200,64" fill="none" stroke="#8b3f18" stroke-width="2" marker-end="url(#ah)"/>
+  <path d="M330,65 L358,65" fill="none" stroke="#5b45c7" stroke-width="2" marker-end="url(#ah)"/>
+  <path d="M510,65 L538,65" fill="none" stroke="#0b6b64" stroke-width="2" marker-end="url(#ah)"/>
+  <path d="M690,66 C700,66 724,80 748,104" fill="none" stroke="#0b6b64" stroke-width="2" marker-end="url(#ah)"/>
+  <path d="M752,156 C752,205 150,205 78,158" fill="none" stroke="#5d6875" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#ag)"/>
+  <text x="150" y="96" font-size="10.5" fill="#8b3f18">discover</text>
+  <text x="333" y="58" font-size="10.5" fill="#5b45c7">the law</text>
+  <text x="513" y="58" font-size="10.5" fill="#0b6b64">control</text>
+  <text x="404" y="222" font-size="10.5" fill="#5d6875">new data closes the loop</text>
 </svg>
-<div class="legend2">
-<div class="side data"><h3>Brunton — the front half</h3><p>Get a model and a state <i>from data</i>: discover the governing equations (SINDy, DMD, Koopman), reconstruct the hidden state (Kalman filter), compress it (POD), and bound its robustness (the waterbed law).</p></div>
-<div class="side control"><h3>AA203 — the back half</h3><p><i>Given</i> a model and a state, compute the best action: value and cost-to-go (dynamic programming), fixed-gain regulation (LQR), whole-path planning (trajectory optimization), and re-solving online (MPC).</p></div>
+<div class="legend3">
+<div class="side b"><h3>Brunton — from data</h3><p>Recover a model and a state from measurements: SINDy, DMD, Koopman, the Kalman filter, POD.</p></div>
+<div class="side p"><h3>Physics-informed ML — the law</h3><p>Learn or solve the governing equations: PINNs, symbolic regression, neural ODEs, operator learning, surrogates.</p></div>
+<div class="side a"><h3>AA203 — to control</h3><p>Given a model and state, compute the best action: dynamic programming, LQR, trajectory optimization, MPC.</p></div>
 </div>
 <div class="eyebrow" style="font-family:ui-monospace,Menlo,monospace;font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--accent);margin:30px 0 6px">The connections</div>
 <h2 style="margin:0 0 4px">Where the dots actually connect</h2>
-<p class="muted" style="max-width:80ch">Each row is one wire between the courses: a Brunton concept produces the hidden object in the middle, and an AA203 concept consumes it. Click any concept to open its deep dive.</p>
+<p class="muted" style="max-width:80ch">Each row is one wire: an upstream concept produces the object in the middle, and a downstream concept consumes it. Click any concept to open its deep dive — in whichever course it lives.</p>
+<div class="hop"><div class="hh"><h2>Hop 1 · Get the governing law</h2><div class="hs">Brunton and physics-informed ML are two routes to the same equation</div></div><div class="conn"><div class="top">
+<div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8012/sindy-deep.html">SINDy</a></div></div>
+<div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">the governing equation, chosen from data</div><div class="arrow">&rarr;</div></div>
+<div class="cell to"><span class="lab">downstream</span><div class="chips"><a href="http://localhost:8013/topics/symbolic-regression-deep.html">symbolic regression</a><a href="http://localhost:8013/topics/physics-informed-neural-networks-deep.html">PINNs</a></div></div>
+</div><div class="how"><b>How it hands off.</b> SINDy selects the few terms that make up the law. PIML&#x27;s symbolic regression is the same method under another name; a physics-informed neural network takes a known law and forces a network to satisfy it. One object — discovered, or enforced.</div></div>
 <div class="conn"><div class="top">
-<div class="cell from"><span class="lab">Brunton · from data</span><div class="chips"><a href="http://localhost:8012/sindy-deep.html">SINDy</a><a href="http://localhost:8012/dynamic-mode-decomposition-deep.html">DMD</a><a href="http://localhost:8012/koopman-operator-deep.html">Koopman</a></div></div>
-<div class="cell mid"><div class="arrow">&darr;</div><div class="obj">the evolution rule — how the state moves, x → f(x, u)</div><div class="arrow">&darr;</div></div>
-<div class="cell to"><span class="lab">AA203 · to control</span><div class="chips"><a href="concepts/dynamics-deep.html">dynamics</a><a href="concepts/lqr-deep.html">LQR</a><a href="concepts/trajectory-optimization-deep.html">trajectory optimization</a><a href="concepts/model-based-rl-deep.html">model-based RL</a></div></div>
-</div><div class="how"><b>How it hands off.</b> Brunton&#x27;s methods recover the equations of motion from measured trajectories — no hand-derived model. AA203 then takes that very rule as the model it plans and optimizes control over. One side discovers f; the other side optimizes through it.</div></div>
+<div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8012/proper-orthogonal-decomposition-deep.html">POD</a></div></div>
+<div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">a few reusable coordinates</div><div class="arrow">&rarr;</div></div>
+<div class="cell to"><span class="lab">downstream</span><div class="chips"><a href="http://localhost:8013/topics/operator-learning-deep.html">operator learning</a></div></div>
+</div><div class="how"><b>How it hands off.</b> POD compresses a whole family of solutions to a few pieces; operator learning generalises that, mapping entire inputs to entire outputs through a few learned pieces.</div></div></div>
+<div class="hop"><div class="hh"><h2>Hop 2 · Turn the law into something controllable</h2><div class="hs">physics-informed ML feeds AA203 the model it assumes</div></div><div class="conn"><div class="top">
+<div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8013/topics/neural-differential-equations-deep.html">neural ODEs</a><a href="http://localhost:8013/topics/partial-differential-equations-deep.html">PDEs</a></div></div>
+<div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">the dynamics — how the state moves, x → f(x, u)</div><div class="arrow">&rarr;</div></div>
+<div class="cell to"><span class="lab">downstream</span><div class="chips"><a href="concepts/dynamics-deep.html">dynamics</a><a href="concepts/model-based-rl-deep.html">model-based RL</a></div></div>
+</div><div class="how"><b>How it hands off.</b> A neural differential equation learns the rate-of-change rule from data; a solved PDE is that rule for a spatial system. Either way it is exactly the model AA203 takes as given.</div></div>
 <div class="conn"><div class="top">
-<div class="cell from"><span class="lab">Brunton · from data</span><div class="chips"><a href="http://localhost:8012/kalman-filter-deep.html">the Kalman filter</a></div></div>
-<div class="cell mid"><div class="arrow">&darr;</div><div class="obj">the true state you cannot directly measure</div><div class="arrow">&darr;</div></div>
-<div class="cell to"><span class="lab">AA203 · to control</span><div class="chips"><a href="concepts/state-deep.html">state</a><a href="concepts/value-function-deep.html">value / feedback</a></div></div>
-</div><div class="how"><b>How it hands off.</b> The Kalman filter reconstructs the hidden state from noisy, partial sensors. Every AA203 controller quietly assumes it can read a clean state — the filter is what actually supplies it.</div></div>
+<div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8013/topics/surrogate-modeling-deep.html">surrogate modeling</a></div></div>
+<div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">a fast stand-in for an expensive simulator</div><div class="arrow">&rarr;</div></div>
+<div class="cell to"><span class="lab">downstream</span><div class="chips"><a href="concepts/model-predictive-control-deep.html">MPC</a><a href="concepts/dynamic-programming-deep.html">dynamic programming</a></div></div>
+</div><div class="how"><b>How it hands off.</b> MPC must re-solve every step and value iteration must sweep every state; a surrogate makes each evaluation cheap enough that both run in real time.</div></div>
 <div class="conn"><div class="top">
-<div class="cell from"><span class="lab">Brunton · from data</span><div class="chips"><a href="http://localhost:8012/proper-orthogonal-decomposition-deep.html">POD</a></div></div>
-<div class="cell mid"><div class="arrow">&darr;</div><div class="obj">a low-dimensional set of coordinates</div><div class="arrow">&darr;</div></div>
-<div class="cell to"><span class="lab">AA203 · to control</span><div class="chips"><a href="concepts/state-deep.html">reduced state</a><a href="concepts/dynamic-programming-deep.html">dynamic programming</a></div></div>
-</div><div class="how"><b>How it hands off.</b> POD compresses a high-dimensional system to the few coordinates that carry the behavior. AA203&#x27;s value iteration and LQR, which choke on large state spaces, become tractable in that reduced state.</div></div>
+<div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8013/topics/optimization-for-learning-deep.html">optimization for learning</a></div></div>
+<div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">descent on a stretched surface</div><div class="arrow">&rarr;</div></div>
+<div class="cell to"><span class="lab">downstream</span><div class="chips"><a href="concepts/gradient-first-order-condition-deep.html">gradient &amp; first-order condition</a><a href="concepts/local-quadratic-approximation-deep.html">local quadratic approximation</a></div></div>
+</div><div class="how"><b>How it hands off.</b> Training a model and solving a control problem are the same descent on a curved surface; how stretched that surface is decides how hard both are.</div></div></div>
+<div class="hop"><div class="hh"><h2>Hop 3 · State and robustness, straight across</h2><div class="hs">Brunton hands AA203 what it cannot measure or exceed</div></div><div class="conn"><div class="top">
+<div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8012/kalman-filter-deep.html">the Kalman filter</a></div></div>
+<div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">the state you cannot directly measure</div><div class="arrow">&rarr;</div></div>
+<div class="cell to"><span class="lab">downstream</span><div class="chips"><a href="concepts/state-deep.html">state</a></div></div>
+</div><div class="how"><b>How it hands off.</b> Every controller assumes it can read a clean state. The Kalman filter reconstructs it from noisy, partial sensors.</div></div>
 <div class="conn"><div class="top">
-<div class="cell from"><span class="lab">Brunton · from data</span><div class="chips"><a href="http://localhost:8012/koopman-operator-deep.html">the Koopman operator</a></div></div>
-<div class="cell mid"><div class="arrow">&darr;</div><div class="obj">linear coordinates for a nonlinear system</div><div class="arrow">&darr;</div></div>
-<div class="cell to"><span class="lab">AA203 · to control</span><div class="chips"><a href="concepts/lqr-deep.html">LQR</a><a href="concepts/local-quadratic-approximation-deep.html">local quadratic approximation</a></div></div>
-</div><div class="how"><b>How it hands off.</b> Koopman lifts nonlinear dynamics into coordinates where they act linearly. AA203&#x27;s most powerful tools are linear-quadratic — so once Koopman does the lifting, LQR applies directly instead of only in a small neighborhood.</div></div>
+<div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8012/koopman-operator-deep.html">the Koopman operator</a></div></div>
+<div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">linear coordinates for a nonlinear system</div><div class="arrow">&rarr;</div></div>
+<div class="cell to"><span class="lab">downstream</span><div class="chips"><a href="concepts/lqr-deep.html">LQR</a><a href="concepts/local-quadratic-approximation-deep.html">local quadratic approximation</a></div></div>
+</div><div class="how"><b>How it hands off.</b> Koopman turns a bending system into a fixed-weighted-sum one, so LQR applies across the whole range instead of only near a point.</div></div>
 <div class="conn"><div class="top">
-<div class="cell from"><span class="lab">Brunton · from data</span><div class="chips"><a href="http://localhost:8012/sensitivity-and-robustness-deep.html">the waterbed law</a></div></div>
-<div class="cell mid"><div class="arrow">&darr;</div><div class="obj">the robustness ↔ performance tradeoff</div><div class="arrow">&darr;</div></div>
-<div class="cell to"><span class="lab">AA203 · to control</span><div class="chips"><a href="concepts/stability-under-replanning-deep.html">stability under replanning</a><a href="concepts/model-predictive-control-deep.html">MPC</a></div></div>
-</div><div class="how"><b>How it hands off.</b> The waterbed law proves no feedback loop can be robust everywhere — push down error rejection at one frequency and it pops up at another. AA203&#x27;s replanning controllers live inside that hard bound; it tells them what they cannot buy.</div></div>
-<div class="conn"><div class="top">
-<div class="cell from"><span class="lab">Brunton · from data</span><div class="chips"><a href="http://localhost:8012/compressed-sensing-deep.html">compressed sensing</a></div></div>
-<div class="cell mid"><div class="arrow">&darr;</div><div class="obj">sparsity — few measurements suffice</div><div class="arrow">&darr;</div></div>
-<div class="cell to"><span class="lab">AA203 · to control</span><div class="chips"><a href="concepts/state-deep.html">state from few sensors</a><a href="concepts/feasibility-deep.html">sensing budget</a></div></div>
-</div><div class="how"><b>How it hands off.</b> Compressed sensing rebuilds a full signal from far fewer samples than seem necessary, when the signal is sparse. When AA203&#x27;s state must be inferred under a tight sensor budget, this is what makes a full state estimate possible at all.</div></div>
-<div class="conn" style="border-color:var(--accent-2)"><div class="how" style="border-top:0;background:#fbf3ee"><b>And the loop closes.</b> AA203's controller acts, the world responds, and those responses are new measured data — which Brunton's methods use to refine the model and state. Run that cycle continuously and you have adaptive, data-driven control: exactly the meeting point that <a href="concepts/model-based-rl-deep.html">model-based RL</a> formalizes. The two courses are not neighbors; they are one loop.</div></div>
-<p class="muted" style="font-size:12px;margin-top:34px;border-top:1px solid var(--line);padding-top:18px">Cross-course bridge · generated by scripts/build_bridge.py · AA203 links are local; Brunton links use BRUNTON_BASE (set to the public Pages URL at deploy).</p>
+<div class="cell from"><span class="lab">upstream</span><div class="chips"><a href="http://localhost:8012/sensitivity-and-robustness-deep.html">the waterbed law</a><a href="http://localhost:8013/topics/uncertainty-and-generalization-deep.html">uncertainty</a></div></div>
+<div class="cell mid"><div class="arrow">&rarr;</div><div class="obj">the robustness limit</div><div class="arrow">&rarr;</div></div>
+<div class="cell to"><span class="lab">downstream</span><div class="chips"><a href="concepts/model-predictive-control-deep.html">MPC</a><a href="concepts/stability-under-replanning-deep.html">stability under replanning</a></div></div>
+</div><div class="how"><b>How it hands off.</b> The waterbed law bounds how much disturbance any loop can reject; model uncertainty is what that robustness must be sized to cover. AA203&#x27;s replanning lives inside both.</div></div></div>
+<div class="conn" style="border-color:var(--accent-2)"><div class="how" style="border-top:0;background:#faf6f3"><b>And the loop closes.</b> AA203&rsquo;s controller acts, the world responds, and those responses are new measured data — which Brunton&rsquo;s methods turn back into a model and physics-informed ML refines. Run that cycle continuously and you have adaptive, data-driven control, the meeting point <a href="concepts/model-based-rl-deep.html">model-based RL</a> formalizes. Three courses, one loop.</div></div>
+<p class="muted" style="font-size:12px;margin-top:34px;border-top:1px solid var(--line);padding-top:18px">Cross-course bridge · generated by scripts/build_bridge.py · AA203 links are local; Brunton uses BRUNTON_BASE, physics-informed ML uses PIML_BASE (set to public Pages URLs at deploy).</p>
 </main></body></html>

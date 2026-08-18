@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -60,6 +64,10 @@
         {
           "t": "para",
           "html": "The technique is called direct transcription because you transcribe — convert — the continuous path into a discrete optimization problem. All the nasty infinite details are captured by the grid's fineness and the physics constraints between neighbors."
+        },
+        {
+          "t": "para",
+          "html": "One symbol carries the discretization: <em>dt</em>, the length of each time step. We chop the continuous path into instants spaced dt apart and predict the next instant by applying physics over that gap &mdash; for example, at a speed of one metre per second with dt of a tenth of a second, the position advances by ten centimetres. Smaller dt means a finer, more honest grid; larger dt means fewer variables but a coarser approximation."
         }
       ]
     },
@@ -148,6 +156,24 @@
         {
           "t": "insight",
           "html": "<strong>One core idea, three different packages.</strong> The transcription of a continuous path into a finite decision problem — with physics constraints tying the knots together — is the backbone of modern motion planning. It trades the theoretical purity of a smooth curve for the practical reality that a computer needs numbers to work with. That trade-off won the race: every real robot does it."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — motion planning and trajectory solvers everywhere",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Direct transcription underlies the motion planning in industrial robot arms, autonomous vehicles planning safe overtakes, spacecraft trajectory optimization, and drone flight planners. Anywhere a smooth path must be computed that obeys the physics and respects limits—joint angles, speeds, actuator forces, collision-free space—the system likely chops the path into a grid of time points and transcribes the dynamics as constraints."
+        },
+        {
+          "t": "para",
+          "html": "An engineer starts with a desired maneuver: move the arm from one configuration to another within a fixed time, or steer the car around an obstacle while staying under a speed limit. The software samples the motion at small time intervals (knots)—anywhere from a few dozen to a few hundred points—and writes down the state and control at each knot as decision variables. It then adds physics constraints that force each neighboring pair to obey the equations of motion. An optimizer solves for the numbers that minimize effort or time while satisfying every constraint. The result is a trajectory that is guaranteed to be reachable."
+        },
+        {
+          "t": "insight",
+          "html": "Because the defect (mismatch between claimed and physically-predicted state) is forced to zero by the constraints, the resulting path is always executable—no surprises when it runs."
         }
       ]
     }

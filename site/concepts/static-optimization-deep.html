@@ -36,7 +36,7 @@
       <div class="kick">Static Optimization · first principles · picking one point from a legal set</div>
       <h1>Static Optimization — when you choose once, the answer is either level ground or pinned at a boundary</h1>
       <p class="lede">The one-shot setting where the decision does not unfold through time, what level ground means and why a boundary can take over, a real run where a bowl-shaped cost has its free best at one place but a cap pins it elsewhere, what active limits do, its one honest weakness shown in a measurement, and the surprise that this point-picking grammar is the subproblem inside every constrained solver and every MPC step.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#active">The active limit</a><a href="#weakness">The one weakness</a><a href="#surprise">The surprise</a><a href="static-optimization.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#active">The active limit</a><a href="#weakness">The one weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="static-optimization.html">Atlas card</a></div>
     </div>
 
     <section class="fp" id="problem">
@@ -66,6 +66,7 @@
       <div class="essay">
       <p>In the run above, the boundary z ≤ 1.5 is active because the free best answer wants z = 2.5, which is outside that limit. The slope at z = 1.5 still wants to go higher (the ground is not level there), but the wall stops you. If the cap had been z ≤ 3.0 instead, the free best at z = 2.5 would be legal, the boundary would be inactive, and you would ignore it — the answer would still be z = 2.5 with cost 1.500.</p>
       <p>This idea repeats across every constrained problem. A boundary is active only if it is binding — only if the unconstrained optimum would breach it. The job of a solver is to find which boundaries are active (there can be several), and confirm that no small move can lower the cost without violating an active boundary. That is the definition of the best legal point.</p>
+      <p>The hidden quantity here is the <em>active set</em> &mdash; the list of limits the best answer is pressed right up against. At the optimum, limits that never bind can be ignored entirely; the ones that do bind decide everything. The solver&rsquo;s real job is to discover which limits are active, then confirm that no move along them lowers the cost without breaking one.</p>
       </div>
     </section>
     <section class="fp" id="weakness">
@@ -82,6 +83,14 @@
       <p>Static optimization looks small: one choice, one cost, maybe a few boundaries. Its hidden power is that it is the core building block of constraint-handling everywhere.</p>
       <p><strong>Trajectory optimization with constraints</strong> (iLQR, DDP with limits) handles active boundaries by solving a static problem at each step: given the current state and the remaining future cost, what push is best right now, subject to the force limits and thermal limits that apply right now? The answer is either level ground or pinned against a limit. Repeat that one-step choice for every time step and you have a trajectory. <strong>Model-predictive control (MPC)</strong> makes this explicit: at each tick, re-solve a short squared-cost program (which is static, even if it covers a few steps ahead) and apply only the first move. If the force limit is binding, the MPC solver finds it and respects it. <strong>Constrained learning methods</strong> use the same grammar: estimate the value of being at state x under action a, then pick the a that minimizes total cost subject to the action limits that apply right now. The KKT conditions (the mathematics of 'level ground or active boundary') are the same in all three.</p>
       <div class="insight"><strong>One core idea, three scales.</strong> The machinery that decides whether a boundary is active — checking level ground and comparing nearby legal points — is the subproblem inside trajectory optimization, receding-horizon control, and learning-based methods. Master static optimization and you have the vocabulary for understanding what every constrained solver is doing at each step.</div>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — one-shot decisions pinned at level ground or pressed against a boundary</h2>
+      <div class="essay">
+      <p>Choosing the charging power for a brake system, selecting the gain of a feedback proportional controller, setting a filter cutoff frequency, or picking the force limits for one moment of a trajectory — all are static choices: one decision, one cost, maybe a few limits, then done.</p>
+      <p>At the best legal choice, one of two things is true: either the ground is level (the gradient is zero, no slope pushing you to move), or you are pressed against a boundary and moving further would violate a limit. The engineer's job is to identify which boundaries are active (binding) and confirm that no small move along them lowers the cost. When a boundary blocks the free optimum, the cost of the constraint is the gap between the free best and the best legal point.</p>
+      <div class="insight">Static optimization's core idea — level ground or active boundary — is the engine inside every constrained solver: trajectory optimization, MPC, and learning methods all repeatedly solve a static problem at each step to decide what to do right now, subject to limits that apply right now.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="trajectory-optimization.html">trajectory optimization</a> · <a href="gradient-first-order-condition.html">gradient and first-order condition</a> · <a href="local-quadratic-approximation.html">local quadratic approximation</a> · <a href="model-predictive-control.html">model-predictive control</a></p></section>

@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -246,6 +250,24 @@
           "html": "One core idea, three different packages. The fact that squared costs preserve their shape through straight-line dynamics — the property that lets you turn 'how hard do I push?' into a multiplication by two fixed numbers — is the seed of all three. Master this backward iteration once and you have the engine inside trajectory optimization, constrained receding-horizon control, and every learning baseline. It is the only continuous-control problem where the answer is known for sure."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the autopilot loop inside aircraft, drones, and disk drives",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "LQR is the workhorse regulator wherever a system must be held near a setpoint cheaply and predictably: aircraft and spacecraft attitude control, quadrotor drones, the read-write head of a hard drive, camera gimbals, and the balancing loop of a self-balancing robot. Anywhere small deviations follow a near-straight-line rule and you care about both error and effort, LQR is often the first controller engineers reach for."
+        },
+        {
+          "t": "para",
+          "html": "In practice an engineer straightens the real machine around its operating point, writes down two price weights—one on being off-target, one on control effort—and solves once for a fixed set of gains. Those gains ship as a tiny piece of code: read the sensors, multiply by the gains, command the actuator, repeat many times a second. Tuning means re-choosing the two weights, not rewriting logic."
+        },
+        {
+          "t": "insight",
+          "html": "Because the gains are computed ahead of time and the live cost is just a couple of multiplications, LQR runs on the cheapest microcontrollers—which is exactly why it is everywhere."
+        }
+      ]
     }
   ],
   "related": [
@@ -270,5 +292,12 @@
     "summary": "Double integrator, dt=0.1. Riccati iterated backward by hand (no scipy) so convergence is visible; ablation and saturation simulated forward. Run with numpy.",
     "eq": "A = [[1, 0.1],[0, 1]];  B = [[0],[0.1]];  Q = [[1,0],[0,0]]\n# The rule is: multiply position error by K_pos, velocity error by K_vel, add, push back.\n# K_pos and K_vel are found by this backward iteration, repeated from final time:\nK = (R + Bᵀ P B)⁻¹ Bᵀ P A\nP = Q + Aᵀ P A - Aᵀ P B K\n# EXP1: print K each step -> converges to [2.788, 2.505] within 26 steps\n# EXP2: sweep R in {0.01,0.1,1,10,100}, simulate from x0=[1,0], measure settle + peak |u|\n# EXP3: fix R=0.1, clip |u|<=1.0, start at x0 in {0.5,1,3,8}, compare clipped vs ideal cost",
     "note": "Full script: scripts/experiments/lqr_run.py. Numbers reported are the recursion's and the simulator's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "id": "koopman-operator",
+      "label": "the Koopman operator",
+      "note": "LQR needs the rule to be a fixed weighted sum. Koopman is the step that turns a bending system into one, so LQR applies across the whole range, not only near one point."
+    }
+  ]
 }

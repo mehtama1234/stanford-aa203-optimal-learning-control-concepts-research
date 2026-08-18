@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -161,6 +165,24 @@
         {
           "t": "insight",
           "html": "<strong>One idea, three worlds: discrete grids, continuous dynamics, and game trees all ride on the same principle.</strong> Learn or compute an estimate of the future value of each state (or state-action pair), work backward from the reward to tighten the estimates, and act by chasing the highest value. In discrete games it is called Q-learning. In continuous control with known dynamics it is LQR or iLQR. In learning-based continuous control it is a neural-network Q-function. The core loop is identical: get a reward signal, ripple it backward into past estimates, and let the policy fall out from the scored decisions."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — robots learning to navigate blind, game-playing engines, and autonomous systems without a model",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Value-based reinforcement learning is used wherever a system must learn good moves by trial and reward signal alone: a robot that learns to navigate a warehouse it has never seen by bumping into walls and receiving a reward when it reaches the goal, a game-playing agent that learns chess or Go by playing thousands of matches and receiving only the final win or loss, or a mobile robot learning to grasp objects by observing which arm poses result in successful holds."
+        },
+        {
+          "t": "para",
+          "html": "An engineer maintains a table or neural network that estimates the total future reward for each state-action pair (the Q-value or score). The agent explores by taking random moves occasionally, and after each move it observes the immediate reward and the new state. It then nudges the score for that move toward a target: the reward it just received plus a slightly-discounted version of the best available score in the next state. Over hundreds or thousands of episodes, the scores percolate backward from rewards into earlier moves, and the policy emerges automatically as always picking the highest-scored move."
+        },
+        {
+          "t": "insight",
+          "html": "The backward ripple of rewards means a single lucky success can eventually teach the agent to avoid bad moves that led away from it, but a table-based approach fails when states are continuous or infinite, and errors in early scores can get amplified and trap the learner into never exploring moves that are actually good."
         }
       ]
     }

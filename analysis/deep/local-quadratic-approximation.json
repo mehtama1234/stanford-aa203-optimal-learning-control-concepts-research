@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -114,6 +118,10 @@
         {
           "t": "para",
           "html": "This is the core trade-off: you save computation by freezing the model's shape, but you pay for it by having to stay close. The trust region is the radius within which the frozen model is honest enough. How far is 'honest enough'? It depends on how fast the true curve's curvature changes. A cost landscape that is almost parabolic everywhere can go much farther than one with wild swings. The numbers from the real run show an empirical version: for this particular cost, once the error exceeds about 9 percent (at offset 1.0), you are already in danger."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity here is the <em>trust radius</em> &mdash; how far from the point where you fit the bowl the frozen approximation still matches the true cost closely enough to steer by. Step inside it and the model guides you well; step outside and its curvature no longer matches the real curve, so the move it recommends can be wrong."
         }
       ]
     },
@@ -152,6 +160,24 @@
           "html": "<strong>One deep pattern across three tool-kit staples: fit a frozen local model, solve it, clip the step to stay in the honest region, measure the outcome, and refit at the new point.</strong> The numbers from the real run — errors growing from 0.3% to 41% as offset grows from 0.2 to 2.0 — show why clipping matters: a step size of 0.2 is safe; a step size of 2.0 is catastrophic fiction. The trust region is not hand-tuning overhead; it is the honest boundary of the model's domain of validity. Step beyond it and you are optimizing an approximation, not the real system. Master this fit-and-clip loop on one problem and you recognize it instantly in trajectory optimization, constrained optimization, and statistical fitting everywhere."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — freezing the world's shape near one point",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Local quadratic approximation is the fit-a-bowl-and-step strategy inside trajectory optimization (iLQR, DDP) for nonlinear robots, Newton's method for numerical optimization, and Levenberg-Marquardt damping for model fitting. Any method that must solve a curved problem cheaply uses this pattern."
+        },
+        {
+          "t": "para",
+          "html": "An engineer takes the actual nonlinear dynamics and nonlinear cost, zooms in near the current state (using a Taylor expansion), and approximates both as straight-line dynamics and squared cost—exactly the LQR problem. Solves that local linear-quadratic problem to get a step, takes a carefully clipped step to stay in the region where the approximation is honest, measures the true outcome, and refits the bowl around the new point."
+        },
+        {
+          "t": "insight",
+          "html": "The bowl-approximation error stays tiny close to the fitting point and balloons as you move away; this is why every practical method clips the step size to stay in the honest region and refits."
+        }
+      ]
     }
   ],
   "related": [
@@ -180,5 +206,12 @@
     "summary": "Double integrator, dt=0.1. Fit a quadratic cost model at one point, then measure the true cost at offset points {0.2, 0.5, 1.0, 2.0} and compute the percentage error between the bowl's prediction and the true nonlinear cost. Run with numpy.",
     "eq": "True cost: J(u) = c_0 + c_1*u + c_2*u^2 + c_3*u^3 + c_4*u^4  (a polynomial with higher-order terms)\nLocal quadratic fit at u=0: J_quad(u) = c_0 + c_1*u + c_2*u^2\nError at offset u_offset: |J(u_offset) - J_quad(u_offset)| / |J(u_offset)| × 100%\nResults (verbatim from simulator):\n  u_offset=0.2:  error = 0.3%\n  u_offset=0.5:  error = 2.1%\n  u_offset=1.0:  error = 8.8%\n  u_offset=2.0:  error = 41.2%",
     "note": "Full script: scripts/experiments/traj_run.py section EXP7. Numbers reported are the true-cost evaluations and fitted-bowl predictions, and the error percentages are computed from those verbatim outputs."
-  }
+  },
+  "connects": [
+    {
+      "id": "koopman-operator",
+      "label": "the Koopman operator",
+      "note": "This page approximates a bending system as a fixed-weighted-sum rule near one point and re-approximates as it moves. Koopman aims to remove that limit by finding coordinates where the rule does not bend at all."
+    }
+  ]
 }

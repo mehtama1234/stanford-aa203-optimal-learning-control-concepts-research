@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -181,6 +185,24 @@
         {
           "t": "insight",
           "html": "<strong>The discovered fact: local optimization of a global quantity.</strong> The Hamiltonian is the pivot that turns a hard global problem — find the best trajectory over all time — into a sequence of local decisions. Each instant minimizes its own bundle (immediate cost plus costate-weighted motion), not knowing the full future, yet the collection of all those local choices yields the best whole path. This principle is not special to control; it is a fundamental principle of optimization, physics, and information flow. Understand the Hamiltonian and you understand why constrained receding-horizon control works, why indirect optimization methods converge, and why the backward costate can encode an entire future into a local number."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — global optimization bundled into local decisions",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The Hamiltonian method is the foundation underlying every modern control system that must balance competing goals: aircraft and spacecraft guidance, chemical plant optimization, autonomous vehicles, and robotic manipulation. Anywhere a system must weigh immediate cost against future consequence, the Hamiltonian principle hides underneath — either explicitly in the math or implicitly in how engineers derive the control rules."
+        },
+        {
+          "t": "para",
+          "html": "In practice, an engineer writes down what the immediate action costs (fuel, force, energy) and what the state change means for future costs (using the costate, a backward-running shadow price). The Hamiltonian bundles these into one number at every time step. Instead of solving the entire trajectory at once, the engineer can write down the necessary conditions that an optimal path must obey — the Hamiltonian equations — and solve those. This turns a giant global search into a sequence of local decisions using the costate as a messenger."
+        },
+        {
+          "t": "insight",
+          "html": "The Hamiltonian transforms a global problem into a sequence of local minimizations by encoding the future cost into a single number that every instant can see and use."
         }
       ]
     }

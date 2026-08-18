@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -137,6 +141,10 @@
         {
           "t": "para",
           "html": "This handoff proof rests on two pillars: (1) the predicted successor state (from your model) lands in the terminal safe set, and (2) the real successor state lands in the safe set too, so the fallback plan still works. If the model is wildly wrong or the terminal set is too small or too large, the promise breaks."
+        },
+        {
+          "t": "para",
+          "html": "Stopping distance is simply the room you need to come to a full halt from your current speed. With a fixed strongest brake, that distance grows as the square of the speed divided by twice the braking rate &mdash; it comes straight from energy: all the motion energy must be bled off by braking, and motion energy scales with speed squared. So the move is safe only if the wall is far enough to stop in and the speed is low enough not to overshoot."
         }
       ]
     },
@@ -181,6 +189,24 @@
         {
           "t": "insight",
           "html": "<strong>One principle, three consequences:</strong> recursive feasibility is the property that makes short-horizon replanning safe. Without it, every new plan could be your last. With it, you have a certificate from step to step. This is why MPC has a convergence proof but blind replanning does not. It is why a long horizon (or an explicit safe set) turns replanning from hopeful guessing into provable control."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the handoff proof that next step still has a legal move",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Recursive feasibility is the principle that turns replanning from confident myopia into provable safety, making model-predictive control the only short-horizon replanning method with a mathematical guarantee. It is used wherever online re-solve is essential—self-driving cars replanning many times a second, robots re-grasping when a pick fails, chemical plants re-optimizing when a disturbance hits—and you need to prove that replanning will not walk into infeasibility."
+        },
+        {
+          "t": "para",
+          "html": "At each planning step the optimizer solves a horizon-limited problem and finds a feasible sequence of actions. Before applying the first action, it checks whether the predicted successor state (the state that results after one action) still lies inside a terminal safe set—a region designed so that at least one feasible plan exists from there. If yes, the action is applied. One moment later the system is re-measured and re-solved. The new problem is guaranteed to have at least one feasible solution because the previous problem's first move left the system inside the safe set. This handoff guarantee is what prevents short horizons from racing into corners."
+        },
+        {
+          "t": "insight",
+          "html": "Without recursive feasibility, every new plan could be your last; with it, you have a proof from step to step that feasibility survives the next re-solve."
         }
       ]
     }

@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -64,6 +68,10 @@
         {
           "t": "para",
           "html": "The method gets its name because you are 'shooting' the trajectory forward into the future, starting from a guessed initial condition (the launch), and watching where it lands (the endpoint). Unlike methods that draw a path and then check it, shooting embeds the forward simulation into the loop. The endpoint residual — the gap between where you landed and where you wanted to land — is the optimizer's only signal. It feeds that residual back to improve the next guess."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity here is the <em>endpoint miss</em> &mdash; the gap between where your guessed controls actually land the system and where you needed it to end up. That miss is the only feedback the method gets: how it changes as you nudge the launch controls tells you exactly how to correct the next guess."
         }
       ]
     },
@@ -156,6 +164,24 @@
         {
           "t": "insight",
           "html": "One core idea — parametrize, simulate, measure the miss, invert the sensitivity to correct — appears in orbital targeting, indirect optimization, and real-time MPC. The method's brittleness (ill-conditioning for sensitive systems) is the reason you see multiple-shooting and direct transcription in the wild. But the seed idea of 'guess the launch, see where it lands, adjust' is simple, powerful, and universal."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the guess-simulate-measure-adjust loop in spacecraft targeting and trajectory design",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Spacecraft trajectory planners need to hit a target orbit starting from the current position and velocity. Robot arms need to move the gripper from point A to point B without hitting obstacles. A cart needs to travel between two locations in a fixed time. All know the start, the goal, and the physics — but not the control sequence between them."
+        },
+        {
+          "t": "para",
+          "html": "The engineer parametrizes the unknown controls (often just the initial thrust magnitude, or the accelerations at key points) and simulates the trajectory forward from start to end using those guesses. The endpoint — where the system lands — misses the target by some amount. That miss is converted to a correction using the sensitivity: how much does a tiny change in launch acceleration shift the final position? The optimizer inverts that relationship and updates the guess. For linear systems it converges in one shot; for nonlinear systems it takes a few iterations."
+        },
+        {
+          "t": "insight",
+          "html": "Shooting's weakness is ill-conditioning: when small control changes swing the endpoint wildly, numerical errors blow up, so practical spacecraft use multiple shooting (breaking the trajectory into segments with intermediate waypoints as variables) to reduce sensitivity."
         }
       ]
     }

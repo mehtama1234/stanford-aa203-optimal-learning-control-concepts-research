@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -175,6 +179,24 @@
         {
           "t": "insight",
           "html": "<strong>One loop, three worlds.</strong> The core idea — try, measure, update — appears in chess engines learning strategy, gripper arms learning force, and language models learning human preference. The differences are in the timescale (game planning is fast, robot learning takes weeks, language model updates take hours) and the reward shape (immediate success/failure, dense numeric reward, or abstract human preference). But the math is the same: build a guess, run it, measure consequence, nudge the guess toward higher reward. That universality is why reinforcement learning sits at the center of modern AI."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the trial-and-error loop in game AI, robot control, and language tuning",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Reinforcement learning powers game-playing agents that beat humans at chess and Go, robotic arms learning to grasp objects by trying thousands of times, and the fine-tuning of large language models to generate better responses. In each case, there is no manual label for the right answer — only a reward signal that measures success."
+        },
+        {
+          "t": "para",
+          "html": "The engineer writes down what success looks like as a number: win the game, pick up the object without dropping it, answer the human's question well. The learner runs many trials, measures the reward each time, and updates a guess about which moves lead to high reward. Over hundreds or thousands of trials, it builds a map of good moves from each situation. When deployed, it just reads the situation and picks the move with the highest score. The discount factor (how much future reward counts compared to immediate reward) shapes the style: patient agents sacrifice now for later gain; greedy agents grab the fastest payoff."
+        },
+        {
+          "t": "insight",
+          "html": "Because learning requires many real-world trials and each trial can be costly or unsafe, production systems use model-based RL to cut the expensive tries from thousands to dozens — watching a few trajectories, learning the model once, then planning with it."
         }
       ]
     }

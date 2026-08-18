@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -114,6 +118,10 @@
         {
           "t": "para",
           "html": "This idea repeats across every constrained problem. A boundary is active only if it is binding — only if the unconstrained optimum would breach it. The job of a solver is to find which boundaries are active (there can be several), and confirm that no small move can lower the cost without violating an active boundary. That is the definition of the best legal point."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity here is the <em>active set</em> &mdash; the list of limits the best answer is pressed right up against. At the optimum, limits that never bind can be ignored entirely; the ones that do bind decide everything. The solver&rsquo;s real job is to discover which limits are active, then confirm that no move along them lowers the cost without breaking one."
         }
       ]
     },
@@ -150,6 +158,24 @@
         {
           "t": "insight",
           "html": "<strong>One core idea, three scales.</strong> The machinery that decides whether a boundary is active — checking level ground and comparing nearby legal points — is the subproblem inside trajectory optimization, receding-horizon control, and learning-based methods. Master static optimization and you have the vocabulary for understanding what every constrained solver is doing at each step."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — one-shot decisions pinned at level ground or pressed against a boundary",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Choosing the charging power for a brake system, selecting the gain of a feedback proportional controller, setting a filter cutoff frequency, or picking the force limits for one moment of a trajectory — all are static choices: one decision, one cost, maybe a few limits, then done."
+        },
+        {
+          "t": "para",
+          "html": "At the best legal choice, one of two things is true: either the ground is level (the gradient is zero, no slope pushing you to move), or you are pressed against a boundary and moving further would violate a limit. The engineer's job is to identify which boundaries are active (binding) and confirm that no small move along them lowers the cost. When a boundary blocks the free optimum, the cost of the constraint is the gap between the free best and the best legal point."
+        },
+        {
+          "t": "insight",
+          "html": "Static optimization's core idea — level ground or active boundary — is the engine inside every constrained solver: trajectory optimization, MPC, and learning methods all repeatedly solve a static problem at each step to decide what to do right now, subject to limits that apply right now."
         }
       ]
     }

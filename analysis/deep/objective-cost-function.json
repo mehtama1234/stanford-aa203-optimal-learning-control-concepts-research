@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -64,6 +68,10 @@
         {
           "t": "para",
           "html": "This is the reframe: instead of saying 'make the best decision right now,' the problem becomes 'find the entire sequence of decisions whose total written cost is lowest.' The lowest score is the definition of optimal. If you want different behavior, you do not tell the controller to be more cautious; you rewrite the score."
+        },
+        {
+          "t": "para",
+          "html": "In words, the score adds two running charges: the squared distance from the target at each moment (how far off you are) plus a weight times the squared push you applied (how hard you worked). That weight &mdash; the price of pushing &mdash; is the single dial: raise it and effort becomes expensive, so the optimizer chooses gentler moves; lower it and it will slam hard to save time."
         }
       ]
     },
@@ -161,6 +169,24 @@
         {
           "t": "insight",
           "html": "<strong>In both control and learning, the objective is the design.</strong> You do not tune aggressiveness as a separate parameter; you tune the objective weights. You do not hand the agent a list of rules to follow; you give it a number to minimize. The challenge is not the algorithm — it is picking an objective that honestly reflects what 'best' means in your domain. The same cart controlled by the same algorithm but scored differently does what you ask, perfectly, every time. The algorithm is not the bottleneck; <strong>the objective is.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the score that rewrites how a system behaves",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every autonomous system that moves or changes state has an objective function hiding inside it, whether written explicitly or not: a delivery robot that balances speed versus energy use, a satellite attitude controller that trades fuel burn against pointing accuracy, a water treatment plant that trades filtration cost against discharge quality. The objective is the design choice. It is not a separate tuning dial; it is the fundamental specification of what the system optimizes."
+        },
+        {
+          "t": "para",
+          "html": "An engineer measures what matters in the real world—time, effort, waste, risk, constraint violation—and assigns a weight to each. The weights express the trade-off rates: how much time is worth how much energy, how much energy is worth how much accuracy. A high weight on effort means the system will move slowly and gently; a low weight means it will race hard and spend fuel freely. Changing only the weight on one term in the objective, without touching the dynamics or hardware, completely changes the learned or computed control behavior."
+        },
+        {
+          "t": "insight",
+          "html": "The objective is not what you wish would happen; it is what will happen—because the algorithm is doing exactly what the objective asks, faithfully and perfectly."
         }
       ]
     }

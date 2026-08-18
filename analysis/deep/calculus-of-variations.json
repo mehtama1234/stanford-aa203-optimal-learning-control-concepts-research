@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -68,6 +72,10 @@
         {
           "t": "para",
           "html": "This is different from checking one slope. You are not computing how steep a hill is at a single point. You are asking: 'Does this entire curve have the property that every admissible wiggle either leaves cost alone or makes it worse?' If yes, the curve is locked in place and cannot be improved by local nudging. This is called the first-variation condition, and the equation it produces — the Euler equation — is the law the best path must obey."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity here is <em>stationarity</em> &mdash; whether a tiny, physics-allowed wiggle of the path changes the total cost at all. A path can be the best only if every such wiggle leaves the cost unchanged; that &lsquo;no wiggle helps&rsquo; condition is exactly what we are hunting for, and it is what the equation below pins down."
         }
       ]
     },
@@ -166,6 +174,24 @@
         {
           "t": "insight",
           "html": "<strong>One foundational principle produces three toolboxes.</strong> The brachistochrone was solved in 1697; the Hamiltonian method was formalized in the 1830s; modern numerical trajectory optimization was born in the 1970s–2000s. All three are asking the same question: 'What path has the property that no tiny admissible wiggle lowers its cost?' The answer method changed from hand calculus to numerical iteration to automatic differentiation, but the idea — that the best shape locks itself in place by obeying the 'no-improving-wiggle' condition — has never changed. If you understand why a straight line cannot be improved by a local bump in this cart problem, you hold the seed idea behind every modern trajectory optimizer."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the ancient principle that the best path locks itself in place because no tiny wiggle improves it",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Calculus of variations births trajectory optimization wherever paths matter: robot arm motion planning minimizing energy from one pose to another, spacecraft trajectory design finding fuel-efficient transfers, aerial drones plotting collision-free paths through buildings, autonomous-vehicle trajectory refinement curving around obstacles, surgical-robot positioning finding the least-traumatic path through tissue, and the mathematical foundations of LQR, MPC, and indirect optimal control. The idea is centuries old (the brachistochrone problem) but the applications are immediate and modern."
+        },
+        {
+          "t": "para",
+          "html": "The method asks: if you nudge any part of the current path up or down by a tiny legal amount (respecting constraints), does the total cost go down, stay the same, or go up? If every possible tiny wiggle makes the cost the same or worse, the path cannot be improved locally. That 'no-improving-wiggle' condition produces a differential equation—the Euler equation—that the best path must satisfy everywhere. For a least-effort cart push, the equation says the force must be a straight line in time, and a direct numerical search that simply tries many candidate paths lands on the same straight-line answer, confirming the condition."
+        },
+        {
+          "t": "insight",
+          "html": "A centuries-old idea—that the best shape locks itself by obeying 'no admissible wiggle improves it'—flows directly into every modern trajectory optimizer (iLQR, DDP, MPC), because they all ask the same question under different names."
         }
       ]
     }

@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -91,7 +95,7 @@
             ],
             [
               "Force capped at 0.3",
-              0.10,
+              0.1,
               "delivered 0.30, settled 12.1 s"
             ]
           ]
@@ -149,6 +153,24 @@
         {
           "t": "insight",
           "html": "<strong>Action limits are not decoration — they are the reason we moved from LQR to MPC and from offline training to learning with hardware constraints.</strong> The moment the plan must fit inside what the actuator can do, the problem becomes a receding-horizon one. Every step you re-solve, taking into account what just happened and what is still legal. This is the boundary between textbook and practice."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the motor limit inside robots and vehicles that cannot wish-away their bounds",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Action bounds show up everywhere a physical device delivers a command: robots with limited joint torques, quadrotor drones that cannot spin faster than max RPM, submarines with finite rudder authority, manufacturing arm grippers that grip within rated force, autonomous vehicle steering servos that hit rate limits, spacecraft reaction wheels that saturate, data-center cooling systems that push air at bounded speed. Any system that moves something real must learn to live inside what the actuator can do."
+        },
+        {
+          "t": "para",
+          "html": "In practice, an engineer builds a controller knowing the force or torque limits—not as a soft suggestion but as a brick wall. The feedback law (like LQR) is designed first, then tested against the real bound. When the controller asks for more force than the motor can deliver, the motor clips the command and delivers its maximum. The state does not move as predicted. On the next step the feedback law sees the actual state, not the predicted one, and corrects. This means two things happen: the plan becomes receding-horizon (re-solve each step because predictions broke), and the settling time stretches—a cap at half-force makes the cart take roughly twice as long to settle, measured by real runs on cart and drone hardware."
+        },
+        {
+          "t": "insight",
+          "html": "Action limits are not nuisance details—they are the boundary between textbook control and working control, because they force you to close the loop and re-check every step."
         }
       ]
     }

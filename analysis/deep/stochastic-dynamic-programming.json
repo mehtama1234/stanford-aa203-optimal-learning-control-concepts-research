@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -189,6 +193,24 @@
         {
           "t": "insight",
           "html": "<strong>Same backward recursion, different sources of numbers.</strong> The core step — add immediate cost to the average future cost — powers all three. Deterministic DP hides the average inside (single next state = average of weight 1). Stochastic DP makes the average explicit. Robust methods replace average with worst-case. RL learns the average from data. All three answer: how do I act when the future is not one number but a range of possibilities? They all answer by building the cost-to-go backward, letting it accumulate uncertainty one step at a time."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — robot navigation in wet weather and slippery terrain",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Stochastic DP is the framework for any system where the same command lands you in multiple possible places: a rover on wet ground where each move has a chance of slipping, an aircraft that encounters wind gusts pushing it sideways, a self-driving car navigating in rain when tire grip is uncertain, or a manufacturing robot placing parts when vibrations cause small deviations. In all these cases, one move does not lead to one known state; it leads to a distribution of possible states."
+        },
+        {
+          "t": "para",
+          "html": "An engineer measures the actual slip rate or wind model from test data or historical logs, then builds a cost-to-go value for each state by averaging over all possible next states weighted by their probability. The backward recursion says: the cost-to-go from here is the cost of this step plus the average cost-to-go of everywhere you might land next. The algorithm solves this once, then ships a fixed policy (a lookup table or a short formula) that responds to the measured state and chooses the move that minimizes this averaged future cost."
+        },
+        {
+          "t": "insight",
+          "html": "The plan automatically steers clear of catastrophic outcomes by including rare bad landings in the average, but only as much as their probability warrants; the mistake is trusting probabilities from old data in a world that has changed."
         }
       ]
     }

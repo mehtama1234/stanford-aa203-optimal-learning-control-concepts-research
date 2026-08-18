@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -108,6 +112,10 @@
         {
           "t": "para",
           "html": "Worse, this error compounds. A wrong action moves the cart to a new state — a state the controller has even less idea about. That state demands an even worse action, pushing the cart further away. The error feeds itself. The controller spirals outward instead of returning home. <strong>This is why behavioral cloning, despite high accuracy on the demonstrations, fails catastrophically in closed loop when the robot drifts into unfamiliar territory.</strong>"
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity here is <em>distribution shift</em> &mdash; the growing gap between the states the expert actually visited and the states the copy steers itself into. Every wrong push lands the cart somewhere a little less like anything the expert demonstrated, so the next guess is shakier still. That widening mismatch, not any single wrong move, is what makes cloning come apart in closed loop even when its one-step accuracy on the expert&rsquo;s own states looks excellent."
         }
       ]
     },
@@ -148,6 +156,24 @@
         {
           "t": "insight",
           "html": "Behavioral cloning is the honest baseline under imitation learning, inverse RL, and robot policy learning. It is not the answer; it is the question you must answer better. The fact that a straight-line copy fails at 46× error off the band is exactly why distribution-shift imitation and DAgger exist. And despite its weakness, this simple method is the first stage of training systems at scale — humans remember it before anything else, and so does the model."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the first stage inside robot learning and language models where expert examples train a straight copy",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Behavioral cloning is the starting move when you have expert demonstrations but no reward signal: robots learning manipulation from human video teleoperation, language models warming up on human-written examples before fine-tuning, autonomous-vehicle imitation from human driving data, surgical robots mimicking surgeon motions, warehouse robots copying expert pick-and-place sequences. Any system that starts by memorizing what an expert did uses this method first."
+        },
+        {
+          "t": "para",
+          "html": "The setup is simple: record a human (or another expert system) acting in many situations, collect state-action pairs, and fit a supervised learner to map state to action. A linear model, a neural network, anything—the learner memorizes the expert's responses inside its training band. On states the expert visited, the cloned controller outputs actions that are nearly indistinguishable from the expert. Off the demonstrated band, the error explodes—many times worse—because the learner must extrapolate into a void. The moment the learned controller makes an error, that error moves the system to an unfamiliar state, where the controller is even more wrong, which moves it further off-band, spiraling into failure."
+        },
+        {
+          "t": "insight",
+          "html": "Behavioral cloning works perfectly inside the training band and has no idea outside it, which is why it is always a starting point, never the endpoint."
         }
       ]
     }

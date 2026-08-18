@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -90,6 +94,10 @@
         {
           "t": "insight",
           "html": "<strong>The discovered fact: the value function breaks the tie at almost every cell.</strong> When you measure only the next move, <strong>65 cells look directionless</strong> — all four directions seem equally cheap. But add the value at the destination (the total cost you still owe from that cell), and every single cell has a clear direction. The 6 cells with immediate signal? They are the cells one step away from the pit trap, where the disaster cost far outweighs the step cost. Everywhere else, the future is the only signal that matters."
+        },
+        {
+          "t": "para",
+          "html": "These numbers are not illustrative: the script <code>dp_run.py</code> (experiment EXP4) ran value iteration on this grid until the values stopped changing, and the figures above are its converged output read straight off."
         }
       ]
     },
@@ -179,6 +187,24 @@
         {
           "t": "insight",
           "html": "The value function is the shared currency of all three. Attach one number to each cell — the total cost you still owe if you act well from there — and you unlock the ability to make single-step choices that serve a distant goal. Linear-quadratic control speaks that language as a smooth bowl. RL learns it by bumping into the world. MPC carries it forward as a terminal cost at the planning horizon. The method is different; the core idea is identical. Once you see the value, you have found the deepest thread connecting planning, control, and learning."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — breaking the tie when every next step costs the same and pointing toward a distant goal",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A value function is used anywhere you must choose between locally identical moves that lead to different long-term outcomes: a rover on a grid where north, south, east, and west all cost one battery unit, but north leads toward a charger while south leads toward a pit; a chess engine deciding between equally-legal moves where one leads to checkmate and another leads to defeat; or a manufacturing robot choosing between paths to an assembly station where all steps cost the same but one path reaches the station two moves faster."
+        },
+        {
+          "t": "para",
+          "html": "An engineer (or a learning algorithm) computes or measures the total cost-to-go from each state — the cost you still owe if you act optimally from that cell onward. This turns the landscape into a height map where far-away cells have high cost (many steps remain) and nearby goals have low cost (few steps remain). To act, measure only the immediate step cost at each neighbor plus the stored cost-to-go at the destination, and pick the direction with the smallest sum. No search, no replanning; every cell already carries the future in a single number."
+        },
+        {
+          "t": "insight",
+          "html": "The value function lets you make myopic step-by-step choices that serve a distant goal, but the value is only accurate if the assumptions that created it remain true; if a bridge closes or a cost changes, the stored value becomes a trap pointing toward a stale solution."
         }
       ]
     }

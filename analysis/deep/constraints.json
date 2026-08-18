@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -144,6 +148,24 @@
         {
           "t": "insight",
           "html": "<strong>The separation is clean: LQR is optimal only when constraints are absent or already satisfied with huge margin. MPC exists precisely because hard constraints matter and force matters, and the only way to handle them honestly is to check and re-solve at every step.</strong> This is why so much real-world control uses MPC — factories, rockets, rovers, data centres. The cost of re-solving is worth the guarantee of staying legal. The fact that hard constraints sit at the boundary between 'close-form LQR rule' and 'online MPC re-solve' is not accidental; it is the reason the field split into two methods."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the hard rules that a plan must never cross, and why they force re-solving instead of one-time feedback",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Hard constraints gate almost every real control system: a gripper must stay clear of a shelf (never negotiable), motor torque must not exceed its rated limit (physics limit), drone rotor speed must stay below its maximum (hardware boundary), an autonomous vehicle must not enter oncoming lanes (safety), aircraft altitude must stay above terrain (survival), power-grid frequency must stay within tolerance (grid stability), an investment portfolio must stay within risk bounds (regulation). These are not soft preferences—they are lines the plan cannot cross."
+        },
+        {
+          "t": "para",
+          "html": "A constraint is a rule written as an inequality or equation—state and action must stay within a region. A candidate plan is tested against every constraint at every time step. If any rule is violated, the plan is ruled out before its cost is even considered. A classical controller like LQR computes one feedback rule offline, assuming constraints are nowhere near violated. But when a motor caps at half the requested force, or a speed limit sits near the natural optimal speed, the constraint becomes active—the plan is right on the boundary and cannot move further. Once a constraint is active, re-solving at each step is the only clean way to handle it; LQR's fixed rule breaks because it cannot adapt to enforce the boundary."
+        },
+        {
+          "t": "insight",
+          "html": "The split between 'LQR computes once and runs forever' and 'MPC re-solves every step' is drawn exactly where hard constraints become active, because only re-solving lets you enforce an inviolable boundary."
         }
       ]
     }

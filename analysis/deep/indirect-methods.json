@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -178,6 +182,24 @@
         {
           "t": "insight",
           "html": "<strong>One core idea, three different packages:</strong> solving the equations of optimality (indirect methods) is the seed idea. Trajectory optimization wraps it to handle curves, MPC wraps it to handle limits and re-planning, and learning wraps it to handle unknown dynamics. The fact that you can compress an infinite space of paths down to a handful of equations — and then solve those equations — is the pivot point for everything that follows."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — solving the equations optimality must obey",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Indirect methods power trajectory optimization in robotics and spacecraft guidance, underpin model-predictive control in chemical plants, and are the mathematical foundation of learning algorithms that estimate value functions. Any system that must convert a global optimization problem into equations you can solve uses this strategy."
+        },
+        {
+          "t": "para",
+          "html": "Instead of searching all possible action sequences (astronomically many), an engineer writes down the mathematical conditions that an optimal sequence must satisfy—the Hamiltonian conditions, boundary conditions, and costate equations. Then solves those equations using shooting methods (guess the missing boundary value, integrate forward, measure the miss, adjust). This converts a trillion-dimensional search into solving a few coupled equations, often in one or two iterations."
+        },
+        {
+          "t": "insight",
+          "html": "The indirect method shrinks the problem from searching an infinite space to solving equations; this core strategy reappears in trajectory optimization, MPC, and learning baselines."
         }
       ]
     }

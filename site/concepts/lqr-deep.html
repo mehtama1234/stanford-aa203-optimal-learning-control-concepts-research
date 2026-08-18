@@ -36,7 +36,7 @@
       <div class="kick">LQR · first principles · the feedback rule that falls out of a bowl-shaped future cost</div>
       <h1>LQR — when the future cost is a bowl, the best move is a straight line</h1>
       <p class="lede">The one problem it solves, the single assumption that unlocks it, a real run where you watch the feedback rule <em>stop changing</em> after a few steps, the one price dial that determines everything about how it behaves, its one honest weakness shown as a numerical breakdown, and the surprise that this tiny law lives inside trajectory optimization, constrained receding-horizon control, and learning baselines.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#dial">The one dial</a><a href="#weakness">The one weakness</a><a href="#surprise">The surprise</a><a href="lqr.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#dial">The one dial</a><a href="#weakness">The one weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="lqr.html">Atlas card</a></div>
     </div>
 
     <section class="fp" id="problem">
@@ -86,6 +86,15 @@
       <div class="insight">One core idea, three different packages. The fact that squared costs preserve their shape through straight-line dynamics — the property that lets you turn 'how hard do I push?' into a multiplication by two fixed numbers — is the seed of all three. Master this backward iteration once and you have the engine inside trajectory optimization, constrained receding-horizon control, and every learning baseline. It is the only continuous-control problem where the answer is known for sure.</div>
       </div>
     </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — the autopilot loop inside aircraft, drones, and disk drives</h2>
+      <div class="essay">
+      <p>LQR is the workhorse regulator wherever a system must be held near a setpoint cheaply and predictably: aircraft and spacecraft attitude control, quadrotor drones, the read-write head of a hard drive, camera gimbals, and the balancing loop of a self-balancing robot. Anywhere small deviations follow a near-straight-line rule and you care about both error and effort, LQR is often the first controller engineers reach for.</p>
+      <p>In practice an engineer straightens the real machine around its operating point, writes down two price weights—one on being off-target, one on control effort—and solves once for a fixed set of gains. Those gains ship as a tiny piece of code: read the sensors, multiply by the gains, command the actuator, repeat many times a second. Tuning means re-choosing the two weights, not rewriting logic.</p>
+      <div class="insight">Because the gains are computed ahead of time and the live cost is just a couple of multiplications, LQR runs on the cheapest microcontrollers—which is exactly why it is everywhere.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — the data side</h2><p class="muted">This page assumes it already has a model and a state. A sister course (Steve Brunton&rsquo;s data-driven dynamics) is where those come from. Follow a link to see the concept that supplies it.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #8b3f18"><a href="http://localhost:8012/koopman-operator-deep.html" style="font-weight:700">the Koopman operator</a> <span class="muted" style="font-size:13px">· Brunton · data-driven</span><div style="font-size:14.5px;margin-top:3px">LQR needs the rule to be a fixed weighted sum. Koopman is the step that turns a bending system into one, so LQR applies across the whole range, not only near one point.</div></li></ul></section>
     <section class="fp"><p class="muted">Related: <a href="local-quadratic-approximation.html">local quadratic approximation</a> · <a href="dynamic-programming.html">dynamic programming</a> · <a href="model-predictive-control.html">model-predictive control</a> · <a href="value-function.html">value function</a></p></section>
     <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
       <p class="muted">Double integrator, dt=0.1. Riccati iterated backward by hand (no scipy) so convergence is visible; ablation and saturation simulated forward. Run with numpy.</p>

@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -121,6 +125,10 @@
         {
           "t": "para",
           "html": "The technical term is <em>recursive feasibility</em>: if a plan is feasible (solvable) at step k, it does not automatically imply a feasible plan exists at step k+1. With a long-enough horizon (H=8 in this test), the planner foresees the stop it will eventually need and reverses course earlier, leaving a safe margin. With a short horizon (H=2), it does not see far enough to predict its own trap."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity MPC tracks at every step is whether the state it is about to hand to the next solve still sits inside the set of states from which a full-length plan exists at all. A short window shrinks that set so quickly that the cart can take a legal-looking step into a corner from which no legal next step remains."
         }
       ]
     },
@@ -159,6 +167,24 @@
           "html": "In the other direction, the methods live in the same mathematical world: both minimize a squared-cost function over states and forces; both use dynamic programming or its cousin, the Riccati recursion, to compute an optimal feedback law. The difference is whether you re-solve repeatedly (MPC, which works with constraints and measurements) or once (LQR, which assumes a perfect model and infinite horizon). MPC is LQR with doors — it still uses the same engine but closes off the regions you cannot reach."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — real-time re-solve, one action at a time",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "MPC is the workhorse replanner in chemical plants, oil refineries, and manufacturing lines because processes move slowly enough that microsecond-level computation is affordable. It also powers self-driving cars where GPUs enable fast re-solve during forward motion, and it operates elevator schedules in tall buildings balancing multiple cars and calls. Anywhere the control period is milliseconds to seconds and a short look-ahead window is enough to see the danger, MPC runs continuously."
+        },
+        {
+          "t": "para",
+          "html": "An engineer writes down the process dynamics (how temperature or pressure changes with valve opening), the cost of deviation from setpoint, and the limits on valve positions or flow rates. At each moment the system is measured, MPC solves a small constrained optimization problem covering the next handful of seconds (the horizon), finds the sequence of valve commands that minimizes cost and respects limits, and applies only the very first command. One moment later it measures again and re-solves. The loop repeats many times per second or many times per hour, depending on the timescale of the process."
+        },
+        {
+          "t": "insight",
+          "html": "MPC works only if the re-solve is fast and the horizon is long enough to see disasters coming; short horizons walk into corners they did not foresee, as shown by the cart test where the short horizon crashed and the longer one stopped safely."
+        }
+      ]
     }
   ],
   "related": [
@@ -183,5 +209,12 @@
     "summary": "Cart on a line, state [pos, vel], force limits [-1, +1], dt=0.2. Wall at position 0. MPC solver re-optimizes finite-horizon force sequence every step, applies first force, re-measures, repeats. Look-ahead horizons H in {2,4,8} tested from start 3.0 m away at 1.0 m/s.",
     "eq": "At each step k, solve:\n  minimize sum_{t=0}^{H-1} (cost of state and force at step t)\n  subject to: dynamics (x_{t+1} = A x_t + B u_t)\n              bounds (u_t in [-1,1], x_t >= 0)\n  implemented policy: u_k = u_0^* (first force from solution)\n  After u_k applied, measure x_{k+1}, solve again from x_0 := x_{k+1}.",
     "note": "Full script: scripts/experiments/mpc_run.py. All numbers (final positions, speeds, step counts) are the simulator's output verbatim. EXP2 table reported as measured; EXP4 trajectory shown in run section provides the 40 forward steps of stable descent."
-  }
+  },
+  "connects": [
+    {
+      "id": "sensitivity-and-robustness",
+      "label": "the waterbed law",
+      "note": "The waterbed law bounds how much disturbance any loop can reject; MPC's robustness is spent inside that bound."
+    }
+  ]
 }

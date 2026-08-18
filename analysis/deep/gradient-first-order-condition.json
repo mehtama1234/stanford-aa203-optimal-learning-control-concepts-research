@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -201,6 +205,24 @@
         {
           "t": "insight",
           "html": "<strong>One foundational idea, three reincarnations.</strong> The gradient is the answer to the question 'is there a downhill direction from here?' Because almost every real problem has such a direction (at least until you reach a local minimum), stepping downhill until the slope is zero is a universal template. Master gradient descent once — understand the geometry of the slope, the role of step size, the distinction between necessary and sufficient conditions — and you have the seed of all three families. It is the deepest tool in the box because it works whether you are tuning a steering angle, training a neural network, or finding the best push sequence for a rocket."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the slope you follow to find the lowest point without seeing the whole landscape",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Gradient descent is the engine inside neural network training (billions of parameters tuned by step), trajectory optimization algorithms (finding the best sequence of actions over time), model-predictive control solvers (computing the best move at every time step), and every learning algorithm that refines a decision by measuring cost and stepping downhill."
+        },
+        {
+          "t": "para",
+          "html": "A rover must choose a steering angle to minimize the total cost of missing a target and exerting effort. An engineer computes the gradient—how much the cost changes per degree of steering—at the current angle. Stepping opposite to the gradient direction lowers the cost. Repeating this process (compute gradient, step downhill) shrinks the gradient until it reaches zero, which marks a stationary point. For a simple bowl-shaped cost, that point is the bottom. The trajectory optimizer does the same on a much larger scale: it computes the gradient of the final mission cost with respect to each action in the sequence and steps downhill on all of them together."
+        },
+        {
+          "t": "insight",
+          "html": "A zero gradient proves level ground but not whether it is a valley, a peak, or a saddle; checking curvature or simulating perturbations is necessary to confirm a minimum."
         }
       ]
     }

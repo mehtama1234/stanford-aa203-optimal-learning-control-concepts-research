@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -124,6 +128,10 @@
         {
           "t": "para",
           "html": "The planned controller, by contrast, reasons 40 or 50 time steps into the future. It runs through the consequences: 'If I push hard now, the cart will accelerate, and I will have to use future pushes to slow it down. All that pushing is expensive in the cost function. If instead I push gently now and let the cart coast in, I spend less total pushing and arrive nearly on target without ringing.' The plan front-loads the reasoning, not the reaction."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity both rules are really computing is the <em>cost-to-go</em> &mdash; the total cost still owed from this state onward. The greedy rule sees only the cost right now (today&rsquo;s error) and misses the cost its built-up speed will charge later; the planned rule computes the true cost-to-go over the whole horizon and sees that &lsquo;fast now&rsquo; is expensive soon."
         }
       ]
     },
@@ -164,6 +172,24 @@
         {
           "t": "insight",
           "html": "<strong>The surprise is the unification.</strong> LQR looks like a toy problem. It is not. It is the core. Every method in this course is a way to generalize LQR to handle limits, nonlinearity, or uncertainty. Master this problem — naming the state, the dynamics, the cost, the constraints, the horizon — and you can see how all six methods fit together. They are not separate ideas. They are six answers to the same question."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the chain of actions that compounds into a future",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every system that moves over time and can be steered—a plane during descent, a robot arm reaching a target, a patient's health managed by medication doses over months, an investment portfolio rebalanced each year—is an optimal control problem waiting to be solved. The problem statement is the same in all of them: pick a sequence of actions starting now that minimizes total cost (or maximizes total reward) and respects every hard constraint."
+        },
+        {
+          "t": "para",
+          "html": "An engineer defines the pieces: the state (what you measure right now that predicts the future), the control input (what you can change), the dynamics (the rules that turn action and state into the next state), the objective (the cost of being off-target and off-budget), the constraints (force limits, position bounds, resource caps), and the horizon (how far into the future to plan). Solving the problem means finding the sequence of commands that, if applied without error, would minimize the total cost. Every method in control—LQR, dynamic programming, MPC, reinforcement learning—is a different solver for this one problem."
+        },
+        {
+          "t": "insight",
+          "html": "Different methods look completely different in the math, but they are all answering the same question: what sequence of actions from now until the end of the horizon has the lowest cost and respects the rules?"
         }
       ]
     }

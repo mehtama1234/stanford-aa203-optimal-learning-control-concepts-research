@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -64,6 +68,10 @@
         {
           "t": "para",
           "html": "The gap between them is called <em>distribution shift</em> — imitation learning's most important pitfall. It is not a bug in the training algorithm; it is a fundamental mismatch between the training task (predict actions for expert states) and the deployment task (handle your own mistakes in a closed loop)."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity here is which world the next state is drawn from &mdash; the expert&rsquo;s distribution of states, or the learner&rsquo;s own. Training happens on the expert&rsquo;s states, but the deployed run plays out on the states the learner&rsquo;s own small errors create, and the widening gap between those two distributions is the whole problem."
         }
       ]
     },
@@ -145,6 +153,24 @@
         {
           "t": "para",
           "html": "This same principle is why reinforcement learning algorithms like DQN, policy gradient, and actor-critic methods care so much about which states they sample from during training. It is why self-driving companies run millions of miles of simulation and real-world testing — each one of those miles is a dataset-aggregation step, finding the states where the current policy fails and adding expert or learned-reward labels there. Distribution shift in imitation is a special case of a general truth: <strong>the states your policy visits depend on your policy, so your training data must account for that.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — learning from demonstrations when you may make mistakes",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Distribution shift in imitation learning is the hidden snag in self-driving pilots trained from human data, robot manipulation systems cloned from teleop videos, and any reinforcement learning agent initialized by behavioral cloning from expert rollouts. The problem strikes hardest when the system must handle rare situations: driving in fog when the training data was only clear weather, reaching into clutter when trained on clean table tops, or flying in wind gusts when trained in still air."
+        },
+        {
+          "t": "para",
+          "html": "A company records a human driver navigating city streets and trains a neural network to copy the steering input given the camera image. The network learns the expert's steering almost perfectly on held-out expert footage. But when deployed, the car drifts slightly on the first turn. That drift changes the next camera frame to a slightly off-center view—one the human rarely produced. The network guesses poorly there, making a second error. Within a few steps the car is in a region the expert never visited, where the network has no training signal, and errors compound. The solution is DAgger: have the human label the states where the learner fails, add those to the training set, and retrain on both the original expert data and the new recovery data."
+        },
+        {
+          "t": "insight",
+          "html": "A learner's own mistakes push it into unfamiliar territory where it has no valid labels, so high frame-accuracy in the lab does not predict closed-loop robustness in deployment."
         }
       ]
     }

@@ -36,7 +36,7 @@
       <div class="kick">Indirect Methods · first principles · solve the equations an optimal path must obey, not the path itself</div>
       <h1>Indirect Methods — solve the conditions of optimality, not the path</h1>
       <p class="lede">The ordinary problem it solves, the one assumption that makes it workable, a real run where you predict the optimal push must be a straight line and watch the direct optimizer produce exactly that, the key difference from brute-force searching, its one honest weakness shown numerically, and the surprise that this equation-solving strategy hides inside trajectory optimization and the next layer up.</p>
-      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#conditions">The conditions shrink the search</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="indirect-methods.html">Atlas card</a></div>
+      <div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#conditions">The conditions shrink the search</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="indirect-methods.html">Atlas card</a></div>
     </div>
 
     <section class="fp" id="problem">
@@ -90,6 +90,14 @@
       <p><strong>Constrained receding-horizon control (MPC):</strong> when you have a hard force limit, MPC re-solves a small constrained optimization at every time step. For short horizons and smooth costs, it often uses the indirect method or a solver that implements the KKT conditions (which are the equations of optimality with Lagrange multipliers for the active limits). MPC is the indirect method run repeatedly on a sliding window.</p>
       <p><strong>Learning and reinforcement learning:</strong> methods that learn a control rule from data use the indirect method's costate idea as a baseline. The costate p(t) is exactly the value function — the derivative of the cost-to-go — and algorithms like policy gradient compute the same quantity. The difference is that indirect methods require you to write down the equations, while learning methods discover the value through trials.</p>
       <div class="insight"><strong>One core idea, three different packages:</strong> solving the equations of optimality (indirect methods) is the seed idea. Trajectory optimization wraps it to handle curves, MPC wraps it to handle limits and re-planning, and learning wraps it to handle unknown dynamics. The fact that you can compress an infinite space of paths down to a handful of equations — and then solve those equations — is the pivot point for everything that follows.</div>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — solving the equations optimality must obey</h2>
+      <div class="essay">
+      <p>Indirect methods power trajectory optimization in robotics and spacecraft guidance, underpin model-predictive control in chemical plants, and are the mathematical foundation of learning algorithms that estimate value functions. Any system that must convert a global optimization problem into equations you can solve uses this strategy.</p>
+      <p>Instead of searching all possible action sequences (astronomically many), an engineer writes down the mathematical conditions that an optimal sequence must satisfy—the Hamiltonian conditions, boundary conditions, and costate equations. Then solves those equations using shooting methods (guess the missing boundary value, integrate forward, measure the miss, adjust). This converts a trillion-dimensional search into solving a few coupled equations, often in one or two iterations.</p>
+      <div class="insight">The indirect method shrinks the problem from searching an infinite space to solving equations; this core strategy reappears in trajectory optimization, MPC, and learning baselines.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="calculus-of-variations.html">calculus of variations</a> · <a href="hamiltonian-optimal-control.html">Hamiltonian and optimal control</a> · <a href="costate-adjoint-variable.html">costate (adjoint variable)</a> · <a href="trajectory-optimization.html">trajectory optimization</a> · <a href="shooting-methods.html">shooting methods</a> · <a href="model-predictive-control.html">model-predictive control</a></p></section>

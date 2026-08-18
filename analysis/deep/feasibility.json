@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -64,6 +68,10 @@
         {
           "t": "para",
           "html": "This reordering — check feasibility first, then optimize — is the foundation of safe control. Every model-predictive controller that runs in the real world has this check built in."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity here is whether the feasible set is empty &mdash; whether <em>any</em> legal sequence of moves exists at all, before you ever ask which one is cheapest. Checking existence first means you never waste effort minimizing over an empty set, and you can trigger a fail-safe the moment no legal move remains."
         }
       ]
     },
@@ -166,6 +174,24 @@
         {
           "t": "insight",
           "html": "<strong>In trajectory optimization, MPC, and learning-based control, the first question is always feasibility.</strong> An infeasible answer is not failure; it is the boundary that separates legal from illegal, and the best controllers use it to stay safe. This is why 'recursive feasibility' — ensuring that if a plan is feasible now, the next time step still has a feasible plan — is a cornerstone of safe receding-horizon control. You protect the future by checking the present."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — whether a legal plan exists before asking what it costs",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Feasibility checking is the foundation of safe model-predictive control in autonomous vehicles, constrained trajectory optimization for surgical robots, and any learning algorithm that must respect hard limits. The question is not 'what is the cheapest plan?' but 'is there any plan at all that obeys the rules?'"
+        },
+        {
+          "t": "para",
+          "html": "A cart rolling toward a wall must brake. The engineer asks: braking as hard as physics allows, is there enough space to stop? A slow cart with plenty of room needs only a short distance to stop and has far more than that to the wall—yes, at least one legal plan exists. A faster cart close to the wall needs more distance to stop than it has left—no legal plan exists. Before any optimizer runs, the system checks this yes-or-no question. If the answer is no, a pre-planned emergency maneuver (shallow ditch, call for help) is triggered. If yes, the optimizer finds the cheapest legal trajectory."
+        },
+        {
+          "t": "insight",
+          "html": "A plan that violates a constraint is not an expensive plan; it is not a plan at all, so feasibility must be checked before optimization begins."
         }
       ]
     }

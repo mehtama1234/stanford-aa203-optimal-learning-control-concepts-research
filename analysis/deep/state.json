@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -64,6 +68,10 @@
         {
           "t": "para",
           "html": "The practical test is this: write down the smallest set of numbers such that, given those numbers and the action you choose, the physics or the rules of the world will tell you the next set of numbers uniquely. That set is the state for your problem."
+        },
+        {
+          "t": "para",
+          "html": "What you are really checking is whether the state has the <em>Markov property</em>: does the next state depend only on the current state and the action, with no leftover dependence on the past? If some quantity that changes the physics is left out, the state fails this test, and the controller is deciding on incomplete information."
         }
       ]
     },
@@ -161,6 +169,24 @@
           "html": "<strong>The state assumption is not optional; it is foundational.</strong> Every major algorithm in optimal control — backward iteration (dynamic programming), linear-quadratic feedback (LQR), constrained receding-horizon control (model-predictive control), and reinforcement learning — assumes that the present state carries all the information needed to predict the consequences of the next action. This is why choosing the state is the first and most important design decision in any control problem. Get it wrong, and even the best algorithm will fail. Get it right, and the controller can reason about the future as confidently as the physics allows."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the smallest summary of now that lets you predict what comes next",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every control system — LQR regulators, reinforcement learning policies, model-predictive controllers, trajectory optimizers — rests on the assumption that the state tells the whole story. A robot gripper only knows position and velocity; it does not know the object's grip-worthiness. A car controller sees position and velocity but not whether the road is wet. A language model knows the tokens generated so far but not the intent behind the user's question."
+        },
+        {
+          "t": "para",
+          "html": "The state is the smallest set of numbers such that, given those numbers and your chosen action, the physics or the rules uniquely determine the next state. If you know position and velocity of a cart and you know the force you applied, Newton's laws tell you exactly where it will be next — so position and velocity form a sufficient state. If you strip out velocity to save computation, the same position plus the same force now leads to different futures depending on hidden momentum, and the controller cannot cope."
+        },
+        {
+          "t": "insight",
+          "html": "Choosing the state is the first and most critical modeling decision: too small and the controller is blind to critical dynamics; too large and you waste computation; get it wrong and the best algorithm still fails because the controller is deciding on incomplete information."
+        }
+      ]
     }
   ],
   "related": [
@@ -185,5 +211,17 @@
     "summary": "Cart on a track: position p, velocity v, force u. Controller is full-horizon LQR with position and velocity cost, force effort cost. Testbed: dt=0.1, horizon 100 steps. Experiment: same controller with full state [p,v] and with position-only state [p]. Run with numpy, scipy.",
     "eq": "Dynamics: p_next = p + dt*v,  v_next = v + dt*u\nController: u = −K_pos*p − K_vel*v  (full state)\nControl-blind: u = −K_pos*p  (no K_vel term, v is not in state)\nCost: sum of p² + 0.1*u² over horizon\n# The controller computes K_pos and K_vel by backward Riccati iteration\n# EXP2: run from x0=[1.0, 0] with both state choices, measure overshoot and settle time",
     "note": "Full script: scripts/experiments/ps_run.py. Numbers reported are the simulation's output verbatim from EXP2 (state ablation): position overshoot, settling time."
-  }
+  },
+  "connects": [
+    {
+      "id": "kalman-filter",
+      "label": "the Kalman filter",
+      "note": "Every controller here assumes it can read a clean state. The Kalman filter is what reconstructs that state from noisy, partial sensors."
+    },
+    {
+      "id": "proper-orthogonal-decomposition",
+      "label": "POD",
+      "note": "When the state is enormous, POD finds the few coordinates that actually carry the behaviour, so the methods here stay tractable."
+    }
+  ]
 }

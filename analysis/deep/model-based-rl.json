@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -140,6 +144,10 @@
         {
           "t": "para",
           "html": "The fix is receding-horizon replanning: execute only the first move, measure the real result, add that transition to the data, refit the model, and plan again. This way, new data tightens the model, and planning never strays far from the tested region. But this replan loop costs compute and time. The trade-off is real: model-based RL is sample-efficient (uses fewer real tries) but can be expensive to run."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity here is <em>model coverage</em> &mdash; which state-and-move pairs the learned model has actually seen, and how much to trust its predictions for the ones it has not. Planning is only as good as the model it plans through, so imagined paths that wander into unseen regions can look great and be pure fiction."
         }
       ]
     },
@@ -168,6 +176,24 @@
           "html": "<strong>One small idea, many large applications.</strong> The pivot from 'learn only by trying' to 'remember, model, plan' is the seed of AlphaZero's search, world-model video diffusion, and classical MPC. All three trade off learned or known models against imagined futures. Master the small case — plan on a learned gridworld — and you have the architecture of strategies that beat humans and control rockets."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — remembering what happened and planning before trying",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Model-based reinforcement learning is the seed idea behind AlphaZero's tree search, world-model video diffusion in robotics, and classical model-predictive control in industry and aerospace. Anywhere a system must learn from scarce or expensive trials, remembering the world's map and planning on it beats pure trial-and-error."
+        },
+        {
+          "t": "para",
+          "html": "Instead of taking random tries on real hardware, an agent spends an initial batch of steps recording what happened—from each state with each action, where it ended up and what it cost. Then it builds a learned predictor (the world model) and tests many candidate paths inside that model at almost zero cost. It executes only the first move on the real system, sees what actually happened, adds that transition to the data, and replans. One batch of remembered data feeds a planner that imagines hundreds of paths through it."
+        },
+        {
+          "t": "insight",
+          "html": "Model-based RL is sample-efficient because planning recycles observations; a planner reusing a batch of remembered transitions imagines many candidate paths, where trial-and-error would need far more real tries."
+        }
+      ]
     }
   ],
   "related": [
@@ -192,5 +218,17 @@
     "summary": "9×9 gridworld, goal (0,8), pit (4,4), 8 walls, step cost -1. Agent takes N random steps, records each transition (state, action, next-state, cost), counts known state-action pairs, fits a tabular model, plans using value iteration on the model, tests whether the planned path reaches the goal. No learning algorithm; pure planning on count data. Run with numpy.",
     "eq": "Known transitions form a transition table T[state][action] = next_state. Model-based planner uses value iteration:\nV[s] ← min over actions (cost[s,a] + 0.99 * V[T[s][a]])\nthen extracts policy by greedy selection on T and V.\nEXP4: for N in {200, 500, 1000, 2000}:\n  - take N random steps, record transitions\n  - count |{(s,a) in T}| / 284 (total possible state-action pairs)\n  - run value iteration on T\n  - test greedy path from start to goal using T and policy\n  - report whether goal reached and coverage fraction",
     "note": "Full script: scripts/experiments/rl_run.py, EXP4 section. Numbers reported are the experiment's output verbatim: transitions learned and success (True/False) are measured, not inferred."
-  }
+  },
+  "connects": [
+    {
+      "id": "sindy",
+      "label": "SINDy",
+      "note": "Model-based RL plans through a learned model. SINDy learns that model as a short, readable equation instead of an unreadable predictor."
+    },
+    {
+      "id": "dynamic-mode-decomposition",
+      "label": "DMD",
+      "note": "DMD builds a model of the dynamics from data — the kind of learned model this page plans through."
+    }
+  ]
 }

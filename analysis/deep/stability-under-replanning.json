@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -178,6 +182,24 @@
           "html": "<strong>The discovered fact: the shrinking-yardstick idea is a Lyapunov function.</strong> The same tool that proves rockets and power grids stable is what makes replanning loops safe. You do not have to solve the system forward forever; you just have to find one number, watch it shrink, and the mathematics guarantees convergence. This is why terminal costs and terminal sets — two design tricks that look like hacks — are actually applications of a deep principle that unifies control engineering across decades and domains."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the shrinking yardstick that proves repeated optimization converges",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Model-predictive control (MPC) re-solves a short-horizon optimization problem at every timestep, applying only the first move before replanning. Autonomous vehicles use this loop to navigate obstacle fields. Robot arms use it to track moving targets. Power grids use receding-horizon methods to stabilize frequency and line flows."
+        },
+        {
+          "t": "para",
+          "html": "At each step the controller solves a short-term optimization and applies one move. Then it re-measures the state, resolves, and applies the next move. The trap is that each short plan might postpone hard work (like braking) or undo the last step, causing the loop to oscillate or drift. The fix is to pick a single yardstick (like distance to goal), add it as a terminal cost to the short-horizon solver, and verify that after each real move the yardstick shrinks. This guarantee propagates forward: a number that never rises eventually hits zero."
+        },
+        {
+          "t": "insight",
+          "html": "This shrinking yardstick is a Lyapunov function — the same tool that proves rockets stable is what makes MPC loops provably convergent, unifying the method across control, learning, and robotics."
+        }
+      ]
     }
   ],
   "related": [
@@ -206,5 +228,12 @@
     "summary": "Braking cart on a line, state = [position, velocity], force limited to [−1, 1], dt=0.2. MPC replans with lookahead H=8. Yardstick is absolute distance from position 0. Run: plan, apply first force, measure, repeat.",
     "eq": "state x = [position, velocity]\ntarget: position = 0, velocity = 0\nyardstick V(x) = |position|\ncartesian dynamics: x_{k+1} = [[1, dt], [0, 1]] x_k + [[0], [dt]] u_k\nwith dt=0.2, initial x_0 = [9.0, 1.0]\nMPC cost over H=8: sum of (position_error^2 + velocity_error^2 + 0.01 * force^2) + terminal_cost\nterminal_cost = 10 * position_error^2 (end-of-horizon penalty)\nstability check: V(x_{k+1}) < V(x_k) or V(x_{k+1}) = 0 at goal.",
     "note": "Full script: scripts/experiments/mpc_run.py. Distance measurements reported are the simulator's position output verbatim. EXP4 from mpc_run.py."
-  }
+  },
+  "connects": [
+    {
+      "id": "sensitivity-and-robustness",
+      "label": "the waterbed law",
+      "note": "No feedback loop can reject disturbance everywhere; the stability enforced here lives inside that hard limit."
+    }
+  ]
 }

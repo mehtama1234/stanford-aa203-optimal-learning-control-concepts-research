@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -112,6 +116,10 @@
         {
           "t": "para",
           "html": "This is why the optimized plan beat the hand plan. The solver found a force profile that no local heuristic would discover because it required seeing two or three steps ahead in lockstep. The optimization did not invent a new physics; it simply asked every possible sequence at once and picked the cheapest."
+        },
+        {
+          "t": "para",
+          "html": "Here is why solving the whole path at once beats any step-by-step rule: because the cost is the sum of <em>squared</em> forces, easing one force early is cheap where a later scramble is expensive, and every force you set ripples through the state it creates into every push required afterward. Only a solver holding all the forces together can see that trade and shave an early push to save a larger late one; a rule choosing each step in isolation cannot."
         }
       ]
     },
@@ -150,6 +158,24 @@
           "html": "<strong>The whole-path decision is not a specialist trick; it is the standard view of motion planning.</strong> Whether you search sequences directly, approximate the problem and iterate, or derive the optimality equations and solve them, you are using the same core idea: make all the states and forces the variables, enforce that they obey physics, minimize total cost. Every tool that plans multi-step motion — from a rocket landing software to a learning algorithm's baseline — is solving a version of this problem. Trajectory optimization is the plain-language name for the idea. You will see it hidden inside everything else."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — planning rocket landings, robot arm motions, and drone flight paths",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Trajectory optimization is the foundation for any system that must execute a multi-step motion with constrained actuators and physics: a rocket landing its first stage by throttling engines while computing all the thrust decisions together, a robotic arm reaching through obstacles to place a part on an assembly line, a drone flying from one waypoint to another while respecting wind and battery limits, or an autonomous vehicle planning a lane change around an obstacle."
+        },
+        {
+          "t": "para",
+          "html": "An engineer discretizes time into a series of small steps, makes every state and control signal a variable, enforces that they obey the physics at each step (the state at the next moment must follow from the current state and applied force by Newton's laws), and minimizes the total cost (fuel burned, time taken, or control effort). A numerical solver churns through candidate sequences of controls that satisfy the constraints and returns the one with the lowest cost. That sequence becomes the command plan; often the first few steps are executed and the whole optimization repeats with new measurements."
+        },
+        {
+          "t": "insight",
+          "html": "The whole-sequence view can trade cost at one step against cost at later steps in ways no step-by-step rule can discover, but the solver may converge to a local minimum instead of the globally best path, especially when obstacles and nonlinear dynamics create many valleys."
+        }
+      ]
     }
   ],
   "related": [
@@ -182,5 +208,12 @@
     "summary": "Double integrator, dt=0.1, 20 time steps. Direct method: sequential least-squares quadratic program (scipy.optimize.minimize) to choose 20 force values minimizing sum-of-squares force, subject to dynamics constraints x_{k+1} = x_k + [v_k, f_k/m]·dt and boundary x_0=[0,0], x_{20}=[1,0]. Hand plan: bang-bang (force +2.0 for 10 steps, -2.0 for 10 steps). Both measured on the cart simulator.",
     "eq": "Minimize: J = sum_k (f_k)^2\nSubject to:\n  x_{k+1} = A x_k + B f_k,  k=0..19\n  A = [[1, dt], [0, 1]],  B = [[0], [dt]]\n  x_0 = [0, 0],  x_20 = [1, 0]\n  |f_k| <= actuator limit\n\nOptimal result: f = [+1.429, +1.319, +1.209, ..., -1.319, -1.429]\n(approximately a straight line in time, as indirect methods predict)\nJ* = 15.038",
     "note": "Full script: scripts/experiments/traj_run.py. Numbers are the optimizer's and simulator's output verbatim. The hand plan used a fixed bang-bang profile; the optimized plan solved for all forces simultaneously."
-  }
+  },
+  "connects": [
+    {
+      "id": "sindy",
+      "label": "SINDy",
+      "note": "Trajectory optimization needs the equations of motion. SINDy can supply them, recovered directly from measured data."
+    }
+  ]
 }

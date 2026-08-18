@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -77,7 +81,7 @@
           "rows": [
             [
               "untrained (random)",
-              0.50,
+              0.5,
               "prob(toward-goal) = 0.50"
             ],
             [
@@ -148,6 +152,24 @@
         {
           "t": "insight",
           "html": "One simple idea — <strong>push up the odds of moves that beat the forecast</strong> — splits into three directions: clean up the math (policy gradients), bound the updates (PPO for preference learning), and learn a better baseline (Actor-Critic). Robots that handle continuous limbs, language models trained on human feedback, and deep reinforcement learning all trace back to the same nudge: are the samples better or worse than expected, and if so, move the probabilities."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — nudge the rule toward moves that beat the forecast",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Policy optimization is the core idea behind training modern robots to perform manipulation tasks—grasping, assembly, reaching—because robots live in spaces with infinite continuous actions (arm angles across a continuous range) that cannot be enumerated in a table. It is also the foundation of training large language models to follow human feedback: the human evaluator rates outputs as better or worse, and the learner uses that preference signal to nudge the model parameters. Any system that learns by collecting examples and comparing them to a baseline uses this idea."
+        },
+        {
+          "t": "para",
+          "html": "Instead of building a value table for every state-action pair, the method keeps only the rule itself—a parameterized function that maps state to action probability. After the robot or model tries something and gets a reward or a human rating, the learner asks: did this outcome beat the baseline expectation? If yes, raise the probability of that action in that state; if no, lower it. The probabilities are nudged up or down in the direction of the advantage—the difference between actual outcome and prediction. The rule stays compact and differentiable, and it improves by sharpening toward moves that beat the forecast."
+        },
+        {
+          "t": "insight",
+          "html": "The weakness is real noise: one unlucky trial can push the rule the wrong way, which is why state must be rich enough to separate situations, and why averaging over many trials is necessary."
         }
       ]
     }

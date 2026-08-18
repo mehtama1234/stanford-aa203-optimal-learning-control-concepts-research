@@ -1,0 +1,360 @@
+[
+  {
+    "bucket": "State & dynamics — does the model capture the next step?",
+    "gloss": "Before any optimization: does the state carry enough to predict what happens next, does the assumed physics match the real world, can the actuator actually deliver the move, and does the window look far enough ahead?",
+    "concepts": [
+      {
+        "id": "state",
+        "name": "State",
+        "object_changed": "the information vector (position and velocity, or other measurements) passed to the controller each step",
+        "hidden_quantity": "whether the state contains all the information needed to predict the next state given the chosen action (the Markov property)",
+        "math_object": "p(x_{k+1} | x_k, u_k) is independent of history; state x_k satisfies the Markov condition",
+        "mechanism": "if you omit a quantity from the state that changes the physics, cost, or feasibility of the next step, the controller cannot see how its action will land; without velocity, a position-only controller cannot tell it is building speed and overshoots"
+      },
+      {
+        "id": "dynamics",
+        "name": "Dynamics",
+        "object_changed": "the bridge from command to outcome — the rule predicting the next state",
+        "hidden_quantity": "the match or mismatch between the assumed dynamics and the real dynamics that govern motion",
+        "math_object": "x_next = f(x, u); controller assumes f but real motion follows f_real",
+        "mechanism": "because the controller gains are computed assuming a specific dynamics rule, a wrong rule means the gains are tuned for an incorrect model and every move is miscalibrated, making corrections underpowered or oversized"
+      },
+      {
+        "id": "action-control-input",
+        "name": "Action / Control Input",
+        "object_changed": "the command sent to an actuator — the real force, torque, or voltage the motor can actually deliver",
+        "hidden_quantity": "whether the motor is clipped (delivering less than requested) and how much slower things now move",
+        "math_object": "u_clipped = clip(u_desired, -u_max, +u_max)",
+        "mechanism": "when the actuator's limit clips the delivered force below what the plan asked for, the state moves by less each step, so the time to reach any goal stretches inversely with how tight the limit is, until below a threshold where the goal becomes unreachable"
+      },
+      {
+        "id": "horizon",
+        "name": "Horizon",
+        "object_changed": "how many future steps the optimizer reasons about — the window it optimizes over",
+        "hidden_quantity": "whether the first optimized action will be blindsided by consequences lurking just outside the window boundary",
+        "math_object": "finite-horizon cost J = Σ(k=0 to N-1) c_k; myopic when N is too small to see decision-changing futures",
+        "mechanism": "a longer window lets costs far into the future feed back to influence today's action, so the controller brakes before the wall instead of after seeing it"
+      },
+      {
+        "id": "policy",
+        "name": "Policy",
+        "object_changed": "the decision rule — a function or lookup table that reads the current state and outputs an action (deterministic or probabilistic)",
+        "hidden_quantity": "what happens in the next step — which state you will face after this action completes, feeding back into the rule again",
+        "math_object": "u = π(x) or u ~ π(·|x) (deterministic or stochastic)",
+        "mechanism": "a policy survives repeated use in a closed loop only if each action it chooses leaves the next state in a situation where the same rule produces a reasonable next action; planning the whole sequence once gets this wrong, but replaying a simple rule every step with feedback corrects for model error"
+      }
+    ]
+  },
+  {
+    "bucket": "The specification — what the one number really rewards",
+    "gloss": "Everything downstream optimizes a single scalar you wrote by hand. The hidden quantity is whether that scalar's trade-offs and loopholes actually match your intent.",
+    "concepts": [
+      {
+        "id": "objective-cost-function",
+        "name": "Objective / Cost Function",
+        "object_changed": "the scoring rule — a weighted sum of error and effort that ranks all possible trajectories from worst to best",
+        "hidden_quantity": "the exchange rate between competing goals — how much error is worth how much control effort",
+        "math_object": "J = ∑_k [state_error_k^2 + R·control_effort_k^2] where R is the weight on effort",
+        "mechanism": "writing the cost as a weighted sum forces the optimizer to trade off speed against gentleness; raise the effort weight and the controller automatically becomes gentler because aggression now costs more in the one number it minimizes"
+      },
+      {
+        "id": "reward",
+        "name": "Reward",
+        "object_changed": "the numerical proxy signal that defines what the agent optimizes",
+        "hidden_quantity": "whether the proxy has a loophole that the learner can exploit without achieving the real intent",
+        "math_object": "r_total = r_goal + r_bonus + r_penalty, where each term is a design choice",
+        "mechanism": "the learner optimizes the exact number you write; if that number rewards a shortcut that does not satisfy your real goal, the learner finds and pursues the shortcut instead"
+      }
+    ]
+  },
+  {
+    "bucket": "Cost-to-go — the future cost stored at a state",
+    "gloss": "Attach one number to every state: the best remaining cost (or reward) from here on. Store it, reuse it, and any single move can be judged using only its neighbors' numbers.",
+    "concepts": [
+      {
+        "id": "value-function",
+        "name": "Value Function",
+        "object_changed": "the single number attached to each state—the total remaining cost under optimal behavior",
+        "hidden_quantity": "which direction to move when all adjacent immediate steps have the same cost",
+        "math_object": "V(x) = min_u [ c(x,u) + γ × V(f(x,u)) ]",
+        "mechanism": "when every move costs the same right now, comparing (immediate cost + value of destination) across neighbors creates a virtual landscape you can descend; the value at each cell encodes the invisible fact of how far away the goal is"
+      },
+      {
+        "id": "bellman-recursion",
+        "name": "Bellman Recursion",
+        "object_changed": "the value function V(x) — one stored number per state representing the best cost-to-go from that state to the goal",
+        "hidden_quantity": "whether the stored value at a neighboring state is consistent with what physics-plus-cost says it should be (the fixed-point gap)",
+        "math_object": "V(x) = min_a [c(x,a) + γ V(f(x,a))]",
+        "mechanism": "reusing a stored future-cost number at a neighboring state avoids recalculating the entire path from scratch; repeating this backup until stored values stop changing ensures all values agree with their own local physics, so the policy stays consistent everywhere"
+      },
+      {
+        "id": "dynamic-programming",
+        "name": "Dynamic Programming",
+        "object_changed": "the decision rule — replaced by a lookup table of optimal actions indexed by state",
+        "hidden_quantity": "the cost-to-go from each state (the value), which shrinks by exactly the discount factor with each backward sweep",
+        "math_object": "V(s) = min_a [c(s,a) + γ·V(s'); π(s) = argmin_a [c(s,a) + γ·V(s')]",
+        "mechanism": "by storing the future cost at every state and comparing immediate moves using only that number, the problem breaks into state-indexed pieces; the discount factor guarantees that each update shrinks error, so sweeping through all states repeatedly converges"
+      },
+      {
+        "id": "stochastic-dynamic-programming",
+        "name": "Stochastic Dynamic Programming",
+        "object_changed": "the backward cost recursion when next states are uncertain",
+        "hidden_quantity": "the probability-weighted average of future costs across all possible landings",
+        "math_object": "V(x) = min_u [ c(x,u) + γ × Σ_x' P(x'|x,u) × V(x') ]",
+        "mechanism": "when a move lands you in several places with different probabilities, averaging their costs at each step naturally balances catastrophic outcomes (rare but severe) against normal outcomes (likely but small) in a single backward pass"
+      },
+      {
+        "id": "reinforcement-learning",
+        "name": "Reinforcement Learning",
+        "object_changed": "the learned Q-table (action-value estimates from each state)",
+        "hidden_quantity": "how much total discounted reward lies ahead if you take this action now",
+        "math_object": "Q(x,u) ← Q(x,u) + α[r + γ max_{u'} Q(x',u') − Q(x,u)]",
+        "mechanism": "every try produces a return (total payoff from this step onward) that you can observe; the algorithm averages these returns into a stable estimate, so repeated exposure to the same move from the same state reveals its true payoff"
+      },
+      {
+        "id": "value-based-rl",
+        "name": "Value-Based RL",
+        "object_changed": "the Q-value scoreboard—the estimated future return for each state-action pair",
+        "hidden_quantity": "how much of the total reward from the goal is attributable to taking this move now versus all moves that follow",
+        "math_object": "Q(s,a) ← Q(s,a) + α [ r + γ max_{a'} Q(s',a') − Q(s,a) ]",
+        "mechanism": "after each move you observe reward and land in a new state; nudging the old score toward (immediate reward + discounted best-next score) creates a chain reaction where one rewarding goal ripples backward to make distant earlier moves look valuable"
+      },
+      {
+        "id": "policy-optimization",
+        "name": "Policy Optimization",
+        "object_changed": "the decision rule's parameters — the probabilities or weights that determine which action gets chosen in each state",
+        "hidden_quantity": "the advantage of each tried action — whether it beat the expected baseline return, signaling whether to raise or lower its probability",
+        "math_object": "π_new(a|x) ∝ π_old(a|x) · exp(η · (return - baseline(x)))",
+        "mechanism": "nudging the rule toward actions that surprised you on the upside and away from those that disappointed you lets you learn without needing to know the scores of untried actions, so you can optimize continuous infinite-dimensional action spaces"
+      }
+    ]
+  },
+  {
+    "bucket": "Shadow prices & stationarity — the first-order optimality signals",
+    "gloss": "The invisible price tag on a state or a constraint: how much total cost moves if this state, or this limit, shifts by one unit — and whether the gradient has flattened to zero.",
+    "concepts": [
+      {
+        "id": "costate-adjoint-variable",
+        "name": "Costate / Adjoint Variable",
+        "object_changed": "the dual variable λ(t) running backward in time — a sensitivity number attached to each state coordinate",
+        "hidden_quantity": "how much the total remaining cost changes if the state nudges by a tiny amount right now (the shadow price of that state)",
+        "math_object": "λ[t] = ∂L/∂x[t] + A^T λ[t+1]; u[t] = -B^T λ[t+1]",
+        "mechanism": "the costate carries backward from the final-time cost the price of each earlier state decision; because it accumulates how much each nudge ripples into the future, you can evaluate any action locally using just the immediate cost minus the costate benefit, without recomputing the entire downstream path"
+      },
+      {
+        "id": "hamiltonian-optimal-control",
+        "name": "Hamiltonian for Optimal Control",
+        "object_changed": "the state-motion direction at each instant — what to push now",
+        "hidden_quantity": "the shadow price of moving the state by one unit from now onward — the costate, how much future cost will drop if this state improves",
+        "math_object": "H(x,u,p) = L(u) + pᵀ·f(x,u); u* minimizes H over legal actions",
+        "mechanism": "by bundling the immediate cost of an action with the backward-computed price of what it moves you into, every instant can make a locally correct choice using only two numbers: state and costate, without replanning the whole future"
+      },
+      {
+        "id": "gradient-first-order-condition",
+        "name": "Gradient and First-Order Condition",
+        "object_changed": "the search direction — from random guessing to downhill stepping",
+        "hidden_quantity": "whether a downhill direction exists (gradient ≠ 0) or whether the point is stationary (gradient = 0)",
+        "math_object": "∇J = 0 at stationarity; step u_next = u - α·∇J",
+        "mechanism": "each step downhill multiplies the error by a factor less than 1 (the cost curve's discount-like slope shrinkage), so repeated stepping guarantees convergence to a critical point where the gradient vanishes"
+      },
+      {
+        "id": "static-optimization",
+        "name": "Static Optimization",
+        "object_changed": "the choice of one feasible point (the power setting, control magnitude, or design parameter)",
+        "hidden_quantity": "whether the optimal point lives at level ground (zero gradient) or is pinned against an active constraint boundary",
+        "math_object": "At optimum: ∇J(z*) = 0 or z* lies on an active constraint; KKT condition: ∇J + λ∇g = 0 with λ≥0",
+        "mechanism": "the cost landscape has a bottom; if that bottom is outside the legal set, the boundary physically stops you there; the best legal point is either where the ground is level or where a wall prevents you from going downhill"
+      },
+      {
+        "id": "constraints",
+        "name": "Constraints",
+        "object_changed": "the set of legal plans — the subset of all possible trajectories that do not violate hard rules on state, action, or time",
+        "hidden_quantity": "whether a rule is active (the plan is right on the boundary) or slack (the plan has margin to spare)",
+        "math_object": "g(x, u) ≤ 0 for all time (inequality constraints); equality if active",
+        "mechanism": "a hard constraint removes options by forbidding the plan that ignores the rule, forcing the optimizer to find a different path that obeys the boundary; soft penalties can be traded away, but hard constraints cannot, so the best legal plan costs more than the unconstrained answer"
+      }
+    ]
+  },
+  {
+    "bucket": "The first variation — optimizing a whole path at once",
+    "gloss": "Treat the entire trajectory as the unknown. The hidden signal is whether any physics-legal wiggle of the path lowers total cost; when no wiggle helps, the path is optimal.",
+    "concepts": [
+      {
+        "id": "calculus-of-variations",
+        "name": "Calculus of Variations",
+        "object_changed": "a trajectory through time — the entire sequence of states and actions the system will follow",
+        "hidden_quantity": "whether a small admissible bump in the path changes the total cost (the first variation)",
+        "math_object": "Euler equation: d/dt[∂L/∂ẋ] - ∂L/∂x = 0",
+        "mechanism": "if every tiny perturbation the physics allows makes the cost the same or worse, the path is locked in place and cannot be improved by nudging; this condition produces a differential equation that only certain shapes (like straight lines) can satisfy"
+      },
+      {
+        "id": "indirect-methods",
+        "name": "Indirect Methods",
+        "object_changed": "the search problem — replaced by a small set of optimality equations to solve",
+        "hidden_quantity": "whether the equations that define an optimal path have been written down correctly and can be solved faster than brute-force search",
+        "math_object": "Pontryagin conditions: x·=f(x,u), p·=-∇_x H, ∇_u H=0 at optimality; solve by shooting (guess p(0), integrate forward, measure boundary miss, correct)",
+        "mechanism": "instead of checking trillions of possible paths, write down what an optimal path must satisfy (state equation, costate equation, stationarity); solving a few equations is incomparably faster than searching the vast space"
+      },
+      {
+        "id": "optimal-control-problem",
+        "name": "Optimal Control Problem",
+        "object_changed": "the action sequence — the full chain of forces from now until the horizon, chosen to minimize total cost and respect all constraints",
+        "hidden_quantity": "the knock-on effect of each move — how this step's action reshapes what options are available in the next step",
+        "math_object": "min_{u_0,...,u_{T-1}} ∑_t c(x_t,u_t) s.t. x_{t+1}=f(x_t,u_t), bounds(u,x), x_T∈S_terminal",
+        "mechanism": "choosing the whole sequence at once instead of greedily picking the best immediate move lets you see ahead and avoid building speed or commitments that become impossible to undo later"
+      },
+      {
+        "id": "trajectory-optimization",
+        "name": "Trajectory Optimization",
+        "object_changed": "the forces applied at each time step across the entire horizon",
+        "hidden_quantity": "how much each early force ripples forward through physics to affect later states and later costs",
+        "math_object": "minimize J = Σ_k (f_k)² subject to x_{k+1} = A x_k + B f_k, x_0 = [0,0], x_T = [1,0]",
+        "mechanism": "when you make all future forces into a single choice rather than a series of local rules, the solver can see how nudging an early force changes both the state it creates and the cost needed to recover from that state, trading off steps together instead of greedily"
+      }
+    ]
+  },
+  {
+    "bucket": "Numerical defect — the honesty of a discretized path",
+    "gloss": "To optimize a continuous path on a computer you chop it into samples. The hidden quantity is the defect: where the sampled path secretly violates physics between the points you checked.",
+    "concepts": [
+      {
+        "id": "direct-transcription",
+        "name": "Direct Transcription",
+        "object_changed": "the continuous trajectory — replaced by a finite grid of state and control samples",
+        "hidden_quantity": "the gap between what physics predicts and what the grid claims at each step (the defect)",
+        "math_object": "defect_k = x_k+1_actual - (x_k + dt·f(x_k, u_k))",
+        "mechanism": "by writing every state and control as a decision variable and adding constraints that force neighbors to obey the physics update rule, the optimizer can directly find a trajectory that satisfies the dynamics everywhere on the grid"
+      },
+      {
+        "id": "collocation",
+        "name": "Collocation",
+        "object_changed": "the smooth curve connecting knot points — the path parameterized by polynomial or piecewise pieces between discrete waypoints",
+        "hidden_quantity": "whether the curve's slope at interior sample points actually matches what the physics predicts (the defect)",
+        "math_object": "defect_k = x_dot_curve(t_k) - f(x_k, u_k) = 0 at each knot k",
+        "mechanism": "enforcing that the drawn path's slope at interior sample points must equal what the dynamics allows catches collisions and momentum lies that endpoint-only checking misses, because a smooth curve can hide a violation between two checked points unless you force interior honesty"
+      },
+      {
+        "id": "shooting-methods",
+        "name": "Shooting Methods",
+        "object_changed": "the launch control values (the unknown parameters guessed at the start)",
+        "hidden_quantity": "the endpoint error as a function of the launch guess (the Jacobian sensitivity)",
+        "math_object": "u_new = u_old − J⁻¹ r, where J = ∂x_final/∂u_launch and r = x_final − x_target",
+        "mechanism": "rolling physics forward from a guessed control produces an endpoint miss; inverting the sensitivity (how much the miss changes per unit control change) tells you exactly how to adjust the launch to correct the miss"
+      }
+    ]
+  },
+  {
+    "bucket": "Convergence & trust — whether an iteration has settled",
+    "gloss": "Iterate a rule (backward in time, or by re-fitting a local model); the hidden quantity is whether it has stopped changing or is still trustworthy. Once it settles, one constant law works forever.",
+    "concepts": [
+      {
+        "id": "lqr",
+        "name": "LQR",
+        "object_changed": "the control law — replaced by a single fixed gain that multiplies the measured state",
+        "hidden_quantity": "whether the backward cost-to-go has stopped changing at each step going backward in time",
+        "math_object": "steady-state Riccati: K = (R+BᵀPB)⁻¹BᵀPA; optimal u = -Kx for far-from-end steps where P has converged",
+        "mechanism": "squared cost preserves its bowl shape when passed backward through linear dynamics, so the optimal feedback law collapses to two fixed multipliers you compute once and reuse forever, and sufficiently far from the horizon end those multipliers stop changing"
+      },
+      {
+        "id": "local-quadratic-approximation",
+        "name": "Local Quadratic Approximation",
+        "object_changed": "the cost landscape — replaced by a simple bowl-shaped quadratic fit at one point",
+        "hidden_quantity": "how far from the fitting point the quadratic's error stays small enough to trust the solution",
+        "math_object": "Taylor fit: J_quad(x) ≈ c₀ + c₁·x + c₂·x²; error grows as true curve's curvature drifts from frozen quadratic curvature",
+        "mechanism": "by freezing the cost model to its local shape (constant, slope, curvature), you can solve it as LQR in one cheap pass; but you must stay close in because the bowl's curvature does not follow the true curve's changing bends"
+      },
+      {
+        "id": "stability-under-replanning",
+        "name": "Stability Under Replanning",
+        "object_changed": "the Lyapunov function (the distance-to-goal yardstick measured after each replanned move)",
+        "hidden_quantity": "whether the closed-loop yardstick is provably shrinking or staying flat (never rising)",
+        "math_object": "V(x_{k+1}) ≤ V(x_k) with V(x*)=0 at goal; enforced by terminal cost or terminal set",
+        "mechanism": "if you can find a measurement of progress that provably goes down (or stays at zero) after every real applied move, the loop must reach the goal in finite time; terminal costs and sets ensure the yardstick shrinks"
+      }
+    ]
+  },
+  {
+    "bucket": "Feasibility & reachability — whether a legal future still exists",
+    "gloss": "Not cost but existence: is there any legal move left at all, and will today's move leave tomorrow's problem solvable rather than painting you into a corner?",
+    "concepts": [
+      {
+        "id": "feasibility",
+        "name": "Feasibility",
+        "object_changed": "the problem structure — split into existence and then optimality",
+        "hidden_quantity": "whether the feasible set (all sequences obeying constraints and dynamics) is empty or non-empty",
+        "math_object": "minimize J(u) subject to: c(x_k, u_k) ≤ limits; first check if feasible set is ∅",
+        "mechanism": "by checking whether any legal trajectory exists before trying to minimize cost, the system avoids wasting computation on an empty set and can trigger recovery (fail-safe) when no legal action remains"
+      },
+      {
+        "id": "reachability",
+        "name": "Reachability",
+        "object_changed": "the safe region — the set of all states from which a legal control sequence can reach the goal despite constraints and adversarial disturbances",
+        "hidden_quantity": "whether the laws of motion still allow escape — the true boundary between control-enabled and inevitable-fate, invisible in space alone but encoded in dynamics",
+        "math_object": "Backward reachable set R_k = {x : ∃u, ∀w, f(x,u,w)∈R_{k-1}} with R_0={x_goal}",
+        "mechanism": "working backward from the goal to ask 'which states could have reached here?' builds a hard safety boundary that no planner can cross; a state outside it is doomed no matter what controls you apply, because physics forbids escape"
+      },
+      {
+        "id": "recursive-feasibility",
+        "name": "Recursive Feasibility",
+        "object_changed": "the feasibility certificate — the proof that each applied move leaves tomorrow's planning problem solvable, not just today's",
+        "hidden_quantity": "whether the successor state belongs to a terminal safe set from which the next horizon-constrained plan is guaranteed to exist",
+        "math_object": "If x_{k+1}^predicted ∈ X_terminal_safe, then ∃ feasible plan at step k+1, ensuring recursive feasibility: feasibility(k) ⟹ feasibility(k+1)",
+        "mechanism": "a move that looks legal right now can paint you into a corner where no next move is legal; demanding that your first move's predicted outcome lands in a region from which braking still works guarantees you never walk into that trap"
+      },
+      {
+        "id": "model-predictive-control",
+        "name": "Model Predictive Control",
+        "object_changed": "the control sequence — replaced by a receding-horizon re-solve that executes only the first move, then re-measures and replans",
+        "hidden_quantity": "whether the next replanning step will remain feasible (solvable) from the successor state that this move produces",
+        "math_object": "min_{u_0,...,u_{H-1}} ∑ cost(x_t, u_t) s.t. x_{t+1}=Ax_t+Bu_t, bounds, then apply u_0* and resolve from measured x_1",
+        "mechanism": "replanning every step with a short horizon lets you see the next few moves but forces you to hand over a good state to tomorrow's solver; if the horizon is long enough to foresee danger zones, you never walk into a corner that has no legal exit"
+      }
+    ]
+  },
+  {
+    "bucket": "Distribution shift & coverage — has the model seen what it will face?",
+    "gloss": "A learner trained on one set of states is deployed on the states it itself creates. The hidden quantity is the gap between the states it was taught and the states it will actually visit.",
+    "concepts": [
+      {
+        "id": "behavioral-cloning",
+        "name": "Behavioral Cloning",
+        "object_changed": "the learned control rule — a function mapping state to action, fit to expert demonstrations",
+        "hidden_quantity": "the distribution of states the cloned model will never have seen, and how far it can extrapolate before guessing wildly",
+        "math_object": "u_clone = w_pos * x_pos + w_vel * x_vel (linear fit to expert (state, action) pairs)",
+        "mechanism": "a straight-line fit learns exactly what the expert did within the training band and is forced to extrapolate beyond it, so error compounds in closed loop as the model's own mistakes move it into unfamiliar territory where it has no idea what to do"
+      },
+      {
+        "id": "imitation-learning",
+        "name": "Imitation Learning",
+        "object_changed": "the policy rule — replaced by a supervised learner fit to expert demonstrations",
+        "hidden_quantity": "whether the learner has seen expert labels for the states it creates when rolling out on its own, not just the expert's home region",
+        "math_object": "DAgger: iterate {roll π_learner, collect S_visited, query expert labels for S_visited, add to training set, refit}",
+        "mechanism": "asking the expert only about states in their own demonstrations leaves a gap: when the learner's own error moves it into new territory, it has no teacher for recovery; feeding back the learner's visited states to the expert closes that gap"
+      },
+      {
+        "id": "distribution-shift-imitation",
+        "name": "Distribution Shift in Imitation",
+        "object_changed": "the training dataset — shifted from expert-visited states to learner-induced states",
+        "hidden_quantity": "whether the next state the learner will see comes from the expert's distribution or the learner's own induced distribution",
+        "math_object": "P_expert ≠ P_learned; training on P_expert, deploying on P_learned",
+        "mechanism": "each small error by the learner moves it into a state the expert rarely demonstrated, so the learner's next prediction has no training examples to lean on, making the error worse and pulling it further into unfamiliar territory"
+      },
+      {
+        "id": "model-based-rl",
+        "name": "Model-Based RL",
+        "object_changed": "the learning algorithm — replaced by a learned forward model that you plan on instead of testing every move",
+        "hidden_quantity": "whether the learned model's coverage of state-action space is large enough that planning on it reaches unseen goals",
+        "math_object": "model transition table T[s,a]→s'; value iteration: V(s)←min_a[cost(s,a)+γ·V(T[s,a])]; extract policy greedily",
+        "mechanism": "one observed transition can be reused in thousands of imagined paths through the learned model, multiplying the value of each real experience; whereas trial-and-error learns one backup per step, planning re-asks 'what if I string these transitions together this way' many times on the same batch of data"
+      },
+      {
+        "id": "exploration",
+        "name": "Exploration",
+        "object_changed": "the action selection rule — from pure greedy to deliberate randomness",
+        "hidden_quantity": "whether the learner has seen enough evidence of the true value of each action to trust its estimate",
+        "math_object": "select random_action with probability ε; select greedy argmax with probability 1-ε",
+        "mechanism": "random moves now cost immediate reward but reveal the consequences of actions the greedy rule would never try, so later moves can be based on real data about high-value regions the learner would otherwise never reach"
+      }
+    ]
+  }
+]

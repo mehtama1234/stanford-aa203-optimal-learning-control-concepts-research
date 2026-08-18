@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -60,6 +64,10 @@
         {
           "t": "para",
           "html": "The philosophy is: a little bit of random sampling now buys you the knowledge to make better choices later. Greedy with zero randomness is myopic — it gets stuck on the first passable move. Greedy with a controlled dose of randomness is <em>learning</em>."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity here is <em>coverage</em> &mdash; whether you have tried each move from each state often enough to trust your estimate of its value. The learner keeps a running value estimate for every move, starting as a pure guess and nudged after each try toward the reward seen plus the best value expected next. Greedy behaviour trusts those guesses too early; deliberate randomness spends a little reward now to buy the evidence that makes them true."
         }
       ]
     },
@@ -161,6 +169,24 @@
         {
           "t": "insight",
           "html": "<strong>The deeper pattern:</strong> in every system that learns from data — whether you are teaching a robot, tuning a website, or discovering medicine — you face the same fundamental choice: exploit what you know and win today, or explore and learn. The methods differ (epsilon-greedy for robots, random traffic for websites, randomized trials for medicine), but the core trade-off is universal. The best systems do not solve it perfectly; they <em>acknowledge it and tune it consciously.</em> Ignore exploration and you trap yourself in a local optimum. Ignore exploitation and you waste resources gathering useless data. The art is the balance."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the deliberate randomness that finds better moves you have never tried",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Exploration is essential in game-playing agents like AlphaGo that beat human champions by exploring moves no human would consider, reinforcement learning agents learning in simulators or robots, A/B testing on websites where a variant serves a small share of traffic despite currently looking worse, and clinical trials where some patients receive an unproven drug to learn if it is better than the standard treatment."
+        },
+        {
+          "t": "para",
+          "html": "A robot learning to reach for objects starts by trying the most obvious reach, which works much of the time. If it always repeats that reach, it will never discover an angled technique that succeeds far more often. The solution is epsilon-greedy: with some small probability, pick a random move instead of the best guess. Most tries exploit what is known; a few tries explore the unknown. Over time, the exploration reveals that the angled reach is better, and the learner switches. As training progresses, the randomness is reduced so the final policy is reliable."
+        },
+        {
+          "t": "insight",
+          "html": "Pure greedy behavior stays trapped in whatever worked first, so some amount of deliberate randomness is necessary to discover better moves."
         }
       ]
     }

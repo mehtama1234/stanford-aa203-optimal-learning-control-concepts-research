@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -163,6 +167,24 @@
         {
           "t": "insight",
           "html": "<strong>One concept, three faces: the backward-flowing sensitivity in backprop (neural networks), the gradient of the value function in LQR (control), and the Lagrange multiplier on dynamics in indirect methods (trajectory optimization).</strong> Once you understand that the costate is the price of future cost attached to present state, and that it flows backward from end to start, you have the core idea that makes every one of these methods work. The names change, the details change, but the recursion is the same."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the backward-in-time price that judges what an error now costs you for the rest of the path",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The costate appears under different names in three major tools: as backpropagation's backward-flowing gradient in neural networks, as the gradient of the value function in LQR optimal control, as the Lagrange multiplier on dynamics in trajectory optimization, and as the shadow price in sensitivity analysis of any constrained optimization. Every modern learning and control algorithm that chains costs backward uses this idea."
+        },
+        {
+          "t": "para",
+          "html": "The intuition is: an error now ripples into every later cost, so it must carry a price. The costate is that price, a number attached to each state that answers the question 'if I nudge the state here by one unit, how much does my total future cost change?' At the goal, the costate is the gradient of the goal penalty—how much the final error costs per meter. Working backward in time, each earlier costate is the running-cost gradient plus the future costate weighted by how the state change propagates (the dynamics matrix). For a least-effort cart, the costate runs linearly backward in time, which produces an optimal push that is a straight line forward—the same answer a direct forward search arrives at independently."
+        },
+        {
+          "t": "insight",
+          "html": "One concept wearing three names—backprop gradient, value-function gradient, dynamics Lagrange multiplier—that flows backward from end to start and carries the price of future cost into present decisions."
         }
       ]
     }

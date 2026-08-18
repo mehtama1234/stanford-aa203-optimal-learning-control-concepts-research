@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -60,6 +64,10 @@
         {
           "t": "para",
           "html": "This is the 'backward' part of backward reachability: you start at the ending (the target or the danger) and ask which earlier moments could still affect it. The map it produces is the set of 'safe states' — states from which the system can be steered to the goal by someone who acts legally and sees the disturbance in the worst possible light."
+        },
+        {
+          "t": "para",
+          "html": "In words, you build the map backward. Start from the goal states. Add every state that can be driven into the goal in one step no matter how the disturbance pushes back &mdash; you must survive the worst-case disturbance, not a lucky one. Then add every state that can reach <em>that</em> set in one step, and so on. Each round grows the set of states that can guarantee reaching the goal even against an adversary."
         }
       ]
     },
@@ -161,6 +169,24 @@
         {
           "t": "insight",
           "html": "The 2.0–2.5 m/s boundary you saw in the cart run is a tiny instance of the most important safety concept in control engineering. Backward reachability is the language in which we ask 'can I still do this?' before we ask 'is this the cheapest way?' Every collision avoidance guarantee, every constraint that keeps a learning algorithm from crashing, every recursive-feasibility promise in a receding-horizon method traces back to computing or approximating the sets from which the goal is still reachable. It is the first line of defense between planning and crashing."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the boundary between still-escapable and already-doomed",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Reachability is the hidden safety principle inside every collision-avoidance filter on a robot arm, every forward-reachable set precomputed by an autonomous vehicle, and every control-barrier function used in learning-based policies that want to prove they will not crash. Anywhere a system needs to guarantee it can still reach a goal or avoid danger given the physical limits on its brakes or actuators, reachability defines that boundary."
+        },
+        {
+          "t": "para",
+          "html": "Instead of asking which path is best, reachability asks which states are still salvageable: given the speed I am at, the brakes I have, and the time I need to plan, can I guarantee reaching the target or avoiding the wall? Working backward from the goal, you build a set of all states from which at least one legal control sequence still reaches the goal. Every state inside this set has a way out; every state outside it is committed to failure. A collision filter checks whether a proposed move would land inside the reachable set; if not, it rejects the move."
+        },
+        {
+          "t": "insight",
+          "html": "The speed boundary in the cart test is a tiny instance of the most important safety concept: knowing which states can still escape is the first question, before asking which path is cheapest."
         }
       ]
     }

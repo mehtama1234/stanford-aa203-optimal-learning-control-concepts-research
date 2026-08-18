@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -52,6 +56,10 @@
         {
           "t": "para",
           "html": "The dynamics are a function. Input: the current state (position and velocity, or angle and spin rate, or water temperature and pipe temperature) and your action (the force, the steering angle, the handle temperature). Output: the next state one small time step later. The rule might be simple — the next position is the old position plus velocity times the time step. Or it might be complicated — the next angle depends on friction, the speed you are already moving, the elasticity of the connection, and lag in the actuator."
+        },
+        {
+          "t": "para",
+          "html": "Written compactly, the next state is the current state sent through one factor plus the push sent through another. The first factor, A, captures how the cart moves on its own &mdash; how its current speed carries the position forward and how momentum sets the next speed. The second factor, B, captures how the force you apply turns into a change of speed. In one line: A is the world coasting, B is your lever on it."
         },
         {
           "t": "para",
@@ -142,6 +150,24 @@
           "html": "<strong>One core truth: the dynamics connect your will to what happens, and you never know them perfectly.</strong> That gap is why a one-time plan is fragile and why every robust control system includes measurement, comparison, and correction. The dynamics are the reason control is hard; feedback is how we make it work anyway."
         }
       ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the rule that turns your command into the next state",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Dynamics models are central to aircraft autopilot design, rocket landing guidance, autonomous vehicle path tracking, industrial process control, and every model-predictive controller running in real time. The model answers: given the current state (position, speed, angle) and my command (force, thrust, steering), what will the state be one time step later?"
+        },
+        {
+          "t": "para",
+          "html": "A control engineer designs a feedback law—a rule that says push back in proportion to how far off you are and how fast you are drifting—by working backward through the dynamics model and solving for the best gains. But if the real dynamics are noticeably weaker than the model assumed (a motor is weaker, friction is higher, there is actuator lag), those gains become a guess. The system responds sluggishly, taking far longer to settle than expected. The mismatch between model and reality percolates through every decision the controller makes."
+        },
+        {
+          "t": "insight",
+          "html": "A wrong dynamics model makes every tuned control law suboptimal or unstable, which is why real controllers use feedback to detect and correct model mismatch."
+        }
+      ]
     }
   ],
   "related": [
@@ -162,5 +188,22 @@
     "summary": "Double integrator cart, dt=0.1. Linear dynamics: x_next = A·x + B·u. Feedback controller with fixed gains. EXP4: compare correct model versus model delivering 60% of commanded force. Measured settling time and trajectory.",
     "eq": "x = [position, velocity]\nA = [[1, 0.1], [0, 1]]\nB = [[0], [0.1]]\nx_next = A·x + B·u\n\nController (fixed gains): u = -K·x where K = [2.788, 2.505]\n\nEXP4 setup:\n  Correct: x_next_real = A·x + B·u\n  Mismatch: x_next_real = A·x + 0.6·B·u  (only 60% of command delivered)\n  Same K in both; simulate forward from x_0 = [1, 0]",
     "note": "Full script: scripts/experiments/ps_run.py. Numbers reported are the simulation's output verbatim. The 1.7 s and 4.1 s measurements are settling time to within 0.01 m of the target."
-  }
+  },
+  "connects": [
+    {
+      "id": "sindy",
+      "label": "SINDy",
+      "note": "This page assumes the rule from state and input to next state is given. SINDy recovers that rule as a short equation, directly from measured trajectories."
+    },
+    {
+      "id": "dynamic-mode-decomposition",
+      "label": "DMD",
+      "note": "DMD extracts the dominant patterns of the motion and their steady growth and rhythm from data — a model for the very dynamics assumed here."
+    },
+    {
+      "id": "koopman-operator",
+      "label": "Koopman",
+      "note": "Koopman finds extra quantities in which the motion follows a fixed weighted sum, turning a bending system into one the linear tools here can handle."
+    }
+  ]
 }

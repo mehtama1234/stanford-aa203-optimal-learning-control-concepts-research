@@ -31,6 +31,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SPECS = ROOT / "analysis" / "deep"
 OUT = ROOT / "site" / "concepts"
+# Base URL of the sister Brunton (data-driven) course, for cross-course "connects" links.
+# Brunton deep pages live at <base>/<id>-deep.html. Swap for the public Pages URL at deploy.
+BRUNTON_BASE = "http://localhost:8012/"
 
 HEAD = """<!doctype html>
 <html lang="en">
@@ -138,6 +141,18 @@ def render(spec: dict) -> str:
             out.append(render_block(b))
         out.append("      </div>")
         out.append("    </section>")
+    if spec.get("connects"):
+        items = "".join(
+            f'<li style="margin:9px 0;padding-left:14px;border-left:3px solid #8b3f18">'
+            f'<a href="{BRUNTON_BASE}{esc(c["id"])}-deep.html" style="font-weight:700">{esc(c["label"])}</a>'
+            f' <span class="muted" style="font-size:13px">· {esc(c.get("course","Brunton · data-driven"))}</span>'
+            f'<div style="font-size:14.5px;margin-top:3px">{c["note"]}</div></li>'
+            for c in spec["connects"])
+        out.append(
+            '    <section class="fp" id="connects"><h2>Where this connects — the data side</h2>'
+            '<p class="muted">This page assumes it already has a model and a state. A sister course '
+            '(Steve Brunton&rsquo;s data-driven dynamics) is where those come from. Follow a link to see the concept that supplies it.</p>'
+            f'<ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line);border-radius:10px;background:#fff">{items}</ul></section>')
     if spec.get("related"):
         rel = " · ".join(f'<a href="{esc(h)}">{esc(l)}</a>' for h, l in spec["related"])
         out.append(f'    <section class="fp"><p class="muted">Related: {rel}</p></section>')

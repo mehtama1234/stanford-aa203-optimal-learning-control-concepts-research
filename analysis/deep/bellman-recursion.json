@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -164,6 +168,24 @@
         {
           "t": "insight",
           "html": "<strong>One equation, three disguises.</strong> LQR counts backwards in time using matrices, Q-learning counts one step at a time in the real world, MPC counts a short horizon and pins a fixed-point value at the end. All three compute the same thing: 'immediate cost plus the best future, stored in one number.' Understand this backup and you have understood the core of every method that optimizes over trajectories, every method that learns a policy, and the foundation of learning control."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — the one equation that collapses future paths into one stored number at each location",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Bellman recursion is the hidden backbone of every method that chains decisions through time: warehouse robots planning pickup routes, game-playing agents choosing moves deep into a game tree, reinforcement-learning systems training policies one step at a time, aircraft trajectory optimization finding fuel-efficient descent paths, chess engines evaluating positions, data-center job schedulers deciding which jobs to run now. Any system that converts 'path from here to goal' into 'immediate cost plus the best future cost stored here' uses this equation."
+        },
+        {
+          "t": "para",
+          "html": "The recursion works by splitting every decision: instead of planning entire paths from start to goal (an explosion of combinations to explore), evaluate one action by looking at three things—the immediate cost, the next state reached, and the best-known cost-to-go stored at that next state. Add immediate to stored future. Do this for all possible actions, pick the cheapest, and store that as the best cost at your current state. Now anywhere else that reaches this state can reuse the stored cost instead of recalculating the whole path. Repeat this at every state, and the values stop changing after a handful of cycles on a small gridworld."
+        },
+        {
+          "t": "insight",
+          "html": "One backup equation done everywhere until values lock in place is the entire foundation of dynamic programming, Q-learning, and MPC, which is why understanding the backup means understanding three generations of control algorithms."
         }
       ]
     }

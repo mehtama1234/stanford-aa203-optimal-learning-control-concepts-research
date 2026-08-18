@@ -28,6 +28,10 @@
     [
       "surprise",
       "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
     ]
   ],
   "sections": [
@@ -68,6 +72,10 @@
         {
           "t": "para",
           "html": "The practical rule is simple: <strong>the horizon must be long enough to see the first consequence that would change today's best action.</strong> If the wall is 50 meters away and the cart travels at 2 meters per second, the wall becomes relevant at t = 25 seconds. A 5-second horizon is too short — it ends before the wall matters — so the cart does not start braking early enough. A 30-second horizon is long enough to see the wall and plan the deceleration that keeps today's first command sensible. A 120-second horizon adds guesses about what happens after the cart stops and the controller makes another decision; if that far-future story does not change the first brake command, adding it only adds uncertainty."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity here is whether the first consequence big enough to change today&rsquo;s best move falls inside the window or outside it. Anything past the edge is priced at zero, so if the decisive consequence sits just beyond, the controller acts as if it does not exist &mdash; and behaves greedily right up until it is too late."
         }
       ]
     },
@@ -166,6 +174,24 @@
         {
           "t": "insight",
           "html": "<strong>The horizon is where MPC's power and fragility meet.</strong> Extend it and you see delayed consequences and plan around them, like the full-horizon cart stopping smoothly. Shrink it and the controller becomes greedy and brittle, like the 1-step cart that overshoots by a metre. The length of the horizon decides whether the system avoids the trap or walks into it. Every deployed MPC controller — every power plant, every drone, every autonomous vehicle — runs on an engineered choice of how many steps to look ahead. That choice is not derived from physics. It is a trade-off between foresight and cost, anchored only on the rule: look far enough to see the first decision that matters."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — how many seconds ahead the controller can see",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Horizon length is the critical design choice in every modern feedback controller: model-predictive control in power plants and chemical refineries, autonomous vehicle planning, drone path following, and satellite attitude control. It is the one dial that determines whether the system avoids an obstacle or crashes into it."
+        },
+        {
+          "t": "para",
+          "html": "An engineer chooses how many time steps ahead the controller will optimize. With a very short window, the optimizer sees no reason to slow down until it is too late. With a long enough window, it can see all the way to the stopping condition and plans smooth deceleration. In practice the engineer picks a window large enough that the first consequence that would change today's decision falls inside it, then solves a finite-horizon problem at every time step, executing only the first action and re-planning when new measurements arrive."
+        },
+        {
+          "t": "insight",
+          "html": "The horizon is where foresight and cost meet; extend it and you avoid obstacles, shrink it and you become greedy; the choice lives in every MPC controller running today."
         }
       ]
     }

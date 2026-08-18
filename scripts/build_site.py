@@ -35,6 +35,8 @@ def page(title: str, body: str, active: str = "", depth: int = 0) -> str:
         ("transcripts.html", "Transcripts", "transcripts"),
         ("concepts.html", "Concepts", "concepts"),
         ("deep-track.html", "Deep track", "deep-track"),
+        ("concept-explainers.html", "Mechanism map", "mechanism-map"),
+        ("bridge-data-to-control.html", "Data → Control bridge", "bridge"),
         ("course-spine.html", "Spine", "spine"),
         ("families.html", "Families", "families"),
         ("primitives.html", "Primitives", "primitives"),

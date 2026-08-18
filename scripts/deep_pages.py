@@ -66,6 +66,8 @@ HEAD = """<!doctype html>
       <a href="{id}.html">Atlas card</a>
       <a href="../course-spine.html">Spine</a>
       <a href="../derivations.html">Derivations</a>
+      <a href="../concept-explainers.html">Mechanism map</a>
+      <a href="../bridge-data-to-control.html">Data → Control bridge</a>
     </nav>
   </header>
   <main>
